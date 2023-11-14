@@ -36,3 +36,7 @@ export enum enumTextTags {
 }
 
 type typeReactNode = ReactNode
+
+export interface IReactNode {
+  children?: typeReactNode
+}
