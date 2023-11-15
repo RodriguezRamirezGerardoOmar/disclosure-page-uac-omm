@@ -4,6 +4,7 @@ import { Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/20/solid'
 import { TextComponent } from '../TextComponent'
 import { enumTextSizes, enumTextTags } from '@/constants/types'
+import Link from 'next/link'
 
 interface IDropdownProps {
   options: {
@@ -52,13 +53,14 @@ export default function BurgerComponent({ options }: Readonly<IDropdownProps>) {
                     {options.map(option => (
                       <Menu.Item key={option.id}>
                         {({ active }) => (
-                          <TextComponent
-                            sizeFont={enumTextSizes.s12}
-                            tag={enumTextTags.a}
-                            href={option.href}
-                            className={classNames(active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'flex px-4 py-2')}>
-                            {option.name}
-                          </TextComponent>
+                          <Link href={option.href}>
+                            <TextComponent
+                              sizeFont={enumTextSizes.s12}
+                              tag={enumTextTags.p}
+                              className={classNames(active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'flex px-4 py-2')}>
+                              {option.name}
+                            </TextComponent>
+                          </Link>
                         )}
                       </Menu.Item>
                     ))}

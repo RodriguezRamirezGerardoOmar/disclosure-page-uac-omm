@@ -6,6 +6,7 @@ import { BellIcon } from '@heroicons/react/24/outline'
 import { TextComponent } from './TextComponent'
 import { enumTextSizes, enumTextTags } from '@/constants/types'
 import BurgerComponent from './dropdowns/BurgerComponent'
+import Link from 'next/link'
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
@@ -64,14 +65,14 @@ export default function NavbarComponent() {
                 <div className='hidden items-center lg:ml-6 lg:flex lg:space-x-8'>
                   {/* Current: "border-indigo-500 text-gray-900", Default: "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700" */}
                   {routes.map(route => (
-                    <TextComponent
-                      key={route.id}
-                      tag={enumTextTags.a}
-                      sizeFont={enumTextSizes.s12}
-                      href={route.href}
-                      className='flex items-center border-b-2 border-transparent px-1 pt-1 text-black hover:border-gray-300 hover:text-gray-700'>
-                      {route.name}
-                    </TextComponent>
+                    <Link href={route.href} key={route.id}>
+                      <TextComponent
+                        tag={enumTextTags.p}
+                        sizeFont={enumTextSizes.s12}
+                        className='flex items-center border-b-2 border-transparent px-1 pt-1 text-black hover:border-gray-300 hover:text-gray-700'>
+                        {route.name}
+                      </TextComponent>
+                    </Link>
                   ))}
                 </div>
               </div>
