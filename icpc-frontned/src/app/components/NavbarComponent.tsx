@@ -1,13 +1,16 @@
+'use client'
 import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { MagnifyingGlassIcon } from '@heroicons/react/20/solid'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 
-function classNames(...classes : any) {
+function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
 }
 
-export default function Example() {
+const pageList: string[] = ["Inicio", "Acerca de nosotros", "Ejercicios", "Apuntes", "Noticias", "Iniciar sesión" ]
+
+export default function NavbarComponent() {
   return (
     <Disclosure as="nav" className="bg-white shadow">
       {({ open }) => (
