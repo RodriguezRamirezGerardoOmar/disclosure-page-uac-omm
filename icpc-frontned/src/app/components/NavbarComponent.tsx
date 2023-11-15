@@ -3,12 +3,45 @@ import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { MagnifyingGlassIcon } from '@heroicons/react/20/solid'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import { TextComponent } from './TextComponent'
+import { enumTextSizes, enumTextTags } from '@/constants/types'
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
 }
 
-const pageList: string[] = ["Inicio", "Acerca de nosotros", "Ejercicios", "Apuntes", "Noticias", "Iniciar sesión" ]
+const routes = [
+  {
+    id: 1,
+    name: 'Inicio',
+    href: '#'
+  },
+  {
+    id: 2,
+    name: 'Acerca de nosotros',
+    href: '#'
+  },
+  {
+    id: 3,
+    name: 'Ejercicios',
+    href: '#'
+  },
+  {
+    id: 4,
+    name: 'Apuntes',
+    href: '#'
+  },
+  {
+    id: 5,
+    name: 'Noticias',
+    href: '#'
+  },
+  {
+    id: 6,
+    name: 'Iniciar sesión',
+    href: '#'
+  }
+]
 
 export default function NavbarComponent() {
   return (
@@ -27,30 +60,9 @@ export default function NavbarComponent() {
                 </div>
                 <div className="hidden lg:ml-6 lg:flex lg:space-x-8">
                   {/* Current: "border-indigo-500 text-gray-900", Default: "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700" */}
-                  <a
-                    href="#"
-                    className="inline-flex items-center border-b-2 border-indigo-500 px-1 pt-1 text-sm font-medium text-gray-900"
-                  >
-                    Dashboard
-                  </a>
-                  <a
-                    href="#"
-                    className="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700"
-                  >
-                    Team
-                  </a>
-                  <a
-                    href="#"
-                    className="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700"
-                  >
-                    Projects
-                  </a>
-                  <a
-                    href="#"
-                    className="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700"
-                  >
-                    Calendar
-                  </a>
+                  {routes.map((route) => (
+                    <TextComponent key={route.id} tag={enumTextTags.a} sizeFont={enumTextSizes.s12} href={route.href} >{route.name}</TextComponent>
+                  ))}
                 </div>
               </div>
               <div className="flex flex-1 items-center justify-center px-2 lg:ml-6 lg:justify-end">
