@@ -2,10 +2,10 @@
 import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { MagnifyingGlassIcon } from '@heroicons/react/20/solid'
-import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import { BellIcon } from '@heroicons/react/24/outline'
 import { TextComponent } from './TextComponent'
 import { enumTextSizes, enumTextTags } from '@/constants/types'
-import DropdownComponent from './dropdowns/DropdownComponent'
+import BurgerComponent from './dropdowns/BurgerComponent'
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
@@ -101,7 +101,7 @@ export default function NavbarComponent() {
               </div>
               <div className='flex items-center lg:hidden'>
                 {/* Mobile menu button */}
-                <DropdownComponent options={routes} />
+                <BurgerComponent options={routes} />
               </div>
               <div className='hidden lg:ml-4 lg:flex lg:items-center'>
                 <button

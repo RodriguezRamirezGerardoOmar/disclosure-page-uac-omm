@@ -17,7 +17,7 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
 }
 
-export default function DropdownComponent({ options }: Readonly<IDropdownProps>) {
+export default function BurgerComponent({ options }: Readonly<IDropdownProps>) {
   return (
     <Menu
       as='div'
@@ -48,15 +48,15 @@ export default function DropdownComponent({ options }: Readonly<IDropdownProps>)
                 leaveFrom='transform opacity-100 scale-100'
                 leaveTo='transform opacity-0 scale-95'>
                 <Menu.Items className='absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none'>
-                  <div className='py-1'>
+                  <div className='py-3 px-3 grid grid-cols-1'>
                     {options.map(option => (
                       <Menu.Item key={option.id}>
                         {({ active }) => (
                           <TextComponent
                             sizeFont={enumTextSizes.s12}
-                            tags={enumTextTags.a}
+                            tag={enumTextTags.a}
                             href={option.href}
-                            className={classNames(active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2')}>
+                            className={classNames(active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'flex px-4 py-2')}>
                             {option.name}
                           </TextComponent>
                         )}
