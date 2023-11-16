@@ -49,7 +49,7 @@ export default function NavbarComponent() {
   return (
     <Disclosure
       as='nav'
-      className='bg-white dark:bg-slate-600 shadow'>
+      className='bg-white dark:bg-primary shadow'>
       {({ open }) => (
         <div className='mx-auto max-w-7xl px-2 sm:px-4 lg:px-8'>
           <div className='flex h-16 justify-between'>
@@ -62,11 +62,12 @@ export default function NavbarComponent() {
                 {routes.map(route => (
                   <Link
                     href={route.href}
-                    key={route.id}>
+                    key={route.id}
+                    className='dark:text-accent'>
                     <TextComponent
                       tag={enumTextTags.p}
                       sizeFont={enumTextSizes.s12}
-                      className='flex items-center border-b-2 border-transparent px-1 pt-1 text-black hover:border-gray-300 hover:text-gray-700'>
+                      className='flex items-center border-b-2 border-transparent px-1 pt-1 text-black dark:text-accent hover:border-gray-300 hover:text-gray-700'>
                       {route.name}
                     </TextComponent>
                   </Link>
