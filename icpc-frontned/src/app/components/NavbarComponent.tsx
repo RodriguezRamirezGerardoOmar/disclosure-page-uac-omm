@@ -7,6 +7,7 @@ import { enumTextSizes, enumTextTags } from '@/constants/types'
 import BurgerComponent from './dropdowns/BurgerComponent'
 import Link from 'next/link'
 import LogoComponent from './LogoComponent'
+import UserComponent from './UserComponent'
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
@@ -49,7 +50,7 @@ export default function NavbarComponent() {
   return (
     <Disclosure
       as='nav'
-      className='bg-white dark:bg-primary shadow'>
+      className='bg-white dark:bg-primary shadow fixed top-0 w-full'>
       {({ open }) => (
         <div className='mx-auto max-w-7xl px-2 sm:px-4 lg:px-8'>
           <div className='flex h-16 justify-between'>
@@ -63,11 +64,11 @@ export default function NavbarComponent() {
                   <Link
                     href={route.href}
                     key={route.id}
-                    className='dark:text-accent'>
+                    className='hover:text-accent dark:text-accent dark:hover:text-complementary'>
                     <TextComponent
                       tag={enumTextTags.p}
                       sizeFont={enumTextSizes.s12}
-                      className='flex items-center border-b-2 border-transparent px-1 pt-1 text-black dark:text-accent hover:border-gray-300 hover:text-gray-700'>
+                      className='flex items-center border-b-2 border-transparent px-1 pt-1'>
                       {route.name}
                     </TextComponent>
                   </Link>
@@ -104,8 +105,10 @@ export default function NavbarComponent() {
             </div>
             <div className='hidden lg:ml-4 lg:flex lg:items-center'>
               {/* Profile dropdown */}
-              <Link href={'#'}>
-                <UserIcon className='h-10 w-10 rounded-full' />
+              <Link
+                href={'#'}
+                className='hover:text-accent dark:text-accent dark:hover:text-complementary'>
+                <UserComponent verified={true} />
               </Link>
             </div>
           </div>
