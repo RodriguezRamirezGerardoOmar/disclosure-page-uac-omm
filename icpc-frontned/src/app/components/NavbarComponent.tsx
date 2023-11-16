@@ -2,7 +2,6 @@
 import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { MagnifyingGlassIcon } from '@heroicons/react/20/solid'
-import { BellIcon } from '@heroicons/react/24/outline'
 import { TextComponent } from './TextComponent'
 import { enumTextSizes, enumTextTags } from '@/constants/types'
 import BurgerComponent from './dropdowns/BurgerComponent'
@@ -51,8 +50,7 @@ export default function NavbarComponent() {
       as='nav'
       className='bg-white shadow'>
       {({ open }) => (
-        <>
-          <div className='mx-auto max-w-7xl px-2 sm:px-4 lg:px-8'>
+        <div className='mx-auto max-w-7xl px-2 sm:px-4 lg:px-8'>
             <div className='flex h-16 justify-between'>
               <div className='flex px-2 lg:px-0'>
                 <div className='flex flex-shrink-0 items-center'>
@@ -105,16 +103,7 @@ export default function NavbarComponent() {
                 <BurgerComponent options={routes} />
               </div>
               <div className='hidden lg:ml-4 lg:flex lg:items-center'>
-                <button
-                  type='button'
-                  className='relative flex-shrink-0 rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2'>
-                  <span className='absolute -inset-1.5' />
-                  <span className='sr-only'>View notifications</span>
-                  <BellIcon
-                    className='h-6 w-6'
-                    aria-hidden='true'
-                  />
-                </button>
+                
 
                 {/* Profile dropdown */}
                 <Menu
@@ -173,7 +162,6 @@ export default function NavbarComponent() {
               </div>
             </div>
           </div>
-        </>
       )}
     </Disclosure>
   )
