@@ -21,17 +21,17 @@ const routes = [
   },
   {
     id: 2,
-    name: 'Acerca de nosotros',
+    name: 'Iniciar sesión',
     href: '#'
   },
   {
     id: 3,
-    name: 'Ejercicios',
+    name: 'Apuntes',
     href: '#'
   },
   {
     id: 4,
-    name: 'Apuntes',
+    name: 'Ejercicios',
     href: '#'
   },
   {
@@ -41,7 +41,7 @@ const routes = [
   },
   {
     id: 6,
-    name: 'Iniciar sesión',
+    name: 'Acerca de nosotros',
     href: '#'
   }
 ]
