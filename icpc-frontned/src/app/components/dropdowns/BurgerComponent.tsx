@@ -22,7 +22,7 @@ export default function BurgerComponent({ options }: Readonly<IDropdownProps>) {
   return (
     <Menu
       as='div'
-      className='relative inline-block text-left'>
+      className='relative inline-block text-left mx-3 my-3'>
       {({ open }) => (
         <>
           <Menu.Button>
@@ -49,18 +49,17 @@ export default function BurgerComponent({ options }: Readonly<IDropdownProps>) {
                 leaveFrom='transform opacity-100 scale-100'
                 leaveTo='transform opacity-0 scale-95'>
                 <Menu.Items className='absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white dark:bg-primary shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none'>
-                  <div className='py-3 px-3 grid grid-cols-1'>
+                  <div className='py-1 grid grid-cols-1'>
                     {options.map(option => (
                       <Menu.Item key={option.id}>
                         {({ active }) => (
-                          <Link href={option.href} className="dark:text-accent">
+                          <Link
+                            href={option.href}
+                            className='hover:text-secondary hover:bg-gray-100 px-2 py-2 dark:text-accent  dark:hover:text-complementary dark:hover:bg-secondary'>
                             <TextComponent
                               sizeFont={enumTextSizes.s12}
                               tag={enumTextTags.p}
-                              className={classNames(
-                                active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                                'flex px-4 py-2'
-                              )}>
+                              className={classNames(active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'flex py-3')}>
                               {option.name}
                             </TextComponent>
                           </Link>

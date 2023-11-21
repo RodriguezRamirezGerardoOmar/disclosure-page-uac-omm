@@ -1,7 +1,7 @@
 'use client'
 import Image from 'next/image'
-import logoClearMode from '@/app/images/fdiClearMode.png'
-import logoDarkMode from '@/app/images/fdiDarkMode.png'
+import logoClearMode from '@/../../public/fdiClearMode.svg'
+import logoDarkMode from '@/../../public/fdiDarkMode.svg'
 
 interface ILogoProps {
   size: number
