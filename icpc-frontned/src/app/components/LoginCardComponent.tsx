@@ -59,7 +59,7 @@ const LoginCardComponent = ({ fields, classes, className, label }: Readonly<IFor
               autocomplete=''
               placeholder=''
               required={field.required}
-              classes='block max-w-min bg-primary rounded-md p-1 text-complementary dark:bg-accent'
+              classes='max-w-min bg-primary rounded-md py-2 px-4 text-complementary dark:bg-accent'
               type={field.type}
             />
           )
@@ -80,6 +80,13 @@ const LoginCardComponent = ({ fields, classes, className, label }: Readonly<IFor
 
         return <div key={field.id}>{component}</div>
       })}
+      <div className='flex justify-center'>
+        <a
+          href='#'
+          className='hover:text-accent dark:text-accent dark:hover:text-complementary'>
+          <TextComponent>Olvidé mi contraseña</TextComponent>
+        </a>
+      </div>
     </form>
   )
 }
