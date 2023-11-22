@@ -17,12 +17,12 @@ const routes = [
   {
     id: 1,
     name: 'Inicio',
-    href: '#'
+    href: '/'
   },
   {
     id: 2,
     name: 'Iniciar sesión',
-    href: '#'
+    href: '/login'
   },
   {
     id: 3,
