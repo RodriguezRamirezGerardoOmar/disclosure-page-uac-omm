@@ -3,7 +3,7 @@ import React from 'react'
 import { TextComponent } from './TextComponent'
 import { enumTextSizes, enumTextTags } from '@/constants/types'
 
-interface ITextFieldProps {
+interface IInputProps {
   labelText: string
   id: string
   name: string
@@ -14,10 +14,10 @@ interface ITextFieldProps {
   classes: string
 }
 
-const TextFieldComponent = ({ labelText, id, name, type, autocomplete, placeholder, classes, required }: Readonly<ITextFieldProps>) => {
+const TextFieldComponent = ({ labelText, id, name, type, autocomplete, placeholder, classes, required }: Readonly<IInputProps>) => {
   if (labelText === '' && required) {
     return (
-      <div className='my-2'>
+      <div className='m-4'>
         <input
           id={id}
           name={name}
@@ -31,7 +31,7 @@ const TextFieldComponent = ({ labelText, id, name, type, autocomplete, placehold
     )
   } else if (labelText === '' && !required) {
     return (
-      <div className='my-2'>
+      <div className='m-4'>
         <input
           id={id}
           name={name}
@@ -44,11 +44,10 @@ const TextFieldComponent = ({ labelText, id, name, type, autocomplete, placehold
     )
   } else if (labelText != '' && required) {
     return (
-      <div className='my-2'>
+      <div className='m-4'>
         <TextComponent
           tag={enumTextTags.label}
-          sizeFont={enumTextSizes.s12}
-          className='dark:text-accent'>
+          sizeFont={enumTextSizes.s12}>
           {labelText}
         </TextComponent>
         <input
@@ -64,11 +63,10 @@ const TextFieldComponent = ({ labelText, id, name, type, autocomplete, placehold
     )
   } else {
     return (
-      <div className='my-2'>
+      <div className='m-4'>
         <TextComponent
           tag={enumTextTags.label}
-          sizeFont={enumTextSizes.s12}
-          className='dark:text-accent'>
+          sizeFont={enumTextSizes.s12}>
           {labelText}
         </TextComponent>
         <input
