@@ -43,6 +43,16 @@ const fields = [
     autocomplete: '',
     placeholder: '',
     required: true
+  },
+  {
+    id: 5,
+    labelText: 'Olvidé mi contraseña',
+    type: 'forgot',
+    tagId: '',
+    name: '',
+    autocomplete: '',
+    placeholder: '#',
+    required: false
   }
 ]
 
@@ -52,7 +62,7 @@ export default function Home() {
       <LoginCardComponent
         fields={fields}
         classes={cn}
-        className='bg-gray-300 dark:bg-primary shadow p-4 lg:w-1/3 dark:text-accent rounded-md'
+        className='bg-gray-300 dark:bg-primary shadow p-4 dark:text-accent rounded-md w-full'
         label='Iniciar sesión'
       />
     </main>
