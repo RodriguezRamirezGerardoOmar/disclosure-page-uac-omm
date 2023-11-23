@@ -18,7 +18,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={classNames(inter.className,'dark:bg-gray-600')}>
+      <body className={classNames(inter.className,'dark:bg-secondary')}>
         <NavbarComponent />
         {children}
       </body>
