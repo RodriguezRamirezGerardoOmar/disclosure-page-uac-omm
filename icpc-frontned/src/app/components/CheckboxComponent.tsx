@@ -16,7 +16,7 @@ interface IInputProps {
 
 const CheckboxComponent = ({ labelText, id, name, type, classes, required }: Readonly<IInputProps>) => {
   return (
-    <div className='flex flex-row m-4'>
+    <div className='flex flex-row m-4 gap-2'>
       <input
         id={id}
         name={name}

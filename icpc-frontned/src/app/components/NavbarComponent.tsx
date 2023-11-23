@@ -21,26 +21,21 @@ const routes = [
   },
   {
     id: 2,
-    name: 'Iniciar sesión',
-    href: '/login'
-  },
-  {
-    id: 3,
     name: 'Apuntes',
     href: '#'
   },
   {
-    id: 4,
+    id: 3,
     name: 'Ejercicios',
     href: '#'
   },
   {
-    id: 5,
+    id: 4,
     name: 'Noticias',
     href: '#'
   },
   {
-    id: 6,
+    id: 5,
     name: 'Acerca de nosotros',
     href: '#'
   }
@@ -101,14 +96,14 @@ export default function NavbarComponent() {
             </div>
             <div className='flex items-center lg:hidden'>
               {/* Mobile menu button */}
-              <BurgerComponent options={routes} />
+              <BurgerComponent options={routes} verified={true} />
             </div>
             <div className='hidden lg:ml-4 lg:flex lg:items-center'>
               {/* Profile dropdown */}
               <Link
                 href={'#'}
                 className='hover:text-accent dark:text-accent dark:hover:text-complementary'>
-                <UserComponent verified={true} />
+                <UserComponent verified={false} />
               </Link>
             </div>
           </div>

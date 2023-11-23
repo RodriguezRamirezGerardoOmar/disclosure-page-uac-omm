@@ -6,6 +6,7 @@ import { TextComponent } from './TextComponent'
 import { enumTextSizes, enumTextTags } from '@/constants/types'
 import CheckboxComponent from './CheckboxComponent'
 import SubmitComponent from './SubmitComponent'
+import Link from 'next/link'
 
 interface IFormCardProps {
   fields: {
@@ -25,11 +26,11 @@ interface IFormCardProps {
 
 const LoginCardComponent = ({ fields, classes, className, label }: Readonly<IFormCardProps>) => {
   return (
-    <div className='mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 lg:w-1/3'>
+    <div className='md:mx-auto max-w-7xl md:px-4 w-full h-full lg:px-8 lg:w-2/3 lg:h-auto'>
       {/* We've used 3xl here, but feel free to try other max-widths based on your needs */}
       <div className='mx-auto max-w-3xl'>
         <form className={className}>
-          <div className='w-full grid grid-cols-1 place-items-center'>
+          <div className='w-full grid grid-cols-1 place-items-center text-xl'>
             <LogoComponent size={150} />
             <TextComponent
               tag={enumTextTags.h3}
@@ -69,11 +70,11 @@ const LoginCardComponent = ({ fields, classes, className, label }: Readonly<IFor
             } else if (field.type === 'forgot') {
               component = (
                 <div className='flex justify-center'>
-                  <a
+                  <Link
                     href={field.placeholder}
-                    className='hover:text-accent dark:text-accent dark:hover:text-complementary'>
+                    className='hover:text-accent dark:text-accent dark:hover:text-complementary underline'>
                     <TextComponent>{field.labelText}</TextComponent>
-                  </a>
+                  </Link>
                 </div>
               )
             } else {
