@@ -1,21 +1,26 @@
 import { ReactNode } from 'react'
 
 export enum enumTextSizes {
-  s36 = '36',
-  s22 = '22',
-  s21 = '21',
-  s20 = '20',
-  s18 = '18',
-  s17 = '17',
-  s16 = '16',
-  s14 = '14',
-  s13 = '13',
-  s12 = '12',
-  s10 = '10',
-  s11 = '11',
-  s9 = '9',
-  s8 = '8',
-  s7 = '7'
+  s128 = '9xl',
+  s96 = '8xl',
+  s72 = '7xl',
+  s60 = '6xl',
+  s48 = '5xl',
+  s36 = '4xl',
+  s30 = '3xl',
+  s24 = '2xl',
+  s20 = 'xl',
+  s18 = 'lg',
+  s17 = '[17px]',
+  s16 = 'base',
+  s14 = 'sm',
+  s13 = '[13px]',
+  s12 = 'xs',
+  s10 = '[10px]',
+  s11 = '[11px]',
+  s9 = '[9px]',
+  s8 = '[8px]',
+  s7 = '[7px]'
 }
 
 export enum enumTextTags {
@@ -40,3 +45,4 @@ type typeReactNode = ReactNode
 export interface IReactNode {
   children?: typeReactNode
 }
+
