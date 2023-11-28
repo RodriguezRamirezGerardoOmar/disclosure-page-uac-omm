@@ -59,12 +59,7 @@ const fields = [
 export default function Home() {
   return (
     <main className='flex min-h-screen flex-col items-center justify-between pt-24'>
-      <LoginCardComponent
-        fields={fields}
-        classes={cn}
-        className='bg-gray-300 dark:bg-primary shadow p-4 dark:text-accent rounded-md w-full'
-        label='Iniciar sesión'
-      />
+      <LoginCardComponent label='Iniciar sesión'/>
     </main>
   )
 }

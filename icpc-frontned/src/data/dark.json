@@ -1,10 +1,6 @@
 {
-    "primary": "#011526",
-    "secondary": "#374151",
-    "accent": "#53C3DD",
-    "complementary": "#F2DBAF",
-    "error": "#f44336",
-    "info": "#2196f3",
-    "success": "#4caf50",
-    "warning": "#ffeb3b"
+    "dark-primary": "#011526",
+    "dark-secondary": "#374151",
+    "dark-accent": "#53C3DD",
+    "dark-complementary": "#F2DBAF"
 }

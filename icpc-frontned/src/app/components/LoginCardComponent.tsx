@@ -1,103 +1,88 @@
 'use client'
-import React from 'react'
-import TextFieldComponent from './TextFieldComponent'
+
+import { SubmitHandler, useForm } from 'react-hook-form'
 import LogoComponent from './LogoComponent'
 import { TextComponent } from './TextComponent'
 import { enumTextSizes, enumTextTags } from '@/constants/types'
-import CheckboxComponent from './CheckboxComponent'
-import SubmitComponent from './SubmitComponent'
 import Link from 'next/link'
 
-interface IFormCardProps {
-  fields: {
-    id: number
-    labelText: string
-    type: string
-    tagId: string
-    name: string
-    autocomplete: string
-    placeholder: string
-    required: boolean
-  }[]
-  classes: string
-  className: string
+interface IInputCardProps {
   label: string
 }
 
-const LoginCardComponent = ({ fields, classes, className, label }: Readonly<IFormCardProps>) => {
+export default function LoginCardComponent({ label }: Readonly<IInputCardProps>) {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors }
+  } = useForm<Inputs>()
+  const onSubmit: SubmitHandler<Inputs> = data => console.log(data)
+
+  const textFieldClassname =
+    'block w-full rounded-md border-0 m-2 p-2 text-dark-primary shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-accent sm:leading-6'
+  const labelClassname = 'place-self-start dark:text-dark-accent m-1'
+
   return (
     <div className='md:mx-auto max-w-7xl md:px-4 w-full h-full lg:px-8 lg:w-2/3 lg:h-auto'>
       {/* We've used 3xl here, but feel free to try other max-widths based on your needs */}
-      <div className='mx-auto max-w-3xl'>
-        <form className={className}>
-          <div className='w-full grid grid-cols-1 place-items-center text-xl'>
-            <LogoComponent size={150} />
-            <TextComponent
-              tag={enumTextTags.h3}
-              sizeFont={enumTextSizes.s36}>
-              {label}
-            </TextComponent>
+      <div className='mx-auto max-w-3xl dark:bg-dark-primary rounded-md p-2'>
+        <div className='w-full grid grid-cols-1 place-items-center text-li'>
+          <LogoComponent size={150} />
+          <TextComponent
+            tag={enumTextTags.h3}
+            sizeFont={enumTextSizes.s36}
+            className='dark:text-dark-accent'>
+            {label}
+          </TextComponent>
+        </div>
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className='m-2 flex flex-col columns-1 place-items-center'>
+          {/* register your input into the hook by invoking the "register" function */}
+          <label
+            htmlFor='example'
+            className={labelClassname}>
+            Nombre de usuario
+          </label>
+          <input
+            {...register('example')}
+            className={textFieldClassname}
+          />
+
+          {/* include validation with required or other standard HTML validation rules */}
+          <label
+            htmlFor='exampleRequired'
+            className={labelClassname}>
+            Contraseña
+          </label>
+          <input
+            {...register('exampleRequired', { required: true })}
+            className={textFieldClassname}
+          />
+          {/* errors will return when field validation fails  */}
+          {errors.exampleRequired && <span>This field is required</span>}
+
+          <div className='place-self-start flex flex-row my-2'>
+            <input type='checkbox' />
+            <TextComponent tag={enumTextTags.p} className='mx-2 dark:text-dark-accent'>Olvidé mi contraseña</TextComponent>
           </div>
-          {fields.map(field => {
-            let component
 
-            if (field.type === 'checkbox') {
-              component = (
-                <CheckboxComponent
-                  labelText={field.labelText}
-                  id={field.tagId}
-                  name={field.name}
-                  type={field.type}
-                  autocomplete={field.autocomplete}
-                  placeholder={field.placeholder}
-                  required={field.required}
-                  classes='px-4'
-                />
-              )
-            } else if (field.type === 'submit') {
-              component = (
-                <SubmitComponent
-                  labelText={field.labelText}
-                  id={field.tagId}
-                  name={field.name}
-                  autocomplete=''
-                  placeholder=''
-                  required={field.required}
-                  classes='max-w-min bg-primary rounded-md py-2 px-4 text-complementary dark:bg-accent'
-                  type={field.type}
-                />
-              )
-            } else if (field.type === 'forgot') {
-              component = (
-                <div className='flex justify-center'>
-                  <Link
-                    href={field.placeholder}
-                    className='hover:text-accent dark:text-accent dark:hover:text-complementary underline'>
-                    <TextComponent>{field.labelText}</TextComponent>
-                  </Link>
-                </div>
-              )
-            } else {
-              component = (
-                <TextFieldComponent
-                  labelText={field.labelText}
-                  id={field.tagId}
-                  name={field.name}
-                  type={field.type}
-                  autocomplete={field.autocomplete}
-                  placeholder={field.placeholder}
-                  required={field.required}
-                  classes={classes}
-                />
-              )
-            }
-
-            return <div key={field.id}>{component}</div>
-          })}
+          <input
+            type='submit'
+            className='max-w-min bg-primary rounded-md py-2 px-4 text-complementary dark:bg-dark-accent m-2'
+          />
+          <Link
+            href='#'
+            className='underline self-center hover:text-accent dark:text-dark-accent dark:hover:text-dark-complementary m-2'>
+            <TextComponent
+              tag={enumTextTags.p}
+              sizeFont={enumTextSizes.s36}
+              className=''>
+              Olvidé mi contraseña
+            </TextComponent>
+          </Link>
         </form>
       </div>
     </div>
   )
 }
-
-export default LoginCardComponent

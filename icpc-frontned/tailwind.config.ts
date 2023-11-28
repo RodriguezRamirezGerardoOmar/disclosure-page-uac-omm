@@ -1,4 +1,4 @@
-const base = require('./src/data/base.json')
+const light = require('./src/data/light.json')
 const dark = require('./src/data/dark.json')
 
 import type { Config } from 'tailwindcss'
@@ -17,7 +17,7 @@ const config: Config = {
           'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
       },
       colors: {
-        ...base,
+        ...light,
         ...dark
       },
     },
