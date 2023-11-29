@@ -63,8 +63,8 @@ export default function LoginCardComponent({ label }: Readonly<IInputCardProps>)
           {errors.exampleRequired && <span>This field is required</span>}
 
           <div className='place-self-start flex flex-row my-2'>
-            <input type='checkbox' />
-            <TextComponent tag={enumTextTags.p} className='mx-2 dark:text-dark-accent'>Olvidé mi contraseña</TextComponent>
+            <input type='checkbox' {...register('rememberMe')}/>
+            <TextComponent tag={enumTextTags.p} className='mx-2 dark:text-dark-accent'>Recuérdame</TextComponent>
           </div>
 
           <input
