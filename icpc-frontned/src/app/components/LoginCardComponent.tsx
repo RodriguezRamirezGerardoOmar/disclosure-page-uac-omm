@@ -60,6 +60,8 @@ export default function LoginCardComponent({ label }: Readonly<IInputCardProps>)
           <input
             {...register('password', { required: true })}
             className={textFieldClassname}
+            autoComplete='current-password'
+            type='password'
           />
           {/* errors will return when field validation fails  */}
           {errors.exampleRequired && <span>This field is required</span>}
