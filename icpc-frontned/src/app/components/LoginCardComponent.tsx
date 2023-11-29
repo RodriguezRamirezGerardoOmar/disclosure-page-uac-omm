@@ -53,6 +53,13 @@ export default function LoginCardComponent() {
             type='text'
             autoComplete='username'
           />
+          {errors.username && (
+            <TextComponent
+              tag={enumTextTags.span}
+              className='text-error'>
+              Es necesario llenar este campo
+            </TextComponent>
+          )}
 
           {/* include validation with required or other standard HTML validation rules */}
           <TextComponent
@@ -68,11 +75,24 @@ export default function LoginCardComponent() {
             type='password'
           />
           {/* errors will return when field validation fails  */}
-          {errors.password && <span>This field is required</span>}
+          {errors.password && (
+            <TextComponent
+              tag={enumTextTags.span}
+              className='text-error'>
+              Es necesario llenar este campo
+            </TextComponent>
+          )}
 
           <div className='place-self-start flex flex-row my-2'>
-            <input type='checkbox' {...register('rememberMe')}/>
-            <TextComponent tag={enumTextTags.p} className='mx-2 dark:text-dark-accent'>Recuérdame</TextComponent>
+            <input
+              type='checkbox'
+              {...register('rememberMe')}
+            />
+            <TextComponent
+              tag={enumTextTags.p}
+              className='mx-2 dark:text-dark-accent'>
+              Recuérdame
+            </TextComponent>
           </div>
 
           <input
