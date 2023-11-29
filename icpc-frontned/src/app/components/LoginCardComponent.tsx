@@ -48,7 +48,7 @@ export default function LoginCardComponent() {
             Nombre de usuario
           </TextComponent>
           <input
-            {...register('username')}
+            {...register('username', {required: true})}
             className={textFieldClassname}
             type='text'
             autoComplete='username'
