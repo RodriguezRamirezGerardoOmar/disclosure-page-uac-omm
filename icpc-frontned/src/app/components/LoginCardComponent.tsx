@@ -48,6 +48,8 @@ export default function LoginCardComponent({ label }: Readonly<IInputCardProps>)
           <input
             {...register('username')}
             className={textFieldClassname}
+            type='text'
+            autoComplete='username'
           />
 
           {/* include validation with required or other standard HTML validation rules */}
