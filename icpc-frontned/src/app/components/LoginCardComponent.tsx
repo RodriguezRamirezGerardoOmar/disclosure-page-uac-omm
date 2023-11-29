@@ -6,11 +6,13 @@ import { TextComponent } from './TextComponent'
 import { enumTextSizes, enumTextTags } from '@/constants/types'
 import Link from 'next/link'
 
-interface IInputCardProps {
-  label: string
+type FormData = {
+  username: string
+  password: string
+  rememberMe: boolean
 }
 
-export default function LoginCardComponent({ label }: Readonly<IInputCardProps>) {
+export default function LoginCardComponent() {
   const {
     register,
     handleSubmit,
@@ -32,7 +34,7 @@ export default function LoginCardComponent({ label }: Readonly<IInputCardProps>)
             tag={enumTextTags.h3}
             sizeFont={enumTextSizes.s36}
             className='dark:text-dark-accent'>
-            {label}
+            Iniciar sesión
           </TextComponent>
         </div>
         <form
@@ -66,7 +68,7 @@ export default function LoginCardComponent({ label }: Readonly<IInputCardProps>)
             type='password'
           />
           {/* errors will return when field validation fails  */}
-          {errors.exampleRequired && <span>This field is required</span>}
+          {errors.password && <span>This field is required</span>}
 
           <div className='place-self-start flex flex-row my-2'>
             <input type='checkbox' {...register('rememberMe')}/>
