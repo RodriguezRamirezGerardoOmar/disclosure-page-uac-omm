@@ -39,24 +39,26 @@ export default function LoginCardComponent({ label }: Readonly<IInputCardProps>)
           onSubmit={handleSubmit(onSubmit)}
           className='m-2 flex flex-col columns-1 place-items-center'>
           {/* register your input into the hook by invoking the "register" function */}
-          <label
-            htmlFor='example'
+          <TextComponent
+            htmlFor='username'
+            tag={enumTextTags.label}
             className={labelClassname}>
             Nombre de usuario
-          </label>
+          </TextComponent>
           <input
-            {...register('example')}
+            {...register('username')}
             className={textFieldClassname}
           />
 
           {/* include validation with required or other standard HTML validation rules */}
-          <label
-            htmlFor='exampleRequired'
+          <TextComponent
+            htmlFor='password'
+            tag={enumTextTags.label}
             className={labelClassname}>
             Contraseña
-          </label>
+          </TextComponent>
           <input
-            {...register('exampleRequired', { required: true })}
+            {...register('password', { required: true })}
             className={textFieldClassname}
           />
           {/* errors will return when field validation fails  */}

@@ -17,13 +17,15 @@ export default function LogoComponent({ size, className }: Readonly<ILogoProps>)
         alt='Logo de la facultad'
         width={size}
         height={size}
-        className={classNames(className,'hidden dark:block')}></Image>
+        className={classNames(className,'hidden dark:block')}
+        priority={true}></Image>
       <Image
         src={logoClearMode}
         alt='Logo de la facultad'
         width={size}
         height={size}
-        className={classNames(className,'block dark:hidden')}></Image>
+        className={classNames(className,'block dark:hidden')}
+        priority={true}></Image>
     </>
   )
 }
