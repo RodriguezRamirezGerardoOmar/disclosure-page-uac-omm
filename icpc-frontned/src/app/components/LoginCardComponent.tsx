@@ -52,6 +52,7 @@ export default function LoginCardComponent() {
             className={textFieldClassname}
             type='text'
             autoComplete='username'
+            id='username'
           />
           {errors.username && (
             <TextComponent
@@ -73,6 +74,7 @@ export default function LoginCardComponent() {
             className={textFieldClassname}
             autoComplete='current-password'
             type='password'
+            id='password'
           />
           {/* errors will return when field validation fails  */}
           {errors.password && (
