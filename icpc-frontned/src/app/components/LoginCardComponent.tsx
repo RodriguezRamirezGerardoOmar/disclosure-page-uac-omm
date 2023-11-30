@@ -102,7 +102,7 @@ export default function LoginCardComponent() {
             className='max-w-min bg-primary rounded-md py-2 px-4 text-complementary dark:bg-dark-accent m-2'
           />
           <Link
-            href='#'
+            href='/forgot'
             className='underline self-center hover:text-secondary dark:text-dark-accent dark:hover:text-dark-complementary m-2'>
             <TextComponent
               tag={enumTextTags.p}

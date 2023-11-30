@@ -6,6 +6,10 @@ import { TextComponent } from './TextComponent'
 import { enumTextSizes, enumTextTags } from '@/constants/types'
 import Link from 'next/link'
 
+type FormData = {
+  email: string
+}
+
 interface IInputCardProps {
   label: string
 }
@@ -15,8 +19,8 @@ export default function LoginCardComponent({ label }: Readonly<IInputCardProps>)
     register,
     handleSubmit,
     formState: { errors }
-  } = useForm<Inputs>()
-  const onSubmit: SubmitHandler<Inputs> = data => console.log(data)
+  } = useForm<FormData>()
+  const onSubmit: SubmitHandler<FormData> = data => console.log(data)
 
   const textFieldClassname =
     'block w-full rounded-md border-0 m-2 p-2 text-dark-primary shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-accent sm:leading-6'
@@ -25,7 +29,7 @@ export default function LoginCardComponent({ label }: Readonly<IInputCardProps>)
   return (
     <div className='md:mx-auto max-w-7xl md:px-4 w-full h-full lg:px-8 lg:w-2/3 lg:h-auto'>
       {/* We've used 3xl here, but feel free to try other max-widths based on your needs */}
-      <div className='mx-auto max-w-3xl dark:bg-dark-primary rounded-md p-2'>
+      <div className='mx-auto max-w-3xl bg-gray-300 dark:bg-dark-primary rounded-md p-2'>
         <div className='w-full grid grid-cols-1 place-items-center text-li'>
           <LogoComponent size={150} />
           <TextComponent
@@ -41,17 +45,25 @@ export default function LoginCardComponent({ label }: Readonly<IInputCardProps>)
           {/* register your input into the hook by invoking the "register" function */}
           {/* include validation with required or other standard HTML validation rules */}
           <label
-            htmlFor='exampleRequired'
+            htmlFor='email'
             className={labelClassname}>
             Ingresa tu correo electrónico
           </label>
           <input
-            {...register('exampleRequired', { required: true })}
+            {...register('email', { required: true })}
             className={textFieldClassname}
             type='email'
+            id='email'
+            autoComplete='email'
           />
           {/* errors will return when field validation fails  */}
-          {errors.exampleRequired && <span>This field is required</span>}
+          {errors.email && (
+            <TextComponent
+              tag={enumTextTags.span}
+              className='text-error'>
+              Es necesario llenar este campo
+            </TextComponent>
+          )}
 
           <input
             type='submit'
