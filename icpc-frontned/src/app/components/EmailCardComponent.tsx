@@ -30,7 +30,7 @@ export default function LoginCardComponent({ label }: Readonly<IInputCardProps>)
     <div className='md:mx-auto max-w-7xl md:px-4 w-full h-full lg:px-8 lg:w-2/3 lg:h-auto'>
       {/* We've used 3xl here, but feel free to try other max-widths based on your needs */}
       <div className='mx-auto max-w-3xl bg-gray-300 dark:bg-dark-primary rounded-md p-2'>
-        <div className='w-full grid grid-cols-1 place-items-center text-li'>
+        <div className='w-full grid grid-cols-1 place-items-center'>
           <LogoComponent size={150} />
           <TextComponent
             tag={enumTextTags.h3}
