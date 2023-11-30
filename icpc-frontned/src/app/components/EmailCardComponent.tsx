@@ -7,12 +7,14 @@ import { enumTextSizes, enumTextTags } from '@/constants/types'
 import Link from 'next/link'
 
 type FormData = {
-  username: string
-  password: string
-  rememberMe: boolean
+  email: string
 }
 
-export default function LoginCardComponent() {
+interface IInputCardProps {
+  label: string
+}
+
+export default function LoginCardComponent({ label }: Readonly<IInputCardProps>) {
   const {
     register,
     handleSubmit,
@@ -34,83 +36,39 @@ export default function LoginCardComponent() {
             tag={enumTextTags.h3}
             sizeFont={enumTextSizes.s36}
             className='dark:text-dark-accent'>
-            Iniciar sesión
+            {label}
           </TextComponent>
         </div>
         <form
           onSubmit={handleSubmit(onSubmit)}
           className='m-2 flex flex-col columns-1 place-items-center'>
           {/* register your input into the hook by invoking the "register" function */}
-          <TextComponent
-            htmlFor='username'
-            tag={enumTextTags.label}
-            className={labelClassname}>
-            Nombre de usuario
-          </TextComponent>
-          <input
-            {...register('username', {required: true})}
-            className={textFieldClassname}
-            type='text'
-            autoComplete='username'
-            id='username'
-          />
-          {errors.username && (
-            <TextComponent
-              tag={enumTextTags.span}
-              className='text-error'>
-              Es necesario llenar este campo
-            </TextComponent>
-          )}
-
           {/* include validation with required or other standard HTML validation rules */}
-          <TextComponent
-            htmlFor='password'
-            tag={enumTextTags.label}
+          <label
+            htmlFor='email'
             className={labelClassname}>
-            Contraseña
-          </TextComponent>
+            Ingresa tu correo electrónico
+          </label>
           <input
-            {...register('password', { required: true })}
+            {...register('email', { required: true })}
             className={textFieldClassname}
-            autoComplete='current-password'
-            type='password'
-            id='password'
+            type='email'
+            id='email'
+            autoComplete='email'
           />
           {/* errors will return when field validation fails  */}
-          {errors.password && (
+          {errors.email && (
             <TextComponent
               tag={enumTextTags.span}
               className='text-error'>
               Es necesario llenar este campo
             </TextComponent>
           )}
-
-          <div className='place-self-start flex flex-row my-2'>
-            <input
-              type='checkbox'
-              {...register('rememberMe')}
-            />
-            <TextComponent
-              tag={enumTextTags.p}
-              className='mx-2 dark:text-dark-accent'>
-              Recuérdame
-            </TextComponent>
-          </div>
 
           <input
             type='submit'
             className='max-w-min bg-primary rounded-md py-2 px-4 text-complementary dark:bg-dark-accent m-2'
           />
-          <Link
-            href='/forgot'
-            className='underline self-center hover:text-secondary dark:text-dark-accent dark:hover:text-dark-complementary m-2'>
-            <TextComponent
-              tag={enumTextTags.p}
-              sizeFont={enumTextSizes.s36}
-              className=''>
-              Olvidé mi contraseña
-            </TextComponent>
-          </Link>
         </form>
       </div>
     </div>
