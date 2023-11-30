@@ -60,7 +60,7 @@ export default function NavbarComponent() {
                   <Link
                     href={route.href}
                     key={route.id}
-                    className='hover:text-light-accent dark:text-dark-accent dark:hover:text-dark-complementary'>
+                    className='hover:text-secondary dark:text-dark-accent dark:hover:text-dark-complementary'>
                     <TextComponent
                       tag={enumTextTags.p}
                       sizeFont={enumTextSizes.s12}

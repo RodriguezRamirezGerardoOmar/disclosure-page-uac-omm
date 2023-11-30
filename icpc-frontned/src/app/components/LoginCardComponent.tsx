@@ -27,7 +27,7 @@ export default function LoginCardComponent() {
   return (
     <div className='md:mx-auto max-w-7xl md:px-4 w-full h-full lg:px-8 lg:w-2/3 lg:h-auto'>
       {/* We've used 3xl here, but feel free to try other max-widths based on your needs */}
-      <div className='mx-auto max-w-3xl dark:bg-dark-primary rounded-md p-2'>
+      <div className='mx-auto max-w-3xl bg-gray-300 dark:bg-dark-primary rounded-md p-2'>
         <div className='w-full grid grid-cols-1 place-items-center text-li'>
           <LogoComponent size={150} />
           <TextComponent
@@ -103,7 +103,7 @@ export default function LoginCardComponent() {
           />
           <Link
             href='#'
-            className='underline self-center hover:text-accent dark:text-dark-accent dark:hover:text-dark-complementary m-2'>
+            className='underline self-center hover:text-secondary dark:text-dark-accent dark:hover:text-dark-complementary m-2'>
             <TextComponent
               tag={enumTextTags.p}
               sizeFont={enumTextSizes.s36}

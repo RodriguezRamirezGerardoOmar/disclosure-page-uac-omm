@@ -58,8 +58,8 @@ const fields = [
 
 export default function Home() {
   return (
-    <main className='flex min-h-screen flex-col items-center justify-between pt-24'>
-      <LoginCardComponent label='Iniciar sesión'/>
+    <main className='grid min-h-screen grid-cols-1 place-items-center justify-between py-24'>
+      <LoginCardComponent />
     </main>
   )
 }
