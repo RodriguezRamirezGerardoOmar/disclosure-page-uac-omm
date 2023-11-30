@@ -12,13 +12,14 @@ interface IDropdownProps {
     name: string
     href: string
   }[]
+  verified: boolean
 }
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
 }
 
-export default function BurgerComponent({ options }: Readonly<IDropdownProps>) {
+export default function BurgerComponent({ options, verified }: Readonly<IDropdownProps>) {
   return (
     <Menu
       as='div'
@@ -55,7 +56,7 @@ export default function BurgerComponent({ options }: Readonly<IDropdownProps>) {
                         {({ active }) => (
                           <Link
                             href={option.href}
-                            className='hover:text-secondary hover:bg-gray-100 px-2 py-2 dark:text-accent  dark:hover:text-complementary dark:hover:bg-secondary'>
+                            className='hover:text-secondary hover:bg-gray-100 px-4 py-2 dark:text-accent  dark:hover:text-complementary dark:hover:bg-secondary'>
                             <TextComponent
                               sizeFont={enumTextSizes.s12}
                               tag={enumTextTags.p}
@@ -66,6 +67,33 @@ export default function BurgerComponent({ options }: Readonly<IDropdownProps>) {
                         )}
                       </Menu.Item>
                     ))}
+                    {verified ? (
+                    <Menu.Item>
+                      <Link
+                        className='hover:text-secondary hover:bg-gray-100 px-4 py-2 dark:text-accent  dark:hover:text-complementary dark:hover:bg-secondary'
+                        href='#'>
+                        <TextComponent
+                          sizeFont={enumTextSizes.s12}
+                          tag={enumTextTags.p}
+                          className='hover:bg-gray-100 hover:text-gray-900 text-gray-700 flex py-3'>
+                          Mi perfil
+                        </TextComponent>
+                      </Link>
+                    </Menu.Item>
+                    ):(
+                    <Menu.Item>
+                      <Link
+                        className='hover:text-secondary hover:bg-gray-100 px-4 py-2 dark:text-accent  dark:hover:text-complementary dark:hover:bg-secondary'
+                        href='#'>
+                        <TextComponent
+                          sizeFont={enumTextSizes.s12}
+                          tag={enumTextTags.p}
+                          className='hover:bg-gray-100 hover:text-gray-900 text-gray-700 flex py-3'>
+                          Iniciar sesión
+                        </TextComponent>
+                      </Link>
+                    </Menu.Item>
+                    )}
                   </div>
                 </Menu.Items>
               </Transition>

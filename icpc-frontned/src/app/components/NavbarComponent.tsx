@@ -1,7 +1,6 @@
 'use client'
-import { Fragment } from 'react'
-import { Disclosure, Menu, Transition } from '@headlessui/react'
-import { MagnifyingGlassIcon, UserIcon } from '@heroicons/react/20/solid'
+import { Disclosure } from '@headlessui/react'
+import { MagnifyingGlassIcon } from '@heroicons/react/20/solid'
 import { TextComponent } from './TextComponent'
 import { enumTextSizes, enumTextTags } from '@/constants/types'
 import BurgerComponent from './dropdowns/BurgerComponent'
@@ -17,40 +16,37 @@ const routes = [
   {
     id: 1,
     name: 'Inicio',
-    href: '#'
+    href: '/'
   },
   {
     id: 2,
-    name: 'Iniciar sesión',
-    href: '#'
-  },
-  {
-    id: 3,
     name: 'Apuntes',
     href: '#'
   },
   {
-    id: 4,
+    id: 3,
     name: 'Ejercicios',
     href: '#'
   },
   {
-    id: 5,
+    id: 4,
     name: 'Noticias',
     href: '#'
   },
   {
-    id: 6,
+    id: 5,
     name: 'Acerca de nosotros',
     href: '#'
   }
 ]
 
+const verified = false
+
 export default function NavbarComponent() {
   return (
     <Disclosure
       as='nav'
-      className='bg-white dark:bg-primary shadow fixed top-0 w-full'>
+      className='bg-white dark:bg-dark-primary shadow fixed top-0 w-full'>
       {({ open }) => (
         <div className='mx-auto max-w-7xl px-2 sm:px-4 lg:px-8'>
           <div className='flex h-16 justify-between'>
@@ -64,7 +60,7 @@ export default function NavbarComponent() {
                   <Link
                     href={route.href}
                     key={route.id}
-                    className='hover:text-accent dark:text-accent dark:hover:text-complementary'>
+                    className='hover:text-secondary dark:text-dark-accent dark:hover:text-dark-complementary'>
                     <TextComponent
                       tag={enumTextTags.p}
                       sizeFont={enumTextSizes.s12}
@@ -101,14 +97,14 @@ export default function NavbarComponent() {
             </div>
             <div className='flex items-center lg:hidden'>
               {/* Mobile menu button */}
-              <BurgerComponent options={routes} />
+              <BurgerComponent options={routes} verified={true} />
             </div>
             <div className='hidden lg:ml-4 lg:flex lg:items-center'>
               {/* Profile dropdown */}
               <Link
-                href={'#'}
-                className='hover:text-accent dark:text-accent dark:hover:text-complementary'>
-                <UserComponent verified={true} />
+                href={verified ? ('#'):('/login')}
+                className='hover:text-base-accent dark:text-dark-accent dark:hover:text-complementary'>
+                <UserComponent verified={verified} />
               </Link>
             </div>
           </div>

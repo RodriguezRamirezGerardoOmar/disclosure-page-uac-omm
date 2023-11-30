@@ -2,12 +2,14 @@
 import Image from 'next/image'
 import logoClearMode from '@/../../public/fdiClearMode.svg'
 import logoDarkMode from '@/../../public/fdiDarkMode.svg'
+import cn from 'classnames'
 
 interface ILogoProps {
   size: number
+  classes?: string
 }
 
-export default function LogoComponent({ size }: Readonly<ILogoProps>) {
+export default function LogoComponent({ size, classes }: Readonly<ILogoProps>) {
   return (
     <>
       <Image
@@ -15,13 +17,15 @@ export default function LogoComponent({ size }: Readonly<ILogoProps>) {
         alt='Logo de la facultad'
         width={size}
         height={size}
-        className='hidden dark:block'></Image>
+        className={cn(classes,'hidden dark:block')}
+        priority={true}></Image>
       <Image
         src={logoClearMode}
         alt='Logo de la facultad'
         width={size}
         height={size}
-        className='block dark:hidden'></Image>
+        className={cn(classes,'block dark:hidden')}
+        priority={true}></Image>
     </>
   )
 }
