@@ -1,4 +1,4 @@
-import LoginCardComponent from '../components/LoginCardComponent'
+import LoginCardComponent from '../components/cards/LoginCardComponent'
 
 const cn =
   'block w-full rounded-md border-0 p-2 text-primary shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-accent sm:text-sm sm:leading-6'

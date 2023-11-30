@@ -1,4 +1,4 @@
-import EmailCardComponent from "../components/EmailCardComponent";
+import EmailCardComponent from "../components/cards/EmailCardComponent";
 
 
 export default function Home() {

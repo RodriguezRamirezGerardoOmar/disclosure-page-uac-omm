@@ -1,5 +1,5 @@
 'use client'
-import PasswordCardComponent from '../components/PasswordCardComponent'
+import PasswordCardComponent from '../components/cards/PasswordCardComponent'
 
 export default function Home() {
   return (

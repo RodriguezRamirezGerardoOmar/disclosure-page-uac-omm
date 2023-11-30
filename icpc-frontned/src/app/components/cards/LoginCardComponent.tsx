@@ -1,8 +1,8 @@
 'use client'
 
 import { SubmitHandler, useForm } from 'react-hook-form'
-import LogoComponent from './LogoComponent'
-import { TextComponent } from './TextComponent'
+import LogoComponent from '../LogoComponent'
+import { TextComponent } from '../TextComponent'
 import { enumTextSizes, enumTextTags } from '@/constants/types'
 import Link from 'next/link'
 
