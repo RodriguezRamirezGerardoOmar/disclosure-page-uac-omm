@@ -1,19 +1,14 @@
-'use client'
-
 import { SubmitHandler, useForm } from 'react-hook-form'
 import LogoComponent from './LogoComponent'
 import { TextComponent } from './TextComponent'
 import { enumTextSizes, enumTextTags } from '@/constants/types'
 
 type FormData = {
-  email: string
+  newPassword: string
+  confirmation: string
 }
 
-interface IInputCardProps {
-  label: string
-}
-
-export default function LoginCardComponent({ label }: Readonly<IInputCardProps>) {
+export default function PasswordCardComponent() {
   const {
     register,
     handleSubmit,
@@ -35,28 +30,51 @@ export default function LoginCardComponent({ label }: Readonly<IInputCardProps>)
             tag={enumTextTags.h3}
             sizeFont={enumTextSizes.s36}
             className='dark:text-dark-accent'>
-            {label}
+            Nueva contraseña
           </TextComponent>
         </div>
         <form
           onSubmit={handleSubmit(onSubmit)}
           className='m-2 flex flex-col columns-1 place-items-center'>
           {/* register your input into the hook by invoking the "register" function */}
-          {/* include validation with required or other standard HTML validation rules */}
-          <label
-            htmlFor='email'
+          <TextComponent
+            htmlFor='newPassword'
+            tag={enumTextTags.label}
             className={labelClassname}>
-            Ingresa tu correo electrónico
-          </label>
+            Ingrese su nueva contraseña
+          </TextComponent>
           <input
-            {...register('email', { required: true })}
+            {...register('newPassword', { required: true })}
             className={textFieldClassname}
-            type='email'
-            id='email'
-            autoComplete='email'
+            autoComplete='new-password'
+            type='password'
+            id='newPassword'
           />
           {/* errors will return when field validation fails  */}
-          {errors.email && (
+          {errors.newPassword && (
+            <TextComponent
+              tag={enumTextTags.span}
+              className='text-error'>
+              Es necesario llenar este campo
+            </TextComponent>
+          )}
+
+          {/* include validation with required or other standard HTML validation rules */}
+          <TextComponent
+            htmlFor='confirmation'
+            tag={enumTextTags.label}
+            className={labelClassname}>
+            Confirme su contraseña
+          </TextComponent>
+          <input
+            {...register('confirmation', { required: true })}
+            className={textFieldClassname}
+            autoComplete='new-password'
+            type='password'
+            id='confirmation'
+          />
+          {/* errors will return when field validation fails  */}
+          {errors.confirmation && (
             <TextComponent
               tag={enumTextTags.span}
               className='text-error'>
