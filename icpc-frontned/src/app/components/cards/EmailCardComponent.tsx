@@ -1,14 +1,9 @@
 'use client'
 
 import { SubmitHandler, useForm } from 'react-hook-form'
-<<<<<<< HEAD:icpc-frontned/src/app/components/cards/EmailCardComponent.tsx
 import LogoComponent from '../LogoComponent'
-import { TextComponent } from '../TextComponent'
-=======
-import LogoComponent from './LogoComponent'
 import { TextComponent } from '@/app/components/text/TextComponent'
->>>>>>> f5ee3d05c7ecf20f781f9405561105dcfc2b9241:icpc-frontned/src/app/components/EmailCardComponent.tsx
-import { enumTextSizes, enumTextTags } from '@/constants/types'
+import { enumTextTags } from '@/constants/types'
 
 type FormData = {
   email: string
@@ -38,22 +33,19 @@ export default function LoginCardComponent({ label }: Readonly<IInputCardProps>)
           <LogoComponent size={150} />
           <TextComponent
             tag={enumTextTags.h3}
-            sizeFont={enumTextSizes.s36}
-            className='dark:text-dark-accent'
-          >
+            sizeFont='s36'
+            className='dark:text-dark-accent'>
             {label}
           </TextComponent>
         </div>
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className='m-2 flex flex-col columns-1 place-items-center'
-        >
+          className='m-2 flex flex-col columns-1 place-items-center'>
           {/* register your input into the hook by invoking the "register" function */}
           {/* include validation with required or other standard HTML validation rules */}
           <label
             htmlFor='email'
-            className={labelClassname}
-          >
+            className={labelClassname}>
             Ingresa tu correo electrónico
           </label>
           <input
@@ -67,8 +59,7 @@ export default function LoginCardComponent({ label }: Readonly<IInputCardProps>)
           {errors.email && (
             <TextComponent
               tag={enumTextTags.span}
-              className='text-error'
-            >
+              className='text-error'>
               Es necesario llenar este campo
             </TextComponent>
           )}

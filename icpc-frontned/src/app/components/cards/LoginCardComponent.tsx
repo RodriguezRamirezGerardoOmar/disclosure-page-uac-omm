@@ -1,14 +1,9 @@
 'use client'
 import { SubmitHandler, useForm } from 'react-hook-form'
-<<<<<<< HEAD:icpc-frontned/src/app/components/cards/LoginCardComponent.tsx
 import LogoComponent from '../LogoComponent'
-import { TextComponent } from '../TextComponent'
-=======
-import LogoComponent from './LogoComponent'
->>>>>>> f5ee3d05c7ecf20f781f9405561105dcfc2b9241:icpc-frontned/src/app/components/LoginCardComponent.tsx
-import { enumTextSizes, enumTextTags } from '@/constants/types'
+import { enumTextTags } from '@/constants/types'
 import Link from 'next/link'
-import { TextComponent } from './text/TextComponent'
+import { TextComponent } from '../text/TextComponent'
 
 type FormData = {
   username: string
@@ -37,21 +32,18 @@ export default function LoginCardComponent() {
           <TextComponent
             tag={enumTextTags.h3}
             sizeFont='s36'
-            className='dark:text-dark-accent'
-          >
+            className='dark:text-dark-accent'>
             Iniciar sesión
           </TextComponent>
         </div>
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className='m-2 flex flex-col columns-1 place-items-center'
-        >
+          className='m-2 flex flex-col columns-1 place-items-center'>
           {/* register your input into the hook by invoking the "register" function */}
           <TextComponent
             htmlFor='username'
             tag={enumTextTags.label}
-            className={labelClassname}
-          >
+            className={labelClassname}>
             Nombre de usuario
           </TextComponent>
           <input
@@ -64,8 +56,7 @@ export default function LoginCardComponent() {
           {errors.username && (
             <TextComponent
               tag={enumTextTags.span}
-              className='text-error'
-            >
+              className='text-error'>
               Es necesario llenar este campo
             </TextComponent>
           )}
@@ -74,8 +65,7 @@ export default function LoginCardComponent() {
           <TextComponent
             htmlFor='password'
             tag={enumTextTags.label}
-            className={labelClassname}
-          >
+            className={labelClassname}>
             Contraseña
           </TextComponent>
           <input
@@ -89,8 +79,7 @@ export default function LoginCardComponent() {
           {errors.password && (
             <TextComponent
               tag={enumTextTags.span}
-              className='text-error'
-            >
+              className='text-error'>
               Es necesario llenar este campo
             </TextComponent>
           )}
@@ -102,8 +91,7 @@ export default function LoginCardComponent() {
             />
             <TextComponent
               tag={enumTextTags.p}
-              className='mx-2 dark:text-dark-accent'
-            >
+              className='mx-2 dark:text-dark-accent'>
               Recuérdame
             </TextComponent>
           </div>
@@ -114,12 +102,10 @@ export default function LoginCardComponent() {
           />
           <Link
             href='/forgot'
-            className='underline self-center hover:text-secondary dark:text-dark-accent dark:hover:text-dark-complementary m-2'
-          >
+            className='underline self-center hover:text-secondary dark:text-dark-accent dark:hover:text-dark-complementary m-2'>
             <TextComponent
               tag={enumTextTags.p}
-              sizeFont='s12'
-            >
+              sizeFont='s12'>
               Olvidé mi contraseña
             </TextComponent>
           </Link>

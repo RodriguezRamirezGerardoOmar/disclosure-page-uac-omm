@@ -1,6 +1,6 @@
 import { SubmitHandler, useForm } from 'react-hook-form'
 import LogoComponent from '../LogoComponent'
-import { TextComponent } from '../TextComponent'
+import { TextComponent } from '../text/TextComponent'
 import { enumTextSizes, enumTextTags } from '@/constants/types'
 
 type FormData = {
@@ -28,7 +28,7 @@ export default function PasswordCardComponent() {
           <LogoComponent size={150} />
           <TextComponent
             tag={enumTextTags.h3}
-            sizeFont={enumTextSizes.s36}
+            sizeFont='s36'
             className='dark:text-dark-accent'>
             Nueva contraseña
           </TextComponent>
