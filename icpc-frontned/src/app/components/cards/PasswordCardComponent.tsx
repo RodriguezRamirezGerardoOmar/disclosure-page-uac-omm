@@ -1,7 +1,7 @@
 import { SubmitHandler, useForm } from 'react-hook-form'
 import LogoComponent from '../LogoComponent'
 import { TextComponent } from '../text/TextComponent'
-import { enumTextSizes, enumTextTags } from '@/constants/types'
+import { enumTextTags } from '@/constants/types'
 
 type FormData = {
   newPassword: string
