@@ -3,7 +3,7 @@ import { Fragment } from 'react'
 import { Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/20/solid'
 import { TextComponent } from '@/app/components/text/TextComponent'
-import { enumTextSizes, enumTextTags } from '@/constants/types'
+import { enumTextTags } from '@/constants/types'
 import Link from 'next/link'
 
 interface IDropdownProps {
