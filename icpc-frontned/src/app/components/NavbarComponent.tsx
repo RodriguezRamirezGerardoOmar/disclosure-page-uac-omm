@@ -1,7 +1,7 @@
 'use client'
 import { Disclosure } from '@headlessui/react'
 import { MagnifyingGlassIcon } from '@heroicons/react/20/solid'
-import { TextComponent } from './TextComponent'
+import { TextComponent } from '@/app/components/text/TextComponent'
 import { enumTextSizes, enumTextTags } from '@/constants/types'
 import BurgerComponent from './dropdowns/BurgerComponent'
 import Link from 'next/link'
@@ -46,7 +46,8 @@ export default function NavbarComponent() {
   return (
     <Disclosure
       as='nav'
-      className='bg-white dark:bg-dark-primary shadow fixed top-0 w-full'>
+      className='bg-white dark:bg-dark-primary shadow fixed top-0 w-full z-50'
+    >
       {({ open }) => (
         <div className='mx-auto max-w-7xl px-2 sm:px-4 lg:px-8'>
           <div className='flex h-16 justify-between'>
@@ -60,11 +61,13 @@ export default function NavbarComponent() {
                   <Link
                     href={route.href}
                     key={route.id}
-                    className='hover:text-secondary dark:text-dark-accent dark:hover:text-dark-complementary'>
+                    className='hover:text-secondary dark:text-dark-accent dark:hover:text-dark-complementary'
+                  >
                     <TextComponent
                       tag={enumTextTags.p}
-                      sizeFont={enumTextSizes.s12}
-                      className='flex items-center border-b-2 border-transparent px-1 pt-1'>
+                      sizeFont='s14'
+                      className='flex items-center border-b-2 border-transparent px-1 pt-1'
+                    >
                       {route.name}
                     </TextComponent>
                   </Link>
@@ -75,7 +78,8 @@ export default function NavbarComponent() {
               <div className='w-full max-w-lg lg:max-w-xs'>
                 <label
                   htmlFor='search'
-                  className='sr-only'>
+                  className='sr-only'
+                >
                   Search
                 </label>
                 <div className='relative'>
@@ -97,13 +101,17 @@ export default function NavbarComponent() {
             </div>
             <div className='flex items-center lg:hidden'>
               {/* Mobile menu button */}
-              <BurgerComponent options={routes} verified={true} />
+              <BurgerComponent
+                options={routes}
+                verified={true}
+              />
             </div>
             <div className='hidden lg:ml-4 lg:flex lg:items-center'>
               {/* Profile dropdown */}
               <Link
-                href={verified ? ('#'):('/login')}
-                className='hover:text-base-accent dark:text-dark-accent dark:hover:text-complementary'>
+                href={verified ? '#' : '/login'}
+                className='hover:text-base-accent dark:text-dark-accent dark:hover:text-complementary'
+              >
                 <UserComponent verified={verified} />
               </Link>
             </div>

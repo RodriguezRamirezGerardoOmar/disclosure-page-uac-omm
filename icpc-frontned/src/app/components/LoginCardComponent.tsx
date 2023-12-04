@@ -1,10 +1,9 @@
 'use client'
-
 import { SubmitHandler, useForm } from 'react-hook-form'
 import LogoComponent from './LogoComponent'
-import { TextComponent } from './TextComponent'
 import { enumTextSizes, enumTextTags } from '@/constants/types'
 import Link from 'next/link'
+import { TextComponent } from './text/TextComponent'
 
 type FormData = {
   username: string
@@ -27,28 +26,31 @@ export default function LoginCardComponent() {
   return (
     <div className='md:mx-auto max-w-7xl md:px-4 w-full h-full lg:px-8 lg:w-2/3 lg:h-auto'>
       {/* We've used 3xl here, but feel free to try other max-widths based on your needs */}
-      <div className='mx-auto max-w-3xl bg-gray-300 dark:bg-dark-primary rounded-md p-2'>
+      <div className='mx-auto max-w-2xl bg-gray-300 dark:bg-dark-primary rounded-md px-4'>
         <div className='w-full grid grid-cols-1 place-items-center'>
           <LogoComponent size={150} />
           <TextComponent
             tag={enumTextTags.h3}
-            sizeFont={enumTextSizes.s36}
-            className='dark:text-dark-accent'>
+            sizeFont='s36'
+            className='dark:text-dark-accent'
+          >
             Iniciar sesión
           </TextComponent>
         </div>
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className='m-2 flex flex-col columns-1 place-items-center'>
+          className='m-2 flex flex-col columns-1 place-items-center'
+        >
           {/* register your input into the hook by invoking the "register" function */}
           <TextComponent
             htmlFor='username'
             tag={enumTextTags.label}
-            className={labelClassname}>
+            className={labelClassname}
+          >
             Nombre de usuario
           </TextComponent>
           <input
-            {...register('username', {required: true})}
+            {...register('username', { required: true })}
             className={textFieldClassname}
             type='text'
             autoComplete='username'
@@ -57,7 +59,8 @@ export default function LoginCardComponent() {
           {errors.username && (
             <TextComponent
               tag={enumTextTags.span}
-              className='text-error'>
+              className='text-error'
+            >
               Es necesario llenar este campo
             </TextComponent>
           )}
@@ -66,7 +69,8 @@ export default function LoginCardComponent() {
           <TextComponent
             htmlFor='password'
             tag={enumTextTags.label}
-            className={labelClassname}>
+            className={labelClassname}
+          >
             Contraseña
           </TextComponent>
           <input
@@ -80,7 +84,8 @@ export default function LoginCardComponent() {
           {errors.password && (
             <TextComponent
               tag={enumTextTags.span}
-              className='text-error'>
+              className='text-error'
+            >
               Es necesario llenar este campo
             </TextComponent>
           )}
@@ -92,22 +97,24 @@ export default function LoginCardComponent() {
             />
             <TextComponent
               tag={enumTextTags.p}
-              className='mx-2 dark:text-dark-accent'>
+              className='mx-2 dark:text-dark-accent'
+            >
               Recuérdame
             </TextComponent>
           </div>
 
           <input
             type='submit'
-            className='max-w-min bg-primary rounded-md py-2 px-4 text-complementary dark:bg-dark-accent m-2'
+            className='max-w-min bg-primary rounded-md py-2 px-4 text-complementary dark:bg-dark-accent m-2 dark:text-gray-900'
           />
           <Link
             href='/forgot'
-            className='underline self-center hover:text-secondary dark:text-dark-accent dark:hover:text-dark-complementary m-2'>
+            className='underline self-center hover:text-secondary dark:text-dark-accent dark:hover:text-dark-complementary m-2'
+          >
             <TextComponent
               tag={enumTextTags.p}
-              sizeFont={enumTextSizes.s36}
-              className=''>
+              sizeFont='s12'
+            >
               Olvidé mi contraseña
             </TextComponent>
           </Link>
