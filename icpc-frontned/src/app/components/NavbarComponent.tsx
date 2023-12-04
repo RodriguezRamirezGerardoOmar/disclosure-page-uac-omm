@@ -47,7 +47,9 @@ export default function NavbarComponent() {
         <div className='flex h-16 justify-between'>
           <div className='flex px-2 lg:px-0'>
             <div className='flex flex-shrink-0 items-center'>
-              <LogoComponent size={40} />
+              <Link href='/'>
+                <LogoComponent size={40} />
+              </Link>
             </div>
             <div className='hidden items-center lg:ml-6 lg:flex lg:space-x-8'>
               {/* Current: "border-indigo-500 text-gray-900", Default: "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700" */}
