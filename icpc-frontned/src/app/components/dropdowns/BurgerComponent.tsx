@@ -53,7 +53,8 @@ export default function BurgerComponent({ options, verified }: Readonly<IDropdow
                 leaveFrom='transform opacity-100 scale-100'
                 leaveTo='transform opacity-0 scale-95'>
                 <Menu.Items
-                  className={`absolute right-0 mt-2 w-56 origin-top-right rounded-md bg-white dark:bg-primary shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none`}>
+                  className={`absolute right-0 mt-2 w-56 origin-top-right rounded-md bg-white 
+                  dark:bg-primary shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none`}>
                   <div className='py-1 grid grid-cols-1'>
                     {options.map(option => (
                       <Menu.Item key={option.id}>
