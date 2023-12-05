@@ -14,10 +14,11 @@ export default function PasswordCardComponent() {
     handleSubmit,
     formState: { errors }
   } = useForm<FormData>()
-  const onSubmit: SubmitHandler<FormData> = data => {}
+  const onSubmit: SubmitHandler<FormData> = () => {}
 
-  const textFieldClassname =
-    'block w-full rounded-md border-0 m-2 p-2 text-dark-primary shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-accent sm:leading-6'
+  const textFieldClassname = `block w-full rounded-md border-0 m-2 p-2 text-dark-primary shadow-sm 
+  ring-1 ring-inset ring-gray-300 placeholder:text-gray-400
+    focus:ring-1 focus:ring-inset focus:ring-accent sm:leading-6`
   const labelClassname = 'place-self-start dark:text-dark-accent m-1'
 
   return (

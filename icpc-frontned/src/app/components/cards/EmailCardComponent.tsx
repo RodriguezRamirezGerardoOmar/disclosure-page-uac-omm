@@ -19,7 +19,7 @@ export default function LoginCardComponent({ label }: Readonly<IInputCardProps>)
     handleSubmit,
     formState: { errors }
   } = useForm<FormData>()
-  const onSubmit: SubmitHandler<FormData> = data => {}
+  const onSubmit: SubmitHandler<FormData> = () => {}
 
   const textFieldClassname =
     'block w-full rounded-md m-2 p-2 text-dark-primary shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-accent'
