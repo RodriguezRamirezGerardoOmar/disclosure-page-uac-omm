@@ -3,7 +3,7 @@ import { Fragment } from 'react'
 import { Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/20/solid'
 import { TextComponent } from '@/app/components/text/TextComponent'
-import { enumTextSizes, enumTextTags } from '@/constants/types'
+import { enumTextTags } from '@/constants/types'
 import Link from 'next/link'
 
 interface IDropdownProps {
@@ -15,6 +15,9 @@ interface IDropdownProps {
   verified: boolean
 }
 
+const optionStyle =
+  'hover:text-secondary hover:bg-gray-100 px-4 py-2 dark:text-accent  dark:hover:text-complementary dark:hover:bg-secondary'
+
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
 }
@@ -23,8 +26,7 @@ export default function BurgerComponent({ options, verified }: Readonly<IDropdow
   return (
     <Menu
       as='div'
-      className='relative inline-block text-left mx-3 my-3'
-    >
+      className='relative inline-block text-left mx-3 my-3'>
       {({ open }) => (
         <>
           <Menu.Button>
@@ -49,22 +51,21 @@ export default function BurgerComponent({ options, verified }: Readonly<IDropdow
                 enterTo='transform opacity-100 scale-100'
                 leave='transition ease-in duration-75'
                 leaveFrom='transform opacity-100 scale-100'
-                leaveTo='transform opacity-0 scale-95'
-              >
-                <Menu.Items className='absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white dark:bg-primary shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none'>
+                leaveTo='transform opacity-0 scale-95'>
+                <Menu.Items
+                  className={`absolute right-0 mt-2 w-56 origin-top-right rounded-md bg-white 
+                  dark:bg-primary shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none`}>
                   <div className='py-1 grid grid-cols-1'>
                     {options.map(option => (
                       <Menu.Item key={option.id}>
                         {({ active }) => (
                           <Link
                             href={option.href}
-                            className='hover:text-secondary hover:bg-gray-100 px-4 py-2 dark:text-accent  dark:hover:text-complementary dark:hover:bg-secondary'
-                          >
+                            className={optionStyle}>
                             <TextComponent
-                              sizeFont={enumTextSizes.s12}
+                              sizeFont='s12'
                               tag={enumTextTags.p}
-                              className={classNames(active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'flex py-3')}
-                            >
+                              className={classNames(active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'flex py-3')}>
                               {option.name}
                             </TextComponent>
                           </Link>
@@ -74,14 +75,12 @@ export default function BurgerComponent({ options, verified }: Readonly<IDropdow
                     {verified ? (
                       <Menu.Item>
                         <Link
-                          className='hover:text-secondary hover:bg-gray-100 px-4 py-2 dark:text-accent  dark:hover:text-complementary dark:hover:bg-secondary'
-                          href='#'
-                        >
+                          className={optionStyle}
+                          href='#'>
                           <TextComponent
-                            sizeFont={enumTextSizes.s12}
+                            sizeFont='s12'
                             tag={enumTextTags.p}
-                            className='hover:bg-gray-100 hover:text-gray-900 text-gray-700 flex py-3'
-                          >
+                            className='hover:bg-gray-100 hover:text-gray-900 text-gray-700 flex py-3'>
                             Mi perfil
                           </TextComponent>
                         </Link>
@@ -89,14 +88,12 @@ export default function BurgerComponent({ options, verified }: Readonly<IDropdow
                     ) : (
                       <Menu.Item>
                         <Link
-                          className='hover:text-secondary hover:bg-gray-100 px-4 py-2 dark:text-accent  dark:hover:text-complementary dark:hover:bg-secondary'
-                          href='#'
-                        >
+                          className={optionStyle}
+                          href='#'>
                           <TextComponent
-                            sizeFont={enumTextSizes.s12}
+                            sizeFont='s12'
                             tag={enumTextTags.p}
-                            className='hover:bg-gray-100 hover:text-gray-900 text-gray-700 flex py-3'
-                          >
+                            className='hover:bg-gray-100 hover:text-gray-900 text-gray-700 flex py-3'>
                             Iniciar sesión
                           </TextComponent>
                         </Link>
