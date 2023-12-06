@@ -4,28 +4,23 @@ import LogoComponent from '../LogoComponent'
 import { enumTextTags } from '@/constants/types'
 import Link from 'next/link'
 import { TextComponent } from '../text/TextComponent'
+import React, { ReactNode } from 'react'
+import SubmitComponent from '../forms/SubmitComponent'
 
-type FormData = {
-  username: string
-  password: string
-  rememberMe: boolean
+type FormProps = {
+  defaultValues?: Record<string, any>
+  children: ReactNode
+  onSubmit: SubmitHandler<any>
+  label: string
 }
 
-export default function LoginCardComponent() {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors }
-  } = useForm<FormData>()
-  const onSubmit: SubmitHandler<FormData> = () => {}
-
-  const textFieldClassname =
-    'block w-full rounded-md m-2 p-2 text-dark-primary shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-accent'
-  const labelClassname = 'place-self-start dark:text-dark-accent m-1'
+export default function LoginCardComponent({ defaultValues, children, onSubmit, ...props }: Readonly<FormProps>) {
+  const { formState: { errors } } = useForm<FormData>()
+  const methods = useForm({ defaultValues })
+  const { handleSubmit } = methods
 
   return (
     <div className='md:mx-auto max-w-7xl md:px-4 w-full h-full lg:px-8 lg:w-2/3 lg:h-auto'>
-      {/* We've used 3xl here, but feel free to try other max-widths based on your needs */}
       <div className='mx-auto max-w-2xl bg-gray-300 dark:bg-dark-primary rounded-md px-4 shadow-lg'>
         <div className='w-full grid grid-cols-1 place-items-center'>
           <LogoComponent size={150} />
@@ -39,67 +34,19 @@ export default function LoginCardComponent() {
         <form
           onSubmit={handleSubmit(onSubmit)}
           className='m-2 flex flex-col columns-1 place-items-center'>
-          {/* register your input into the hook by invoking the "register" function */}
-          <TextComponent
-            htmlFor='username'
-            tag={enumTextTags.label}
-            className={labelClassname}>
-            Nombre de usuario
-          </TextComponent>
-          <input
-            {...register('username', { required: true })}
-            className={textFieldClassname}
-            type='text'
-            autoComplete='username'
-            id='username'
-          />
-          {errors.username && (
-            <TextComponent
-              tag={enumTextTags.span}
-              className='text-error'>
-              Es necesario llenar este campo
-            </TextComponent>
-          )}
+          {React.Children.map(children, child => {
+            return child && React.isValidElement(child)
+              ? React.cloneElement(child, {
+                  ...{
+                    ...child.props,
+                    register: methods.register,
+                    key: child.props.name
+                  }
+                })
+              : child
+          })}
 
-          {/* include validation with required or other standard HTML validation rules */}
-          <TextComponent
-            htmlFor='password'
-            tag={enumTextTags.label}
-            className={labelClassname}>
-            Contraseña
-          </TextComponent>
-          <input
-            {...register('password', { required: true })}
-            className={textFieldClassname}
-            autoComplete='current-password'
-            type='password'
-            id='password'
-          />
-          {/* errors will return when field validation fails  */}
-          {errors.password && (
-            <TextComponent
-              tag={enumTextTags.span}
-              className='text-error'>
-              Es necesario llenar este campo
-            </TextComponent>
-          )}
-
-          <div className='place-self-start flex flex-row my-2'>
-            <input
-              type='checkbox'
-              {...register('rememberMe')}
-            />
-            <TextComponent
-              tag={enumTextTags.p}
-              className='mx-2 dark:text-dark-accent'>
-              Recuérdame
-            </TextComponent>
-          </div>
-
-          <input
-            type='submit'
-            className='max-w-min bg-primary rounded-md py-2 px-4 text-complementary dark:bg-dark-accent m-2 dark:text-gray-900'
-          />
+          <SubmitComponent />
           <Link
             href='/forgot'
             className='underline self-center hover:text-secondary dark:text-dark-accent dark:hover:text-dark-complementary m-2'>
