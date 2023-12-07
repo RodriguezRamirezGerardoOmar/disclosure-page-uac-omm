@@ -13,7 +13,8 @@ export default function UserComponent({ verified }: Readonly<IUserProps>) {
   ) : (
     <TextComponent
       tag={enumTextTags.p}
-      sizeFont='s12'>
+      sizeFont='s12'
+      className='hover:text-secondary dark:text-dark-accent dark:hover:text-dark-complementary'>
       Iniciar sesión
     </TextComponent>
   )
