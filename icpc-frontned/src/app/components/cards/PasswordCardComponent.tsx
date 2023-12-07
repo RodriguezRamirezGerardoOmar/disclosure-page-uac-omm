@@ -11,7 +11,7 @@ type FormProps = {
   label: string
 }
 
-export default function PasswordCardComponent({label, children, onSubmit}: Readonly<FormProps>) {
+export default function PasswordCardComponent({ children, onSubmit, ...props}: Readonly<FormProps>) {
   const methods = useForm()
   const { handleSubmit } = methods
 
@@ -25,7 +25,7 @@ export default function PasswordCardComponent({label, children, onSubmit}: Reado
             tag={enumTextTags.h3}
             sizeFont='s36'
             className='dark:text-dark-accent'>
-            {label}
+            {props.label}
           </TextComponent>
         </div>
         <form

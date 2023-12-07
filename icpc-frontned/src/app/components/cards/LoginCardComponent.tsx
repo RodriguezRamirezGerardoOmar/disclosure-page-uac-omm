@@ -18,7 +18,7 @@ type FormProps = {
   label: string
 }
 
-export default function LoginCardComponent({ children, onSubmit }: Readonly<FormProps>) {
+export default function LoginCardComponent({ children, onSubmit, ...props }: Readonly<FormProps>) {
   const methods = useForm<FormData>()
   const { handleSubmit } = methods
 
@@ -31,7 +31,7 @@ export default function LoginCardComponent({ children, onSubmit }: Readonly<Form
             tag={enumTextTags.h3}
             sizeFont='s36'
             className='dark:text-dark-accent'>
-            Iniciar sesión
+            {props.label}
           </TextComponent>
         </div>
         <form
