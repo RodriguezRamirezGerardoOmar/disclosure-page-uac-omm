@@ -49,7 +49,7 @@ export default function LoginCardComponent({ children, onSubmit, ...props }: Rea
               : child
           })}
 
-          <SubmitComponent />
+          <SubmitComponent text='Iniciar sesión'/>
           <Link
             href='/forgot'
             className='underline self-center hover:text-secondary dark:text-dark-accent dark:hover:text-dark-complementary m-2'>
