@@ -11,7 +11,7 @@ interface ICheckboxProps {
 
 const CheckboxComponent = ({labelText, register, fieldName }: Readonly<ICheckboxProps>) => {
   return (
-    <div className='place-self-start flex flex-row my-2'>
+    <div className='place-self-start flex flex-row m-2'>
             <input
               type='checkbox'
               {...register(fieldName)}
