@@ -13,13 +13,13 @@ interface ITextFieldProps {
   type: 'email' | 'password' | 'username' | 'text'
 }
 
-const labelClassname = 'place-self-start dark:text-dark-accent m-1'
+const labelClassname = 'place-self-start dark:text-dark-accent my-2'
 const textFieldClassname =
-  'block w-full rounded-md m-2 p-2 text-dark-primary shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-accent'
+  'block w-full rounded-md p-2 text-dark-primary shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-accent'
 
 const TextFieldComponent = ({ labelText, register, fieldName, auto, id, necessary, type }: Readonly<ITextFieldProps>) => {
   return (
-    <div className='w-full'>
+    <div className='w-full p-2 m-2 min-h-max'>
       <TextComponent
         htmlFor={id}
         className={labelClassname}
