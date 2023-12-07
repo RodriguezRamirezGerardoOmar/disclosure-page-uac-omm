@@ -42,7 +42,7 @@ export default function PasswordCardComponent({ children, onSubmit, ...props}: R
                 })
               : child
           })}
-          <SubmitComponent />
+          <SubmitComponent text='Actualizar contraseña'/>
         </form>
       </div>
     </div>
