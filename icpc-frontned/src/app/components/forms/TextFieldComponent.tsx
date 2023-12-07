@@ -1,7 +1,7 @@
 import React from 'react'
 import { TextComponent } from '../text/TextComponent'
 import { enumTextTags } from '@/constants/types'
-import { FieldValues, UseFormRegister, useForm } from 'react-hook-form'
+import { FieldValues, UseFormRegister } from 'react-hook-form'
 
 interface ITextFieldProps {
   labelText: string
@@ -18,10 +18,6 @@ const textFieldClassname =
   'block w-full rounded-md m-2 p-2 text-dark-primary shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-accent'
 
 const TextFieldComponent = ({ labelText, register, fieldName, auto, id, necessary, type }: Readonly<ITextFieldProps>) => {
-  const {
-    formState: { errors }
-  } = useForm<Record<string, FieldValues>>()
-
   return (
     <div className='w-full'>
       <TextComponent
@@ -38,13 +34,6 @@ const TextFieldComponent = ({ labelText, register, fieldName, auto, id, necessar
         id={id}
         autoComplete={auto}
       />
-      {errors[fieldName] && (
-          <TextComponent
-            tag={enumTextTags.span}
-            className='text-error'>
-            Es necesario llenar este campo
-          </TextComponent>
-        )}
     </div>
   )
 }

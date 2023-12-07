@@ -7,16 +7,18 @@ import { enumTextTags } from '@/constants/types'
 import React, { ReactNode } from 'react'
 import SubmitComponent from '../forms/SubmitComponent'
 
+interface FormData {
+  email: string
+}
+
 type FormProps = {
-  defaultValues?: Record<string, any>
   children: ReactNode
   onSubmit: SubmitHandler<any>
   label: string
 }
 
-export default function LoginCardComponent({ defaultValues, children, onSubmit, ...props }: Readonly<FormProps>) {
-  const { formState: { errors } } = useForm<FormData>()
-  const methods = useForm({ defaultValues })
+export default function LoginCardComponent({ children, onSubmit, ...props }: Readonly<FormProps>) {
+  const methods = useForm<FormData>()
   const { handleSubmit } = methods
 
   return (

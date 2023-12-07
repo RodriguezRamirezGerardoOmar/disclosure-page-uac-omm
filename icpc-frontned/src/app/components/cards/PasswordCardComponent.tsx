@@ -5,21 +5,14 @@ import { enumTextTags } from '@/constants/types'
 import React, { ReactNode } from 'react'
 import SubmitComponent from '../forms/SubmitComponent'
 
-type FormData = {
-  newPassword: string
-  confirmation: string
-}
-
 type FormProps = {
-  defaultValues?: Record<string, any>
   children: ReactNode
   onSubmit: SubmitHandler<any>
   label: string
 }
 
-export default function PasswordCardComponent({defaultValues, label, children, onSubmit}: Readonly<FormProps>) {
-  const { formState: { errors } } = useForm<FormData>()
-  const methods = useForm({ defaultValues })
+export default function PasswordCardComponent({label, children, onSubmit}: Readonly<FormProps>) {
+  const methods = useForm()
   const { handleSubmit } = methods
 
   return (
@@ -32,7 +25,7 @@ export default function PasswordCardComponent({defaultValues, label, children, o
             tag={enumTextTags.h3}
             sizeFont='s36'
             className='dark:text-dark-accent'>
-            Nueva contraseña
+            {label}
           </TextComponent>
         </div>
         <form
