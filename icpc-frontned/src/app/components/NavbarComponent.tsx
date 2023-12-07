@@ -95,7 +95,7 @@ export default function NavbarComponent() {
             {/* Mobile menu button */}
             <BurgerComponent
               options={routes}
-              verified={true}
+              verified={verified}
             />
           </div>
           <div className='hidden lg:ml-4 lg:flex lg:items-center'>

@@ -8,10 +8,9 @@ interface IUserProps {
 }
 
 export default function UserComponent({ verified }: Readonly<IUserProps>) {
-  if (verified) {
-    return <UserIcon className='h-10 w-10 rounded-full' />
-  }
-  return (
+  return verified ? (
+    <UserIcon className='h-10 w-10 rounded-full' />
+  ) : (
     <TextComponent
       tag={enumTextTags.p}
       sizeFont='s12'>

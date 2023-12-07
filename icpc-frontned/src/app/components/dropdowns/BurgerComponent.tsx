@@ -65,7 +65,7 @@ export default function BurgerComponent({ options, verified }: Readonly<IDropdow
                             <TextComponent
                               sizeFont='s12'
                               tag={enumTextTags.p}
-                              className={classNames(active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'flex py-3')}>
+                              className={classNames(active ? 'dark:bg-secondary' : 'dark:text-dark-accent', 'flex py-3')}>
                               {option.name}
                             </TextComponent>
                           </Link>
@@ -80,7 +80,8 @@ export default function BurgerComponent({ options, verified }: Readonly<IDropdow
                           <TextComponent
                             sizeFont='s12'
                             tag={enumTextTags.p}
-                            className='hover:bg-gray-100 hover:text-gray-900 text-gray-700 flex py-3'>
+                            className={`hover:text-secondary dark:hover:bg-secondary
+                            dark:hover:text-complementary dark:text-dark-accent text-gray-700 flex py-3`}>
                             Mi perfil
                           </TextComponent>
                         </Link>
@@ -89,11 +90,12 @@ export default function BurgerComponent({ options, verified }: Readonly<IDropdow
                       <Menu.Item>
                         <Link
                           className={optionStyle}
-                          href='#'>
+                          href='/login'>
                           <TextComponent
                             sizeFont='s12'
                             tag={enumTextTags.p}
-                            className='hover:bg-gray-100 hover:text-gray-900 text-gray-700 flex py-3'>
+                            className={`hover:text-secondary dark:hover:bg-secondary
+                            dark:hover:text-complementary dark:text-dark-accent text-gray-700 flex py-3`}>
                             Iniciar sesión
                           </TextComponent>
                         </Link>
