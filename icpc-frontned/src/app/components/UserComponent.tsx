@@ -8,13 +8,13 @@ interface IUserProps {
 }
 
 export default function UserComponent({ verified }: Readonly<IUserProps>) {
-  if (verified) {
-    return <UserIcon className='h-10 w-10 rounded-full' />
-  }
-  return (
+  return verified ? (
+    <UserIcon className='h-10 w-10 rounded-full' />
+  ) : (
     <TextComponent
       tag={enumTextTags.p}
-      sizeFont='s12'>
+      sizeFont='s12'
+      className='hover:text-secondary dark:text-dark-accent dark:hover:text-dark-complementary'>
       Iniciar sesión
     </TextComponent>
   )
