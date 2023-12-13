@@ -1,5 +1,5 @@
-import cn from 'classnames'
 import { enumTextTags, IReactNode } from '@/constants/types'
+import cn from 'classnames'
 import { ReactNode } from 'react'
 
 interface ITextComponentProps extends IReactNode {
