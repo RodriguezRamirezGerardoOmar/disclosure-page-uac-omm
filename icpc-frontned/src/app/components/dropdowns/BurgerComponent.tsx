@@ -42,16 +42,14 @@ export default function BurgerComponent({ options, verified }: Readonly<IDropdow
               />
             )}
           </Menu.Button>
-          {open && (
-            <div>
-              <Transition
-                as={Fragment}
-                enter='transition ease-out duration-100'
-                enterFrom='transform opacity-0 scale-95'
-                enterTo='transform opacity-100 scale-100'
-                leave='transition ease-in duration-75'
-                leaveFrom='transform opacity-100 scale-100'
-                leaveTo='transform opacity-0 scale-95'>
+          <Transition
+            as={Fragment}
+            enter='transition ease-out duration-100'
+            enterFrom='transform opacity-0 scale-95'
+            enterTo='transform opacity-100 scale-100'
+            leave='transition ease-in duration-75'
+            leaveFrom='transform opacity-100 scale-100'
+            leaveTo='transform opacity-0 scale-95'>
                 <Menu.Items
                   className={`absolute right-0 mt-2 w-56 origin-top-right rounded-md bg-white 
                   dark:bg-primary shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none`}>
@@ -65,7 +63,7 @@ export default function BurgerComponent({ options, verified }: Readonly<IDropdow
                             <TextComponent
                               sizeFont='s12'
                               tag={enumTextTags.p}
-                              className={classNames(active ? 'dark:bg-secondary' : 'dark:text-dark-accent', 'flex py-3')}>
+                              className={classNames(active ? 'dark:bg-secondary' : 'dark:text-dark-accent', 'flex py-1')}>
                               {option.name}
                             </TextComponent>
                           </Link>
@@ -81,7 +79,7 @@ export default function BurgerComponent({ options, verified }: Readonly<IDropdow
                             sizeFont='s12'
                             tag={enumTextTags.p}
                             className={`hover:text-secondary dark:hover:bg-secondary
-                            dark:hover:text-complementary dark:text-dark-accent text-gray-700 flex py-3`}>
+                            dark:hover:text-complementary dark:text-dark-accent text-gray-700 flex py-1`}>
                             Mi perfil
                           </TextComponent>
                         </Link>
@@ -95,7 +93,7 @@ export default function BurgerComponent({ options, verified }: Readonly<IDropdow
                             sizeFont='s12'
                             tag={enumTextTags.p}
                             className={`hover:text-secondary dark:hover:bg-secondary
-                            dark:hover:text-complementary dark:text-dark-accent text-gray-700 flex py-3`}>
+                            dark:hover:text-complementary dark:text-dark-accent text-gray-700 flex py-1`}>
                             Iniciar sesión
                           </TextComponent>
                         </Link>
@@ -103,9 +101,7 @@ export default function BurgerComponent({ options, verified }: Readonly<IDropdow
                     )}
                   </div>
                 </Menu.Items>
-              </Transition>
-            </div>
-          )}
+          </Transition>
         </>
       )}
     </Menu>

@@ -24,7 +24,7 @@ export default function LoginCardComponent({ children, onSubmit, ...props }: Rea
 
   return (
     <div className='md:mx-auto max-w-7xl md:px-4 w-full h-full lg:px-8 lg:w-2/3 lg:h-auto'>
-      <div className='mx-auto max-w-2xl bg-gray-300 dark:bg-dark-primary rounded-md px-4 shadow-lg'>
+      <div className='mx-auto max-w-xl bg-gray-300 dark:bg-dark-primary rounded-md px-4 py-4 shadow-lg'>
         <div className='w-full grid grid-cols-1 place-items-center'>
           <LogoComponent size={150} />
           <TextComponent
