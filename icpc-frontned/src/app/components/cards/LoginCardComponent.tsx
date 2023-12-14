@@ -10,6 +10,7 @@ import SubmitComponent from '../forms/SubmitComponent'
 type FormData = {
   username: string
   password: string
+  rememberMe: boolean
 }
 
 type FormProps = {
@@ -43,6 +44,7 @@ export default function LoginCardComponent({ children, onSubmit, ...props }: Rea
                   ...{
                     ...child.props,
                     register: methods.register,
+                    control: methods.control,
                     key: child.props.name
                   }
                 })
