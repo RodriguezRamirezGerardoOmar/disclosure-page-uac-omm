@@ -1,10 +1,8 @@
-import { Fragment } from 'react'
+import React, { Fragment } from 'react'
 import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
 import { TextComponent } from '../text/TextComponent'
 import { enumTextTags } from '@/constants/types'
-import { FieldValues, UseFormRegister } from 'react-hook-form'
-import React from 'react'
 
 interface ISelectProps {
   options: {
@@ -12,9 +10,8 @@ interface ISelectProps {
     name: string
   }[]
   fieldName: string
+  id: string
   labelText: string
-  necessary: boolean
-  register: UseFormRegister<FieldValues>
   selected: string
   onChange: (value: string) => void
 }
@@ -26,10 +23,17 @@ function classNames(...classes: string[]) {
 export function SelectComponent({ ...props }: Readonly<ISelectProps>) {
   const reference = React.useRef<HTMLSelectElement | null>(null)
   return (
-    <>
+    <div className='w-full m-2 p-2'>
+      <TextComponent
+        htmlFor={props.id}
+        tag={enumTextTags.label}
+        className='block text-gray-900 place-self-start'>
+        {props.labelText}
+      </TextComponent>
       <select
         className='hidden'
         ref={reference}
+        id={props.id}
       />
       <Listbox
         value={props.selected}
@@ -41,77 +45,70 @@ export function SelectComponent({ ...props }: Readonly<ISelectProps>) {
         }}
         name={props.fieldName}>
         {({ open }) => (
-          <>
-            <TextComponent
-              tag={enumTextTags.p}
-              className='block text-sm font-medium leading-6 text-gray-900'>
-              {props.labelText}
-            </TextComponent>
-            <div className='relative mt-2'>
-              <Listbox.Button
-                className={`relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left 
+          <div className='relative'>
+            <Listbox.Button
+              className={`relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left 
                   text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 
-                  sm:text-sm sm:leading-6`}>
-                <span className='flex items-center'>
-                  <span className='ml-3 block truncate'>{props.selected}</span>
-                </span>
-                <span className='pointer-events-none absolute inset-y-0 right-0 ml-3 flex items-center pr-2'>
-                  <ChevronUpDownIcon
-                    className='h-5 w-5 text-gray-400'
-                    aria-hidden='true'
-                  />
-                </span>
-              </Listbox.Button>
+                  sm:text-sm sm:leading-6 overflow-hidden`}>
+              <span className='flex items-center'>
+                <span className='ml-3 block truncate'>{props.selected}</span>
+              </span>
+              <span className='pointer-events-none absolute inset-y-0 right-0 ml-3 flex items-center pr-2'>
+                <ChevronUpDownIcon
+                  className='h-5 w-5 text-gray-400'
+                  aria-hidden='true'
+                />
+              </span>
+            </Listbox.Button>
 
-              <Transition
-                show={open}
-                as={Fragment}
-                leave='transition ease-in duration-100'
-                leaveFrom='opacity-100'
-                leaveTo='opacity-0'>
-                <Listbox.Options
-                  className={`absolute z-10 mt-1 max-h-56 w-full overflow-auto rounded-md bg-white py-1 text-base 
+            <Transition
+              show={open}
+              as={Fragment}
+              leave='transition ease-in duration-100'
+              leaveFrom='opacity-100'
+              leaveTo='opacity-0'>
+              <Listbox.Options
+                className={`absolute z-10 mt-1 max-h-56 w-full overflow-auto rounded-md bg-white py-1 text-base 
                           shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm`}>
-                  {props.options.map(option => (
-                    <Listbox.Option
-                      key={option.id}
-                      className={({ active }) =>
-                        classNames(
-                          active ? 'dark:bg-secondary bg-gray-100 text-secondary dark:text-white' : 'text-gray-900',
-                          'relative cursor-default select-none py-2 pl-3 pr-9'
-                        )
-                      }
-                      value={option.name}>
-                      {({ selected, active }) => (
-                        <>
-                          <div className='flex items-center'>
-                            <span className={classNames(selected ? 'font-semibold' : 'font-normal', 'ml-3 block truncate')}>
-                              {option.name}
-                            </span>
-                          </div>
+                {props.options.map(option => (
+                  <Listbox.Option
+                    key={option.id}
+                    className={({ active }) =>
+                      classNames(
+                        active ? 'dark:bg-secondary bg-gray-100 text-secondary dark:text-white' : 'text-gray-900',
+                        'relative cursor-default select-none py-2 pl-3 pr-9'
+                      )
+                    }
+                    value={option.name}>
+                    {({ selected, active }) => (
+                      <>
+                        <div className='flex items-center'>
+                          <span className={classNames(selected ? 'font-semibold' : 'font-normal', 'ml-3 block truncate')}>
+                            {option.name}
+                          </span>
+                        </div>
 
-                          {selected ? (
-                            <span
-                              className={classNames(
-                                active ? 'text-white' : 'text-indigo-600',
-                                'absolute inset-y-0 right-0 flex items-center pr-4'
-                              )}>
-                              <CheckIcon
-                                className='h-5 w-5'
-                                aria-hidden='true'
-                              />
-                            </span>
-                          ) : null}
-                        </>
-                      )}
-                    </Listbox.Option>
-                  ))}
-                </Listbox.Options>
-              </Transition>
-            </div>
-          </>
+                        {selected ? (
+                          <span
+                            className={classNames(
+                              active ? 'text-white' : 'text-indigo-600',
+                              'absolute inset-y-0 right-0 flex items-center pr-4'
+                            )}>
+                            <CheckIcon
+                              className='h-5 w-5'
+                              aria-hidden='true'
+                            />
+                          </span>
+                        ) : null}
+                      </>
+                    )}
+                  </Listbox.Option>
+                ))}
+              </Listbox.Options>
+            </Transition>
+          </div>
         )}
       </Listbox>
-    </>
+    </div>
   )
 }
