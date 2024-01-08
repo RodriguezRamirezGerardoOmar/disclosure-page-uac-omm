@@ -1,0 +1,6 @@
+{
+    "title": "Números enteros",
+    "description": "Texto de descripción considerablemente largo para hacer pruebas sobre cómo se envuelve el texto en el diseño de la página.",
+    "tags": [{"name": "Números enteros", "color": "bg-[#8855aa]"}],
+    "content": "```Contenido del artículo``` $`f(x)`$"
+}
