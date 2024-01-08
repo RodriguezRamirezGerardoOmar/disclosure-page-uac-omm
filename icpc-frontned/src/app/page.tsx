@@ -4,9 +4,9 @@ import { TextComponent } from './components/text/TextComponent'
 import { enumTextTags } from '@/constants/types'
 import { InfoCardComponent } from './components/cards/InfoCardComponent'
 import { DataCardComponent } from './components/cards/DataCardComponent'
+import { LastNewsComponent } from './components/ui/LastNewsComponent'
 
 export default function Home() {
-
   //TODO: Agregar descripciones pertinentes a cada item
   const items = [
     {
@@ -97,21 +97,22 @@ de diferentes niveles.`}
         </div>
       </div>
 
-      <div className='flex flex-col gap-4 sm:max-w-sm'>
-        <div className='px-5'>
-          <DataCardComponent
-            title={dataCard.title}
-            info={dataCard.info}
-            autor={dataCard.autor}
-          />
+      <div className='flex flex-col md:flex-row-reverse gap-4 h-full'>
+        <div className='flex flex-col gap-4 my-7 px-4 md:px-0 md:pr-4'>
+            <DataCardComponent
+              title={dataCard.title}
+              info={dataCard.info}
+              autor={dataCard.autor}
+            />
+            <DataCardComponent
+              title={dataRamdomCard.title}
+              info={dataRamdomCard.info}
+              autor={dataRamdomCard.autor}
+              image={dataRamdomCard.image}
+            />
         </div>
-        <div className='px-5'>
-          <DataCardComponent
-            title={dataRamdomCard.title}
-            info={dataRamdomCard.info}
-            autor={dataRamdomCard.autor}
-            image={dataRamdomCard.image}
-          />
+        <div className='px-4 md:px-0 md:pl-4 h-full'>
+          <LastNewsComponent />
         </div>
       </div>
     </main>
