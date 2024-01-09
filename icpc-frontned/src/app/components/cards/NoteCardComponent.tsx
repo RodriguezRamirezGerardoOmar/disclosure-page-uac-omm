@@ -2,12 +2,14 @@ import React from 'react'
 import { BasicPanelComponent } from '../panels/BasicPanelComponent'
 import { TextComponent } from '../text/TextComponent'
 import { MDXRemote } from 'next-mdx-remote/rsc'
-import TagListComponent from '../TagListComponent'
+import TagListComponent from '../tags/TagListComponent'
+import { ButtonComponent } from '../buttons/ButtonComponent'
 
 interface NoteCardProps {
   title: string
   description: string
   content: string
+  showButton: boolean
   tags: {
     id: number
     name: string
@@ -25,6 +27,7 @@ export default function NoteCardComponent({ ...props }: Readonly<NoteCardProps>)
       </TextComponent>
       <TagListComponent
         tags={props.tags}
+        showIcon={false}
       />
       <TextComponent
         sizeFont='s14'
@@ -32,6 +35,9 @@ export default function NoteCardComponent({ ...props }: Readonly<NoteCardProps>)
         {props.description}
       </TextComponent>
       <MDXRemote source={props.content} />
+      {props.showButton ? <div className='grid justify-items-center'><a href='#'>
+        <ButtonComponent text="Problemas del tema"/>
+      </a></div> : <></>}
     </BasicPanelComponent>
   )
 }

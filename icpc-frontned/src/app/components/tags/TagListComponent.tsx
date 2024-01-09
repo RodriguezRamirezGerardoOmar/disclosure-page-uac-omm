@@ -6,16 +6,17 @@ interface TagListProps {
     name: string
     color: string
   }[]
+  showIcon: boolean
 }
 const TagListComponent = ({ ...props }: Readonly<TagListProps>) => {
   return (
-    <div className='flex flex-row gap-x-2 my-6'>
+    <div className='flex flex-row gap-x-2'>
       {props.tags.map(tag => (
         <TagComponent
           key={tag.id}
           tagName={tag.name}
           color={tag.color}
-          showIcon={false}
+          showIcon={props.showIcon}
         />
       ))}
     </div>

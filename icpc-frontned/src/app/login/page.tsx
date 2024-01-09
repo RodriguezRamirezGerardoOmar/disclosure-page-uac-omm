@@ -37,7 +37,7 @@ export default function Home() {
             id='username'
           />
           <TextFieldComponent
-            labelText='Correo electrónico o nombre de usuario'
+            labelText='Contraseña'
             register={methods.register}
             fieldName='password'
             auto='current-password'

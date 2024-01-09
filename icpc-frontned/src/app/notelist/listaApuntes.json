@@ -1,0 +1,26 @@
+{
+  "categories": [
+    { "id": 1, "name": "Teoría de números" },
+    { "id": 2, "name": "Polinomios" },
+    { "id": 3, "name": "Desigualdades" },
+    { "id": 4, "name": "Combinatoria" },
+    { "id": 5, "name": "Geometría" }
+  ],
+  "notes": [
+    {
+      "id": 1,
+      "title": "Números enteros",
+      "description": "Texto de descripción considerablemente largo para hacer pruebas sobre cómo se envuelve el texto en el diseño de la página.",
+      "tags": [{ "id": 1, "name": "Números enteros", "color": "#8855aa" }]
+    },
+    {
+      "id": 2,
+      "title": "Combinatoria",
+      "description": "Texto de descripción considerablemente largo para hacer pruebas sobre cómo se envuelve el texto en el diseño de la página.",
+      "tags": [
+        { "id": 1, "name": "Probabilidad", "color": "#006622" },
+        { "id": 2, "name": "Teoría de conjuntos", "color": "#cc9a00" }
+      ]
+    }
+  ]
+}
