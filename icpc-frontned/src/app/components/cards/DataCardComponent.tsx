@@ -10,7 +10,7 @@ interface IInfoCardComponentProps {
 
 export const DataCardComponent = ({ ...props }: IInfoCardComponentProps) => {
   return (
-    <BasicPanelComponent backgroundColor='bg-complementary'>
+    <BasicPanelComponent backgroundColor='bg-complementary' >
       <div className='flex flex-col'>
         <TextComponent
           sizeFont='s18'
