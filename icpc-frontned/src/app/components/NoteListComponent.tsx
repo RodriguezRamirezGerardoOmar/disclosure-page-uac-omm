@@ -19,7 +19,7 @@ const NoteListComponent = ({ ...props }: Readonly<NoteListProps>) => {
   return (
     <div className='grid grid-rows-10 gap-4'>
       {props.notes.map(note => (
-        <a key={note.id} href="#">
+        <a key={note.id} href="/note">
           <NoteItemComponent note={note} />
         </a>
       ))}

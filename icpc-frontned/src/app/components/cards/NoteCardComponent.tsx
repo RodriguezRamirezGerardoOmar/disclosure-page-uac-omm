@@ -35,7 +35,7 @@ export default function NoteCardComponent({ ...props }: Readonly<NoteCardProps>)
         {props.description}
       </TextComponent>
       <MDXRemote source={props.content} />
-      {props.showButton ? <div className='grid justify-items-center'><a href='#'>
+      {props.showButton ? <div className='grid justify-items-center'><a href='/exercises'>
         <ButtonComponent text="Problemas del tema"/>
       </a></div> : <></>}
     </BasicPanelComponent>

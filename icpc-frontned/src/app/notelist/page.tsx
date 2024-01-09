@@ -28,9 +28,9 @@ export default function Home() {
             />
           )}
         />
-        <BasicPanelComponent backgroundColor='bg-white dark:bg-dark-primary'>
+        <div className='bg-white dark:bg-dark-primary overflow-hidden rounded-lg px-4 py-5 sm:p-6'>
           <NoteListComponent notes={data.notes} />
-        </BasicPanelComponent>
+        </div>
         <PaginationComponent />
       </div>
     </main>
