@@ -22,7 +22,7 @@ const routes = [
   {
     id: 3,
     name: 'Ejercicios',
-    href: '#'
+    href: '/exercises'
   },
   {
     id: 4,
