@@ -108,7 +108,7 @@ export default function TableComponent() {
                     <td
                       className={classNames(
                         id !== exercise.length - 1 ? 'border-b border-gray-200' : '',
-                        'whitespace-nowrap text-sm text-gray-500 my-0'
+                        'whitespace-nowrap text-sm text-gray-500'
                       )}>
                         <TagListComponent tags={exercise.tag.map(tag => ({id: 1, name: tag, color: 'bg-green-500'}))} />
                     </td>
