@@ -1,5 +1,5 @@
 
-import TagListComponent from '../TagListComponent'
+import TagListComponent from '../tags/TagListComponent'
 import { PaginationComponent } from '../paginations/PaginationComponent'
 const exercises = [
   { id: 1, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example','ejemplo'] },
