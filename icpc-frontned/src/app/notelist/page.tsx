@@ -1,9 +1,8 @@
 'use client'
 import React from 'react'
-import { BasicPanelComponent } from '../components/panels/BasicPanelComponent'
 import NoteListComponent from '../components/NoteListComponent'
 import { SelectComponent } from '../components/dropdowns/SelectComponent'
-import { Controller, useForm } from 'react-hook-form' // Added import statement for Controller
+import { Controller, useForm } from 'react-hook-form'
 import { PaginationComponent } from '../components/paginations/PaginationComponent'
 const data = require('../notelist/listaApuntes.json')
 
