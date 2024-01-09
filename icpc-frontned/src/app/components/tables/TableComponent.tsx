@@ -81,14 +81,14 @@ export default function TableComponent() {
                     className='cursor-pointer hover:bg-slate-200'>
                     <td
                       className={classNames(
-                        id !== exercise.length - 1 ? 'border-b border-gray-200' : '',
+                        id !== Object.keys(exercise).length - 1 ? 'border-b border-gray-200' : '',
                         'whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8'
                       )}>
                       {exercise.name}
                     </td>
                     <td
                       className={classNames(
-                        id !== exercise.length - 1 ? 'border-b border-gray-200' : '',
+                        id !== Object.keys(exercise).length - 1 ? 'border-b border-gray-200' : '',
                         'whitespace-nowrap flex gap-1 px-3 py-4 text-sm text-gray-500'
                       )}>
                         { 
@@ -100,21 +100,21 @@ export default function TableComponent() {
                     </td>
                     <td
                       className={classNames(
-                        id !== exercise.length - 1 ? 'border-b border-gray-200' : '',
+                        id !== Object.keys(exercise).length - 1 ? 'border-b border-gray-200' : '',
                         'whitespace-nowrap hidden px-3 py-4 text-sm text-gray-500 lg:table-cell'
                       )}>
                       {exercise.categorie}
                     </td>
                     <td
                       className={classNames(
-                        id !== exercise.length - 1 ? 'border-b border-gray-200' : '',
+                        id !== Object.keys(exercise).length - 1 ? 'border-b border-gray-200' : '',
                         'whitespace-nowrap text-sm text-gray-500'
                       )}>
                         <TagListComponent tags={exercise.tag.map(tag => ({id: 1, name: tag, color: 'bg-green-500'}))} />
                     </td>
                     <td
                       className={classNames(
-                        id !== exercise.length - 1 ? 'border-b border-gray-200' : '',
+                        id !== Object.keys(exercise).length - 1 ? 'border-b border-gray-200' : '',
                         'relative whitespace-nowrap py-4 pr-4 pl-3 text-right text-sm font-medium sm:pr-8 lg:pr-8'
                       )}>
                       <a
