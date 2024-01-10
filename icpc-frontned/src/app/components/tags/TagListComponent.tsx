@@ -6,6 +6,7 @@ interface TagListProps {
     name: string
     color: string
   }[]
+  showIcon: boolean
 }
 const TagListComponent = ({ ...props }: Readonly<TagListProps>) => {
   return (
@@ -15,7 +16,7 @@ const TagListComponent = ({ ...props }: Readonly<TagListProps>) => {
           key={tag.id}
           tagName={tag.name}
           color={tag.color}
-          showIcon={false}
+          showIcon={props.showIcon}
         />
       ))}
     </div>

@@ -1,5 +1,5 @@
 
-import TagListComponent from '../TagListComponent'
+import TagListComponent from '../tags/TagListComponent'
 import { PaginationComponent } from '../paginations/PaginationComponent'
 const exercises = [
   { id: 1, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example','ejemplo'] },
@@ -111,7 +111,7 @@ export default function TableComponent() {
                         id !== Object.keys(exercise).length - 1 ? 'border-b border-gray-200' : '',
                         'whitespace-nowrap text-sm text-gray-500'
                       )}>
-                        <TagListComponent tags={exercise.tag.map(tag => ({id: 1, name: tag, color: 'bg-green-500'}))} />
+                        <TagListComponent tags={exercise.tag.map(tag => ({id: 1, name: tag, color: '#66bb00'}))} showIcon={false} />
                     </td>
                     <td
                       className={classNames(

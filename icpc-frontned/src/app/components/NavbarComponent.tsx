@@ -17,7 +17,7 @@ const routes = [
   {
     id: 2,
     name: 'Apuntes',
-    href: '#'
+    href: '/notelist'
   },
   {
     id: 3,
