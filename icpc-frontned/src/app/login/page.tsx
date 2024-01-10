@@ -13,7 +13,9 @@ const onSubmit: SubmitHandler<FieldValues> = () => {}
 export default function Home() {
   const methods = useForm<FieldValues>()
   return (
-    <main className='grid min-h-screen grid-cols-1 place-items-center justify-between py-24'>
+    <main
+      className={`margin-auto md:mx-auto max-w-7xl md:px-4 w-full h-full lg:px-8 lg:w-2/3 lg:h-auto 
+      min-h-screen place-items-center justify-between py-24`}>
       <BasicPanelComponent backgroundColor='bg-gray-300 dark:bg-dark-primary'>
         <div className='grid grid-cols-1 place-items-center justify-between'>
           <LogoComponent size={150} />
@@ -28,7 +30,7 @@ export default function Home() {
           onSubmit={methods.handleSubmit(onSubmit)}
           className='grid grid-cols-1 place-items-center justify-between'>
           <TextFieldComponent
-            labelText='Correo electrónico o nombre de usuario'
+            labelText='Correo electrónico / Nombre de usuario'
             register={methods.register}
             fieldName='username'
             auto='username'
@@ -51,6 +53,11 @@ export default function Home() {
             fieldName='rememberMe'
           />
           <SubmitComponent text='Iniciar sesión' />
+          <a href='/forgot'>
+            <TextComponent className='dark:text-dark-accent underline hover:text-dark-accent hover:dark:text-complementary'>
+              Olvidé mi contraseña
+            </TextComponent>
+          </a>
         </form>
       </BasicPanelComponent>
     </main>
