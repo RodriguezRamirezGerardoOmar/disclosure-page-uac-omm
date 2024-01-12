@@ -17,7 +17,7 @@ export const NewsCardComponent = ({ ...props }: Readonly<NewsCardComponentProps>
     <BasicPanelComponent backgroundColor='bg-white dark:bg-dark-primary'>
       <TextComponent
         sizeFont='s36'
-        className='dark:text-dark-accent'
+        className='dark:text-dark-accent my-4'
         tag={enumTextTags.h1}>
         {props.data.title}
       </TextComponent>
