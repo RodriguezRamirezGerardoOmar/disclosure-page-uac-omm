@@ -24,13 +24,14 @@ export default function Home() {
               fieldName={field.name}
               id='select'
               labelText={'Categorías'}
+              className='px-6 my-2 sm:px-0'
             />
           )}
         />
-        <div className='bg-white dark:bg-dark-primary overflow-hidden rounded-lg px-4 py-5 sm:p-6'>
-          <NoteListComponent notes={data.notes} />
+        <div className='overflow-hidden px-4 py-5 sm:px-0'>
+          <NoteListComponent notes={data.notes}/>
         </div>
-        <PaginationComponent />
+        <PaginationComponent/>
       </div>
     </main>
   )
