@@ -33,7 +33,7 @@ const NewsItemComponent = ({...props}: Readonly<INewsItemProps>) => {
               <TextComponent
                 tag={enumTextTags.p}
                 sizeFont='s16'
-                className='font-bold text-primary'>
+                className='font-bold text-dark-accent'>
                 {props.item.title}
               </TextComponent>
             </Link>
