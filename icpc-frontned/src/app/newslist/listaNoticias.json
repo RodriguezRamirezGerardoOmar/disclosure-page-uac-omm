@@ -1,0 +1,22 @@
+{
+  "news": [
+    {
+      "id": 1,
+      "title": "Lanzamiento de la última versión de Python, ¿Qué novedades nos trae Python 4.0?",
+      "href": "#",
+      "image": "/images/dumie-data.png"
+    },
+    {
+      "id": 2,
+      "title": "El boom de la tecnología wearable: dispositivos inteligentes que cambian la forma en que vivimos",
+      "href": "#",
+      "image": "/images/dumie-data.png"
+    },
+    {
+      "id": 3,
+      "title": "La era de la computación cuántica: perspectivas y desafíos en el horizonte tecnológico",
+      "href": "#",
+      "image": "/images/dumie-data.png"
+    }
+  ]
+}
