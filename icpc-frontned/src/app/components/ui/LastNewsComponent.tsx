@@ -1,34 +1,27 @@
 import { enumTextTags } from '@/constants/types'
 import { TextComponent } from '../text/TextComponent'
-import { BasicPanelComponent } from '../panels/BasicPanelComponent'
-import Image from 'next/image'
 import Link from 'next/link'
+import NewsItemComponent from '../cards/NewsItemComponent'
 
 //genera un json con los datos de la noticia
-const news = [
+const lastNews = [
   {
     id: 1,
-    title: 'Noticias',
-    icon: 'NewspaperIcon',
-    info: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    title: 'Lanzamiento de la última versión de Python, ¿Qué novedades nos trae Python 4.0?',
     href: '#',
-    banner: '/images/dumie-data.png'
+    image: '/images/dumie-data.png'
   },
   {
     id: 2,
-    title: 'Ejercicios',
-    icon: 'ListBulletIcon',
-    info: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    title: 'El boom de la tecnología wearable: dispositivos inteligentes que cambian la forma en que vivimos',
     href: '#',
-    banner: '/images/dumie-data.png'
+    image: '/images/dumie-data.png'
   },
   {
     id: 3,
-    title: 'Apuntes',
-    icon: 'BookOpenIcon',
-    info: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    title: 'La era de la computación cuántica: perspectivas y desafíos en el horizonte tecnológico',
     href: '#',
-    banner: '/images/dumie-data.png'
+    image: '/images/dumie-data.png'
   }
 ]
 
@@ -52,27 +45,8 @@ export const LastNewsComponent = () => {
         </div>
       </div>
       <div className='flex flex-col gap-4 md:flex-row h-full'>
-        {news.map(item => (
-          <BasicPanelComponent key={item.id}>
-            <Link
-              href={item.href}
-            className='h-full'>
-              <div className='relative mb-4 h-64'>
-                <Image
-                  src='/images/dumie-data.png'
-                  fill
-                  alt='Picture of the author'
-                  className='object-cover rounded-md'
-                />
-              </div>
-              <TextComponent
-                tag={enumTextTags.p}
-                sizeFont='s16'
-                className='font-bold text-primary'>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptates.
-              </TextComponent>
-            </Link>
-          </BasicPanelComponent>
+        {lastNews.map(item => (
+          <NewsItemComponent item={item} key={item.id} />
         ))}
       </div>
     </div>

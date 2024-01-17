@@ -3,6 +3,7 @@ import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
 import { TextComponent } from '../text/TextComponent'
 import { enumTextTags } from '@/constants/types'
+import cn from 'classnames'
 
 interface ISelectProps {
   options: {
@@ -14,6 +15,7 @@ interface ISelectProps {
   labelText: string
   selected: string
   onChange: (value: string) => void
+  className?: string[] | string
 }
 
 function classNames(...classes: string[]) {
@@ -22,8 +24,9 @@ function classNames(...classes: string[]) {
 
 export function SelectComponent({ ...props }: Readonly<ISelectProps>) {
   const reference = React.useRef<HTMLSelectElement | null>(null)
+  const classes = cn(props.className, 'w-full')
   return (
-    <div className='w-full m-2 p-2'>
+    <div className={classes}>
       <TextComponent
         htmlFor={props.id}
         tag={enumTextTags.label}
