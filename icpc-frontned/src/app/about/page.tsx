@@ -1,8 +1,7 @@
 import React from 'react'
 import { TextComponent } from '../components/text/TextComponent'
 import { enumTextTags } from '@/constants/types'
-import { MDXRemote } from 'next-mdx-remote/rsc'
-const data = require('@/app/about/acercade.json')
+import About from '@/app/about/acercade.mdx'
 
 export default function Page() {
   return (
@@ -14,7 +13,7 @@ export default function Page() {
           className=''>
           Acerca de nosotros
         </TextComponent>
-        <MDXRemote source={data.texto}></MDXRemote>
+        <About />
       </div>
     </main>
   )

@@ -1,5 +1,5 @@
 import React from 'react'
-import { BasicPanelComponent } from '../panels/BasicPanelComponent'
+import { BasicPanelComponent } from '@/app/components/panels/BasicPanelComponent'
 import { TextComponent } from '../text/TextComponent'
 import { MDXRemote } from 'next-mdx-remote/rsc'
 import TagListComponent from '../tags/TagListComponent'
@@ -35,9 +35,11 @@ export default function NoteCardComponent({ ...props }: Readonly<NoteCardProps>)
         {props.description}
       </TextComponent>
       <MDXRemote source={props.content} />
-      {props.showButton ? <div className='grid justify-items-center'><a href='/exercises'>
-        <ButtonComponent text="Problemas del tema"/>
-      </a></div> : <></>}
+      <div className='grid justify-items-center'>
+        <a href='/exercises'>
+          <ButtonComponent text='Problemas del tema' />
+        </a>
+      </div>
     </BasicPanelComponent>
   )
 }
