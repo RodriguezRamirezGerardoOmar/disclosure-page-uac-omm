@@ -13,7 +13,7 @@ import { CategoriesModule } from './categories/categories.module';
       host: 'localhost',
       port: 3306,
       username: 'root',
-      password: '',
+      password: 'Danger1.',
       database: 'icpc-backend',
       synchronize: true,
       autoLoadEntities: true

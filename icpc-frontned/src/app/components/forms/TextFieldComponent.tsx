@@ -7,7 +7,7 @@ interface ITextFieldProps {
   labelText: string
   register: UseFormRegister<FieldValues>
   fieldName: string
-  auto: 'email' | 'current-password' | 'new-password' | 'username'
+  auto?: 'email' | 'current-password' | 'new-password' | 'username'
   id: string
   necessary: boolean
   type: 'email' | 'password' | 'username' | 'text'
