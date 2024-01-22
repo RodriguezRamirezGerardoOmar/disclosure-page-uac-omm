@@ -8,9 +8,10 @@ import { enumTextTags } from '@/constants/types'
 import SubmitComponent from '../components/forms/SubmitComponent'
 import { TextComponent } from '../components/text/TextComponent'
 
-const onSubmit: SubmitHandler<FieldValues> = () => {}
-
 export default function Home() {
+  const onSubmit: SubmitHandler<FieldValues> = () => {
+  }
+
   const methods = useForm<FieldValues>()
   return (
     <main
