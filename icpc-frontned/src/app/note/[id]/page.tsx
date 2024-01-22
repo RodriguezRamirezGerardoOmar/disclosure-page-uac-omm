@@ -33,8 +33,3 @@ export default async function Page({ params }: Readonly<{ params: { id: string }
     )
   }
 }
-
-export async function getServerProps({ params }: Readonly<{ params: { id: string } }>) {
-  const mdxContent = await serialize(data.content)
-  return { props: { mdxContent, params } }
-}

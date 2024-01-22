@@ -34,13 +34,13 @@ export default function NoteCardComponent({ ...props }: Readonly<NoteCardProps>)
         className='text-gray-500 font-medium my-4'>
         {props.description}
       </TextComponent>
-      
-        <MDXRemote
-          compiledSource={props.content}
-          frontmatter={undefined}
-          scope={undefined}
-        />
-      
+
+      <MDXRemote
+        compiledSource={props.content}
+        frontmatter={undefined}
+        scope={undefined}
+      />
+
       {props.showButton ? (
         <div className='grid justify-items-center'>
           <a href='/exercises'>
