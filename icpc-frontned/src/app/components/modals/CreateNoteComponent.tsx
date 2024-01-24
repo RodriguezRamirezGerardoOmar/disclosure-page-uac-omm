@@ -5,21 +5,22 @@ import LogoComponent from '../LogoComponent'
 import { TextComponent } from '../text/TextComponent'
 import { enumTextTags } from '@/constants/types'
 import TextFieldComponent from '../forms/TextFieldComponent'
-import { UseFormRegister, FieldValues, Controller, useForm } from 'react-hook-form'
+import { FieldValues, Controller, UseFormReturn } from 'react-hook-form'
 import { SelectComponent } from '../dropdowns/SelectComponent'
 import data from '@/app/notelist/listaApuntes.json'
 import tags from '@/app/note/apunte.json'
 import TagListComponent from '../tags/TagListComponent'
 import TextAreaComponent from '../forms/TextAreaComponent'
 import MarkdownAreaComponent from '../forms/MarkdownAreaComponent'
+import SubmitComponent from '../forms/SubmitComponent'
 
 interface ICreateNoteProps {
-  register: UseFormRegister<FieldValues>
+  methods: UseFormReturn<FieldValues>
 }
 
 const CreateNoteComponent = ({ ...props }: Readonly<ICreateNoteProps>) => {
-  return (
-    <div
+    return (
+    <div      
       className={`margin-auto md:mx-auto max-w-7xl md:px-4 w-full h-full lg:px-8 lg:w-2/3 lg:h-auto 
     min-h-screen place-items-center justify-between py-24`}>
       <BasicPanelComponent backgroundColor='bg-white dark:bg-dark-primary'>
@@ -33,7 +34,7 @@ const CreateNoteComponent = ({ ...props }: Readonly<ICreateNoteProps>) => {
           </TextComponent>
           <TextFieldComponent
             labelText='Título del apunte'
-            register={props.register}
+            register={props.methods.register}
             fieldName='title'
             auto='off'
             id='title'
@@ -42,7 +43,7 @@ const CreateNoteComponent = ({ ...props }: Readonly<ICreateNoteProps>) => {
           />
           <Controller
             defaultValue={data.categories[0].name}
-            control={useForm().control}
+            control={props.methods.control}
             render={({ field }) => (
               <SelectComponent
                 options={data.categories}
@@ -58,7 +59,7 @@ const CreateNoteComponent = ({ ...props }: Readonly<ICreateNoteProps>) => {
           />
           <TextFieldComponent
             labelText='Etiquetas'
-            register={props.register}
+            register={props.methods.register}
             fieldName='tags'
             auto='off'
             id='tags'
@@ -73,7 +74,7 @@ const CreateNoteComponent = ({ ...props }: Readonly<ICreateNoteProps>) => {
           </div>
           <TextAreaComponent
             labelText={'Descripción'}
-            register={props.register}
+            register={props.methods.register}
             fieldName={'description'}
             id={'description'}
             necessary={true}
@@ -81,7 +82,7 @@ const CreateNoteComponent = ({ ...props }: Readonly<ICreateNoteProps>) => {
           <Controller
             name='content'
             defaultValue=''
-            control={useForm().control}
+            control={props.methods.control}
             render={({ field }) => (
               <MarkdownAreaComponent
                 value={field.value}
@@ -91,6 +92,7 @@ const CreateNoteComponent = ({ ...props }: Readonly<ICreateNoteProps>) => {
               />
             )}
           />
+          <SubmitComponent text='Crear apunte' />
         </div>
       </BasicPanelComponent>
     </div>

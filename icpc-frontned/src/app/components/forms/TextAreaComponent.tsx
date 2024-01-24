@@ -12,8 +12,8 @@ interface ITextAreaProps {
 }
 
 const labelClassname = 'place-self-start dark:text-dark-accent my-2'
-const textAreaClassname = {`block w-full rounded-md p-2 text-dark-primary shadow-sm
-ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-accent h-20 text-wrap overflow-y-auto`}
+const textAreaClassname = `block w-full rounded-md p-2 text-dark-primary shadow-sm
+ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-accent h-20 text-wrap overflow-y-auto`
 
 const TextAreaComponent = ({ labelText, register, fieldName, id, necessary }: Readonly<ITextAreaProps>) => {
   return (
