@@ -1,21 +1,20 @@
 'use client'
 import { UserIcon } from '@heroicons/react/20/solid'
-import { TextComponent } from './TextComponent'
-import { enumTextSizes, enumTextTags } from '@/constants/types'
+import { TextComponent } from '@/app/components/text/TextComponent'
+import { enumTextTags } from '@/constants/types'
 
-interface IUserProps{
-  verified: Boolean,
-  className?: string
+interface IUserProps {
+  verified: boolean
 }
 
-export default function UserComponent({ verified}: IUserProps) {
-  if (verified) {
-    return <UserIcon className='h-10 w-10 rounded-full' />
-  }
-  return (
+export default function UserComponent({ verified }: Readonly<IUserProps>) {
+  return verified ? (
+    <UserIcon className='h-10 w-10 rounded-full' />
+  ) : (
     <TextComponent
       tag={enumTextTags.p}
-      sizeFont={enumTextSizes.s12}>
+      sizeFont='s12'
+      className='hover:text-secondary dark:text-dark-accent dark:hover:text-dark-complementary'>
       Iniciar sesión
     </TextComponent>
   )

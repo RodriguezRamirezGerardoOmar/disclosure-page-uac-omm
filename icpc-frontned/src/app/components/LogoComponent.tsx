@@ -1,7 +1,7 @@
 'use client'
 import Image from 'next/image'
-import logoClearMode from '@/../../public/fdiClearMode.svg'
-import logoDarkMode from '@/../../public/fdiDarkMode.svg'
+import logoClearMode from '@/../../public/icons/fdiClearMode.svg'
+import logoDarkMode from '@/../../public/icons/fdiDarkMode.svg'
 import cn from 'classnames'
 
 interface ILogoProps {
