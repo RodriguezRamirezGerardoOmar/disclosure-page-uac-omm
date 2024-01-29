@@ -1,8 +1,6 @@
-import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
+import { Column, Entity, ManyToOne } from 'typeorm';
 import { BaseEntity } from '../../entities/base.entity';
 import { Role } from '../../roles/entities/role.entity';
-import { ShoppingCart } from '../../shopping-cart/entities/shopping-cart.entity';
-import { Order } from 'src/orders/entities/order.entity';
 
 @Entity()
 export class User extends BaseEntity {
@@ -21,10 +19,4 @@ export class User extends BaseEntity {
   @ManyToOne(() => Role, role => role.users)
   role: Role;
   user: Role[];
-
-  @OneToMany(() => ShoppingCart, shoppingCart => shoppingCart.user)
-  shoppingCart: ShoppingCart[];
-
-  @OneToMany(() => Order, order => order.user)
-  order: Order[];
 }
