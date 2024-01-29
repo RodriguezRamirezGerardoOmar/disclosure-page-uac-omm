@@ -1,3 +1,4 @@
+"use client"
 import dynamic from 'next/dynamic'
 import cn from 'classnames'
 import { TextComponent } from '../text/TextComponent'
@@ -11,7 +12,7 @@ interface MarkdownAreaComponentProps {
 
 const MarkdownEditor = dynamic(() => import('@uiw/react-markdown-editor').then(mod => mod.default), { ssr: false })
 
-export default async function MarkdownAreaComponent({ value, onChange, labelText, className }: Readonly<MarkdownAreaComponentProps>) {
+export default function MarkdownAreaComponent({ value, onChange, labelText, className }: Readonly<MarkdownAreaComponentProps>) {
   const style = cn(className, 'w-full')
   return (
     <div className='w-full'>
