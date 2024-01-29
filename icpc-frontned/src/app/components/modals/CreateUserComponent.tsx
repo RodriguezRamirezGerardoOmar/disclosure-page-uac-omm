@@ -1,6 +1,6 @@
 'use client'
 import React from 'react'
-import { UseFormReturn, FieldValues, RegisterOptions, UseFormRegisterReturn } from 'react-hook-form'
+import { UseFormReturn, FieldValues } from 'react-hook-form'
 import { BasicPanelComponent } from '../panels/BasicPanelComponent'
 import { enumTextTags } from '@/constants/types'
 import LogoComponent from '../LogoComponent'
