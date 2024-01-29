@@ -6,5 +6,5 @@
     { "id": 1, "name": "Números enteros", "color": "#8855aa" },
     { "id": 2, "name": "Campos numéricos", "color": "#cc55aa" }
   ],
-  "content": "# Título \n texto"
+  "content": "# Título <br /> texto <br /> $ \\frac{10}{4x} \\approx 2^{12} $"
 }
