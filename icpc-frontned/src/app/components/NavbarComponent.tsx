@@ -7,6 +7,7 @@ import BurgerComponent from './dropdowns/BurgerComponent'
 import Link from 'next/link'
 import LogoComponent from './LogoComponent'
 import UserComponent from './UserComponent'
+import useStore from '@/store/useStore'
 
 const routes = [
   {
@@ -36,9 +37,12 @@ const routes = [
   }
 ]
 
-const verified = false
 
 export default function NavbarComponent() {
+
+// se puede usar el hook useStore para verificar si el usuario está logueado
+const verified = useStore(state => state.token !== null);
+
   return (
     <Disclosure
       as='nav'

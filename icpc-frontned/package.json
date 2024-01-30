@@ -17,6 +17,7 @@
     "@types/katex": "^0.16.7",
     "@types/mdx": "^2.0.10",
     "@types/react-katex": "^3.0.4",
+    "axios": "^1.6.7",
     "better-react-mathjax": "^2.0.3",
     "@uiw/react-markdown-editor": "^6.0.0",
     "classnames": "^2.3.2",
@@ -34,7 +35,8 @@
     "rehype-mathjax": "^6.0.0",
     "remark": "^15.0.1",
     "remark-math": "^6.0.0",
-    "remark-parse": "^11.0.0"
+    "remark-parse": "^11.0.0",
+    "zustand": "^4.5.0"
   },
   "devDependencies": {
     "@types/node": "^20",

@@ -7,12 +7,24 @@ import LogoComponent from '../components/LogoComponent'
 import { enumTextTags } from '@/constants/types'
 import SubmitComponent from '../components/forms/SubmitComponent'
 import { TextComponent } from '../components/text/TextComponent'
+import useStore from '@/store/useStore'
+import { useRouter } from 'next/navigation'
+
 
 export default function Home() {
-  const onSubmit: SubmitHandler<FieldValues> = () => {
-  }
+  const login = useStore(state => state.login);
+  const router = useRouter();
+  const methods = useForm<FieldValues>();
 
-  const methods = useForm<FieldValues>()
+  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+    try {
+      await login(data.username, data.password);
+      router.push('/');
+    } catch (error) {
+      console.error('Error en el inicio de sesión:', error);
+    }
+  };
+
   return (
     <main
       className={`margin-auto md:mx-auto max-w-7xl md:px-4 w-full h-full lg:px-8 lg:w-2/3 lg:h-auto 
