@@ -6,7 +6,6 @@ import { enumTextTags } from '@/constants/types'
 import LogoComponent from '../LogoComponent'
 import { TextComponent } from '../text/TextComponent'
 import TextFieldComponent from '../forms/TextFieldComponent'
-import CheckboxComponent from '../forms/CheckboxComponent'
 import SubmitComponent from '../forms/SubmitComponent'
 import ImageInputComponent from '../forms/ImageInputComponent'
 import MarkdownAreaComponent from '../forms/MarkdownAreaComponent'
@@ -26,7 +25,7 @@ const CreateNewsComponent = ({ ...props }: Readonly<ICreateUserProps>) => {
             tag={enumTextTags.h1}
             sizeFont='s16'
             className='dark:text-dark-accent'>
-            Crear cuenta de usuario
+            Crear noticia
           </TextComponent>
 
           <TextFieldComponent
@@ -35,10 +34,17 @@ const CreateNewsComponent = ({ ...props }: Readonly<ICreateUserProps>) => {
             id='title'
             register={props.methods.register}
             necessary={true}
-            auto='email'
+            auto='off'
             type='text'
+            className='m-4'
           />
-          <ImageInputComponent register={props.methods.register} />
+          <Controller
+            name='image'
+            defaultValue=''
+            control={props.methods.control}
+            render={({}) => <ImageInputComponent register={props.methods.register} />}
+          />
+
           <Controller
             name='content'
             defaultValue=''
@@ -52,6 +58,7 @@ const CreateNewsComponent = ({ ...props }: Readonly<ICreateUserProps>) => {
               />
             )}
           />
+          <SubmitComponent text='Crear noticia' />
         </div>
       </BasicPanelComponent>
     </div>
