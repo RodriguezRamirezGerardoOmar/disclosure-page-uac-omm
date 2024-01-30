@@ -1,6 +1,6 @@
 'use client'
 import React from 'react'
-import { UseFormReturn, FieldValues } from 'react-hook-form'
+import { UseFormReturn, FieldValues, Controller } from 'react-hook-form'
 import { BasicPanelComponent } from '../panels/BasicPanelComponent'
 import { enumTextTags } from '@/constants/types'
 import LogoComponent from '../LogoComponent'
@@ -9,6 +9,7 @@ import TextFieldComponent from '../forms/TextFieldComponent'
 import CheckboxComponent from '../forms/CheckboxComponent'
 import SubmitComponent from '../forms/SubmitComponent'
 import ImageInputComponent from '../forms/ImageInputComponent'
+import MarkdownAreaComponent from '../forms/MarkdownAreaComponent'
 
 interface ICreateUserProps {
   methods: UseFormReturn<FieldValues>
@@ -37,8 +38,20 @@ const CreateNewsComponent = ({ ...props }: Readonly<ICreateUserProps>) => {
             auto='email'
             type='text'
           />
-          <ImageInputComponent register={props.methods.register}/>
-          <SubmitComponent text='Publicar noticia' />
+          <ImageInputComponent register={props.methods.register} />
+          <Controller
+            name='content'
+            defaultValue=''
+            control={props.methods.control}
+            render={({ field }) => (
+              <MarkdownAreaComponent
+                value={field.value}
+                onChange={newValue => field.onChange(newValue)}
+                labelText='Cuerpo de la noticia'
+                className='p-2'
+              />
+            )}
+          />
         </div>
       </BasicPanelComponent>
     </div>
