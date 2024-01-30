@@ -1,6 +1,8 @@
 import React from 'react'
 import { NewsCardComponent } from '@/app/components/cards/NewsCardComponent'
+
 const data = require('@/app/news/noticia.json')
+
 
 export default function Page({ params }: { params: { id: string } }) {
   {
