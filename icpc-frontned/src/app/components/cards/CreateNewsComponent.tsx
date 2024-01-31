@@ -42,7 +42,13 @@ const CreateNewsComponent = ({ ...props }: Readonly<ICreateUserProps>) => {
             name='image'
             defaultValue=''
             control={props.methods.control}
-            render={({}) => <ImageInputComponent register={props.methods.register} />}
+            render={({}) => (
+              <ImageInputComponent
+                register={props.methods.register}
+                setValue={props.methods.setValue}
+                fieldName='image'
+              />
+            )}
           />
 
           <Controller
