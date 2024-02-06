@@ -5,6 +5,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { RolesModule } from './roles/roles.module';
 import { CategoriesModule } from './categories/categories.module';
+import { NotesModule } from './notes/notes.module';
+import { CommentModule } from './comment/comment.module';
 
 @Module({
   imports: [
@@ -13,7 +15,7 @@ import { CategoriesModule } from './categories/categories.module';
       host: 'localhost',
       port: 3306,
       username: 'root',
-      password: '',
+      password: 'Danger1.',
       database: 'icpc-backend',
       synchronize: true,
       autoLoadEntities: true
@@ -21,7 +23,9 @@ import { CategoriesModule } from './categories/categories.module';
     AuthModule,
     UsersModule,
     RolesModule,
-    CategoriesModule
+    CategoriesModule,
+    NotesModule,
+    CommentModule
   ]
 })
 export class AppModule {

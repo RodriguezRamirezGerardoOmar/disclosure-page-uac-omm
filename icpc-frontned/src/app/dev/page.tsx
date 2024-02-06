@@ -1,15 +1,33 @@
-'use client'
-import React from 'react'
-import FooterComponent from '../components/ui/FooterComponent'
+"use client"
+import { FieldValues, SubmitHandler, useForm } from 'react-hook-form'
+import CreateNoteComponent from '../components/modals/CreateNoteComponent'
 
 export default function Home() {
+  const methods = useForm<FieldValues>()
+  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+    try{
+        const response = await fetch("http://localhost:3001/api/v1/notes", {
+            method: 'POST',
+            mode: 'cors',
+            headers: {
+              'Access-Control-Request-Methods': 'POST, OPTIONS',
+              'Access-Control-Allow-Origin': '*',
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ data })
+          });
+        console.log(response)
+    }
+    catch(err){
+      console.log(err)
+    }
+    finally{
+        console.log("Note created")
+    }
+  }
   return (
-    <main
-      className={`margin-auto md:mx-auto max-w-7xl md:px-4 w-full h-full lg:px-8 lg:w-2/3 lg:h-auto 
-    min-h-screen place-items-center justify-between py-24`}>
-      <footer className='border-dashed border-2 border-dark-complementary'>
-        <FooterComponent />
-      </footer>
-    </main>
+    <form onSubmit={methods.handleSubmit(onSubmit)}>
+      <CreateNoteComponent methods={methods} />
+    </form>
   )
 }
