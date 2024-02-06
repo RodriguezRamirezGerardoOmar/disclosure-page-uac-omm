@@ -3,21 +3,19 @@ import { TextComponent } from '../text/TextComponent'
 import { enumTextTags } from '@/constants/types'
 import { FieldValues, UseFormRegister } from 'react-hook-form'
 
-interface ITextFieldProps {
+interface ITextAreaProps {
   labelText: string
   register: UseFormRegister<FieldValues>
   fieldName: string
-  auto?: 'email' | 'current-password' | 'new-password' | 'username' | 'off'
   id: string
   necessary: boolean
-  type: 'email' | 'password' | 'username' | 'text'
 }
 
 const labelClassname = 'place-self-start dark:text-dark-accent my-2'
-const textFieldClassname =
-  'block w-full rounded-md p-2 text-dark-primary shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-accent'
+const textAreaClassname = `block w-full rounded-md p-2 text-dark-primary shadow-sm
+ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-accent h-20 text-wrap overflow-y-auto`
 
-const TextFieldComponent = ({ labelText, register, fieldName, auto, id, necessary, type }: Readonly<ITextFieldProps>) => {
+const TextAreaComponent = ({ labelText, register, fieldName, id, necessary }: Readonly<ITextAreaProps>) => {
   return (
     <div className='w-full p-2 m-2 min-h-max'>
       <TextComponent
@@ -28,14 +26,13 @@ const TextFieldComponent = ({ labelText, register, fieldName, auto, id, necessar
       </TextComponent>
       <input
         {...register(fieldName)}
+        type='textarea'
         required={necessary}
-        className={textFieldClassname}
-        type={type}
+        className={textAreaClassname}
         id={id}
-        autoComplete={auto}
       />
     </div>
   )
 }
 
-export default TextFieldComponent
+export default TextAreaComponent

@@ -2,6 +2,8 @@ import { ApiProperty, IntersectionType, OmitType } from '@nestjs/swagger';
 import { IsEmail, IsString, MinLength } from 'class-validator';
 import { CreateRoleDto } from 'src/roles/dto/create-role.dto';
 
+// This file contains all the data properties and validation requirements for the user object.
+
 export class CreateUserDto {
   @ApiProperty()
   @IsString()
@@ -24,7 +26,7 @@ export class CreateUserDto {
 
 export class CreateUserResponseDto extends OmitType(CreateUserDto, [
   'password'
-] as const) {}
+] as const) {} // exclude the password property from the response
 
 export class UserResponseRoleDto extends IntersectionType(
   CreateUserDto,

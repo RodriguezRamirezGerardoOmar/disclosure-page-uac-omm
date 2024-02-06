@@ -1,15 +1,13 @@
 'use client'
-import React from 'react'
-import FooterComponent from '../components/ui/FooterComponent'
+import { FieldValues, SubmitHandler, useForm } from 'react-hook-form'
+import CreateUserComponent from '../components/modals/CreateUserComponent'
 
 export default function Home() {
+  const methods = useForm<FieldValues>()
+  const onSubmit: SubmitHandler<FieldValues> = async () => {}
   return (
-    <main
-      className={`margin-auto md:mx-auto max-w-7xl md:px-4 w-full h-full lg:px-8 lg:w-2/3 lg:h-auto 
-    min-h-screen place-items-center justify-between py-24`}>
-      <footer className='border-dashed border-2 border-dark-complementary'>
-        <FooterComponent />
-      </footer>
-    </main>
+    <form onSubmit={methods.handleSubmit(onSubmit)}>
+      <CreateUserComponent methods={methods} />
+    </form>
   )
 }
