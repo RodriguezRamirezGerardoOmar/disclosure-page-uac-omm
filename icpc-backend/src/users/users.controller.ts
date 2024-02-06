@@ -23,14 +23,14 @@ import { AuthGuard } from '../auth/guard/auth.guard';
 import { Auth } from '../common/decorators/auth.decorator';
 import { RoleEnum } from '../common/enums/role.enum';
 
-@Controller('users')
-@Auth(RoleEnum.ADMIN)
-@ApiTags('User')
+@Controller('users') // This is the path that will be used for all the endpoints in this controller.
+@Auth(RoleEnum.ADMIN) // This is the role that will be used for all the endpoints in this controller.
+@ApiTags('User') // This is the name of the tag for all the endpoints in this controller.
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @ApiBearerAuth()
-  @Post('user')
+  @Post('user') // Endpoint for a post request to create a user, at "/users/user"
   @UseGuards(AuthGuard)
   @ApiCreatedResponse({
     description: 'The user has been successfully created.'
