@@ -1,33 +1,13 @@
-"use client"
+'use client'
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form'
-import CreateNoteComponent from '../components/modals/CreateNoteComponent'
+import CreateUserComponent from '../components/modals/CreateUserComponent'
 
 export default function Home() {
   const methods = useForm<FieldValues>()
-  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
-    try{
-        const response = await fetch("http://localhost:3001/api/v1/notes", {
-            method: 'POST',
-            mode: 'cors',
-            headers: {
-              'Access-Control-Request-Methods': 'POST, OPTIONS',
-              'Access-Control-Allow-Origin': '*',
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ data })
-          });
-        console.log(response)
-    }
-    catch(err){
-      console.log(err)
-    }
-    finally{
-        console.log("Note created")
-    }
-  }
+  const onSubmit: SubmitHandler<FieldValues> = async () => {}
   return (
     <form onSubmit={methods.handleSubmit(onSubmit)}>
-      <CreateNoteComponent methods={methods} />
+      <CreateUserComponent methods={methods} />
     </form>
   )
 }
