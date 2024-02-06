@@ -86,7 +86,7 @@ const TagSelectorComponent = ({ ...props }: Readonly<TagSelectorProps>) => {
   };
 
   return (
-    <div className='w-full p-2 m-2 min-h-max'>
+    <div className='w-full m-2 min-h-max'>
       <TextComponent
         className={labelClassname}
         tag={enumTextTags.p}>

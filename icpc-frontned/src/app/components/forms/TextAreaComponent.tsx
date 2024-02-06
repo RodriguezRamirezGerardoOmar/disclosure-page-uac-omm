@@ -17,16 +17,15 @@ ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-accent h-20
 
 const TextAreaComponent = ({ labelText, register, fieldName, id, necessary }: Readonly<ITextAreaProps>) => {
   return (
-    <div className='w-full p-2 m-2 min-h-max'>
+    <div className='w-full m-2 min-h-max'>
       <TextComponent
         htmlFor={id}
         className={labelClassname}
         tag={enumTextTags.label}>
         {labelText}
       </TextComponent>
-      <input
+      <textarea
         {...register(fieldName)}
-        type='textarea'
         required={necessary}
         className={textAreaClassname}
         id={id}
