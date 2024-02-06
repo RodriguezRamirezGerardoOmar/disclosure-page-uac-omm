@@ -107,7 +107,7 @@ const verified = useStore(state => state.token !== null);
             <Link
               href={verified ? '#' : '/login'}
               className='hover:text-base-accent dark:text-dark-accent dark:hover:text-complementary'>
-              <UserComponent verified={verified} />
+              <UserComponent options={routes} verified={verified} />
             </Link>
           </div>
         </div>
