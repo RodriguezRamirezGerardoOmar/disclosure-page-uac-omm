@@ -9,16 +9,23 @@ import { FieldValues, Controller, UseFormReturn } from 'react-hook-form'
 import { SelectComponent } from '../dropdowns/SelectComponent'
 import data from '@/app/notelist/listaApuntes.json'
 import tags from '@/app/note/apunte.json'
-import TagListComponent from '../tags/TagListComponent'
 import TextAreaComponent from '../forms/TextAreaComponent'
 import MarkdownAreaComponent from '../forms/MarkdownAreaComponent'
 import SubmitComponent from '../forms/SubmitComponent'
+import TagSelectorComponent from '../forms/TagSelectorComponent'
 
 interface ICreateNoteProps {
   methods: UseFormReturn<FieldValues>
 }
 
+interface Tags {
+  id: number
+  name: string
+  color: string
+}
+
 const CreateNoteComponent = ({ ...props }: Readonly<ICreateNoteProps>) => {
+  const allTags: Tags[] = tags.tags
     return (
     <div      
       className={`margin-auto md:mx-auto max-w-7xl md:px-4 w-full h-full lg:px-8 lg:w-2/3 lg:h-auto 
@@ -52,26 +59,25 @@ const CreateNoteComponent = ({ ...props }: Readonly<ICreateNoteProps>) => {
                 id='category'
                 labelText='Categoría'
                 onChange={newSelected => field.onChange(newSelected)}
-                className='p-2'
+                className=''
               />
             )}
             name='category'
           />
-          <TextFieldComponent
-            labelText='Etiquetas'
-            register={props.methods.register}
-            fieldName='tags'
-            auto='off'
-            id='tags'
-            necessary={true}
-            type='text'
-          />
-          <div className='w-full items-start'>
-            <TagListComponent
-              tags={tags.tags}
-              showIcon={true}
+          <Controller
+          name='tags'
+          defaultValue={[] as Tags[]}
+          control={props.methods.control}
+          render={({ field }) => (
+            <TagSelectorComponent
+              id='tagSelector2'
+              options={allTags}
+              selectedTags={field.value}
+              onChange={val => field.onChange(val)}
             />
-          </div>
+          )}
+          rules={{ required: true }}
+        />
           <TextAreaComponent
             labelText={'Descripción'}
             register={props.methods.register}
