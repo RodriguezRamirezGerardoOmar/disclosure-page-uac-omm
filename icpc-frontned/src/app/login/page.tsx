@@ -1,5 +1,5 @@
 'use client'
-import { FieldValues, SubmitHandler, useForm } from 'react-hook-form'
+import { useForm, SubmitHandler } from 'react-hook-form';
 import CheckboxComponent from '../components/forms/CheckboxComponent'
 import TextFieldComponent from '../components/forms/TextFieldComponent'
 import { BasicPanelComponent } from '../components/panels/BasicPanelComponent'
@@ -9,19 +9,35 @@ import SubmitComponent from '../components/forms/SubmitComponent'
 import { TextComponent } from '../components/text/TextComponent'
 import useStore from '@/store/useStore'
 import { useRouter } from 'next/navigation'
+import { useState } from 'react'
+import { toast } from 'sonner';
 
 
 export default function Home() {
-  const login = useStore(state => state.login);
+  const login = useStore((state) => state.login);
   const router = useRouter();
-  const methods = useForm<FieldValues>();
+  const methods = useForm();
 
-  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+  const onSubmit: SubmitHandler<{ username: string; password: string }> = async (data) => {
     try {
       await login(data.username, data.password);
       router.push('/');
+      toast.success('Inicio de sesión exitoso', { 
+        duration: 5000,
+        style: {
+          backgroundColor: 'green',
+          color: '#ffffff'
+        }
+      });
     } catch (error) {
-      console.error('Error en el inicio de sesión:', error);
+      toast.error(
+        'Error al iniciar sesión, verifica tus credenciales',{
+        duration: 5000,
+        style: {
+          backgroundColor: '#ff0000',
+          color: '#ffffff'
+        }
+      });
     }
   };
 
@@ -40,7 +56,7 @@ export default function Home() {
           </TextComponent>
         </div>
         <form
-          onSubmit={methods.handleSubmit(onSubmit)}
+          onSubmit={methods.handleSubmit(onSubmit as any)}
           className='grid grid-cols-1 place-items-center justify-between'>
           <TextFieldComponent
             labelText='Correo electrónico / Nombre de usuario'

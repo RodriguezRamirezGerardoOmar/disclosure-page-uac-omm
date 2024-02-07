@@ -45,3 +45,30 @@ type typeReactNode = ReactNode
 export interface IReactNode {
   children?: typeReactNode
 }
+
+export type TResponseBasicError = {
+  Code: number
+  ResponseMessage: string
+  StatusCode: number
+  Success: boolean
+}
+
+export type TResponseError = {
+  ErrorCode: number
+  ErrorMessage: string
+  PropertyName: string
+  AttemptedValue?: { [key: string]: string } | string | number | boolean
+}
+
+export interface IApiResponse<E = {}> {
+  data: any
+  rows?: number // totalCurrentPageRecords
+  totalRows?: number // totalRecords
+  currentPage?: number // currentPageNumber
+  totalPageRecords?: number // totalCurrentPageRecords
+  totalAvailablePages?: number
+  error: boolean
+  statusCode: number | undefined
+  message: string
+  errors: E | TResponseError | any
+}
