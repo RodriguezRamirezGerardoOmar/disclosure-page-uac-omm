@@ -1,9 +1,9 @@
 "use client"
 import React from 'react';
 import { Fragment, useState } from 'react'
-import { Dialog, Listbox, Menu, Transition } from '@headlessui/react'
+import { Listbox, Menu, Transition } from '@headlessui/react'
 import {
-  Bars3Icon,
+
   CalendarDaysIcon,
   CreditCardIcon,
   EllipsisVerticalIcon,
@@ -16,7 +16,6 @@ import {
   UserCircleIcon,
   XMarkIcon as XMarkIconMini
 } from '@heroicons/react/20/solid'
-import { BellIcon, XMarkIcon as XMarkIconOutline } from '@heroicons/react/24/outline'
 import { CheckCircleIcon } from '@heroicons/react/24/solid'
 
 const navigation = [
@@ -111,7 +110,8 @@ const ExercisePage: React.FC = () => {
                 className="aspect-[1154/678] w-[72.125rem] bg-gradient-to-br from-[#FF80B5] to-[#9089FC]"
                 style={{
                   clipPath:
-                    'polygon(100% 38.5%, 82.6% 100%, 60.2% 37.7%, 52.4% 32.1%, 47.5% 41.8%, 45.2% 65.6%, 27.5% 23.4%, 0.1% 35.3%, 17.9% 0%, 27.7% 23.4%, 76.2% 2.5%, 74.2% 56%, 100% 38.5%)',
+                    // eslint-disable-next-line max-len
+                    'polygon(100% 38.5%, 82.6% 100%, 60.2% 37.7%, 52.4% 32.1%, 47.5% 41.8%, 45.2% 65.6%, 27.5% 23.4%, 0.1% 35.3%, 17.9% 0%, 27.7% 23.4%, 76.2% 2.5%, 74.2% 56%, 100% 38.5%)'
                 }}
               />
             </div>
@@ -142,7 +142,8 @@ const ExercisePage: React.FC = () => {
                 </a>
                 <a
                   href="#"
-                  className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                  className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm
+                  hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                 >
                   Send
                 </a>
@@ -162,7 +163,8 @@ const ExercisePage: React.FC = () => {
                     leaveFrom="transform opacity-100 scale-100"
                     leaveTo="transform opacity-0 scale-95"
                   >
-                    <Menu.Items className="absolute right-0 z-10 mt-0.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none">
+                    <Menu.Items className="absolute right-0 z-10 mt-0.5 w-32 origin-top-right rounded-md 
+                    bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none">
                       <Menu.Item>
                         {({ active }) => (
                           <button
@@ -247,7 +249,8 @@ const ExercisePage: React.FC = () => {
             </div>
 
             {/* Invoice */}
-            <div className="-mx-4 px-4 py-8 shadow-sm ring-1 ring-gray-900/5 sm:mx-0 sm:rounded-lg sm:px-8 sm:pb-14 lg:col-span-2 lg:row-span-2 lg:row-end-2 xl:px-16 xl:pb-20 xl:pt-16">
+            <div className="-mx-4 px-4 py-8 shadow-sm ring-1 ring-gray-900/5 sm:mx-0 sm:rounded-lg sm:px-8 sm:pb-14 
+            lg:col-span-2 lg:row-span-2 lg:row-end-2 xl:px-16 xl:pb-20 xl:pt-16">
               <h2 className="text-base font-semibold leading-6 text-gray-900">Invoice</h2>
               <dl className="mt-6 grid grid-cols-1 text-sm leading-6 sm:grid-cols-2">
                 <div className="sm:pr-4">
@@ -433,12 +436,14 @@ const ExercisePage: React.FC = () => {
               {/* New comment form */}
               <div className="mt-6 flex gap-x-3">
                 <img
+                  // eslint-disable-next-line max-len
                   src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
                   alt=""
                   className="h-6 w-6 flex-none rounded-full bg-gray-50"
                 />
                 <form action="#" className="relative flex-auto">
-                  <div className="overflow-hidden rounded-lg pb-12 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
+                  <div className="overflow-hidden rounded-lg pb-12 shadow-sm ring-1 ring-inset 
+                  ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
                     <label htmlFor="comment" className="sr-only">
                       Add your comment
                     </label>
@@ -446,7 +451,8 @@ const ExercisePage: React.FC = () => {
                       rows={2}
                       name="comment"
                       id="comment"
-                      className="block w-full resize-none border-0 bg-transparent py-1.5 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                      className="block w-full resize-none border-0 bg-transparent py-1.5 text-gray-900 
+                      placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
                       placeholder="Add your comment..."
                       defaultValue={''}
                     />
@@ -469,7 +475,8 @@ const ExercisePage: React.FC = () => {
                             <>
                               <Listbox.Label className="sr-only">Your mood</Listbox.Label>
                               <div className="relative">
-                                <Listbox.Button className="relative -m-2.5 flex h-10 w-10 items-center justify-center rounded-full text-gray-400 hover:text-gray-500">
+                                <Listbox.Button className="relative -m-2.5 flex h-10 w-10 items-center justify-center 
+                                rounded-full text-gray-400 hover:text-gray-500">
                                   <span className="flex items-center justify-center">
                                     {selected.value === null ? (
                                       <span>
@@ -502,7 +509,8 @@ const ExercisePage: React.FC = () => {
                                   leaveFrom="opacity-100"
                                   leaveTo="opacity-0"
                                 >
-                                  <Listbox.Options className="absolute z-10 -ml-6 mt-1 w-60 rounded-lg bg-white py-3 text-base shadow ring-1 ring-black ring-opacity-5 focus:outline-none sm:ml-auto sm:w-64 sm:text-sm">
+                                  <Listbox.Options className="absolute z-10 -ml-6 mt-1 w-60 rounded-lg bg-white 
+                                  py-3 text-base shadow ring-1 ring-black ring-opacity-5 focus:outline-none sm:ml-auto sm:w-64 sm:text-sm">
                                     {moods.map((mood) => (
                                       <Listbox.Option
                                         key={mood.value}
@@ -540,7 +548,8 @@ const ExercisePage: React.FC = () => {
                     </div>
                     <button
                       type="submit"
-                      className="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                      className="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 s
+                      hadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
                     >
                       Comment
                     </button>
