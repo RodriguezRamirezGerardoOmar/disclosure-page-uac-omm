@@ -4,6 +4,8 @@ import './globals.css'
 import NavbarComponent from './components/NavbarComponent'
 import classNames from 'classnames'
 import FooterComponent from './components/ui/FooterComponent'
+import { Toaster } from 'sonner';
+
 
 const montserrat = Montserrat({ subsets: ['latin'] })
 
@@ -25,6 +27,7 @@ export default function RootLayout({
         <footer>
           <FooterComponent />
         </footer>
+        <Toaster />
       </body>
     </html>
   )
