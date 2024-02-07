@@ -28,12 +28,12 @@ const routes = [
   {
     id: 4,
     name: 'Noticias',
-    href: '#'
+    href: '/newslist'
   },
   {
     id: 5,
     name: 'Acerca de nosotros',
-    href: '#'
+    href: '/about'
   }
 ]
 
