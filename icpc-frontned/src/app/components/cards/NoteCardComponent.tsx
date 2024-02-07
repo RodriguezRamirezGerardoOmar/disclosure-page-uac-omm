@@ -28,6 +28,7 @@ export default function NoteCardComponent({ ...props }: Readonly<NoteCardProps>)
       <TagListComponent
         tags={props.tags}
         showIcon={false}
+        className='my-4'
       />
       <TextComponent
         sizeFont='s14'
@@ -42,7 +43,7 @@ export default function NoteCardComponent({ ...props }: Readonly<NoteCardProps>)
       />
 
       {props.showButton ? (
-        <div className='grid justify-items-center'>
+        <div className='grid justify-items-center my-4'>
           <a href='/exercises'>
             <ButtonComponent text='Problemas del tema' />
           </a>
