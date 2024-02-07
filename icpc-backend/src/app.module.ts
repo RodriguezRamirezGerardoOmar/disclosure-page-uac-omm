@@ -7,18 +7,24 @@ import { RolesModule } from './roles/roles.module';
 import { CategoriesModule } from './categories/categories.module';
 import { NotesModule } from './notes/notes.module';
 import { CommentModule } from './comment/comment.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: 'localhost',
-      port: 3306,
-      username: 'root',
-      password: 'Danger1.',
-      database: 'icpc-backend',
-      synchronize: true,
-      autoLoadEntities: true
+    ConfigModule.forRoot({
+      isGlobal: true
+    }),
+    TypeOrmModule.forRootAsync({
+      useFactory: () => ({
+        type: process.env.DATABASE_TYPE as 'mysql', // Asegúrate de que el tipo coincida con tu base de datos
+        host: process.env.DATABASE_HOST,
+        port: +process.env.DATABASE_PORT, // El signo + convierte el string a número
+        username: process.env.DATABASE_USERNAME,
+        password: process.env.DATABASE_PASSWORD,
+        database: process.env.DATABASE_NAME,
+        synchronize: true,
+        autoLoadEntities: true
+      })
     }),
     AuthModule,
     UsersModule,
