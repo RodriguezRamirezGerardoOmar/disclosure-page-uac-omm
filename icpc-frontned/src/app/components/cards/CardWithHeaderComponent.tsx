@@ -17,7 +17,7 @@ export const CardWithHeaderComponent = ({ className = [], ...props }: CardWithHe
         <TextComponent
           tag={enumTextTags.h2}
           sizeFont='s20'
-          className={'text-accent font-semibold'}
+          className={'text-accent dark:text-white font-semibold'}
         >
           {props.title}
         </TextComponent>

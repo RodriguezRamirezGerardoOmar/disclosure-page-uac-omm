@@ -95,7 +95,7 @@ export default function TableComponent() {
                         { 
                         //itera sobre el numero de dificultad y pinta tantas estrellas como sea el numero
                         Array.from(Array(exercise.dificult), (_, i) => (
-                          <img src='icons/estrellas.svg' key={i}  className='h-5 w-5' />
+                          <img alt='' src='icons/estrellas.svg' key={i}  className='h-5 w-5'  />
                         ))
                       }
                     </td>

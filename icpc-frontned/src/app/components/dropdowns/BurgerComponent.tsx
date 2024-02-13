@@ -80,7 +80,7 @@ const logout = useStore(state => state.logout);
                     <Menu.Item>
                       <Link
                         className={optionStyle}
-                        href='#'>
+                        href='/profile'>
                         <TextComponent
                           sizeFont='s12'
                           tag={enumTextTags.p}

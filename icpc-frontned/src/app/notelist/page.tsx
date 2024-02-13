@@ -4,7 +4,6 @@ import NoteListComponent from '../components/NoteListComponent'
 import { SelectComponent } from '../components/dropdowns/SelectComponent'
 import { Controller, FieldValues, useForm } from 'react-hook-form'
 import { PaginationComponent } from '../components/paginations/PaginationComponent'
-import CreateNoteComponent from '../components/modals/CreateNoteComponent'
 const data = require('../notelist/listaApuntes.json')
 
 

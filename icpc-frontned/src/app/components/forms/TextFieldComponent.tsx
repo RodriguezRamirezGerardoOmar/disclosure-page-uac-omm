@@ -13,13 +13,14 @@ interface ITextFieldProps {
   necessary: boolean
   type: 'email' | 'password' | 'username' | 'text'
   className?: string
+  placeholder?: string
 }
 
 const labelClassname = 'place-self-start dark:text-dark-accent my-2'
 const textFieldClassname =
   'block w-full rounded-md p-2 text-dark-primary shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-accent'
 
-const TextFieldComponent = ({ labelText, register, fieldName, auto, id, necessary, type, className }: Readonly<ITextFieldProps>) => {
+const TextFieldComponent = ({ labelText, placeholder, register, fieldName, auto, id, necessary, type, className }: Readonly<ITextFieldProps>) => {
   const style = cn(className, 'w-full min-h-max')
   return (
     <div className={style}>
@@ -36,6 +37,7 @@ const TextFieldComponent = ({ labelText, register, fieldName, auto, id, necessar
         type={type}
         id={id}
         autoComplete={auto}
+        placeholder={placeholder}
       />
     </div>
   )

@@ -20,7 +20,8 @@ export const DataCardComponent = ({ ...props }: IInfoCardComponentProps) => {
         <div className='flex gap-4'>
           {props.image ? (
             <img
-            src={props.image}
+              src={props.image}
+              alt=""
               className='w-full h-40 object-contain rounded-md mt-2'
             />
           ) : (

@@ -21,7 +21,8 @@
     "no-unused-vars": "off",
     "@typescript-eslint/no-unused-vars": ["warn"],
     "react/display-name": "off",
-    "multiline-ternary": "off"
+    // "multiline-ternary": "off",
+    "@next/next/no-img-element": "off"
   },
   "globals": {
     "React": true,

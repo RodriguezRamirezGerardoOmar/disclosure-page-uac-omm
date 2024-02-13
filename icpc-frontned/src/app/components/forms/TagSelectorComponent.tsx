@@ -2,7 +2,7 @@
 import React from 'react'
 import { TextComponent } from '../text/TextComponent'
 import { enumTextTags } from '@/constants/types'
-import Select, { ActionMeta, MultiValue, StylesConfig } from 'react-select'
+import Select, { MultiValue, StylesConfig } from 'react-select'
 import chroma from 'chroma-js'
 
 interface TagSelectorProps {
@@ -41,12 +41,34 @@ const colourStyles: StylesConfig<Tags, true> = {
     return {
       ...styles,
       backgroundColor,
-      color: isDisabled ? '#ccc' : isSelected ? (chroma.contrast(color, 'white') > 2 ? 'white' : 'black') : data.color,
-      cursor: isDisabled ? 'not-allowed' : 'default',
+      color: getColor(isDisabled, isSelected, color, data.color),
+      cursor: getCursor(isDisabled),
 
       ':active': {
         ...styles[':active'],
-        backgroundColor: !isDisabled ? (isSelected ? data.color : color.alpha(0.3).css()) : undefined
+        backgroundColor: getActiveBackgroundColor(isDisabled, isSelected, data.color, color)
+      }
+    }
+
+    function getColor(isDisabled: boolean, isSelected: boolean, color: chroma.Color, dataColor: string): string {
+      if (isDisabled) {
+        return '#ccc';
+      } else if (isSelected) {
+        return chroma.contrast(color, 'white') > 2 ? 'white' : 'black';
+      } else {
+        return dataColor;
+      }
+    }
+
+    function getCursor(isDisabled: boolean): string {
+      return isDisabled ? 'not-allowed' : 'default';
+    }
+
+    function getActiveBackgroundColor(isDisabled: boolean, isSelected: boolean, dataColor: string, color: chroma.Color): string | undefined {
+      if (!isDisabled) {
+        return isSelected ? dataColor : color.alpha(0.3).css();
+      } else {
+        return undefined;
       }
     }
   },
@@ -98,7 +120,7 @@ const TagSelectorComponent = ({ ...props }: Readonly<TagSelectorProps>) => {
         defaultValue={selectedTags}
         isSearchable={true}
         isMulti={true}
-        onChange={(newValue: MultiValue<Tags>, actionMeta: ActionMeta<Tags>) => handleChange(newValue)}
+        onChange={(newValue: MultiValue<Tags>) => handleChange(newValue)}
         styles={colourStyles}
         getOptionLabel={(option) => option.name}
         getOptionValue={(option) => option.id.toString()}
