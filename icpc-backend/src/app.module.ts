@@ -8,6 +8,10 @@ import { CategoriesModule } from './categories/categories.module';
 import { NotesModule } from './notes/notes.module';
 import { CommentModule } from './comment/comment.module';
 import { ConfigModule } from '@nestjs/config';
+import { MemoryModule } from './memory/memory.module';
+import { TimeModule } from './time/time.module';
+import { DifficultyModule } from './difficulty/difficulty.module';
+import { TagsModule } from './tags/tags.module';
 
 @Module({
   imports: [
@@ -31,7 +35,11 @@ import { ConfigModule } from '@nestjs/config';
     RolesModule,
     CategoriesModule,
     NotesModule,
-    CommentModule
+    CommentModule,
+    MemoryModule,
+    TimeModule,
+    DifficultyModule,
+    TagsModule
   ]
 })
 export class AppModule {
