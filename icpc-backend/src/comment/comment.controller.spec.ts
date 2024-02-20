@@ -8,7 +8,7 @@ describe('CommentController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [CommentController],
-      providers: [CommentService],
+      providers: [CommentService]
     }).compile();
 
     controller = module.get<CommentController>(CommentController);
