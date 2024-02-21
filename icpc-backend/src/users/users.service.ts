@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { Role } from 'src/roles/entities/role.entity';
 import * as bcrypt from 'bcrypt';
+import { RoleEnum } from 'src/common/enums/role.enum';
 
 // This file contains all the logic to perform the database queries.
 
@@ -26,25 +27,36 @@ export class UsersService {
     } else if (email !== null) {
       throw new BadRequestException('Email already exists'); // throw error if email exists
     }
-    const user = this.userRepository.create(createUserDto); // create user object
-    user.password = await bcrypt.hash(user.password, 10); // hash password
-    const userRole = await this.roleRepository.findOne({
-      where: { id: user.id } // find the user's role in the 'role' table by the user's id
-    });
-    if (userRole) {
-      user.role = userRole; // assign the user's role to the user object
-    }
-    const newUser = await this.userRepository.save(user); // save the user object to the database
-    return {
-      // return the user object
-      id: newUser.id,
-      username: newUser.username,
-      email: newUser.email,
-      role: {
-        id: newUser.role.id,
-        name: newUser.role.role
+    if (createUserDto.password === createUserDto.passwordVerify) {
+      const user = this.userRepository.create(createUserDto); // create user object
+      const role = createUserDto.isAdmin ? RoleEnum.ADMIN : RoleEnum.USER;
+      user.password = await bcrypt.hash(user.password, 10); // hash password
+      const userRole = await this.roleRepository.findOne({
+        where: { role: role } // cast role to RoleEnum
+      });
+      if (userRole) {
+        user.role = userRole; // assign the user's role to the user object
       }
-    };
+      const newUser = await this.userRepository.save(user); // save the user object to the database
+      return {
+        // return the user object
+        id: newUser.id,
+        username: newUser.username,
+        email: newUser.email,
+        role: {
+          id: newUser.role.id,
+          name: newUser.role.role
+        }
+      };
+    } else {
+      console.log(createUserDto.password, createUserDto.passwordVerify);
+      console.log(createUserDto.password === createUserDto.passwordVerify);
+      console.log(
+        typeof createUserDto.password,
+        typeof createUserDto.passwordVerify
+      );
+      throw new BadRequestException('Las contraseñas no coinciden');
+    }
   }
 
   async findAll() {

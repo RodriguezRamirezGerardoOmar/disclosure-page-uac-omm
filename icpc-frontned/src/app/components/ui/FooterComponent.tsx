@@ -64,7 +64,7 @@ const FooterComponent = () => {
               Manual de usuario
             </TextComponent>
           </Link>
-          <Link href='#'>
+          <Link href='/dev'>
             <TextComponent
               tag={enumTextTags.p}
               className='hover:text-secondary dark:text-dark-accent underline hover:dark:text-dark-complementary'>
