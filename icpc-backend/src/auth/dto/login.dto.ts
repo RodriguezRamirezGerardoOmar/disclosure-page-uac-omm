@@ -23,12 +23,19 @@ export class LoginDto {
 }
 
 export class LoginResponseDto {
-  @ApiProperty()
-  username: string;
-
-  @ApiProperty()
-  email: string;
-
+  @ApiProperty({
+    type: 'object',
+    properties: {
+      username: { type: 'string' },
+      email: { type: 'string' },
+      role: { type: 'string' }
+    }
+  })
+  user: {
+    username: string;
+    email: string;
+    role: string;
+  };
   @ApiProperty()
   token: string;
 }

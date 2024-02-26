@@ -7,8 +7,18 @@ import { CreateRoleDto } from 'src/roles/dto/create-role.dto';
 export class CreateUserDto {
   @ApiProperty()
   @IsString()
-  @MinLength(5)
-  username: string;
+  @MinLength(3)
+  name: string;
+
+  @ApiProperty()
+  @IsString()
+  @MinLength(3)
+  lastName: string;
+
+  @ApiProperty()
+  @IsString()
+  @MinLength(3)
+  userName: string;
 
   @ApiProperty()
   @IsEmail()
