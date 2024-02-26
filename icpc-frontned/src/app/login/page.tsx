@@ -42,9 +42,9 @@ export default function Home() {
 
   return (
     <main
-      className={`margin-auto md:mx-auto max-w-7xl md:px-4 w-full h-full lg:px-8 lg:w-2/3 lg:h-auto 
-      min-h-screen place-items-center justify-between py-24`}>
-      <BasicPanelComponent backgroundColor='bg-gray-300 dark:bg-dark-primary'>
+      className={`margin-auto flex h-full min-h-screen w-full max-w-3xl place-items-center justify-between md:mx-auto
+      md:px-4 lg:h-auto lg:w-2/3 lg:px-8`}>
+      <BasicPanelComponent backgroundColor='bg-gray-300 dark:bg-dark-primary w-full shadow-lg'>
         <div className='grid grid-cols-1 place-items-center justify-between'>
           <LogoComponent size={150} />
           <TextComponent
@@ -62,7 +62,7 @@ export default function Home() {
             register={methods.register}
             fieldName='username'
             auto='username'
-            type='username'
+            type='text'
             necessary={true}
             id='username'
           />
@@ -82,7 +82,7 @@ export default function Home() {
           />
           <SubmitComponent text='Iniciar sesión' />
           <a href='/forgot'>
-            <TextComponent className='dark:text-dark-accent underline hover:text-dark-accent hover:dark:text-complementary'>
+          <TextComponent className='dark:text-dark-accent hover:text-dark-accent hover:dark:text-complementary underline'>
               Olvidé mi contraseña
             </TextComponent>
           </a>

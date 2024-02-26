@@ -1,4 +1,3 @@
-
 import React from 'react'
 import { TextComponent } from '../text/TextComponent'
 import { enumTextTags } from '@/constants/types'
@@ -30,12 +29,12 @@ const colourStyles: StylesConfig<Tags, true> = {
   control: styles => ({ ...styles, backgroundColor: 'white' }),
   option: (styles, { data, isDisabled, isFocused, isSelected }) => {
     const color = chroma(data.color)
-    let backgroundColor = undefined;
+    let backgroundColor = undefined
     if (!isDisabled) {
       if (isSelected) {
-        backgroundColor = data.color;
+        backgroundColor = data.color
       } else if (isFocused) {
-        backgroundColor = color.alpha(0.1).css();
+        backgroundColor = color.alpha(0.1).css()
       }
     }
     return {
@@ -52,23 +51,28 @@ const colourStyles: StylesConfig<Tags, true> = {
 
     function getColor(isDisabled: boolean, isSelected: boolean, color: chroma.Color, dataColor: string): string {
       if (isDisabled) {
-        return '#ccc';
+        return '#ccc'
       } else if (isSelected) {
-        return chroma.contrast(color, 'white') > 2 ? 'white' : 'black';
+        return chroma.contrast(color, 'white') > 2 ? 'white' : 'black'
       } else {
-        return dataColor;
+        return dataColor
       }
     }
 
     function getCursor(isDisabled: boolean): string {
-      return isDisabled ? 'not-allowed' : 'default';
+      return isDisabled ? 'not-allowed' : 'default'
     }
 
-    function getActiveBackgroundColor(isDisabled: boolean, isSelected: boolean, dataColor: string, color: chroma.Color): string | undefined {
+    function getActiveBackgroundColor(
+      isDisabled: boolean,
+      isSelected: boolean,
+      dataColor: string,
+      color: chroma.Color
+    ): string | undefined {
       if (!isDisabled) {
-        return isSelected ? dataColor : color.alpha(0.3).css();
+        return isSelected ? dataColor : color.alpha(0.3).css()
       } else {
-        return undefined;
+        return undefined
       }
     }
   },
@@ -101,11 +105,11 @@ const TagSelectorComponent = ({ ...props }: Readonly<TagSelectorProps>) => {
 
   const handleChange = (selectedOptions: MultiValue<Tags>) => {
     // Aquí puedes transformar los datos seleccionados al formato deseado, si es necesario
-    selectedTags = selectedOptions.map((option) => {
-      return props.options.find((tag) => tag.name === option.name) as Tags
+    selectedTags = selectedOptions.map(option => {
+      return props.options.find(tag => tag.name === option.name) as Tags
     })
-    props.onChange(selectedOptions);
-  };
+    props.onChange(selectedOptions)
+  }
 
   return (
     <div className='w-full m-2 min-h-max'>
@@ -122,8 +126,8 @@ const TagSelectorComponent = ({ ...props }: Readonly<TagSelectorProps>) => {
         isMulti={true}
         onChange={(newValue: MultiValue<Tags>) => handleChange(newValue)}
         styles={colourStyles}
-        getOptionLabel={(option) => option.name}
-        getOptionValue={(option) => option.id.toString()}
+        getOptionLabel={option => option.name}
+        getOptionValue={option => option.id.toString()}
       />
     </div>
   )
