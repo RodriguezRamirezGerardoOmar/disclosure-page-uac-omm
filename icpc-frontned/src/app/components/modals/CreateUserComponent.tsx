@@ -36,13 +36,15 @@ const CreateUserComponent = ({ ...props }: Readonly<ICreateUserProps>) => {
         }
       })
     } else {
-      toast.error(response.message, {
-        duration: 5000,
-        style: {
-          backgroundColor: '#ff0000',
-          color: '#ffffff'
-        }
-      })
+      if ('message' in response) {
+        toast.error(response.message, {
+          duration: 5000,
+          style: {
+            backgroundColor: '#ff0000',
+            color: '#ffffff'
+          }
+        })
+      }
     }
   }
   return (
