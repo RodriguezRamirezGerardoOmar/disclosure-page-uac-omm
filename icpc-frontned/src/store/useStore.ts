@@ -1,15 +1,22 @@
 import { create } from 'zustand'
+import { devtools, persist } from 'zustand/middleware'
 import axios from 'axios'
+import { IApiResponse, TResponseBasicError } from '@/constants/types'
 
 // Define user and auth response types
 interface IUser {
-  id: string // Asumir estructura básica del usuario
+  id: string
   name: string
+  lastName: string
+  userName: string
   email: string
+  rol: string
 }
 
 interface ICreateUser {
-  username: string
+  name: string
+  lastName: string
+  userName: string
   email: string
   password: string
   passwordVerify: string
@@ -19,54 +26,69 @@ interface ICreateUser {
 interface AuthState {
   token: string | null
   user: IUser | null
-  login(email: string, password: string): Promise<void>
-  logout(): void
+  isLogged: boolean
+}
+
+interface Actions {
+  login: (email: string, password: string) => Promise<void>
+  logout: () => void
   setError: (error: string | null) => void
-  error: string | null
-  createUser(user: ICreateUser): Promise<void>
+  createUser: (user: ICreateUser) => Promise<IApiResponse> | TResponseBasicError
+  getProfile: () => Promise<IUser>
 }
 
 const api = axios.create({
   baseURL: 'http://localhost:3001/'
 })
 
-const useAuthStore = create<AuthState>((set, get) => ({
-  token: null,
-  user: null,
-  error: null,
-  login: async (email, password) => {
-    try {
-      const response = await api.post('api/v1/auth/login', { email, password })
-      const {token, user} = response.data.data
-      set({ token: token, user: user, error: null })
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        throw new Error(error.response?.data?.message || 'Error desconocido al intentar iniciar sesión')
-      } else {
-        throw new Error('Error al conectarse al servicio de autenticación')
-      }
-    }
-  },
-  logout: () => set({ token: null, user: null, error: null }),
-  setError: error => set({ error }),
+const useAuthStore = create<AuthState & Actions>()(
+  devtools(
+    persist(
+      (set, get) => ({
+        token: null,
+        user: null,
 
-  createUser: async (user: ICreateUser) => {
-    try {
-      const token = get().token
-      const response = await api.post('api/v1/users/user', user, { headers: { Authorization: `Bearer ${token}` } })
-      if (response.status === 201) {
-        set({ error: null })
-      } else {
-        throw new Error('Error en la creación de usuario')
+        login: async (email, password) => {
+          const response = await api.post('/api/v1/auth/login', { email, password })
+          set(() => ({ token: response.data.token }))
+          if (get().token !== null) {
+            set(() => ({ isLogged: true }))
+          }
+        },
+
+        logout: () => set(() => ({ isLogged: false, token: null, user: null })),
+
+        setError: (error: string | null) => {}, // Add setError property
+
+        createUser: async (user: ICreateUser) => {
+          try {
+          const response = await api.post('/api/v1/auth/register', user)
+          if (response.status === 201) {
+            set(() => ({ user: response.data }))
+            return response.data
+          }
+        } catch (error: any) {
+          return error.response.data
+        }
+        },
+
+        isLogged: false,
+
+        getProfile: async (): Promise<IUser> => {
+          const response = await api.get('/api/v1/auth/profile', {
+            headers: {
+              Authorization: `Bearer ${get().token}`
+            }
+          })
+          set(() => ({ user: response.data }))
+          return response.data
+        }
+      }),
+      {
+        name: 'auth-storage'
       }
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        throw new Error(error.response?.data?.message || 'Error desconocido al intentar crear usuario')
-      } else {
-        throw new Error('Error al conectarse al servicio de autenticación')
-      }
-    }
-  }
-}))
+    )
+  )
+)
 
 export default useAuthStore
