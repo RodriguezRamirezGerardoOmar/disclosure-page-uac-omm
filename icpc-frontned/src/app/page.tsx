@@ -51,7 +51,7 @@ export default function Home() {
     <main className='flex min-h-screen flex-col items-center mt-16 gap-8'>
       <section className='flex relative w-full h-[90vw] lg:h-[50vw] dark:invert items-stretch'>
         <Image
-          src='/banner-landing.png'
+          src='/images/banner-landing.png'
           alt='Logo'
           fill
           priority
