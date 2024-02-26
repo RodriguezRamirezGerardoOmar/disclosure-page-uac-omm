@@ -14,25 +14,35 @@ interface ICreateUserProps {
   methods: UseFormReturn<FieldValues>
 }
 const CreateUserComponent = ({ ...props }: Readonly<ICreateUserProps>) => {
-  const createUser = useStore((state) => state.createUser)
-  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
-    try{
-      await createUser({
-        username: String(data.username),
-        email: String(data.email),
-        password: String(data.password),
-        passwordVerify: String(data.passwordVerify),
-        isAdmin: data.isAdmin
+  const createUser = useStore(state => state.createUser)
+
+  const onSubmit: SubmitHandler<FieldValues> = async data => {
+    const response = await createUser({
+      name: String(data.name),
+      lastName: String(data.lastName),
+      userName: String(data.userName),
+      email: String(data.email),
+      password: String(data.password),
+      passwordVerify: String(data.passwordVerify),
+      isAdmin: data.isAdmin
+    })
+
+    if ('statusCode' in response && response.statusCode === 201) {
+      toast.success(response.message, {
+        duration: 5000,
+        style: {
+          backgroundColor: 'green',
+          color: '#ffffff'
+        }
       })
-    } catch (error) {
-      toast.error(
-        'Error al crear el nuevo usuario',{
+    } else {
+      toast.error(response.message, {
         duration: 5000,
         style: {
           backgroundColor: '#ff0000',
           color: '#ffffff'
         }
-      });
+      })
     }
   }
   return (
@@ -49,14 +59,30 @@ const CreateUserComponent = ({ ...props }: Readonly<ICreateUserProps>) => {
               className='dark:text-dark-accent'>
               Crear cuenta de usuario
             </TextComponent>
+            <TextFieldComponent
+              labelText='Nombre'
+              register={props.methods.register}
+              fieldName='name'
+              id='name'
+              necessary={true}
+              type='text'
+              auto='name'></TextFieldComponent>
+            <TextFieldComponent
+              labelText='Apellido'
+              register={props.methods.register}
+              fieldName='lastName'
+              id='lastName'
+              necessary={true}
+              type='text'
+              auto='last-name'></TextFieldComponent>
 
             <TextFieldComponent
               labelText='Nombre de usuario'
               register={props.methods.register}
-              fieldName='username'
-              id='username'
+              fieldName='userName'
+              id='userName'
               necessary={true}
-              type='username'
+              type='text'
               auto='username'></TextFieldComponent>
 
             <TextFieldComponent

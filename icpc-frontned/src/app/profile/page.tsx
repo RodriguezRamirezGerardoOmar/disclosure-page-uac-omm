@@ -3,18 +3,26 @@ import { SubmitHandler, useForm } from 'react-hook-form'
 import { ButtonComponent } from '../components/buttons/ButtonComponent'
 import TextFieldComponent from '../components/forms/TextFieldComponent'
 import TabComponent from '../components/tabs/TabComponent'
-import { NewspaperIcon, ArchiveBoxIcon, ListBulletIcon, BookmarkIcon} from '@heroicons/react/20/solid';
+import { NewspaperIcon, ArchiveBoxIcon, ListBulletIcon, BookmarkIcon } from '@heroicons/react/20/solid'
+import useAuthStore from '@/store/useStore'
+import { useEffect } from 'react'
 
 const myTabs = [
   { name: 'Ejercicios', href: '#', icon: ListBulletIcon, current: true },
   { name: 'Apuntes', href: '#', icon: BookmarkIcon, current: false },
   { name: 'Noticias', href: '#', icon: NewspaperIcon, current: false },
   { name: 'Pendientes', href: '#', icon: ArchiveBoxIcon, current: false }
-];
+]
 
 function Page() {
   const methods = useForm()
 
+  const user = useAuthStore(state => state.user)
+  const getProfile = useAuthStore(state => state.getProfile)
+
+  useEffect(() => {
+    getProfile()
+  }, [])
 
   return (
     <div>
@@ -57,7 +65,7 @@ function Page() {
                         register={methods.register}
                         necessary={false}
                         type='text'
-                        placeholder='Juan Pablo'
+                        placeholder={user?.name}
                       />
                     </div>
                   </div>
@@ -71,7 +79,7 @@ function Page() {
                         register={methods.register}
                         necessary={false}
                         type='text'
-                        placeholder='Pérez Sánchez'
+                        placeholder={user?.lastName}
                       />
                     </div>
                   </div>
@@ -85,7 +93,7 @@ function Page() {
                         register={methods.register}
                         necessary={false}
                         type='email'
-                        placeholder='nombre@ejemplo.com'
+                        placeholder={user?.email}
                       />
                     </div>
                   </div>
@@ -99,7 +107,7 @@ function Page() {
                         register={methods.register}
                         necessary={false}
                         type='text'
-                        placeholder='juanp'
+                        placeholder={user?.userName}
                       />
                     </div>
                   </div>
@@ -115,7 +123,7 @@ function Page() {
               </form>
             </div>
             <div className='mx-10'>
-            <TabComponent tabs={myTabs} />
+              <TabComponent tabs={myTabs} />
             </div>
           </div>
         </main>

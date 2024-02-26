@@ -37,11 +37,9 @@ const routes = [
   }
 ]
 
-
 export default function NavbarComponent() {
 
-// se puede usar el hook useStore para verificar si el usuario está logueado
-const verified = useStore(state => state.token !== null);
+  const verified = useStore(state => state.isLogged)
 
   return (
     <Disclosure
@@ -89,7 +87,7 @@ const verified = useStore(state => state.token !== null);
                   id='search'
                   name='search'
                   className='w-full rounded-md border-0 py-1.5 pl-10 pr-3 text-black ring-1 ring-inset ring-gray-300 focus:ring-indigo-600'
-                  placeholder='Search'
+                  placeholder='Buscar'
                   type='search'
                 />
               </div>
@@ -107,7 +105,10 @@ const verified = useStore(state => state.token !== null);
             <Link
               href={verified ? '#' : '/login'}
               className='hover:text-base-accent dark:text-dark-accent dark:hover:text-complementary'>
-              <UserComponent options={routes} verified={verified} />
+              <UserComponent
+                options={routes}
+                verified={verified}
+              />
             </Link>
           </div>
         </div>

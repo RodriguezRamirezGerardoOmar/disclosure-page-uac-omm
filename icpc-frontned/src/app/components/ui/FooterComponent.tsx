@@ -6,7 +6,7 @@ import Link from 'next/link'
 
 const FooterComponent = () => {
   return (
-    <div className='w-full flex flex-col gap-2 p-2'>
+    <div className='w-full flex flex-col gap-2 p-8 mt-20'>
       <LogoComponent size={50} />
       <TextComponent
         tag={enumTextTags.h1}

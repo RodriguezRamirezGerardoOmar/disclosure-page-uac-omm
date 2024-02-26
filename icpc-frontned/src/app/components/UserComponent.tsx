@@ -30,17 +30,17 @@ export default function UserComponent({ options, verified }: Readonly<IUserProps
   return verified ? (
     <Menu
       as='div'
-      className='relative inline-block text-left mx-3 my-3'>
+      className='relative flex'>
       {({ open }) => (
         <>
           <Menu.Button>
             {open ? (
               <XMarkIcon
-                className='block h-6 w-6'
+                className='block h-6 w-6 m-2'
                 aria-hidden='true'
               />
             ) : (
-              <UserIcon className='h-10 w-10 rounded-full' />
+              <UserIcon className='h-10 w-10' />
             )}
           </Menu.Button>
           <Transition
@@ -52,7 +52,7 @@ export default function UserComponent({ options, verified }: Readonly<IUserProps
             leaveFrom='transform opacity-100 scale-100'
             leaveTo='transform opacity-0 scale-95'>
             <Menu.Items
-              className={`absolute right-0 mt-2 w-56 origin-top-right rounded-md bg-white 
+              className={`absolute right-4 mt-8 w-56 origin-top-right rounded-md bg-white 
                   dark:bg-primary shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none`}>
               <div className='py-1 grid grid-cols-1'>
                 {options.map(option => (
