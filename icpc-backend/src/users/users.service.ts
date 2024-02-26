@@ -20,28 +20,30 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: CreateUserDto) {
-    const username = await this.findOneByUsername(createUserDto.username); // check if username exists
+    const username = await this.findOneByUsername(createUserDto.userName); // check if username exists
     const email = await this.findOneByEmail(createUserDto.email); // check if email exists
     if (username !== null) {
-      throw new BadRequestException('Username already exists'); // throw error if username exists
+      throw new BadRequestException('El nombre de usuario ya existe');
     } else if (email !== null) {
-      throw new BadRequestException('Email already exists'); // throw error if email exists
+      throw new BadRequestException('El email ya existe');
     }
     if (createUserDto.password === createUserDto.passwordVerify) {
-      const user = this.userRepository.create(createUserDto); // create user object
+      const user = this.userRepository.create(createUserDto);
       const role = createUserDto.isAdmin ? RoleEnum.ADMIN : RoleEnum.USER;
-      user.password = await bcrypt.hash(user.password, 10); // hash password
+      user.password = await bcrypt.hash(user.password, 10);
       const userRole = await this.roleRepository.findOne({
-        where: { role: role } // cast role to RoleEnum
+        where: { role: role }
       });
       if (userRole) {
-        user.role = userRole; // assign the user's role to the user object
+        user.role = userRole;
       }
-      const newUser = await this.userRepository.save(user); // save the user object to the database
+      const newUser = await this.userRepository.save(user);
       return {
         // return the user object
         id: newUser.id,
-        username: newUser.username,
+        name: newUser.name,
+        lastName: newUser.lastName,
+        userName: newUser.userName,
         email: newUser.email,
         role: {
           id: newUser.role.id,

@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException
+} from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { RegisterDto } from './dto/register.dto';
 import * as bcrypt from 'bcrypt';
@@ -23,25 +27,26 @@ export class AuthService {
 
     const isPasswordMatch = await bcrypt.compare(password, user.password);
     if (!isPasswordMatch) {
-      throw new BadRequestException('Invalid credentials');
+      throw new UnauthorizedException('Invalid credentials');
     }
-
     const payload = {
-      username: user.username,
+      username: user.userName,
       email: user.email,
       role: user.role.role
     };
 
-    const token = this.jwtService.sign(payload);
+    if (isPasswordMatch && user !== null) {
+      const token = this.jwtService.sign(payload);
 
-    return {
-      user: {
-        username: user.username,
-        email: user.email,
-        role: user.role.role
-      },
-      token
-    };
+      return {
+        user: {
+          username: user.userName,
+          email: user.email,
+          role: user.role.role
+        },
+        token
+      };
+    }
   }
 
   async register(registerDto: RegisterDto) {
@@ -58,7 +63,9 @@ export class AuthService {
     }
     return {
       id: user.id,
-      username: user.username,
+      name: user.name,
+      lastName: user.lastName,
+      userName: user.userName,
       email: user.email,
       role: {
         rolId: user.role.id,
