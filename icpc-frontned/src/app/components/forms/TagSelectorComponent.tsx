@@ -25,6 +25,16 @@ interface Tags {
   color: string
 }
 
+/*
+Input: none
+Output: a StylesConfig object with the styles for the tags
+Return value: a StylesConfig object
+Function: creates a StylesConfig object to color the tags the tag selector
+Variables: colourStyles
+Date: 21 - 03 - 2024
+Author: Gerardo Omar Rodriguez Ramirez
+*/
+
 const colourStyles: StylesConfig<Tags, true> = {
   control: styles => ({ ...styles, backgroundColor: 'white' }),
   option: (styles, { data, isDisabled, isFocused, isSelected }) => {

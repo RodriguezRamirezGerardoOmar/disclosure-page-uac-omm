@@ -15,6 +15,16 @@ interface INewsItemProps {
     className?: string
 }
 
+/*
+Input: an object that contains the href, title, and image of the news item, and a style for the card
+Output: a card with the title, image, and style for a list of news items
+Return value: a card component used to display an item in a list of news articles
+Function: creates a card component with the title, image, and style for a list of news items, and a style for the card
+Variables: item { href, title, image }, className, style
+Date: 21 - 03 - 2024
+Author: Gerardo Omar Rodriguez Ramirez
+*/
+
 const NewsItemComponent = ({...props}: Readonly<INewsItemProps>) => {
   const style = cn(props.className, 'bg-white dark:bg-dark-primary w-full lg:w-[32%]')
   return (

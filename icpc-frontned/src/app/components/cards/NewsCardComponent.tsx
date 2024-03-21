@@ -11,6 +11,16 @@ interface NewsCardComponentProps {
   body: string
 }
 
+/*
+Input: the title of the news article, the author, the creation date, and the body of the news article
+Output: a card with the title, author, creation date, and body of the news article
+Return value: a card component used to display news articles
+Function: creates a card component with the title, author, creation date, and body of the news article
+Variables: title, author, createdAt, body
+Date: 21 - 03 - 2024
+Author: Gerardo Omar Rodriguez Ramirez
+*/
+
 export const NewsCardComponent = ({ ...props }: Readonly<NewsCardComponentProps>) => {
   return (
     <BasicPanelComponent backgroundColor='bg-white dark:bg-dark-primary'>
