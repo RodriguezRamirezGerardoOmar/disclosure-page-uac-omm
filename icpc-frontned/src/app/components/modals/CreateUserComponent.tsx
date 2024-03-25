@@ -13,6 +13,17 @@ import { toast } from 'sonner'
 interface ICreateUserProps {
   methods: UseFormReturn<FieldValues>
 }
+
+/*
+Input: a set of methods and a state to handle the form
+Output: a modal form to create a user account
+Return value: a modal form component used to create a user account
+Function: creates a modal form component able to return the answers of a form
+Variables: methods, response, createUser, onSubmit, toast, 
+Date: 22 - 03 - 2024
+Author: Gerardo Omar Rodriguez Ramirez
+*/
+
 const CreateUserComponent = ({ ...props }: Readonly<ICreateUserProps>) => {
   const createUser = useStore(state => state.createUser)
 
