@@ -1,4 +1,14 @@
 import { ArrowLongLeftIcon, ArrowLongRightIcon } from '@heroicons/react/20/solid'
+
+/*
+Input: none
+Output: a set of hyperlinks to navigate through a list of items
+Return value: a set of hyperlinks as a component
+Function: creates a set of hyperlinks to jump to different pages of a list of items
+Variables: none
+Date: 11 - 04 - 2024
+Author: Gerardo Omar Rodriguez Ramirez
+*/
 export const PaginationComponent = () => {
   return (
     <nav className='flex items-center justify-between border-t border-gray-200 px-4 pt-4 sm:px-0'>

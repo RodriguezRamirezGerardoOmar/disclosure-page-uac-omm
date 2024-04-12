@@ -1,8 +1,28 @@
 import { useState } from 'react'
 
+/*
+Input: a list of strings that define CSS classes
+Output: a single string of Tailwind CSS
+Return value: a string with the CSS classes
+Function: joins multiple strings into a single string
+Variables: classes
+Date: 21 - 03 - 2024
+Author: Gerardo Omar Rodriguez Ramirez
+*/
+
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
 }
+
+/*
+Input: a list of tabs with icon, href, name and a boolean to identify the currently selected tab
+Output: a set of tabs to select different sections of a page
+Return value: a set of tab buttons as a component
+Function: creates a set of tab buttons to navigate through different sections of a page
+Variables: icon, href, name, current
+Date: 11 - 04 - 2024
+Author: Gerardo Omar Rodriguez Ramirez
+*/
 
 // Update type annotation of the 'tabs' parameter
 export default function TabComponent({

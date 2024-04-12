@@ -17,6 +17,16 @@ interface IUserProps {
   }[]
 }
 
+/*
+Input: a list of options with id, name and href; and a boolean to determine if the user is logged in
+Output: a user icon that acts as a dropdown menu with the options passed
+Return value: a dropdown menu with the user options as a component
+Function: sets a dropdown menu with the user options
+Variables: verified, options { id, name, href }
+Date: 12 - 04 - 2024
+Author: Gerardo Omar Rodriguez Ramirez
+*/
+
 export default function UserComponent({ options, verified }: Readonly<IUserProps>) {
   const optionStyle =
     'hover:text-secondary hover:bg-gray-100 px-4 py-2 dark:text-accent  dark:hover:text-complementary dark:hover:bg-secondary'
