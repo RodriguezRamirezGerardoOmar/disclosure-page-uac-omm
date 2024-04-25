@@ -20,8 +20,8 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: CreateUserDto) {
-    const username = await this.findOneByUsername(createUserDto.userName); // check if username exists
-    const email = await this.findOneByEmail(createUserDto.email); // check if email exists
+    const username = await this.findOneByUsername(createUserDto.userName);
+    const email = await this.findOneByEmail(createUserDto.email);
     if (username !== null) {
       throw new BadRequestException('El nombre de usuario ya existe');
     } else if (email !== null) {

@@ -54,22 +54,10 @@ export class AuthController {
     description: 'Internal server error',
     type: Error
   })
-  async register(@Body() registerDto: RegisterDto) {
-    console.log(registerDto);
-    const response = await this.authService.register(registerDto);
-    return {
-      statusCode: HttpStatus.CREATED,
-      message: 'User has been successfully created',
-      data: {
-        id: response.id,
-        userName: response.userName,
-        email: response.email,
-        role: {
-          id: response.role.id,
-          name: response.role.name
-        }
-      }
-    };
+  async register(
+    @Body() registerDto: RegisterDto
+  ): Promise<CreateUserResponseDto> {
+    return await this.authService.register(registerDto);
   }
 
   @Get('profile')

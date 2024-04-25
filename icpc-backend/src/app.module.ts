@@ -12,6 +12,7 @@ import { MemoryModule } from './memory/memory.module';
 import { TimeModule } from './time/time.module';
 import { DifficultyModule } from './difficulty/difficulty.module';
 import { TagsModule } from './tags/tags.module';
+import { ExcercisesModule } from './excercises/excercises.module';
 
 @Module({
   imports: [
@@ -20,9 +21,9 @@ import { TagsModule } from './tags/tags.module';
     }),
     TypeOrmModule.forRootAsync({
       useFactory: () => ({
-        type: process.env.DATABASE_TYPE as 'mysql', // Asegúrate de que el tipo coincida con tu base de datos
+        type: process.env.DATABASE_TYPE as 'mysql',
         host: process.env.DATABASE_HOST,
-        port: +process.env.DATABASE_PORT, // El signo + convierte el string a número
+        port: +process.env.DATABASE_PORT,
         username: process.env.DATABASE_USERNAME,
         password: process.env.DATABASE_PASSWORD,
         database: process.env.DATABASE_NAME,
@@ -39,7 +40,8 @@ import { TagsModule } from './tags/tags.module';
     MemoryModule,
     TimeModule,
     DifficultyModule,
-    TagsModule
+    TagsModule,
+    ExcercisesModule
   ]
 })
 export class AppModule {

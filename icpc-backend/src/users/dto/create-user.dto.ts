@@ -38,7 +38,9 @@ export class CreateUserDto {
 }
 
 export class CreateUserResponseDto extends OmitType(CreateUserDto, [
-  'password'
+  'password',
+  'passwordVerify',
+  'isAdmin'
 ] as const) {} // exclude the password property from the response
 
 export class UserResponseRoleDto extends IntersectionType(
