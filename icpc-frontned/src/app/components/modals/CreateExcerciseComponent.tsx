@@ -12,7 +12,6 @@ import MarkdownAreaComponent from '../forms/MarkdownAreaComponent'
 import SubmitComponent from '../forms/SubmitComponent'
 import useExcerciseStore from '@/store/useExcerciseStore'
 import useUtilsStore from '@/store/useUtilsStore'
-import useStore from '@/store/useStore'
 import { toast } from 'sonner'
 
 interface ICreateExerciseProps {

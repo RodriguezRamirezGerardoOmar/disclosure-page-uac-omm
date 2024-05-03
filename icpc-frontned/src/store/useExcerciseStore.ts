@@ -35,7 +35,7 @@ interface Actions {
 const useExcerciseStore = create<Actions>()(
   devtools(
     persist(
-      (set, get) => ({
+      () => ({
         createExcercise: async (exercise: ICreateExcercise) => {
           try {
             const response = await api.post('/api/v1/excercises', exercise, {

@@ -1,7 +1,6 @@
 import axios from 'axios'
 import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
-import { IApiResponse, TResponseBasicError } from '@/constants/types'
 import { Tags, Categories, Difficulties, TimeLimit, MemoryLimit } from '@/constants/types'
 
 const api = axios.create({
@@ -27,7 +26,7 @@ interface Actions {
 const useUtilsStore = create<Actions & UtilsState>()(
   devtools(
     persist(
-      (set, get) => ({
+      (set) => ({
         tags: [] as Tags[],
         categories: [] as Categories[],
         difficulty: [] as Difficulties[],
