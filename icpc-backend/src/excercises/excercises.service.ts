@@ -1,4 +1,4 @@
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateExcerciseDto } from './dto/create-excercise.dto';
 import { UpdateExcerciseDto } from './dto/update-excercise.dto';
 import { Repository } from 'typeorm';
@@ -28,22 +28,8 @@ export class ExcercisesService {
   ) {}
 
   async create(createExcerciseDto: CreateExcerciseDto) {
-    const {
-      name,
-      categoryId,
-      difficultyId,
-      timeId,
-      memoryId,
-      input,
-      output,
-      constraints,
-      clue,
-      tags,
-      author,
-      description,
-      example_input,
-      example_output
-    } = createExcerciseDto;
+    const { name, categoryId, difficultyId, timeId, memoryId } =
+      createExcerciseDto;
     const newExcerciseName = await this.excerciseRepository.findOneBy({
       name: name
     });
@@ -85,11 +71,11 @@ export class ExcercisesService {
   }
 
   async findAll() {
-    return `This action returns all excercises`;
+    return await this.excerciseRepository.find();
   }
 
   async findOne(id: string) {
-    return `This action returns a #${id} excercise`;
+    return await this.excerciseRepository.findBy({ id });
   }
 
   async findOneByName(name: string) {
@@ -97,10 +83,15 @@ export class ExcercisesService {
   }
 
   async update(id: string, updateExcerciseDto: UpdateExcerciseDto) {
-    return `This action updates a #${id} excercise`;
+    const excercise = await this.excerciseRepository.findOneBy({ id });
+    return await this.memoryRepository.save({
+      ...excercise,
+      ...updateExcerciseDto
+    });
   }
 
   async remove(id: string) {
-    return `This action removes a #${id} excercise`;
+    const excercise = await this.excerciseRepository.findOneBy({ id });
+    return await this.excerciseRepository.remove(excercise);
   }
 }

@@ -19,8 +19,6 @@ import {
   ApiTags
 } from '@nestjs/swagger';
 import { AuthGuard } from 'src/auth/guard/auth.guard';
-import { Auth } from 'src/common/decorators/auth.decorator';
-import { RoleEnum } from 'src/common/enums/role.enum';
 
 @ApiTags('Tags')
 @Controller('tags')
@@ -49,9 +47,7 @@ export class TagsController {
     return this.tagsService.findAll();
   }
 
-  @ApiBearerAuth()
   @Get(':id')
-  @UseGuards(AuthGuard)
   @ApiResponse({
     description: 'The tag has been successfully retrieved.'
   })
