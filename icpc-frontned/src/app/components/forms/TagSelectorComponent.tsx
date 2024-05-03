@@ -1,28 +1,14 @@
 import React from 'react'
 import { TextComponent } from '../text/TextComponent'
-import { enumTextTags } from '@/constants/types'
+import { enumTextTags, Tags } from '@/constants/types'
 import Select, { MultiValue, StylesConfig } from 'react-select'
 import chroma from 'chroma-js'
 
 interface TagSelectorProps {
-  options: {
-    id: number
-    name: string
-    color: string
-  }[]
-  selectedTags: {
-    id: number
-    name: string
-    color: string
-  }[]
+  options: Tags[]
+  selectedTags: Tags[]
   id: string
   onChange: (val: any) => void
-}
-
-interface Tags {
-  id: number
-  name: string
-  color: string
 }
 
 const colourStyles: StylesConfig<Tags, true> = {
@@ -98,7 +84,7 @@ const colourStyles: StylesConfig<Tags, true> = {
 }
 
 const TagSelectorComponent = ({ ...props }: Readonly<TagSelectorProps>) => {
-  const labelClassname = 'place-self-start dark:text-dark-accent my-2'
+  const labelClassname = 'place-self-start dark:text-dark-accent'
 
   let selectedTags: Tags[] = props.selectedTags
   const options: Tags[] = props.options
@@ -112,7 +98,7 @@ const TagSelectorComponent = ({ ...props }: Readonly<TagSelectorProps>) => {
   }
 
   return (
-    <div className='w-full m-2 min-h-max'>
+    <div className='w-full min-h-max'>
       <TextComponent
         className={labelClassname}
         tag={enumTextTags.p}>

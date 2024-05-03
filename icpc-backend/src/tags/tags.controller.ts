@@ -22,7 +22,6 @@ import { AuthGuard } from 'src/auth/guard/auth.guard';
 import { Auth } from 'src/common/decorators/auth.decorator';
 import { RoleEnum } from 'src/common/enums/role.enum';
 
-@Auth(RoleEnum.ADMIN)
 @ApiTags('Tags')
 @Controller('tags')
 export class TagsController {
@@ -40,9 +39,7 @@ export class TagsController {
     return this.tagsService.create(createTagDto);
   }
 
-  @ApiBearerAuth()
   @Get()
-  @UseGuards(AuthGuard)
   @ApiResponse({
     description: 'The tag list has been successfully retrieved.'
   })

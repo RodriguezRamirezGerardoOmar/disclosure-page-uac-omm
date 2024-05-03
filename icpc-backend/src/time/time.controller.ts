@@ -23,7 +23,6 @@ import {
 import { AuthGuard } from 'src/auth/guard/auth.guard';
 
 @Controller('time')
-@Auth(RoleEnum.ADMIN)
 @ApiTags('Time')
 export class TimeController {
   constructor(private readonly timeService: TimeService) {}
@@ -40,9 +39,7 @@ export class TimeController {
     return this.timeService.create(createTimeDto);
   }
 
-  @ApiBearerAuth()
   @Get()
-  @UseGuards(AuthGuard)
   @ApiResponse({
     description: 'The time limit list has been successfully retrieved.'
   })

@@ -21,7 +21,10 @@ export class MemoryService {
   }
 
   async findAll() {
-    return await this.memoryRepository.find();
+    return await this.memoryRepository
+      .createQueryBuilder('memory')
+      .orderBy('memory.memoryLimit', 'ASC')
+      .getMany();
   }
 
   async findOne(id: string) {

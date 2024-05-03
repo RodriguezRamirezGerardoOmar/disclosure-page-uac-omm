@@ -5,9 +5,21 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Excercise } from './entities/excercise.entity';
 import { Category } from 'src/categories/entities/category.entity';
 import { Tag } from 'src/tags/entities/tag.entity';
+import { Difficulty } from 'src/difficulty/entities/difficulty.entity';
+import { Time } from 'src/time/entities/time.entity';
+import { Memory } from 'src/memory/entities/memory.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Excercise, Category, Tag])],
+  imports: [
+    TypeOrmModule.forFeature([
+      Excercise,
+      Category,
+      Tag,
+      Difficulty,
+      Time,
+      Memory
+    ])
+  ],
   controllers: [ExcercisesController],
   providers: [ExcercisesService],
   exports: [ExcercisesService]

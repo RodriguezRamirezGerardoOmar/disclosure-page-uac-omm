@@ -23,7 +23,6 @@ import { RoleEnum } from 'src/common/enums/role.enum';
 import { AuthGuard } from 'src/auth/guard/auth.guard';
 
 @Controller('memory')
-@Auth(RoleEnum.ADMIN)
 @ApiTags('Memory')
 export class MemoryController {
   constructor(private readonly memoryService: MemoryService) {}
@@ -40,9 +39,7 @@ export class MemoryController {
     return this.memoryService.create(createMemoryDto);
   }
 
-  @ApiBearerAuth()
   @Get()
-  @UseGuards(AuthGuard)
   @ApiResponse({
     description: 'The memory limit list has been successfully retrieved.'
   })

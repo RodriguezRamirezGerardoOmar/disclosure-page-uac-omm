@@ -22,7 +22,7 @@ import { Auth } from 'src/common/decorators/auth.decorator';
 import { RoleEnum } from 'src/common/enums/role.enum';
 import { AuthGuard } from 'src/auth/guard/auth.guard';
 
-@Auth(RoleEnum.ADMIN)
+//@Auth(RoleEnum.ADMIN)
 @ApiTags('Difficulty')
 @Controller('difficulty')
 export class DifficultyController {
@@ -40,9 +40,9 @@ export class DifficultyController {
     return this.difficultyService.create(createDifficultyDto);
   }
 
-  @ApiBearerAuth()
+  //@ApiBearerAuth()
   @Get()
-  @UseGuards(AuthGuard)
+  //@UseGuards(AuthGuard)
   @ApiResponse({
     description: 'The difficulty level list has been successfully retrieved.'
   })

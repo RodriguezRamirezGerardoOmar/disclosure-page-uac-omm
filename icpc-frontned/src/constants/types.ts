@@ -72,3 +72,30 @@ export interface IApiResponse<E = {}> {
   message: string
   errors: E | TResponseError | any
 }
+
+export interface Tags {
+  id: number
+  name: string
+  color: string
+}
+
+export interface Categories {
+  id: string
+  name: string
+}
+
+export interface Difficulties {
+  id: string
+  level: number
+  name: string
+}
+
+export interface TimeLimit {
+  id: string
+  timeLimit: number
+}
+
+export interface MemoryLimit {
+  id: string
+  memoryLimit: number
+}

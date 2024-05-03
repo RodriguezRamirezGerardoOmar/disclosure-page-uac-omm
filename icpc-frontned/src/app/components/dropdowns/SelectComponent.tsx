@@ -30,7 +30,7 @@ export function SelectComponent({ ...props }: Readonly<ISelectProps>) {
       <TextComponent
         htmlFor={props.id}
         tag={enumTextTags.label}
-        className='block text-gray-900 place-self-start'>
+        className='block text-gray-900 place-self-start dark:text-dark-accent'>
         {props.labelText}
       </TextComponent>
       <select

@@ -1,6 +1,6 @@
 import { Excercise } from 'src/excercises/entities/excercise.entity';
 import { BaseEntity } from '../../entities/base.entity';
-import { Column, Entity, ManyToMany, OneToOne } from 'typeorm';
+import { Column, Entity, OneToMany, OneToOne } from 'typeorm';
 import { Comment } from 'src/comment/entities/comment.entity';
 
 @Entity()
@@ -8,7 +8,7 @@ export class Category extends BaseEntity {
   @Column({ nullable: false })
   name: string;
 
-  @ManyToMany(() => Excercise, excercise => excercise.categories)
+  @OneToMany(() => Excercise, excercise => excercise.category)
   excercises: Excercise[];
 
   // una categoria puede tener solo un comentario
