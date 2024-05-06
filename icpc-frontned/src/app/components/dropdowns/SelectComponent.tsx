@@ -18,9 +18,29 @@ interface ISelectProps {
   className?: string[] | string
 }
 
+/*
+Input: a list of strings that define CSS classes
+Output: a single string of Tailwind CSS
+Return value: a string with the CSS classes
+Function: joins multiple strings into a single string
+Variables: classes
+Date: 21 - 03 - 2024
+Author: Gerardo Omar Rodriguez Ramirez
+*/
+
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
 }
+
+/*
+Input: a list of options with id, name and href; a fieldName, an id, a label, a selected value, a function to handle the change and a className
+Output: a dropdown menu with the options
+Return value: a dropdown menu component to display the options and return the selected option to a form
+Function: creates a dropdown menu with the options to be used in a form
+Variables: options {id, name}, fieldName, id, labelText, selected, onChange, className, reference, classes, open, newSelected, option
+Date: 21 - 03 - 2024
+Author: Gerardo Omar Rodriguez Ramirez
+*/
 
 export function SelectComponent({ ...props }: Readonly<ISelectProps>) {
   const reference = React.useRef<HTMLSelectElement | null>(null)

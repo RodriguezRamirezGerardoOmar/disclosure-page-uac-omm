@@ -19,9 +19,29 @@ interface IDropdownProps {
 const optionStyle =
   'hover:text-secondary hover:bg-gray-100 px-4 py-2 dark:text-accent  dark:hover:text-complementary dark:hover:bg-secondary'
 
+/*
+Input: a list of strings that define CSS classes
+Output: a single string of Tailwind CSS
+Return value: a string with the CSS classes
+Function: joins multiple strings into a single string
+Variables: classes
+Date: 21 - 03 - 2024
+Author: Gerardo Omar Rodriguez Ramirez
+*/
+
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
 }
+
+/*
+Input: a list of options with id, name and href; and a boolean that verifies if the user is logged in
+Output: a dropdown menu with the options and a button to close the menu
+Return value: a dropdown menu component to display the options in mobile view
+Function: creates a dropdown menu with the options and a button to close the menu
+Variables: options {id, name, href}, verified, logout, open, option, optionStyle
+Date:
+Author:
+*/
 
 export default function BurgerComponent({ options, verified }: Readonly<IDropdownProps>) {
 

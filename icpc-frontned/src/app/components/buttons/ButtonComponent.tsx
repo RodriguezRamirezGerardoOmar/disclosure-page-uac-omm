@@ -8,6 +8,16 @@ interface IButtonComponentProps {
   icon?: boolean
 }
 
+/*
+Input: the text to display in the button, the type of button, and if it has an icon
+Output: a button with the text and icon if it has one
+Return value: a button component
+Function: creates a button component with the text and icon if it has one, setting a default style for the component
+Variables: text, buttonType, icon, styles
+Date: 21 - 03 - 2024
+Author: Gerardo Omar Rodriguez Ramirez
+*/
+
 export const ButtonComponent = ({ buttonType = 'button', ...props }: IButtonComponentProps) => {
   const styles = {
     button: `inline-flex items-center gap-x-2 rounded-md bg-primary text-complementary px-3.5 py-2.5 

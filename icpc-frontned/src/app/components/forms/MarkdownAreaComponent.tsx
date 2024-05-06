@@ -10,7 +10,18 @@ interface MarkdownAreaComponentProps {
   className?: string
 }
 
+// Dynamic import of the MarkdownEditor component
 const MarkdownEditor = dynamic(() => import('@uiw/react-markdown-editor').then(mod => mod.default), { ssr: false })
+
+/*
+Input: a value, a function to handle the change, a label and a class name
+Output: a markdown editor component
+Return value: a markdown editor component to be used in a form
+Function: creates a markdown editor component to be used in a form
+Variables: value, onChange, labelText, className, style, toolbars, toolbarsMode
+Date: 21 - 03 - 2024
+Author: Gerardo Omar Rodriguez Ramirez
+*/
 
 export default function MarkdownAreaComponent({ value, onChange, labelText, className }: Readonly<MarkdownAreaComponentProps>) {
   const style = cn(className, 'w-full')

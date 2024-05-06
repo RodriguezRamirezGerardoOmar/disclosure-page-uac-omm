@@ -18,6 +18,16 @@ interface ICreateNoteProps {
   methods: UseFormReturn<FieldValues>
 }
 
+/*
+Input: a set of methods and a state to handle the form
+Output: a form to create a note article
+Return value: a modal form component to create a note article
+Function: creates a modal form to write a note article into a database
+Variables: methods, data, tags
+Date: 22 - 03 - 2024
+Author: Gerardo Omar Rodriguez Ramirez
+*/
+
 const CreateNoteComponent = ({ ...props }: Readonly<ICreateNoteProps>) => {
   const allTags: Tags[] = tags.tags
     return (

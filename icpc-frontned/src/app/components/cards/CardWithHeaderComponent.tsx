@@ -9,6 +9,16 @@ interface CardWithHeaderComponentProps {
   className?: string[] | string
 }
 
+/*
+Input: the title and comments to display in the card, styles for the card
+Output: a card with a title, comments, style, and buttons
+Return value: a card component used in the landing page to display a welcome message
+Function: creates a card with a header, comments, and buttons
+Variables: title, comments, className, classes
+Date: 21 - 03 - 2024
+Author: Gerardo Omar Rodriguez Ramirez
+*/
+
 export const CardWithHeaderComponent = ({ className = [], ...props }: CardWithHeaderComponentProps) => {
   const classes = cn(className, `overflow-hidden rounded-lg bg-white shadow dark:bg-dark-primary mx-5`)
   return (

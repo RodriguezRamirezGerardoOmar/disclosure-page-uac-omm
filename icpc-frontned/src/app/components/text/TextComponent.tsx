@@ -26,6 +26,16 @@ const sizeClasses = {
   s128: 'text-9xl'
 }
 
+/*
+Input: an HTML tag, a font size, a set of TailwindCSS classes, and a set of children
+Output: a string of text surrounded in a specific HTML tag with a specific font size and CSS classes
+Return value: a string of text as a component
+Function: creates a string of text and sets the style
+Variables: tag, sizeFont, className, children
+Date: 12 - 04 - 2024
+Author: Gerardo Omar Rodriguez Ramirez
+*/
+
 export const TextComponent = ({ className = [], tag = enumTextTags.p, sizeFont = 's16', ...props }: ITextComponentProps) => {
   const CustomTag = tag
   const classes = cn('montserrat', `${className}`, `${sizeClasses[sizeFont]}`)
