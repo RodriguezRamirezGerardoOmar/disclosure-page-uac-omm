@@ -11,8 +11,6 @@ import {
 import { TimeService } from './time.service';
 import { CreateTimeDto } from './dto/create-time.dto';
 import { UpdateTimeDto } from './dto/update-time.dto';
-import { Auth } from 'src/common/decorators/auth.decorator';
-import { RoleEnum } from 'src/common/enums/role.enum';
 import {
   ApiBearerAuth,
   ApiInternalServerErrorResponse,
@@ -23,7 +21,6 @@ import {
 import { AuthGuard } from 'src/auth/guard/auth.guard';
 
 @Controller('time')
-@Auth(RoleEnum.ADMIN)
 @ApiTags('Time')
 export class TimeController {
   constructor(private readonly timeService: TimeService) {}
@@ -40,9 +37,7 @@ export class TimeController {
     return this.timeService.create(createTimeDto);
   }
 
-  @ApiBearerAuth()
   @Get()
-  @UseGuards(AuthGuard)
   @ApiResponse({
     description: 'The time limit list has been successfully retrieved.'
   })
@@ -52,9 +47,7 @@ export class TimeController {
     return this.timeService.findAll();
   }
 
-  @ApiBearerAuth()
   @Get(':id')
-  @UseGuards(AuthGuard)
   @ApiResponse({
     description: 'The time limit has been successfully retrieved.'
   })

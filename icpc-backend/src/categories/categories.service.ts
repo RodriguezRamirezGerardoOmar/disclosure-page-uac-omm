@@ -38,7 +38,7 @@ export class CategoriesService {
     }
     const category = await this.categoryRepository // find the category in the 'category' table by the name
       .createQueryBuilder('category')
-      .leftJoinAndSelect('commentId', 'comment') // join the 'categories' table to the 'comments' table
+      .leftJoinAndSelect('comment', 'comment') // join the 'categories' table to the 'comments' table
       .where('category.name = :name', { name }) // find the category by name
       .getMany();
     if (category.length === 0) {

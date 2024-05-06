@@ -3,7 +3,7 @@ import React from 'react'
 import { BasicPanelComponent } from '../panels/BasicPanelComponent'
 import LogoComponent from '../LogoComponent'
 import { TextComponent } from '../text/TextComponent'
-import { enumTextTags } from '@/constants/types'
+import { enumTextTags, Tags } from '@/constants/types'
 import TextFieldComponent from '../forms/TextFieldComponent'
 import { FieldValues, Controller, UseFormReturn } from 'react-hook-form'
 import { SelectComponent } from '../dropdowns/SelectComponent'
@@ -16,12 +16,6 @@ import TagSelectorComponent from '../forms/TagSelectorComponent'
 
 interface ICreateNoteProps {
   methods: UseFormReturn<FieldValues>
-}
-
-interface Tags {
-  id: number
-  name: string
-  color: string
 }
 
 /*

@@ -18,11 +18,8 @@ import {
   ApiTags,
   ApiUnauthorizedResponse
 } from '@nestjs/swagger';
-import { Auth } from 'src/common/decorators/auth.decorator';
-import { RoleEnum } from 'src/common/enums/role.enum';
 import { AuthGuard } from 'src/auth/guard/auth.guard';
 
-@Auth(RoleEnum.ADMIN)
 @ApiTags('Difficulty')
 @Controller('difficulty')
 export class DifficultyController {
@@ -40,9 +37,7 @@ export class DifficultyController {
     return this.difficultyService.create(createDifficultyDto);
   }
 
-  @ApiBearerAuth()
   @Get()
-  @UseGuards(AuthGuard)
   @ApiResponse({
     description: 'The difficulty level list has been successfully retrieved.'
   })
@@ -52,9 +47,7 @@ export class DifficultyController {
     return this.difficultyService.findAll();
   }
 
-  @ApiBearerAuth()
   @Get(':id')
-  @UseGuards(AuthGuard)
   @ApiResponse({
     description: 'The difficulty level has been successfully retrieved.'
   })

@@ -18,12 +18,9 @@ import {
   ApiTags,
   ApiUnauthorizedResponse
 } from '@nestjs/swagger';
-import { Auth } from 'src/common/decorators/auth.decorator';
-import { RoleEnum } from 'src/common/enums/role.enum';
 import { AuthGuard } from 'src/auth/guard/auth.guard';
 
 @Controller('memory')
-@Auth(RoleEnum.ADMIN)
 @ApiTags('Memory')
 export class MemoryController {
   constructor(private readonly memoryService: MemoryService) {}
@@ -40,9 +37,7 @@ export class MemoryController {
     return this.memoryService.create(createMemoryDto);
   }
 
-  @ApiBearerAuth()
   @Get()
-  @UseGuards(AuthGuard)
   @ApiResponse({
     description: 'The memory limit list has been successfully retrieved.'
   })
@@ -52,9 +47,7 @@ export class MemoryController {
     return this.memoryService.findAll();
   }
 
-  @ApiBearerAuth()
   @Get(':id')
-  @UseGuards(AuthGuard)
   @ApiResponse({
     description: 'The memory limit has been successfully retrieved.'
   })
