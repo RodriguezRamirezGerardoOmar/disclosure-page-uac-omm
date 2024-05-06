@@ -12,6 +12,16 @@ interface IInfoCardComponentProps {
   exercises: number
 }
 
+/*
+Input: the title, icon, information, href, and exercises to display in the card
+Output: a card with the title, icon, information, href to redirect, and a number of exercises
+Return value: a card component used to display information about the exercises, notes and news articles
+Function: creates a card component with the title, icon, information, href to redirect, and a number of exercises
+Variables: title, icon, info, href, exercises
+Date: 21 - 03 - 2024
+Author: Gerardo Omar Rodriguez Ramirez
+*/
+
 export const InfoCardComponent = ({ title = 'Title', exercises = 0, href = '#', ...props }: IInfoCardComponentProps) => {
   return (
     <BasicPanelComponent>

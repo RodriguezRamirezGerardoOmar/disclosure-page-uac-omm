@@ -12,6 +12,16 @@ interface IReportCardProps {
   methods: UseFormReturn<FieldValues>
 }
 
+/*
+Input: 
+Output: 
+Return value: 
+Function: 
+Variables: 
+Date: 22 - 03 - 2024
+Author: Gerardo Omar Rodriguez Ramirez
+*/
+
 const ReportCardComponent = ({ ...props }: Readonly<IReportCardProps>) => {
   return (
     <div

@@ -25,6 +25,16 @@ interface Tags {
   color: string
 }
 
+/*
+Input: none
+Output: a StylesConfig object with the styles for the tags
+Return value: a StylesConfig object
+Function: creates a StylesConfig object to color the tags the tag selector
+Variables: colourStyles
+Date: 21 - 03 - 2024
+Author: Gerardo Omar Rodriguez Ramirez
+*/
+
 const colourStyles: StylesConfig<Tags, true> = {
   control: styles => ({ ...styles, backgroundColor: 'white' }),
   option: (styles, { data, isDisabled, isFocused, isSelected }) => {
@@ -96,6 +106,17 @@ const colourStyles: StylesConfig<Tags, true> = {
     }
   })
 }
+
+/*
+Input: a list of all posible tags with an id, name and color; a list of the selected tags with an id, name and color;
+the id of the tag selector; a function to handle the change of the selected tags
+Output: a tag selector with the options and the selected tags
+Return value: a tag selector component to display the tags and select the desired tags
+Function: creates a component to search and select tags from a list of options
+Variables: options { id, name, color }, selectedTags { id, name, color }, id, handleChange, selectedTags
+Date: 22 - 03 - 2024
+Author: Gerardo Omar Rodriguez Ramirez
+*/
 
 const TagSelectorComponent = ({ ...props }: Readonly<TagSelectorProps>) => {
   const labelClassname = 'place-self-start dark:text-dark-accent my-2'

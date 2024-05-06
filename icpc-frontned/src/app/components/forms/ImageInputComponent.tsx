@@ -9,6 +9,16 @@ setValue: (name: FieldPathValue<FieldValues, string>, value: any, options?: { sh
   fieldName: string;
 }
 
+/*
+Input: a register function, a setValue function and a field name
+Output: a form input to upload an image
+Return value: a form input to upload an image to a form
+Function: creates a form input component
+Variables: register, setValue, fieldName, fileElem, selectedFile, handleFileChange
+Date: 21 - 03 - 2024
+Author: Gerardo Omar Rodriguez Ramirez
+*/
+
 const ImageInputComponent = ({ ...props }: Readonly<IImageInputProps>) => {
   const fileElem = useRef<HTMLInputElement>(null);
 

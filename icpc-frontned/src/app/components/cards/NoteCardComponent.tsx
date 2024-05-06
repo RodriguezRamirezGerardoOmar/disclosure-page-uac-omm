@@ -17,6 +17,16 @@ interface NoteCardProps {
   }[]
 }
 
+/*
+Input: the title, description, content, showButton, and a list of tags with their id, name, and color
+Output: a card with the title, description, content, showButton, and a list of tags
+Return value: a card component used to display notes articles
+Function: creates a card component with the title, description, content, showButton, and a list of tags
+Variables: title, description, content, showButton, tags { id, name, color }
+Date: 21 - 03 - 2024
+Author: Gerardo Omar Rodriguez Ramirez
+*/
+
 export default function NoteCardComponent({ ...props }: Readonly<NoteCardProps>) {
   return (
     <BasicPanelComponent backgroundColor='bg-white dark:bg-dark-primary'>

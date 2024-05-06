@@ -8,6 +8,16 @@ interface TagProps {
   showIcon: boolean
 }
 
+/*
+Input: tag properties containing a color, a name, and a boolean to show an icon
+Output: a tag badge with a name and a color
+Return value: a badge component that represents a tag
+Function: creates a badge component to represent a tag, assigning a color and a name
+Variables: color, tagName, showIcon
+Date: 12 - 04 - 2024
+Author: Gerardo Omar Rodriguez Ramirez
+*/
+
 const TagComponent = ({ ...props }: Readonly<TagProps>) => {
   return (
     <div

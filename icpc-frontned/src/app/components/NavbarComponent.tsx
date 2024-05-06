@@ -37,6 +37,16 @@ const routes = [
   }
 ]
 
+/*
+Input: a list of routes with id, name and href; and a boolean to determine if the user is logged in
+Output: the navbar component with the logo, the search bar, the routes and the user icon or the login link
+Return value: the site's navbar as a component
+Function: sets the navbar of the site and the elements that it contains
+Variables: routes { id, name, href }, verified
+Date: 12 - 04 - 2024
+Author: Gerardo Omar Rodriguez Ramirez
+*/
+
 export default function NavbarComponent() {
 
   const verified = useStore(state => state.isLogged)

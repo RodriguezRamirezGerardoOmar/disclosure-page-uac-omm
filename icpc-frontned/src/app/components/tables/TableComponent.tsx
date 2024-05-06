@@ -27,9 +27,29 @@ const exercises = [
   { id: 24, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example','ejemplo'] }
 ]
 
+/*
+Input: a list of strings that define CSS classes
+Output: a single string of Tailwind CSS
+Return value: a string with the CSS classes
+Function: joins multiple strings into a single string
+Variables: classes
+Date: 21 - 03 - 2024
+Author: Gerardo Omar Rodriguez Ramirez
+*/
+
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
 }
+
+/*
+Input: a list of exercises with id, name, dificult, category and tags
+Output: a table of exercises to see the items and enter to their pages
+Return value: a table component with the exercises
+Function: creates a table of exercises as a component
+Variables: exercises, id, name, dificult, categorie, tag
+Date: 11 - 04 - 2024
+Author: Gerardo Omar Rodriguez Ramirez
+*/
 
 export default function TableComponent() {
   return (

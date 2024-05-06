@@ -11,6 +11,16 @@ type FormProps = {
   label: string
 }
 
+/*
+Input: a set of children, a submit handler, and a label
+Output: a form component to change password
+Return value: a form to change the password of a user account
+Function: creates a form component to change the password of a user account
+Variables: children, onSubmit, label, methods, handleSubmit
+Date: 21 - 03 - 2024
+Author: Gerardo Omar Rodriguez Ramirez
+*/
+
 export default function PasswordCardComponent({ children, onSubmit, ...props}: Readonly<FormProps>) {
   const methods = useForm()
   const { handleSubmit } = methods

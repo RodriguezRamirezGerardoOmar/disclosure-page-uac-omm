@@ -9,6 +9,16 @@ interface ILogoProps {
   classes?: string
 }
 
+/*
+Input: a number of pixels and a string of TailwindCSS
+Output: the engineering faculty logo in dark or clear mode
+Return value: an svg logo as a component
+Function: displays the logo of the engineering faculty and changes the mode according to the user's preference
+Variables: size, classes
+Date: 12 - 04 - 2024
+Author: Gerardo Omar Rodriguez Ramirez
+*/
+
 export default function LogoComponent({ size, classes }: Readonly<ILogoProps>) {
   return (
     <>

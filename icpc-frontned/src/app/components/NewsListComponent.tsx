@@ -10,6 +10,16 @@ interface INewsListComponentProps {
   className?: string
 }
 
+/*
+Input: a string of TailwindCSS
+Output: a list of news articles
+Return value: a list of news articles as a component
+Function: maps the news articles and displays them
+Variables: className, news { id, href, title, image }
+Date: 12 - 04 - 2024
+Author: Gerardo Omar Rodriguez Ramirez
+*/
+
 const NewsListComponent = ({ ...props }: Readonly<INewsListComponentProps>) => {
   const style = cn(props.className, 'w-11/12 flex flex-row flex-wrap gap-4 justify-between')
   return (
