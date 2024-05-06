@@ -123,7 +123,7 @@ const CreateExcerciseComponent = ({ ...props }: Readonly<ICreateExerciseProps>) 
               auto='off'
             />
             <Controller
-              defaultValue={categories[0].name}
+              defaultValue={[]}
               control={props.methods.control}
               render={({ field }) => (
                 <SelectComponent
@@ -141,7 +141,7 @@ const CreateExcerciseComponent = ({ ...props }: Readonly<ICreateExerciseProps>) 
               name='category'
             />
             <Controller
-              defaultValue={difficulty[0].name}
+              defaultValue={[]}
               control={props.methods.control}
               render={({ field }) => (
                 <SelectComponent
@@ -159,7 +159,7 @@ const CreateExcerciseComponent = ({ ...props }: Readonly<ICreateExerciseProps>) 
               name='difficultyId'
             />
             <Controller
-              defaultValue={timeLimits[0].timeLimit.toString()}
+              defaultValue={[]}
               control={props.methods.control}
               render={({ field }) => (
                 <SelectComponent
@@ -177,7 +177,8 @@ const CreateExcerciseComponent = ({ ...props }: Readonly<ICreateExerciseProps>) 
               name='timeId'
             />
             <Controller
-              defaultValue={String(memoryLimits[0].memoryLimit * 64)}
+              defaultValue={[]}
+              
               control={props.methods.control}
               render={({ field }) => (
                 <SelectComponent
