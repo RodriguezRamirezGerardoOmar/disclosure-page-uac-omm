@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect, useState } from 'react'
-import { Controller, FieldValues, SubmitHandler, UseFormReturn } from 'react-hook-form'
+import { Controller, FieldValues, SubmitHandler, useForm } from 'react-hook-form'
 import { BasicPanelComponent } from '../panels/BasicPanelComponent'
 import LogoComponent from '../LogoComponent'
 import { TextComponent } from '../text/TextComponent'
@@ -14,11 +14,18 @@ import useExcerciseStore from '@/store/useExcerciseStore'
 import useUtilsStore from '@/store/useUtilsStore'
 import { toast } from 'sonner'
 
-interface ICreateExerciseProps {
-  methods: UseFormReturn<FieldValues>
-}
+/*
+Input: None
+Output: a form to create an exercise
+Return value: a modal form component to create an exercise
+Function: creates a form to write exercises, handles sending the data to the database
+Variables: methods, tags, categories, difficulty, timeLimits, memoryLimits
+Date: 21 - 03 - 2024
+Author: Gerardo Omar Rodriguez Ramirez
+*/
 
-const CreateExcerciseComponent = ({ ...props }: Readonly<ICreateExerciseProps>) => {
+const CreateExcerciseComponent = () => {
+  const methods = useForm<FieldValues>()
   const createExcercise = useExcerciseStore(state => state.createExcercise)
   const getTags = useUtilsStore(state => state.getTags)
   const tagList = useUtilsStore(state => state.tags)
@@ -98,7 +105,7 @@ const CreateExcerciseComponent = ({ ...props }: Readonly<ICreateExerciseProps>) 
 
   return (
     <form
-      onSubmit={props.methods.handleSubmit(onSubmit)}
+      onSubmit={methods.handleSubmit(onSubmit)}
       className={`margin-auto md:mx-auto max-w-7xl md:px-4 w-full h-full lg:px-8 lg:w-11/12 lg:h-auto 
     min-h-screen place-items-center justify-between py-24`}>
       <BasicPanelComponent backgroundColor='bg-white dark:bg-dark-primary'>
@@ -115,7 +122,7 @@ const CreateExcerciseComponent = ({ ...props }: Readonly<ICreateExerciseProps>) 
           <div className='w-full flex flex-col gap-2'>
             <TextFieldComponent
               labelText='Nombre del ejercicio'
-              register={props.methods.register}
+              register={methods.register}
               fieldName='name'
               id='name'
               necessary={true}
@@ -124,7 +131,7 @@ const CreateExcerciseComponent = ({ ...props }: Readonly<ICreateExerciseProps>) 
             />
             <Controller
               defaultValue={[]}
-              control={props.methods.control}
+              control={methods.control}
               render={({ field }) => (
                 <SelectComponent
                   options={categories.map((category, index) => {
@@ -142,7 +149,7 @@ const CreateExcerciseComponent = ({ ...props }: Readonly<ICreateExerciseProps>) 
             />
             <Controller
               defaultValue={[]}
-              control={props.methods.control}
+              control={methods.control}
               render={({ field }) => (
                 <SelectComponent
                   options={difficulty.map((diff, index) => {
@@ -160,7 +167,7 @@ const CreateExcerciseComponent = ({ ...props }: Readonly<ICreateExerciseProps>) 
             />
             <Controller
               defaultValue={[]}
-              control={props.methods.control}
+              control={methods.control}
               render={({ field }) => (
                 <SelectComponent
                   options={timeLimits.map((value, index) => {
@@ -178,8 +185,8 @@ const CreateExcerciseComponent = ({ ...props }: Readonly<ICreateExerciseProps>) 
             />
             <Controller
               defaultValue={[]}
-              
-              control={props.methods.control}
+
+              control={methods.control}
               render={({ field }) => (
                 <SelectComponent
                   options={memoryLimits.map((value, index) => {
@@ -196,7 +203,7 @@ const CreateExcerciseComponent = ({ ...props }: Readonly<ICreateExerciseProps>) 
             />
             <TextFieldComponent
               labelText='Entrada esperada'
-              register={props.methods.register}
+              register={methods.register}
               fieldName='input'
               id='input'
               necessary={true}
@@ -205,7 +212,7 @@ const CreateExcerciseComponent = ({ ...props }: Readonly<ICreateExerciseProps>) 
             />
             <TextFieldComponent
               labelText='Salida esperada'
-              register={props.methods.register}
+              register={methods.register}
               fieldName='output'
               id='output'
               necessary={true}
@@ -214,7 +221,7 @@ const CreateExcerciseComponent = ({ ...props }: Readonly<ICreateExerciseProps>) 
             />
             <TextFieldComponent
               labelText='Restricciones'
-              register={props.methods.register}
+              register={methods.register}
               fieldName='constraints'
               id='constraints'
               necessary={true}
@@ -223,7 +230,7 @@ const CreateExcerciseComponent = ({ ...props }: Readonly<ICreateExerciseProps>) 
             />
             <TextFieldComponent
               labelText='Pista'
-              register={props.methods.register}
+              register={methods.register}
               fieldName='clue'
               id='clue'
               necessary={true}
@@ -233,7 +240,7 @@ const CreateExcerciseComponent = ({ ...props }: Readonly<ICreateExerciseProps>) 
             <Controller
               name='tags'
               defaultValue={[]}
-              control={props.methods.control}
+              control={methods.control}
               render={({ field }) => (
                 <TagSelectorComponent
                   id='tagSelector'
@@ -246,7 +253,7 @@ const CreateExcerciseComponent = ({ ...props }: Readonly<ICreateExerciseProps>) 
             />
             <TextFieldComponent
               labelText='Autor'
-              register={props.methods.register}
+              register={methods.register}
               fieldName='author'
               id='author'
               necessary={false}
@@ -258,7 +265,7 @@ const CreateExcerciseComponent = ({ ...props }: Readonly<ICreateExerciseProps>) 
             <Controller
               name='description'
               defaultValue=''
-              control={props.methods.control}
+              control={methods.control}
               render={({ field }) => (
                 <MarkdownAreaComponent
                   value={field.value}
@@ -270,7 +277,7 @@ const CreateExcerciseComponent = ({ ...props }: Readonly<ICreateExerciseProps>) 
             />
             <TextFieldComponent
               labelText='Ejemplo de entrada'
-              register={props.methods.register}
+              register={methods.register}
               fieldName='example_input'
               id='example_input'
               necessary={true}
@@ -279,7 +286,7 @@ const CreateExcerciseComponent = ({ ...props }: Readonly<ICreateExerciseProps>) 
             />
             <TextFieldComponent
               labelText='Ejemplo de salida'
-              register={props.methods.register}
+              register={methods.register}
               fieldName='example_output'
               id='example_output'
               necessary={true}
@@ -289,7 +296,7 @@ const CreateExcerciseComponent = ({ ...props }: Readonly<ICreateExerciseProps>) 
             <Controller
               name='solution'
               defaultValue=''
-              control={props.methods.control}
+              control={methods.control}
               render={({ field }) => (
                 <MarkdownAreaComponent
                   value={field.value}

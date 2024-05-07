@@ -1,6 +1,6 @@
 'use client'
 import React from 'react'
-import { UseFormReturn, FieldValues, Controller } from 'react-hook-form'
+import { FieldValues, Controller, useForm, SubmitHandler } from 'react-hook-form'
 import { BasicPanelComponent } from '../panels/BasicPanelComponent'
 import { enumTextTags } from '@/constants/types'
 import LogoComponent from '../LogoComponent'
@@ -10,12 +10,8 @@ import SubmitComponent from '../forms/SubmitComponent'
 import ImageInputComponent from '../forms/ImageInputComponent'
 import MarkdownAreaComponent from '../forms/MarkdownAreaComponent'
 
-interface ICreateUserProps {
-  methods: UseFormReturn<FieldValues>
-}
-
 /*
-Input: a set of methods and a state to handle the form
+Input: None
 Output: a form to create a news article
 Return value: a modal form component to create a news article
 Function: creates a form to create a news article
@@ -24,9 +20,15 @@ Date: 21 - 03 - 2024
 Author: Gerardo Omar Rodriguez Ramirez
 */
 
-const CreateNewsComponent = ({ ...props }: Readonly<ICreateUserProps>) => {
+const CreateNewsComponent = () => {
+  const methods = useForm<FieldValues>()
+
+  const onSubmit: SubmitHandler<FieldValues> = async data => {
+
+  }
   return (
-    <div
+    <form
+      onSubmit={methods.handleSubmit(onSubmit)}
       className={`margin-auto md:mx-auto max-w-7xl md:px-4 w-full h-full lg:px-8 lg:w-2/3 lg:h-auto 
     min-h-screen place-items-center justify-between py-24`}>
       <BasicPanelComponent backgroundColor='bg-white dark:bg-dark-primary'>
@@ -43,7 +45,7 @@ const CreateNewsComponent = ({ ...props }: Readonly<ICreateUserProps>) => {
             labelText='Título'
             fieldName='title'
             id='title'
-            register={props.methods.register}
+            register={methods.register}
             necessary={true}
             auto='off'
             type='text'
@@ -52,11 +54,11 @@ const CreateNewsComponent = ({ ...props }: Readonly<ICreateUserProps>) => {
           <Controller
             name='image'
             defaultValue=''
-            control={props.methods.control}
+            control={methods.control}
             render={({}) => (
               <ImageInputComponent
-                register={props.methods.register}
-                setValue={props.methods.setValue}
+                register={methods.register}
+                setValue={methods.setValue}
                 fieldName='image'
               />
             )}
@@ -65,7 +67,7 @@ const CreateNewsComponent = ({ ...props }: Readonly<ICreateUserProps>) => {
           <Controller
             name='content'
             defaultValue=''
-            control={props.methods.control}
+            control={methods.control}
             render={({ field }) => (
               <MarkdownAreaComponent
                 value={field.value}
@@ -78,7 +80,7 @@ const CreateNewsComponent = ({ ...props }: Readonly<ICreateUserProps>) => {
           <SubmitComponent text='Crear noticia' />
         </div>
       </BasicPanelComponent>
-    </div>
+    </form>
   )
 }
 
