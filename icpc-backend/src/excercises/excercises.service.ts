@@ -28,8 +28,7 @@ export class ExcercisesService {
   ) {}
 
   async create(createExcerciseDto: CreateExcerciseDto) {
-    const { name, categoryId, difficultyId, timeId, memoryId } =
-      createExcerciseDto;
+    const { name, category, difficulty, time, memoryId } = createExcerciseDto;
     const newExcerciseName = await this.excerciseRepository.findOneBy({
       name: name
     });
@@ -39,19 +38,21 @@ export class ExcercisesService {
       );
     }
     const newExcerciseCategory = await this.categoryRepository.findOneBy({
-      name: categoryId
+      name: category.name,
+      id: category.id
     });
     if (newExcerciseCategory === null) {
       throw new BadRequestException('La categoría no existe');
     }
     const newExcerciseDifficulty = await this.difficultyRepository.findOneBy({
-      name: difficultyId
+      name: difficulty.name
     });
     if (newExcerciseDifficulty === null) {
       throw new BadRequestException('El nivel de dificultad elegido no existe');
     }
     const newExcerciseTime = await this.timeRepository.findOneBy({
-      timeLimit: timeId
+      timeLimit: time.value,
+      id: time.id
     });
     if (newExcerciseTime === null) {
       throw new BadRequestException('El límite de tiempo elegido no existe');

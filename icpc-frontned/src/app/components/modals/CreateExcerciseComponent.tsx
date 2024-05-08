@@ -13,6 +13,7 @@ import SubmitComponent from '../forms/SubmitComponent'
 import useExcerciseStore from '@/store/useExcerciseStore'
 import useUtilsStore from '@/store/useUtilsStore'
 import { toast } from 'sonner'
+import InputSelectorComponent from '../dropdowns/InputSelectorComponent'
 
 /*
 Input: None
@@ -41,8 +42,8 @@ const CreateExcerciseComponent = () => {
   let [tags, setTags] = useState<Tags[]>(tagList)
   let [categories, setCategories] = useState<Categories[]>(categoriesList)
   let [difficulty, setDifficulty] = useState<Difficulties[]>(difficultiesList)
-  let [timeLimits, setTimeLimit] = useState<TimeLimit[]>(timeLimitList)
-  let [memoryLimits, setMemoryLimit] = useState<MemoryLimit[]>(memoryLimitList)
+  let [timeLimits, setTimeLimits] = useState<TimeLimit[]>(timeLimitList)
+  let [memoryLimits, setMemoryLimits] = useState<MemoryLimit[]>(memoryLimitList)
 
   useEffect(() => {
     getTags().then(response => {
@@ -55,20 +56,20 @@ const CreateExcerciseComponent = () => {
       setDifficulty(response)
     })
     getTimeLimit().then(response => {
-      setTimeLimit(response)
+      setTimeLimits(response)
     })
     getMemoryLimit().then(response => {
-      setMemoryLimit(response)
+      setMemoryLimits(response)
     })
   }, [getCategories, getDifficulties, getTags, getTimeLimit, getMemoryLimit])
 
   const onSubmit: SubmitHandler<FieldValues> = async data => {
     const response = await createExcercise({
       name: String(data.name),
-      categoryId: String(data.category),
-      difficultyId: String(data.difficultyId),
-      timeId: parseInt(data.timeId),
-      memoryId: (parseInt(data.memoryId) / 64),
+      category: data.category.option,
+      difficulty: data.difficulty.option,
+      time: { value: parseInt(data.time.option.name), id: data.time.option.id },
+      memoryId: parseInt(data.memoryId) / 64,
       input: String(data.input),
       output: String(data.output),
       constraints: String(data.constraints),
@@ -133,16 +134,14 @@ const CreateExcerciseComponent = () => {
               defaultValue={[]}
               control={methods.control}
               render={({ field }) => (
-                <SelectComponent
-                  options={categories.map((category, index) => {
-                    return { id: index, name: category.name }
-                  })}
-                  selected={field.value}
-                  fieldName='category'
+                <InputSelectorComponent
+                  label='Categoría'
                   id='category'
-                  labelText='Categoría'
-                  onChange={newSelected => field.onChange(newSelected)}
-                  className=''
+                  onChange={val => field.onChange(val)}
+                  options={categories.map(item => {
+                    return { name: item.name, id: item.id }
+                  })}
+                  selectedOption={field.value}
                 />
               )}
               name='category'
@@ -151,46 +150,41 @@ const CreateExcerciseComponent = () => {
               defaultValue={[]}
               control={methods.control}
               render={({ field }) => (
-                <SelectComponent
-                  options={difficulty.map((diff, index) => {
-                    return { id: index, name: diff.name }
+                <InputSelectorComponent
+                  label='Nivel de dificultad'
+                  id='difficulty'
+                  onChange={val => field.onChange(val)}
+                  options={difficulty.map(item => {
+                    return { name: item.name, id: item.id }
                   })}
-                  selected={field.value}
-                  fieldName='difficultyId'
-                  id='difficultyId'
-                  labelText='Dificultad'
-                  onChange={newSelected => field.onChange(newSelected)}
-                  className=''
+                  selectedOption={field.value}
                 />
               )}
-              name='difficultyId'
+              name='difficulty'
             />
             <Controller
               defaultValue={[]}
               control={methods.control}
               render={({ field }) => (
-                <SelectComponent
-                  options={timeLimits.map((value, index) => {
-                    return { id: index, name: value.timeLimit.toString()}
+                <InputSelectorComponent
+                  label='Límite de tiempo'
+                  id='time'
+                  onChange={val => field.onChange(val)}
+                  options={timeLimits.map(item => {
+                    return { name: item.timeLimit.toString(), id: item.id }
                   })}
-                  selected={field.value}
-                  fieldName='timeId'
-                  id='timeId'
-                  labelText='Límite de tiempo'
-                  onChange={newSelected => field.onChange(newSelected)}
-                  className=''
+                  selectedOption={field.value}
                 />
               )}
-              name='timeId'
+              name='time'
             />
             <Controller
               defaultValue={[]}
-
               control={methods.control}
               render={({ field }) => (
                 <SelectComponent
                   options={memoryLimits.map((value, index) => {
-                    return { id: index, name: String(value.memoryLimit * 64)}
+                    return { id: index, name: String(value.memoryLimit * 64) }
                   })}
                   selected={field.value}
                   fieldName='memoryId'
