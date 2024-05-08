@@ -186,7 +186,6 @@ const CreateExcerciseComponent = () => {
                   options={memoryLimits.map((value, index) => {
                     return { id: index, name: String(value.memoryLimit * 64) }
                   })}
-                  selected={field.value}
                   fieldName='memoryId'
                   id='memoryId'
                   labelText='Límite de memoria'
