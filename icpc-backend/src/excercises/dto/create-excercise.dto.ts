@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsBoolean, IsNumber, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsBoolean,
+  IsNumber,
+  IsObject,
+  IsString
+} from 'class-validator';
 
 export class CreateExcerciseDto {
   @ApiProperty()
@@ -7,16 +13,16 @@ export class CreateExcerciseDto {
   name: string;
 
   @ApiProperty()
-  @IsString()
-  categoryId: string;
+  @IsObject()
+  category: { name: string; id: string };
 
   @ApiProperty()
-  @IsString()
-  difficultyId: string;
+  @IsObject()
+  difficulty: { name: string; id: string };
 
   @ApiProperty()
-  @IsNumber()
-  timeId: number;
+  @IsObject()
+  time: { value: number; id: string };
 
   @ApiProperty()
   @IsNumber()

@@ -11,9 +11,9 @@ const api = axios.create({
 
 interface ICreateExcercise {
   name: string
-  categoryId: string
-  difficultyId: string
-  timeId: number
+  category: { name: string, id: string }
+  difficulty: { name: string, id: string }
+  time: { value: number, id: string}
   memoryId: number
   input: string
   output: string

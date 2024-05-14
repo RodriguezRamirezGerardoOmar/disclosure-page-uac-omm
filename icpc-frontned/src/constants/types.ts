@@ -73,6 +73,11 @@ export interface IApiResponse<E = {}> {
   errors: E | TResponseError | any
 }
 
+export interface Option {
+  name: string
+  id: string
+}
+
 export interface Tags {
   id: number
   name: string

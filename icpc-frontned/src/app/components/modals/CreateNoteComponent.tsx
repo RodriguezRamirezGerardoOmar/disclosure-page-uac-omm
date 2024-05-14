@@ -20,7 +20,7 @@ Output: a form to create a note article
 Return value: a modal form component to create a note article
 Function: creates a modal form to write a note article into a database
 Variables: methods, data, tags
-Date: 22 - 03 - 2024
+Date: 07 - 05 - 2024
 Author: Gerardo Omar Rodriguez Ramirez
 */
 
