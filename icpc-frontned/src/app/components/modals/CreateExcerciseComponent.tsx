@@ -4,7 +4,7 @@ import { Controller, FieldValues, SubmitHandler, useForm } from 'react-hook-form
 import { BasicPanelComponent } from '../panels/BasicPanelComponent'
 import LogoComponent from '../LogoComponent'
 import { TextComponent } from '../text/TextComponent'
-import { Categories, enumTextTags, Tags, Difficulties, TimeLimit, MemoryLimit } from '@/constants/types'
+import { Categories, enumTextTags, Tags, Difficulties, TimeLimit, MemoryLimit, Option } from '@/constants/types'
 import TextFieldComponent from '../forms/TextFieldComponent'
 import { SelectComponent } from '../dropdowns/SelectComponent'
 import TagSelectorComponent from '../forms/TagSelectorComponent'
@@ -14,6 +14,7 @@ import useExcerciseStore from '@/store/useExcerciseStore'
 import useUtilsStore from '@/store/useUtilsStore'
 import { toast } from 'sonner'
 import InputSelectorComponent from '../dropdowns/InputSelectorComponent'
+import InputSelectorCreateComponent from '../dropdowns/InputSelectorCreateComponent'
 
 /*
 Input: None
@@ -38,12 +39,15 @@ const CreateExcerciseComponent = () => {
   const timeLimitList = useUtilsStore(state => state.timeLimit)
   const getMemoryLimit = useUtilsStore(state => state.getMemoryLimit)
   const memoryLimitList = useUtilsStore(state => state.memoryLimit)
+  const createTimeLimit = useUtilsStore(state => state.createTimeLimit)
+  const createCategory = useUtilsStore(state => state.createCategory)
 
   let [tags, setTags] = useState<Tags[]>(tagList)
   let [categories, setCategories] = useState<Categories[]>(categoriesList)
   let [difficulty, setDifficulty] = useState<Difficulties[]>(difficultiesList)
   let [timeLimits, setTimeLimits] = useState<TimeLimit[]>(timeLimitList)
   let [memoryLimits, setMemoryLimits] = useState<MemoryLimit[]>(memoryLimitList)
+  let [update, setUpdate] = useState<boolean>(false)
 
   useEffect(() => {
     getTags().then(response => {
@@ -61,14 +65,14 @@ const CreateExcerciseComponent = () => {
     getMemoryLimit().then(response => {
       setMemoryLimits(response)
     })
-  }, [getCategories, getDifficulties, getTags, getTimeLimit, getMemoryLimit])
+  }, [getCategories, getDifficulties, getTags, getTimeLimit, getMemoryLimit, update])
 
   const onSubmit: SubmitHandler<FieldValues> = async data => {
     const response = await createExcercise({
       name: String(data.name),
-      category: data.category.option,
-      difficulty: data.difficulty.option,
-      time: { value: parseInt(data.time.option.name), id: data.time.option.id },
+      category: data.category,
+      difficulty: data.difficulty,
+      time: { value: parseInt(data.time.label), id: data.time.id },
       memoryId: parseInt(data.memoryId) / 64,
       input: String(data.input),
       output: String(data.output),
@@ -104,6 +108,40 @@ const CreateExcerciseComponent = () => {
     }
   }
 
+  const handleCreateCategory = async (newValue: Option) => {
+    const category = newValue.label
+    const response = await createCategory({ name: category, commentId: category })
+    if ('statusCode' in response && response.statusCode === 201) {
+      setCategories([...categories, { id: response.data.id, name: category }])
+    } else if ('message' in response) {
+      toast.error(response.message, {
+        duration: 5000,
+        style: {
+          backgroundColor: '#ff0000',
+          color: '#ffffff'
+        }
+      })
+    }
+    setUpdate(!update)
+  }
+
+  const handleCreateTimeLimit = async (newValue: Option) => {
+    const timeLimit = parseInt(newValue.label)
+    const response = await createTimeLimit(timeLimit)
+    if ('statusCode' in response && response.statusCode === 201) {
+      setTimeLimits([...timeLimits, { id: response.data.id, timeLimit: timeLimit }])
+    } else if ('message' in response) {
+      toast.error(response.message, {
+        duration: 5000,
+        style: {
+          backgroundColor: '#ff0000',
+          color: '#ffffff'
+        }
+      })
+    }
+    setUpdate(!update)
+  }
+
   return (
     <form
       onSubmit={methods.handleSubmit(onSubmit)}
@@ -134,13 +172,14 @@ const CreateExcerciseComponent = () => {
               defaultValue={[]}
               control={methods.control}
               render={({ field }) => (
-                <InputSelectorComponent
+                <InputSelectorCreateComponent
                   label='Categoría'
                   id='category'
                   onChange={val => field.onChange(val)}
                   options={categories.map(item => {
-                    return { name: item.name, id: item.id }
+                    return { label: item.name, value: item.id }
                   })}
+                  handleCreate={handleCreateCategory}
                   selectedOption={field.value}
                 />
               )}
@@ -155,7 +194,7 @@ const CreateExcerciseComponent = () => {
                   id='difficulty'
                   onChange={val => field.onChange(val)}
                   options={difficulty.map(item => {
-                    return { name: item.name, id: item.id }
+                    return { label: item.name, value: item.id }
                   })}
                   selectedOption={field.value}
                 />
@@ -166,13 +205,14 @@ const CreateExcerciseComponent = () => {
               defaultValue={[]}
               control={methods.control}
               render={({ field }) => (
-                <InputSelectorComponent
+                <InputSelectorCreateComponent
                   label='Límite de tiempo'
                   id='time'
                   onChange={val => field.onChange(val)}
                   options={timeLimits.map(item => {
-                    return { name: item.timeLimit.toString(), id: item.id }
+                    return { label: item.timeLimit.toString(), value: item.id }
                   })}
+                  handleCreate={handleCreateTimeLimit}
                   selectedOption={field.value}
                 />
               )}
@@ -182,14 +222,14 @@ const CreateExcerciseComponent = () => {
               defaultValue={[]}
               control={methods.control}
               render={({ field }) => (
-                <SelectComponent
-                  options={memoryLimits.map((value, index) => {
-                    return { id: index, name: String(value.memoryLimit * 64) }
-                  })}
-                  fieldName='memoryId'
+                <InputSelectorComponent
+                  label='Límite de memoria'
                   id='memoryId'
-                  labelText='Límite de memoria'
-                  onChange={newSelected => field.onChange(newSelected)}
+                  onChange={val => field.onChange(val)}
+                  options={memoryLimits.map(item => {
+                    return { label: (item.memoryLimit * 64).toString(), value: item.id }
+                  })}
+                  selectedOption={field.value}
                 />
               )}
               name='memoryId'

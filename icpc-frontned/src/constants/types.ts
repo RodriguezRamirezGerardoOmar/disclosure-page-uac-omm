@@ -74,8 +74,8 @@ export interface IApiResponse<E = {}> {
 }
 
 export interface Option {
-  name: string
-  id: string
+  label: string
+  value: string
 }
 
 export interface Tags {
