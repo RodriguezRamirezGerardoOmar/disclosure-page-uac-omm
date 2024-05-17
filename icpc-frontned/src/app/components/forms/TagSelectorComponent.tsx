@@ -51,7 +51,7 @@ const colourStyles: StylesConfig<Tags, true> = {
       } else if (isSelected) {
         return chroma.contrast(color, 'white') > 2 ? 'white' : 'black'
       } else {
-        return dataColor
+        return 'black'
       }
     }
 
@@ -81,13 +81,13 @@ const colourStyles: StylesConfig<Tags, true> = {
   },
   multiValueLabel: (styles, { data }) => ({
     ...styles,
-    color: data.color
+    color: `#${data.color}`
   }),
   multiValueRemove: (styles, { data }) => ({
     ...styles,
-    color: data.color,
+    color: `#${data.color}`,
     ':hover': {
-      backgroundColor: data.color,
+      backgroundColor: `#${data.color}`,
       color: 'white'
     }
   })
