@@ -73,7 +73,7 @@ const CreateExcerciseComponent = () => {
       category: data.category,
       difficulty: data.difficulty,
       time: { value: parseInt(data.time.label), id: data.time.id },
-      memoryId: parseInt(data.memoryId) / 64,
+      memoryId: parseInt(data.memoryId.value),
       input: String(data.input),
       output: String(data.output),
       constraints: String(data.constraints),
@@ -227,7 +227,8 @@ const CreateExcerciseComponent = () => {
                   id='memoryId'
                   onChange={val => field.onChange(val)}
                   options={memoryLimits.map(item => {
-                    return { label: (item.memoryLimit * 64).toString(), value: item.id }
+                    const label: number = item.memoryLimit * 64
+                    return { label: label.toString(), value: item.id }
                   })}
                   selectedOption={field.value}
                 />
