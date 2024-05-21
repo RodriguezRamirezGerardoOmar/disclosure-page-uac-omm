@@ -63,7 +63,10 @@ export class ExcercisesService {
     if (newExcerciseMemory === null) {
       throw new BadRequestException('El límite de memoria elegido no existe');
     }
-    const newExcercise = this.excerciseRepository.create(createExcerciseDto);
+    const newExcercise = this.excerciseRepository.create({
+      ...createExcerciseDto,
+      memoryId: newExcerciseMemory
+    });
     newExcercise.category = newExcerciseCategory;
     newExcercise.difficulty = newExcerciseDifficulty;
     newExcercise.time = newExcerciseTime;
