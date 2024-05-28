@@ -19,7 +19,7 @@ export class Excercise extends BaseEntity {
   @Column({ nullable: false })
   name: string;
 
-  @Column({ length: 2000, nullable: false })
+  @Column('text', { nullable: false })
   description: string;
 
   @Column({ nullable: false })
@@ -40,7 +40,7 @@ export class Excercise extends BaseEntity {
   @Column({ nullable: false })
   author: string;
 
-  @Column({ length: 2000, nullable: false })
+  @Column('text', { nullable: false })
   solution: string;
 
   @ManyToOne(() => User, user => user.excercises)
