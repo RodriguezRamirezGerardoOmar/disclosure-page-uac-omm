@@ -1,15 +1,17 @@
 import React from 'react'
 import { TextComponent } from '../text/TextComponent'
 import { enumTextTags, Option } from '@/constants/types'
-import Select, { StylesConfig } from 'react-select'
+import CreatableSelect from 'react-select/creatable'
+import { StylesConfig } from 'react-select'
 import chroma from 'chroma-js'
 
-interface InputSelectorProps {
+interface InputSelectorCreateProps {
   options: Option[]
   selectedOption: string
   id: string
   label: string
   onChange: (val: any) => void
+  handleCreate: (val: any) => void
 }
 
 const colourStyles: StylesConfig<Option> = {
@@ -37,18 +39,7 @@ const colourStyles: StylesConfig<Option> = {
   }
 }
 
-/*
-Input: a list of all posible options; the currently selected value;
-the id of the selector; a function to handle the change of value
-Output: a searchable selector with the options and the selected value
-Return value: a selector component to display the options and select the desired value
-Function: creates a component to search and select from a list of options
-Variables:
-Date: 07 - 05 - 2024
-Author: Gerardo Omar Rodriguez Ramirez
-*/
-
-const InputSelectorComponent = ({ ...props }: Readonly<InputSelectorProps>) => {
+const InputSelectorCreateComponent = ({ ...props }: Readonly<InputSelectorCreateProps>) => {
   const labelClassName = 'place-self-start dark:text-dark-accent'
   const options = props.options.map(option => ( option ))
   const selectedOption = options.find(option => option.label === props.selectedOption)
@@ -59,18 +50,25 @@ const InputSelectorComponent = ({ ...props }: Readonly<InputSelectorProps>) => {
         tag={enumTextTags.p}>
         {props.label}
       </TextComponent>
-      <Select
+      <CreatableSelect
         instanceId={props.id}
-        options={props.options}
+        options={props.options.map(option => option)}
         defaultValue={selectedOption}
         isSearchable={true}
-        isMulti={false}
-        onChange={newValue => props.onChange(newValue)}
+        isClearable={true}
+        styles={colourStyles}
         getOptionLabel={option => option.label}
         getOptionValue={option => option.value}
-        styles={colourStyles}
+        onChange={newValue => {
+          props.onChange(newValue)
+        }}
+        onCreateOption={inputValue => {
+          const option = { label: inputValue, value: inputValue }
+          const newOption = props.handleCreate(option)
+          props.onChange(newOption)
+        }}
       />
     </div>
   )
 }
-export default InputSelectorComponent
+export default InputSelectorCreateComponent
