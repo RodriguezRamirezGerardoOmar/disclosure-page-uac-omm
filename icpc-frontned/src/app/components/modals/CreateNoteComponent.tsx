@@ -1,18 +1,19 @@
 'use client'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { BasicPanelComponent } from '../panels/BasicPanelComponent'
 import LogoComponent from '../LogoComponent'
 import { TextComponent } from '../text/TextComponent'
-import { enumTextTags, Tags } from '@/constants/types'
+import { Categories, enumTextTags, Tags, Option } from '@/constants/types'
 import TextFieldComponent from '../forms/TextFieldComponent'
 import { FieldValues, Controller, useForm, SubmitHandler } from 'react-hook-form'
-import { SelectComponent } from '../dropdowns/SelectComponent'
-import data from '@/app/notelist/listaApuntes.json'
-import tags from '@/app/note/apunte.json'
 import TextAreaComponent from '../forms/TextAreaComponent'
 import MarkdownAreaComponent from '../forms/MarkdownAreaComponent'
 import SubmitComponent from '../forms/SubmitComponent'
 import TagSelectorComponent from '../forms/TagSelectorComponent'
+import useUtilsStore from '@/store/useUtilsStore'
+import useNoteStore from '@/store/useNoteStore'
+import InputSelectorCreateComponent from '../dropdowns/InputSelectorCreateComponent'
+import { toast } from 'sonner'
 
 /*
 Input: None
@@ -26,10 +27,72 @@ Author: Gerardo Omar Rodriguez Ramirez
 
 const CreateNoteComponent = () => {
   const methods = useForm<FieldValues>()
-  const allTags: Tags[] = tags.tags
+  const getTags = useUtilsStore(state => state.getTags)
+  const tagList = useUtilsStore(state => state.tags)
+  const getCategories = useUtilsStore(state => state.getCategories)
+  const categoriesList = useUtilsStore(state => state.categories)
+  const createNote = useNoteStore(state => state.createNote)
+  const createCategory = useUtilsStore(state => state.createCategory)
 
-  const onSubmit: SubmitHandler<FieldValues> = async => {
+  let [tags, setTags] = useState<Tags[]>(tagList)
+  let [categories, setCategories] = useState<Categories[]>(categoriesList)
+  let [update, setUpdate] = useState<boolean>(false)
 
+  useEffect(() => {
+    getTags().then(response => {
+      setTags(response)
+    })
+    getCategories().then(response => {
+      setCategories(response)
+    })
+  }, [getCategories, getTags, update])
+
+  const handleCreateCategory = async (newValue: Option) => {
+    const category = newValue.label
+    const response = await createCategory({ name: category, commentId: category })
+    if ('statusCode' in response && response.statusCode === 201) {
+      setCategories([...categories, { id: response.data.id, name: category }])
+    } else if ('message' in response) {
+      toast.error(response.message, {
+        duration: 5000,
+        style: {
+          backgroundColor: '#ff0000',
+          color: '#ffffff'
+        }
+      })
+    }
+    setUpdate(!update)
+  }
+
+  const onSubmit: SubmitHandler<FieldValues> = async data => {
+    const response = await createNote({
+      title: String(data.title),
+      description: String(data.description),
+      body: String(data.content),
+      categoryId: { name: data.category.label, id: data.category.value },
+      tags: data.tags,
+      isVisible: false
+    })
+
+    if ('statusCode' in response && response.statusCode === 201) {
+      toast.success(response.message, {
+        duration: 5000,
+        style: {
+          backgroundColor: 'green',
+          color: '#ffffff'
+        }
+      })
+    } else {
+      if ('message' in response) {
+        toast.error(response.message, {
+          duration: 5000,
+          style: {
+            backgroundColor: '#ff0000',
+            color: '#ffffff'
+          }
+        })
+      }
+    }
   }
   return (
     <form
@@ -55,17 +118,18 @@ const CreateNoteComponent = () => {
             type='text'
           />
           <Controller
-            defaultValue={data.categories[0].name}
+            defaultValue={[]}
             control={methods.control}
             render={({ field }) => (
-              <SelectComponent
-                options={data.categories}
-                selected={field.value}
-                fieldName='category'
+              <InputSelectorCreateComponent
+                label='Categoría'
                 id='category'
-                labelText='Categoría'
-                onChange={newSelected => field.onChange(newSelected)}
-                className=''
+                onChange={val => field.onChange(val)}
+                options={categories.map(item => {
+                  return { label: item.name, value: item.id }
+                })}
+                handleCreate={handleCreateCategory}
+                selectedOption={field.value}
               />
             )}
             name='category'
@@ -77,7 +141,7 @@ const CreateNoteComponent = () => {
             render={({ field }) => (
               <TagSelectorComponent
                 id='tagSelector2'
-                options={allTags}
+                options={tags}
                 selectedTags={field.value}
                 onChange={val => field.onChange(val)}
               />
