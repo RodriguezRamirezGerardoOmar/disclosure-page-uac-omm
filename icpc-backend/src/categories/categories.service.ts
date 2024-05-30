@@ -4,23 +4,37 @@ import { UpdateCategoryDto } from './dto/update-category.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Category } from './entities/category.entity';
+import { Comment } from '../comment/entities/comment.entity';
 
 @Injectable()
 export class CategoriesService {
   constructor(
     @InjectRepository(Category)
-    private readonly categoryRepository: Repository<Category>
+    private readonly categoryRepository: Repository<Category>,
+    @InjectRepository(Comment)
+    private readonly commentRepository: Repository<Comment>
   ) {}
   async create(createCategoryDto: CreateCategoryDto) {
     const name = await this.findOneByName(createCategoryDto.name); // check if name exists
     if (name !== null) {
       throw new BadRequestException('Category already exists');
     }
+    let comment = await this.commentRepository.findOneBy({
+      body: createCategoryDto.commentId
+    });
+    console.log(comment);
+    if (comment === null) {
+      comment = this.commentRepository.create({
+        body: createCategoryDto.commentId
+      });
+    }
     const newCategory = this.categoryRepository.create(createCategoryDto);
+    newCategory.comment = comment;
     const category = await this.categoryRepository.save(newCategory);
     return {
       id: category.id,
-      name: category.name
+      name: category.name,
+      commentId: comment
     };
   }
 
@@ -48,8 +62,7 @@ export class CategoriesService {
   }
 
   async update(id: string, updateCategoryDto: UpdateCategoryDto) {
-    const category = await this.findOne(id);
-    return await this.categoryRepository.update(category, updateCategoryDto);
+    return await this.categoryRepository.update(id, updateCategoryDto);
   }
 
   async remove(id: string) {

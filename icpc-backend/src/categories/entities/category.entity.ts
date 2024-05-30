@@ -1,7 +1,8 @@
 import { Excercise } from 'src/excercises/entities/excercise.entity';
 import { BaseEntity } from '../../entities/base.entity';
-import { Column, Entity, OneToMany, OneToOne } from 'typeorm';
+import { Column, Entity, JoinTable, ManyToOne, OneToMany } from 'typeorm';
 import { Comment } from 'src/comment/entities/comment.entity';
+import { Note } from 'src/notes/entities/note.entity';
 
 @Entity()
 export class Category extends BaseEntity {
@@ -11,7 +12,11 @@ export class Category extends BaseEntity {
   @OneToMany(() => Excercise, excercise => excercise.category)
   excercises: Excercise[];
 
+  @OneToMany(() => Note, note => note.category)
+  notes: Note[];
+
   // una categoria puede tener solo un comentario
-  @OneToOne(() => Comment, comment => comment.category)
+  @ManyToOne(() => Comment, comment => comment.category)
+  @JoinTable()
   comment: Comment;
 }
