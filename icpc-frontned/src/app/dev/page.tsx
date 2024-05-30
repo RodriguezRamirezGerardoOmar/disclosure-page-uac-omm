@@ -1,7 +1,7 @@
-import CreateExerciseComponent from '../components/modals/CreateExcerciseComponent'
+import CreateNoteComponent from '../components/modals/CreateNoteComponent'
 
 export default function Home() {
   return (
-      <CreateExerciseComponent />
+      <CreateNoteComponent />
   )
 }
