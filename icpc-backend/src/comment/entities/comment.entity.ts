@@ -1,6 +1,7 @@
 import { Category } from 'src/categories/entities/category.entity';
 import { BaseEntity } from 'src/entities/base.entity';
-import { Column, Entity, OneToOne } from 'typeorm';
+import { Note } from 'src/notes/entities/note.entity';
+import { Column, Entity, OneToMany } from 'typeorm';
 
 @Entity()
 export class Comment extends BaseEntity {
@@ -8,6 +9,9 @@ export class Comment extends BaseEntity {
   body: string;
 
   // un comentario solo puede pertenecer a una categoria
-  @OneToOne(() => Category, category => category.comment)
-  category: Category;
+  @OneToMany(() => Category, category => category.comment)
+  category: Category[];
+
+  @OneToMany(() => Note, note => note.commentId)
+  notes: Note[];
 }

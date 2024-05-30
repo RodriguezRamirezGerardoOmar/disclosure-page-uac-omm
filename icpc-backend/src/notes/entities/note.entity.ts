@@ -1,18 +1,25 @@
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany, ManyToOne } from 'typeorm';
 import { BaseEntity } from '../../entities/base.entity';
+import { Category } from 'src/categories/entities/category.entity';
+import { Comment } from 'src/comment/entities/comment.entity';
+import { Tag } from 'src/tags/entities/tag.entity';
 
 @Entity()
 export class Note extends BaseEntity {
-  // TODO: Add category ID as a foreign key, change type
-  @Column({ unique: true, nullable: false })
-  categoryId: string;
+  @ManyToOne(() => Category, category => category.notes)
+  @JoinTable()
+  category: Category;
 
   @Column({ nullable: false })
   title: string;
 
-  // TODO: Add comment ID as a foreign key, change type
-  @Column({ unique: true, nullable: false })
-  commentId: string;
+  @ManyToOne(() => Comment, comment => comment.notes)
+  @JoinTable()
+  commentId: Comment;
+
+  @ManyToMany(() => Tag, tag => tag.excercises)
+  @JoinTable()
+  tags: Tag[];
 
   @Column({ nullable: false })
   body: string;

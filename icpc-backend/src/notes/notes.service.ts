@@ -27,28 +27,33 @@ export class NotesService {
       throw new BadRequestException('Title already exists'); // throw error if title exists
     }
     const article = this.noteRepository.create(createNoteDto); // create note object
-    const noteCategory = await this.categoryRepository.findOne({
-      where: { id: article.categoryId } // find the note's category in the 'category' table by the note's category id
+    const noteCategory = await this.categoryRepository.findOneBy({
+      id: createNoteDto.categoryId.id,
+      name: createNoteDto.categoryId.name
+      // find the note's category in the 'category' table by the note's category id
     });
     if (noteCategory) {
-      article.categoryId = noteCategory.id; // assign the note's category to the note object
+      article.category = noteCategory; // assign the note's category to the note object
     }
     if (description !== null) {
       // if comment already exists
-      article.commentId = description.id; // assign the comment to the note object
+      article.commentId = description; // assign the comment to the note object
     } else {
       // if comment doesn't exist
-      const comment = this.commentRepository.create(description);
+      const comment = this.commentRepository.create({
+        body: createNoteDto.description
+      }); // pass the 'body' property as a string
       const newComment = await this.commentRepository.save(comment); // save the comment object to the database if it doesn't exist
-      article.commentId = newComment.id; // assign the comment to the note object
+      article.commentId = newComment; // assign the comment to the note object
     }
     const newNote = await this.noteRepository.save(article); // save the note object to the database
     return {
       // return the note object
       id: newNote.id,
-      categoryId: newNote.categoryId,
+      categoryId: newNote.category,
       title: newNote.title,
       commentId: newNote.commentId,
+      tags: newNote.tags,
       body: newNote.body,
       isVisible: newNote.isVisible
     };
