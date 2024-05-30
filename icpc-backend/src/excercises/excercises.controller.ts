@@ -5,22 +5,34 @@ import {
   Body,
   Patch,
   Param,
-  Delete
+  Delete,
+  UseGuards
 } from '@nestjs/common';
 import { ExcercisesService } from './excercises.service';
 import { CreateExcerciseDto } from './dto/create-excercise.dto';
 import { UpdateExcerciseDto } from './dto/update-excercise.dto';
-import { ApiTags } from '@nestjs/swagger';
-import { Auth } from 'src/common/decorators/auth.decorator';
-import { RoleEnum } from 'src/common/enums/role.enum';
+import {
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiInternalServerErrorResponse,
+  ApiTags,
+  ApiUnauthorizedResponse
+} from '@nestjs/swagger';
+import { AuthGuard } from 'src/auth/guard/auth.guard';
 
 @Controller('excercises')
 @ApiTags('Excercises')
-@Auth(RoleEnum.ADMIN || RoleEnum.USER)
 export class ExcercisesController {
   constructor(private readonly excercisesService: ExcercisesService) {}
 
   @Post()
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @ApiCreatedResponse({
+    description: 'The exercise has been successfully created.'
+  })
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+  @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
   create(@Body() createExcerciseDto: CreateExcerciseDto) {
     return this.excercisesService.create(createExcerciseDto);
   }
@@ -36,6 +48,13 @@ export class ExcercisesController {
   }
 
   @Patch(':id')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @ApiCreatedResponse({
+    description: 'The exercise has been successfully updated.'
+  })
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+  @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
   update(
     @Param('id') id: string,
     @Body() updateExcerciseDto: UpdateExcerciseDto
@@ -44,6 +63,13 @@ export class ExcercisesController {
   }
 
   @Delete(':id')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @ApiCreatedResponse({
+    description: 'The exercise has been successfully deleted.'
+  })
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+  @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
   remove(@Param('id') id: string) {
     return this.excercisesService.remove(id);
   }

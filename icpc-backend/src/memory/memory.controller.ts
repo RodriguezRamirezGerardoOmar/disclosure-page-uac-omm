@@ -41,7 +41,6 @@ export class MemoryController {
   @ApiResponse({
     description: 'The memory limit list has been successfully retrieved.'
   })
-  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
   findAll() {
     return this.memoryService.findAll();
@@ -51,7 +50,6 @@ export class MemoryController {
   @ApiResponse({
     description: 'The memory limit has been successfully retrieved.'
   })
-  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
   findOne(@Param('id') id: string) {
     return this.memoryService.findOne(id);
