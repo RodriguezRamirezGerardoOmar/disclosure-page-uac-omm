@@ -13,6 +13,7 @@ import { TimeModule } from './time/time.module';
 import { DifficultyModule } from './difficulty/difficulty.module';
 import { TagsModule } from './tags/tags.module';
 import { ExcercisesModule } from './excercises/excercises.module';
+import { ImageModule } from './image/image.module';
 
 @Module({
   imports: [
@@ -41,7 +42,8 @@ import { ExcercisesModule } from './excercises/excercises.module';
     TimeModule,
     DifficultyModule,
     TagsModule,
-    ExcercisesModule
+    ExcercisesModule,
+    ImageModule
   ]
 })
 export class AppModule {
