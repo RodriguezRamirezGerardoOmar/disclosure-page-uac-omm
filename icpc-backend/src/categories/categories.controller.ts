@@ -48,6 +48,13 @@ export class CategoriesController {
   }
 
   @Patch(':id')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @ApiCreatedResponse({
+    description: 'The note has been successfully updated.'
+  })
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+  @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
   update(
     @Param('id') id: string,
     @Body() updateCategoryDto: UpdateCategoryDto
@@ -56,6 +63,13 @@ export class CategoriesController {
   }
 
   @Delete(':id')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @ApiCreatedResponse({
+    description: 'The note has been successfully deleted.'
+  })
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+  @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
   remove(@Param('id') id: string) {
     return this.categoriesService.remove(id);
   }
