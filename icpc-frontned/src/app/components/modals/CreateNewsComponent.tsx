@@ -55,10 +55,11 @@ const CreateNewsComponent = () => {
             name='image'
             defaultValue=''
             control={methods.control}
-            render={({}) => (
+            render={({ field }) => (
               <ImageInputComponent
+                value={field.value}
                 register={methods.register}
-                setValue={methods.setValue}
+                onChange={field.onChange}
                 fieldName='image'
               />
             )}
