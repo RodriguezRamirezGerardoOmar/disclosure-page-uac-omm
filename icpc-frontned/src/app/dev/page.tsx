@@ -1,7 +1,7 @@
-import CreateNoteComponent from '../components/modals/CreateNoteComponent'
+import CreateNewsComponent from '../components/modals/CreateNewsComponent'
 
 export default function Home() {
   return (
-      <CreateNoteComponent />
+      <CreateNewsComponent />
   )
 }

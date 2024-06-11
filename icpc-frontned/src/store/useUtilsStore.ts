@@ -24,6 +24,7 @@ interface Actions {
   getTimeLimit: () => Promise<TimeLimit[]>
   createTimeLimit: (time: number) => Promise<IApiResponse | TResponseBasicError>
   getMemoryLimit: () => Promise<MemoryLimit[]>
+  createImage: (image: File) => Promise<IApiResponse | TResponseBasicError>
 }
 
 const useUtilsStore = create<Actions & UtilsState>()(
@@ -117,6 +118,16 @@ const useUtilsStore = create<Actions & UtilsState>()(
           } catch (error: any) {
             return error.response.data
           }
+        },
+
+        createImage: async (file: File) => {
+          const fd = new FormData()
+          fd.append('file', file)
+          return api.post('/api/v1/image/upload', fd, {
+            headers: {
+              Authorization: `Bearer ${useAuthStore.getState().token}`
+            }
+          })
         }
       }),
       {
