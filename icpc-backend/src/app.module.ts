@@ -14,6 +14,7 @@ import { DifficultyModule } from './difficulty/difficulty.module';
 import { TagsModule } from './tags/tags.module';
 import { ExcercisesModule } from './excercises/excercises.module';
 import { ImageModule } from './image/image.module';
+import { NewsModule } from './news/news.module';
 
 @Module({
   imports: [
@@ -43,7 +44,8 @@ import { ImageModule } from './image/image.module';
     DifficultyModule,
     TagsModule,
     ExcercisesModule,
-    ImageModule
+    ImageModule,
+    NewsModule
   ]
 })
 export class AppModule {

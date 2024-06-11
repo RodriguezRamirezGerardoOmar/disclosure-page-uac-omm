@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { CreateImageDto } from './dto/create-image.dto';
 import { UpdateImageDto } from './dto/update-image.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -11,8 +10,20 @@ export class ImageService {
     @InjectRepository(Image)
     private readonly imageRepository: Repository<Image>
   ) {}
-  async create(createImageDto: CreateImageDto) {
-    return await this.imageRepository.save(createImageDto);
+  async create(file: Express.Multer.File) {
+    console.log(file);
+    const image = this.imageRepository.create({
+      assetName: file.originalname,
+      data: file.buffer
+    });
+    const imageInDb = await this.imageRepository.findOneBy({
+      data: file.buffer
+    });
+    if (!imageInDb) {
+      return await this.imageRepository.save(image);
+    } else {
+      return imageInDb;
+    }
   }
 
   async findAll() {
