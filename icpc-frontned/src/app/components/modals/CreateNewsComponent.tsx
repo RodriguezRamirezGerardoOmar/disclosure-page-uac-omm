@@ -2,13 +2,16 @@
 import React from 'react'
 import { FieldValues, Controller, useForm, SubmitHandler } from 'react-hook-form'
 import { BasicPanelComponent } from '../panels/BasicPanelComponent'
-import { enumTextTags } from '@/constants/types'
+import { IApiResponse, TResponseBasicError, enumTextTags } from '@/constants/types'
 import LogoComponent from '../LogoComponent'
 import { TextComponent } from '../text/TextComponent'
 import TextFieldComponent from '../forms/TextFieldComponent'
 import SubmitComponent from '../forms/SubmitComponent'
 import ImageInputComponent from '../forms/ImageInputComponent'
 import MarkdownAreaComponent from '../forms/MarkdownAreaComponent'
+import useNewsStore from '@/store/useNewsStore'
+import useUtilsStore from '@/store/useUtilsStore'
+import { toast } from 'sonner'
 
 /*
 Input: None
@@ -22,10 +25,49 @@ Author: Gerardo Omar Rodriguez Ramirez
 
 const CreateNewsComponent = () => {
   const methods = useForm<FieldValues>()
+  const createNews = useNewsStore(state => state.createNews)
+  const createImage = useUtilsStore((state: { createImage: (image: File) => Promise<IApiResponse<{}> | TResponseBasicError> }) => state.createImage)
 
-  const onSubmit: SubmitHandler<FieldValues> = async data => {
-
+  const onSubmit: SubmitHandler<FieldValues> = async formData => {
+    const uploadedImage = await createImage(formData.file)
+    if ('data' in uploadedImage) {
+      const response = await createNews({
+        title: String(formData.title),
+        imageId: uploadedImage.data?.id,
+        body: String(formData.content)
+      })
+      if ('statusCode' in response && response.statusCode === 201) {
+        toast.success(response.message, {
+          duration: 5000,
+          style: {
+            backgroundColor: 'green',
+            color: '#ffffff'
+          }
+        })
+      } else {
+        if ('message' in response) {
+          toast.error(response.message, {
+            duration: 5000,
+            style: {
+              backgroundColor: '#ff0000',
+              color: '#ffffff'
+            }
+          })
+        }
+      }
+    } else {
+      if ('message' in uploadedImage) {
+        toast.error(uploadedImage.message as string, {
+          duration: 5000,
+          style: {
+            backgroundColor: '#ff0000',
+            color: '#ffffff'
+          }
+        })
+      }
+    }
   }
+
   return (
     <form
       onSubmit={methods.handleSubmit(onSubmit)}
@@ -52,14 +94,15 @@ const CreateNewsComponent = () => {
             className='m-4'
           />
           <Controller
-            name='image'
-            defaultValue=''
+            name='file'
+            defaultValue={null}
             control={methods.control}
-            render={({}) => (
+            render={({ field }) => (
               <ImageInputComponent
+                value={field.value}
                 register={methods.register}
-                setValue={methods.setValue}
-                fieldName='image'
+                onChange={field.onChange}
+                fieldName='file'
               />
             )}
           />
