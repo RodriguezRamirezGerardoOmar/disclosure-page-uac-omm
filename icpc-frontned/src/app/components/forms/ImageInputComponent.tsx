@@ -5,7 +5,7 @@ import { TextComponent } from '../text/TextComponent'
 
 interface IImageInputProps {
   register: UseFormRegister<FieldValues>
-  onChange: (newValue: any) => void
+  onChange: (newValue: File) => void
   fieldName: string
   value: any
 }
@@ -40,7 +40,7 @@ const ImageInputComponent = ({ ...props }: Readonly<IImageInputProps>) => {
         alt='ícono'
       />
       <TextComponent
-        className='mt-2 block font-semibold text-gray-900'
+        className='mt-2 block font-semibold text-gray-900 dark:text-dark-accent'
         sizeFont='s12'>
         {selectedFile ? 'Imagen seleccionada' : 'Sube una imagen de portada'}
       </TextComponent>
