@@ -6,33 +6,52 @@ import {
   Patch,
   Param,
   Delete,
-  UseGuards
+  UseGuards,
+  UseInterceptors,
+  UploadedFile
 } from '@nestjs/common';
 import { ImageService } from './image.service';
-import { CreateImageDto } from './dto/create-image.dto';
 import { UpdateImageDto } from './dto/update-image.dto';
 import {
   ApiBearerAuth,
+  ApiConsumes,
   ApiInternalServerErrorResponse,
+  ApiOperation,
   ApiResponse,
-  ApiUnauthorizedResponse
+  ApiUnauthorizedResponse,
+  ApiBody,
+  ApiTags
 } from '@nestjs/swagger';
 import { AuthGuard } from 'src/auth/guard/auth.guard';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('image')
+@ApiTags('Image')
 export class ImageController {
   constructor(private readonly imageService: ImageService) {}
 
-  @Post()
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
-  @ApiResponse({
-    description: 'The image has been successfully created.'
+  @Post('upload')
+  @ApiOperation({ summary: 'Upload an image' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    description: 'Archivo a subir',
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary'
+        }
+      }
+    }
   })
-  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
-  @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
-  create(@Body() createImageDto: CreateImageDto) {
-    return this.imageService.create(createImageDto);
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadFile(@UploadedFile() file: Express.Multer.File) {
+    const image = await this.imageService.create(file);
+    return {
+      id: image.id,
+      assetName: image.assetName
+    };
   }
 
   @Get()
@@ -41,8 +60,8 @@ export class ImageController {
   })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
-  findAll() {
-    return this.imageService.findAll();
+  async findAll() {
+    return await this.imageService.findAll();
   }
 
   @Get(':id')
@@ -51,8 +70,8 @@ export class ImageController {
   })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
-  findOne(@Param('id') id: string) {
-    return this.imageService.findOne(id);
+  async findOne(@Param('id') id: string) {
+    return await this.imageService.findOne(id);
   }
 
   @Patch(':id')
@@ -63,8 +82,11 @@ export class ImageController {
   })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
-  update(@Param('id') id: string, @Body() updateImageDto: UpdateImageDto) {
-    return this.imageService.update(id, updateImageDto);
+  async update(
+    @Param('id') id: string,
+    @Body() updateImageDto: UpdateImageDto
+  ) {
+    return await this.imageService.update(id, updateImageDto);
   }
 
   @Delete(':id')
@@ -75,7 +97,7 @@ export class ImageController {
   })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
-  remove(@Param('id') id: string) {
-    return this.imageService.remove(id);
+  async remove(@Param('id') id: string) {
+    return await this.imageService.remove(id);
   }
 }
