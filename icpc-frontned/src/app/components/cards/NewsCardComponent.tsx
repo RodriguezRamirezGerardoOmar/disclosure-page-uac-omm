@@ -1,14 +1,16 @@
-'use client'
-import { MDXRemote } from 'next-mdx-remote'
+import React from 'react'
 import { BasicPanelComponent } from '../panels/BasicPanelComponent'
 import { TextComponent } from '../text/TextComponent'
-import { enumTextTags } from '@/constants/types'
+import { DBImage, enumTextTags, News } from '@/constants/types'
+import NewsBodyComponent from '../panels/NewsBodyComponent'
+import useNewsStore from '@/store/useNewsStore'
+import { serialize } from 'next-mdx-remote/serialize'
+import rehypeKatex from 'rehype-katex'
+import remarkMath from 'remark-math'
+import useUtilsStore from '@/store/useUtilsStore'
 
 interface NewsCardComponentProps {
-  title: string
-  author: string
-  createdAt: string
-  body: string
+  id: string
 }
 
 /*
@@ -21,34 +23,49 @@ Date: 21 - 03 - 2024
 Author: Gerardo Omar Rodriguez Ramirez
 */
 
-export const NewsCardComponent = ({ ...props }: Readonly<NewsCardComponentProps>) => {
+async function getNewsArticle(id: string): Promise<News> {
+  return await useNewsStore.getState().getNewsArticle(id)
+}
+async function getCover(id: string): Promise<DBImage>{
+  return await useUtilsStore.getState().getImage(id)
+
+}
+
+async function NewsCardComponent({ ...props }: Readonly<NewsCardComponentProps>) {
+  const news = await getNewsArticle(props.id)
+  const body = await serialize(news.body, {
+    mdxOptions: {
+      remarkPlugins: [remarkMath],
+      rehypePlugins: [rehypeKatex as any]
+    }
+  })
+  const imageData = await getCover(news.imageId.id)
+  const image = new File([imageData.data], imageData.assetName)
   return (
     <BasicPanelComponent backgroundColor='bg-white dark:bg-dark-primary'>
       <TextComponent
         sizeFont='s36'
         className='dark:text-dark-accent my-4'
         tag={enumTextTags.h1}>
-        {props.title}
+        {news.title}
       </TextComponent>
       <img
         alt=''
-        src='https://www.dongee.com/tutoriales/content/images/2023/01/image-47.png'
+        src={URL.createObjectURL(image)}
       />
       <TextComponent
         sizeFont='s14'
         className='text-gray-500 font-medium my-4'>
-        {`Autor: ${props.author}`}
+        {news.author ?? 'Anónimo'}
       </TextComponent>
       <TextComponent
         sizeFont='s14'
         className='text-gray-500 font-medium my-4'>
-        {`Fecha: ${props.createdAt}`}
+        {news.createdAt ?? ''}
       </TextComponent>
-      <MDXRemote
-        compiledSource={props.body}
-        scope={undefined}
-        frontmatter={undefined}
-      />
+      <NewsBodyComponent body={body.compiledSource} />
     </BasicPanelComponent>
   )
 }
+
+export default NewsCardComponent

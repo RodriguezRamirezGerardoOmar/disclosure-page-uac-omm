@@ -1,18 +1,16 @@
-import { enumTextTags } from '@/constants/types'
+'use client'
+import { enumTextTags, News } from '@/constants/types'
 import Link from 'next/link'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { BasicPanelComponent } from '../panels/BasicPanelComponent'
 import { TextComponent } from '../text/TextComponent'
 import cn from 'classnames'
+import useUtilsStore from '@/store/useUtilsStore'
 
 interface INewsItemProps {
-    item: {
-        href: string
-        title: string
-        image: string
-    }
-    className?: string
+  item: News
+  className?: string
 }
 
 /*
@@ -25,29 +23,42 @@ Date: 21 - 03 - 2024
 Author: Gerardo Omar Rodriguez Ramirez
 */
 
-const NewsItemComponent = ({...props}: Readonly<INewsItemProps>) => {
+const NewsItemComponent = ({ ...props }: Readonly<INewsItemProps>) => {
   const style = cn(props.className, 'bg-white dark:bg-dark-primary w-full lg:w-[32%]')
+  const getImage = useUtilsStore(state => state.getImage)
+  let [file, setFile] = useState<File>(new File([], ''))
+  let [image, setImage] = useState('')
+  useEffect(() => {
+    if (props.item.imageId?.id !== undefined) {
+      getImage(props.item.imageId?.id).then(response => {
+        setFile(new File([response.data], response.assetName))
+        setImage(URL.createObjectURL(file))
+      })
+    }
+  }, [getImage])
   return (
     <BasicPanelComponent backgroundColor={style}>
-            <Link
-              href={props.item.href}
-            className='h-full'>
-              <div className='relative mb-4 h-64'>
-                <Image
-                  src={props.item.image}
-                  fill
-                  alt='Picture of the author'
-                  className='object-cover rounded-md'
-                />
-              </div>
-              <TextComponent
-                tag={enumTextTags.p}
-                sizeFont='s16'
-                className='font-bold text-dark-accent'>
-                {props.item.title}
-              </TextComponent>
-            </Link>
-          </BasicPanelComponent>
+      <Link
+        href={`/news/${props.item.id}`}
+        className='h-full'>
+        <div className='relative mb-4 h-64'>
+          {image !== '' && (
+            <Image
+              src={image}
+              fill
+              alt='Picture of the author'
+              className='object-cover rounded-md'
+            />
+          )}
+        </div>
+        <TextComponent
+          tag={enumTextTags.p}
+          sizeFont='s16'
+          className='font-bold text-dark-accent'>
+          {props.item.title}
+        </TextComponent>
+      </Link>
+    </BasicPanelComponent>
   )
 }
 

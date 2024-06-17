@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
-import { Tags, Categories, Difficulties, TimeLimit, MemoryLimit, IApiResponse, TResponseBasicError } from '@/constants/types'
+import { Tags, Categories, Difficulties, TimeLimit, MemoryLimit, IApiResponse, TResponseBasicError, DBImage } from '@/constants/types'
 import useAuthStore from './useStore'
 
 const api = axios.create({
@@ -14,28 +14,31 @@ interface UtilsState {
   difficulty: Difficulties[]
   timeLimit: TimeLimit[]
   memoryLimit: MemoryLimit[]
+  images: { [key: string]: DBImage }
 }
 
 interface Actions {
   getTags: () => Promise<Tags[]>
   getCategories: () => Promise<Categories[]>
-  createCategory: ({name, commentId}: {name: string, commentId: string}) => Promise<IApiResponse | TResponseBasicError>
+  createCategory: ({ name, commentId }: { name: string; commentId: string }) => Promise<IApiResponse | TResponseBasicError>
   getDifficulties: () => Promise<Difficulties[]>
   getTimeLimit: () => Promise<TimeLimit[]>
   createTimeLimit: (time: number) => Promise<IApiResponse | TResponseBasicError>
   getMemoryLimit: () => Promise<MemoryLimit[]>
   createImage: (image: File) => Promise<IApiResponse | TResponseBasicError>
+  getImage: (id: string) => Promise<DBImage>
 }
 
 const useUtilsStore = create<Actions & UtilsState>()(
   devtools(
     persist(
-      set => ({
+      (set, get) => ({
         tags: [] as Tags[],
         categories: [] as Categories[],
         difficulty: [] as Difficulties[],
         timeLimit: [] as TimeLimit[],
         memoryLimit: [] as MemoryLimit[],
+        images: [] as unknown as { [key: string]: DBImage },
 
         getTags: async (): Promise<Tags[]> => {
           try {
@@ -120,14 +123,28 @@ const useUtilsStore = create<Actions & UtilsState>()(
           }
         },
 
-        createImage: async (file: File) => {
+        createImage: async (file: File): Promise<IApiResponse | TResponseBasicError> => {
           const fd = new FormData()
           fd.append('file', file)
-          return api.post('/api/v1/image/upload', fd, {
+          return await api.post('/api/v1/image/upload', fd, {
             headers: {
               Authorization: `Bearer ${useAuthStore.getState().token}`
             }
           })
+        },
+
+        getImage: async (id: string): Promise<DBImage> => {
+          if (get().images[id] !== undefined) {
+            return get().images[id]
+          } else {
+            try {
+              const response = await api.get(`/api/v1/image/${id}`, {responseType: 'blob'})
+              set(() => ({ images: { ...get().images, [id]: response.data } }))
+              return response.data
+            } catch (error: any) {
+              return error.response.data
+            }
+          }
         }
       }),
       {
