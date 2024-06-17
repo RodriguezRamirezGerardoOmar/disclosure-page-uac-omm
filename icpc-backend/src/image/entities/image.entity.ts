@@ -10,6 +10,9 @@ export class Image extends BaseEntity {
   @Column('blob', { nullable: false })
   data: Buffer;
 
+  @Column({ nullable: false })
+  mimeType: string;
+
   @OneToMany(() => News, news => news.imageId)
   news: News[];
 }

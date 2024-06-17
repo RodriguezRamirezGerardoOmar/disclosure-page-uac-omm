@@ -14,7 +14,8 @@ export class ImageService {
     console.log(file);
     const image = this.imageRepository.create({
       assetName: file.originalname,
-      data: file.buffer
+      data: file.buffer,
+      mimeType: file.mimetype
     });
     const imageInDb = await this.imageRepository.findOneBy({
       data: file.buffer
