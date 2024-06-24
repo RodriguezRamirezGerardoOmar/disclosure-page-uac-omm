@@ -8,7 +8,8 @@ import {
   Delete,
   UseGuards,
   UseInterceptors,
-  UploadedFile
+  UploadedFile,
+  Res
 } from '@nestjs/common';
 import { ImageService } from './image.service';
 import { UpdateImageDto } from './dto/update-image.dto';
@@ -70,8 +71,9 @@ export class ImageController {
   })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
-  async findOne(@Param('id') id: string) {
-    return await this.imageService.findOne(id);
+  async findOne(@Param('id') id: string, @Res() res) {
+    const file = await this.imageService.findOne(id);
+    res.sendFile(file);
   }
 
   @Patch(':id')

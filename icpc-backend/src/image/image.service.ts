@@ -3,6 +3,9 @@ import { UpdateImageDto } from './dto/update-image.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Image } from './entities/image.entity';
+import { v4 as uuidv4 } from 'uuid';
+import * as fs from 'fs';
+import { createHash } from 'crypto';
 
 @Injectable()
 export class ImageService {
@@ -11,16 +14,28 @@ export class ImageService {
     private readonly imageRepository: Repository<Image>
   ) {}
   async create(file: Express.Multer.File) {
-    console.log(file);
+    const uuid = uuidv4();
+    const extension = file.originalname.split('.').pop();
+    const hasher = createHash('md5');
     const image = this.imageRepository.create({
-      assetName: file.originalname,
-      data: file.buffer,
+      assetName: uuid + '.' + extension,
+      hash: hasher.update(file.buffer).digest('hex').toString(),
+      size: file.size,
       mimeType: file.mimetype
     });
     const imageInDb = await this.imageRepository.findOneBy({
-      data: file.buffer
+      hash: image.hash
     });
     if (!imageInDb) {
+      fs.writeFile(
+        process.cwd() + process.env.ASSETS_PATH + '/' + image.assetName,
+        file.buffer,
+        err => {
+          if (err) {
+            throw err;
+          }
+        }
+      );
       return await this.imageRepository.save(image);
     } else {
       return imageInDb;
@@ -32,7 +47,10 @@ export class ImageService {
   }
 
   async findOne(id: string) {
-    return await this.imageRepository.findOneBy({ id: id });
+    const image = await this.imageRepository.findOneBy({ id: id });
+    const file =
+      process.cwd() + process.env.ASSETS_PATH + '/' + image.assetName;
+    return file;
   }
 
   async update(id: string, updateImageDto: UpdateImageDto) {
