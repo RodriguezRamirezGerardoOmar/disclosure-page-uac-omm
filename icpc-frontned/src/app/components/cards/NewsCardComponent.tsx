@@ -1,13 +1,12 @@
 import React from 'react'
 import { BasicPanelComponent } from '../panels/BasicPanelComponent'
 import { TextComponent } from '../text/TextComponent'
-import { DBImage, enumTextTags, News } from '@/constants/types'
+import { enumTextTags, News } from '@/constants/types'
 import NewsBodyComponent from '../panels/NewsBodyComponent'
 import useNewsStore from '@/store/useNewsStore'
 import { serialize } from 'next-mdx-remote/serialize'
 import rehypeKatex from 'rehype-katex'
 import remarkMath from 'remark-math'
-import useUtilsStore from '@/store/useUtilsStore'
 
 interface NewsCardComponentProps {
   id: string
@@ -26,10 +25,6 @@ Author: Gerardo Omar Rodriguez Ramirez
 async function getNewsArticle(id: string): Promise<News> {
   return await useNewsStore.getState().getNewsArticle(id)
 }
-async function getCover(id: string): Promise<DBImage>{
-  return await useUtilsStore.getState().getImage(id)
-
-}
 
 async function NewsCardComponent({ ...props }: Readonly<NewsCardComponentProps>) {
   const news = await getNewsArticle(props.id)
@@ -39,8 +34,7 @@ async function NewsCardComponent({ ...props }: Readonly<NewsCardComponentProps>)
       rehypePlugins: [rehypeKatex as any]
     }
   })
-  const imageData = await getCover(news.imageId.id)
-  const image = new File([imageData.data], imageData.assetName)
+  //const image = await getCover(news.imageId.id)
   return (
     <BasicPanelComponent backgroundColor='bg-white dark:bg-dark-primary'>
       <TextComponent
@@ -50,8 +44,9 @@ async function NewsCardComponent({ ...props }: Readonly<NewsCardComponentProps>)
         {news.title}
       </TextComponent>
       <img
+        className='object-cover w-full rounded-md'
         alt=''
-        src={URL.createObjectURL(image)}
+        src={process.env.NEXT_PUBLIC_API_URL + 'api/v1/image/' + news.imageId.id}
       />
       <TextComponent
         sizeFont='s14'

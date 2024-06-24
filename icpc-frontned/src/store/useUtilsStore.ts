@@ -26,7 +26,6 @@ interface Actions {
   createTimeLimit: (time: number) => Promise<IApiResponse | TResponseBasicError>
   getMemoryLimit: () => Promise<MemoryLimit[]>
   createImage: (image: File) => Promise<IApiResponse | TResponseBasicError>
-  getImage: (id: string) => Promise<DBImage>
 }
 
 const useUtilsStore = create<Actions & UtilsState>()(
@@ -131,20 +130,6 @@ const useUtilsStore = create<Actions & UtilsState>()(
               Authorization: `Bearer ${useAuthStore.getState().token}`
             }
           })
-        },
-
-        getImage: async (id: string): Promise<DBImage> => {
-          if (get().images[id] !== undefined) {
-            return get().images[id]
-          } else {
-            try {
-              const response = await api.get(`/api/v1/image/${id}`, {responseType: 'blob'})
-              set(() => ({ images: { ...get().images, [id]: response.data } }))
-              return response.data
-            } catch (error: any) {
-              return error.response.data
-            }
-          }
         }
       }),
       {

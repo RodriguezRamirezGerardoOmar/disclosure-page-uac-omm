@@ -1,12 +1,11 @@
 'use client'
 import { enumTextTags, News } from '@/constants/types'
 import Link from 'next/link'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import Image from 'next/image'
 import { BasicPanelComponent } from '../panels/BasicPanelComponent'
 import { TextComponent } from '../text/TextComponent'
 import cn from 'classnames'
-import useUtilsStore from '@/store/useUtilsStore'
 
 interface INewsItemProps {
   item: News
@@ -25,28 +24,17 @@ Author: Gerardo Omar Rodriguez Ramirez
 
 const NewsItemComponent = ({ ...props }: Readonly<INewsItemProps>) => {
   const style = cn(props.className, 'bg-white dark:bg-dark-primary w-full lg:w-[32%]')
-  const getImage = useUtilsStore(state => state.getImage)
-  let [file, setFile] = useState<File>(new File([], ''))
-  let [image, setImage] = useState('')
-  useEffect(() => {
-    if (props.item.imageId?.id !== undefined) {
-      getImage(props.item.imageId?.id).then(response => {
-        setFile(new File([response.data], response.assetName))
-        setImage(URL.createObjectURL(file))
-      })
-    }
-  }, [getImage])
   return (
     <BasicPanelComponent backgroundColor={style}>
       <Link
         href={`/news/${props.item.id}`}
         className='h-full'>
         <div className='relative mb-4 h-64'>
-          {image !== '' && (
+          {props.item.imageId?.id !== undefined && props.item.imageId.id !== '' && (
             <Image
-              src={image}
+              src={process.env.NEXT_PUBLIC_API_URL + 'api/v1/image/' + props.item.imageId.id}
               fill
-              alt='Picture of the author'
+              alt={props.item.title}
               className='object-cover rounded-md'
             />
           )}
