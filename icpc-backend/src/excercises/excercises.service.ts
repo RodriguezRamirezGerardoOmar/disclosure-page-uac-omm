@@ -58,8 +58,10 @@ export class ExcercisesService {
       throw new BadRequestException('El límite de tiempo elegido no existe');
     }
     const newExcerciseMemory = await this.memoryRepository.findOneBy({
-      memoryLimit: memoryId
+      id: memoryId
     });
+    console.log(newExcerciseMemory);
+    console.log(memoryId);
     if (newExcerciseMemory === null) {
       throw new BadRequestException('El límite de memoria elegido no existe');
     }
