@@ -26,7 +26,7 @@ export class CreateExcerciseDto {
 
   @ApiProperty()
   @IsNumber()
-  memoryId: number;
+  memoryId: string;
 
   @ApiProperty()
   @IsString()
