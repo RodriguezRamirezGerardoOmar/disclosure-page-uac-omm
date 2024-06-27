@@ -5,7 +5,11 @@ import createMDX from '@next/mdx'
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // swcMinify: false
-  pageExtensions: ['md', 'mdx', 'ts', 'tsx']
+  pageExtensions: ['md', 'mdx', 'ts', 'tsx'],
+  reactStrictMode: true,
+  images: {
+    domains: ['localhost'],
+  }
 }
 
 const withMDX = createMDX({

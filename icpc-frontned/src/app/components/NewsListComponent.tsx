@@ -1,8 +1,9 @@
-import React, { Suspense } from 'react'
+'use client'
+import React, { Suspense, useEffect, useState } from 'react'
 import cn from 'classnames'
 import { TextComponent } from './text/TextComponent'
-import { enumTextTags } from '@/constants/types'
-const data = require('../newslist/listaNoticias.json')
+import { enumTextTags, News } from '@/constants/types'
+import useNewsStore from '@/store/useNewsStore'
 
 const LazyNewsItemComponent = React.lazy(() => import('./cards/NewsItemComponent'))
 
@@ -21,7 +22,16 @@ Author: Gerardo Omar Rodriguez Ramirez
 */
 
 const NewsListComponent = ({ ...props }: Readonly<INewsListComponentProps>) => {
-  const style = cn(props.className, 'w-11/12 flex flex-row flex-wrap gap-4 justify-between')
+  const style = cn(props.className, 'w-11/12 flex flex-row flex-wrap gap-4')
+  let ref = React.createRef<HTMLDivElement>()
+  const newsList = useNewsStore(state => state.news)
+  const [news, setNews] = useState<News[]>(newsList)
+  const getNews = useNewsStore(state => state.getNews)
+  useEffect(() => {
+    getNews().then(response => {
+      setNews(response)
+    })
+  }, [getNews])
   return (
     <>
       <div className={style}>
@@ -32,11 +42,11 @@ const NewsListComponent = ({ ...props }: Readonly<INewsListComponentProps>) => {
           Noticias
         </TextComponent>
       </div>
-      <div className={style}>
-        {data.news.map((news: { id: any; href: string; title: string; image: string }) => (
-          <Suspense key={news.id}>
+      <div className={style} ref={ref}>
+        {news.map((newsItem: News) => (
+          <Suspense key={newsItem.index}>
             <LazyNewsItemComponent
-              item={news}
+              item={newsItem}
               className=''
             />
           </Suspense>

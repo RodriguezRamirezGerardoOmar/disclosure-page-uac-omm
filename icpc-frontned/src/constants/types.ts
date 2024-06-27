@@ -104,3 +104,21 @@ export interface MemoryLimit {
   id: string
   memoryLimit: number
 }
+
+export interface News {
+  index: number
+  id: string
+  title: string
+  body: string
+  author: string
+  createdAt: string
+  imageId: {
+    id: string
+  }
+}
+
+export interface DBImage {
+  id: string
+  assetName: string
+  data: Buffer
+}
