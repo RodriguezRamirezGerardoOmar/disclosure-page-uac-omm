@@ -7,8 +7,14 @@ export class Image extends BaseEntity {
   @Column({ nullable: false })
   assetName: string;
 
-  @Column('blob', { nullable: false })
-  data: Buffer;
+  @Column({ nullable: false })
+  hash: string;
+
+  @Column({ nullable: false })
+  mimeType: string;
+
+  @Column({ nullable: false })
+  size: number;
 
   @OneToMany(() => News, news => news.imageId)
   news: News[];

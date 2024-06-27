@@ -15,7 +15,6 @@ export class NewsService {
     const news = await this.newsRepository.findOneBy({
       title: createNewsDto.title
     });
-    console.log(news);
     if (news !== null) {
       throw new BadRequestException('Una noticia con este título ya existe');
     } else {
@@ -24,11 +23,24 @@ export class NewsService {
   }
 
   async findAll() {
-    return await this.newsRepository.find();
+    const res = await this.newsRepository
+      .createQueryBuilder('news')
+      .leftJoinAndSelect('news.imageId', 'image')
+      .select(['news', 'image.id'])
+      .orderBy('news.created_at', 'DESC')
+      .getMany();
+    console.log(res);
+    return res;
   }
 
   async findOne(id: string) {
-    return await this.newsRepository.findOneBy({ id: id });
+    const res = await this.newsRepository
+      .createQueryBuilder('news')
+      .leftJoinAndSelect('news.imageId', 'image')
+      .select(['news', 'image.id'])
+      .where('news.id = :newsId', { newsId: id })
+      .getOne();
+    return res;
   }
 
   async update(id: string, updateNewsDto: UpdateNewsDto) {
