@@ -10,6 +10,7 @@ import { BaseEntity } from '../../entities/base.entity';
 import { Category } from 'src/categories/entities/category.entity';
 import { Comment } from 'src/comment/entities/comment.entity';
 import { Tag } from 'src/tags/entities/tag.entity';
+import { Ticket } from 'src/ticket/entities/ticket.entity';
 import { Report } from 'src/report/entities/report.entity';
 
 @Entity()
@@ -35,6 +36,12 @@ export class Note extends BaseEntity {
   @Column({ nullable: false })
   isVisible: boolean;
 
+  @OneToMany(() => Ticket, ticket => ticket.originalNoteId)
+  ticketOriginal: Ticket[];
+
+  @OneToMany(() => Ticket, ticket => ticket.modifiedNoteId)
+  ticketModified: Ticket[];
+
   @OneToMany(() => Report, report => report.note)
-  reports: Note[];
+  reports: Report[];
 }

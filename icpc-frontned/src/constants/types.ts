@@ -105,6 +105,24 @@ export interface MemoryLimit {
   memoryLimit: number
 }
 
+export enum TicketType {
+  EXERCISE = 'exercise',
+  NOTE = 'note',
+  NEWS = 'news'
+}
+
+export enum TicketStatus {
+  PENDING = 'pending',
+  ACCEPTED = 'accepted',
+  REJECTED = 'rejected'
+}
+
+export enum TicketOperation {
+  CREATE = 'create',
+  UPDATE = 'update',
+  DELETE = 'delete'
+}
+
 export interface News {
   index: number
   id: string

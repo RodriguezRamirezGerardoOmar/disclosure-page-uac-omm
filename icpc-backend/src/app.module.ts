@@ -15,6 +15,7 @@ import { TagsModule } from './tags/tags.module';
 import { ExcercisesModule } from './excercises/excercises.module';
 import { ImageModule } from './image/image.module';
 import { NewsModule } from './news/news.module';
+import { TicketModule } from './ticket/ticket.module';
 import { ReportModule } from './report/report.module';
 
 @Module({
@@ -47,6 +48,7 @@ import { ReportModule } from './report/report.module';
     ExcercisesModule,
     ImageModule,
     NewsModule,
+    TicketModule,
     ReportModule
   ]
 })

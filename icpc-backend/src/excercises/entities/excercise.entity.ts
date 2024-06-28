@@ -4,8 +4,7 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
-  OneToMany,
-  OneToOne
+  OneToMany
 } from 'typeorm';
 import { BaseEntity } from '../../entities/base.entity';
 import { User } from '../../users/entities/user.entity';
@@ -14,6 +13,7 @@ import { Tag } from 'src/tags/entities/tag.entity';
 import { Difficulty } from 'src/difficulty/entities/difficulty.entity';
 import { Time } from 'src/time/entities/time.entity';
 import { Memory } from 'src/memory/entities/memory.entity';
+import { Ticket } from 'src/ticket/entities/ticket.entity';
 import { Report } from 'src/report/entities/report.entity';
 
 @Entity()
@@ -45,6 +45,9 @@ export class Excercise extends BaseEntity {
   @Column('text', { nullable: false })
   solution: string;
 
+  @Column({ nullable: false })
+  isVisible: boolean;
+
   @ManyToOne(() => User, user => user.excercises)
   user: User;
 
@@ -67,6 +70,12 @@ export class Excercise extends BaseEntity {
   @ManyToMany(() => Tag, tag => tag.excercises)
   @JoinTable()
   tags: Tag[];
+
+  @OneToMany(() => Ticket, ticket => ticket.originalNoteId)
+  ticketOriginal: Ticket[];
+
+  @OneToMany(() => Ticket, ticket => ticket.modifiedNoteId)
+  ticketModified: Ticket[];
 
   @OneToMany(() => Report, report => report.excercise)
   reports: Report[];
