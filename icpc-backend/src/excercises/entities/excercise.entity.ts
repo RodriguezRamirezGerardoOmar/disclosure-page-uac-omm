@@ -4,6 +4,7 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
+  OneToMany,
   OneToOne
 } from 'typeorm';
 import { BaseEntity } from '../../entities/base.entity';
@@ -13,6 +14,7 @@ import { Tag } from 'src/tags/entities/tag.entity';
 import { Difficulty } from 'src/difficulty/entities/difficulty.entity';
 import { Time } from 'src/time/entities/time.entity';
 import { Memory } from 'src/memory/entities/memory.entity';
+import { Report } from 'src/report/entities/report.entity';
 
 @Entity()
 export class Excercise extends BaseEntity {
@@ -65,4 +67,7 @@ export class Excercise extends BaseEntity {
   @ManyToMany(() => Tag, tag => tag.excercises)
   @JoinTable()
   tags: Tag[];
+
+  @OneToMany(() => Report, report => report.excercise)
+  reports: Report[];
 }

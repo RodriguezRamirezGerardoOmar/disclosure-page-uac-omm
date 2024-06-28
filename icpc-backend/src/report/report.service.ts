@@ -1,0 +1,97 @@
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { CreateReportDto } from './dto/create-report.dto';
+import { UpdateReportDto } from './dto/update-report.dto';
+//TODO move import path of itemType
+import { Report, ItemType } from 'src/report/entities/report.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { News } from 'src/news/entities/news.entity';
+import { Note } from 'src/notes/entities/note.entity';
+import { Excercise } from 'src/excercises/entities/excercise.entity';
+
+@Injectable()
+export class ReportService {
+  constructor(
+    @InjectRepository(Report)
+    private readonly reportRepository: Repository<Report>,
+    @InjectRepository(News)
+    private readonly newsRepository: Repository<News>,
+    @InjectRepository(Note)
+    private readonly noteRepository: Repository<Note>,
+    @InjectRepository(Excercise)
+    private readonly excerciseRepository: Repository<Excercise>
+  ) {}
+  async create(createReportDto: CreateReportDto) {
+    const itemId = createReportDto.itemId;
+    const itemType = createReportDto.itemType;
+    const report = this.reportRepository.create();
+    let item;
+    switch (itemType) {
+      case 'news':
+        item = await this.newsRepository.findOneBy({ id: itemId });
+        report.itemType = ItemType.NEWS;
+        report.news = item;
+        break;
+      case 'note':
+        item = await this.noteRepository.findOneBy({ id: itemId });
+        report.itemType = ItemType.NOTE;
+        report.note = item;
+        break;
+      case 'exercise':
+        item = await this.excerciseRepository.findOneBy({ id: itemId });
+        report.itemType = ItemType.EXCERCISE;
+        report.excercise = item;
+        break;
+      default:
+        throw new BadRequestException('Invalid item type');
+    }
+    if (item !== null) {
+      item.reports.push(report);
+      report.summary = createReportDto.summary;
+      report.report = createReportDto.report;
+      return await this.reportRepository.save(report);
+    } else {
+      throw new BadRequestException('Item not found');
+    }
+  }
+
+  async findAll() {
+    return await this.reportRepository.find();
+  }
+
+  async findOne(id: string) {
+    return await this.reportRepository.findOneBy({ id });
+  }
+
+  async update(id: string, updateReportDto: UpdateReportDto) {
+    const report = await this.reportRepository.findOneBy({ id });
+    switch (updateReportDto.itemType) {
+      case 'news':
+        report.news = await this.newsRepository.findOneBy({
+          id: updateReportDto.itemId
+        });
+        report.itemType = ItemType.NEWS;
+        break;
+      case 'note':
+        report.note = await this.noteRepository.findOneBy({
+          id: updateReportDto.itemId
+        });
+        report.itemType = ItemType.NOTE;
+        break;
+      case 'exercise':
+        report.excercise = await this.excerciseRepository.findOneBy({
+          id: updateReportDto.itemId
+        });
+        report.itemType = ItemType.EXCERCISE;
+        break;
+      default:
+        throw new BadRequestException('Invalid item type');
+    }
+    return await this.reportRepository.save({ ...report });
+  }
+
+  async remove(id: string) {
+    const report = await this.reportRepository.findOneBy({ id });
+    return await this.reportRepository.remove(report);
+  }
+}
