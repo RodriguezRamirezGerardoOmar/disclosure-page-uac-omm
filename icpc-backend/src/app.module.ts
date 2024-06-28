@@ -15,6 +15,7 @@ import { TagsModule } from './tags/tags.module';
 import { ExcercisesModule } from './excercises/excercises.module';
 import { ImageModule } from './image/image.module';
 import { NewsModule } from './news/news.module';
+import { TicketModule } from './ticket/ticket.module';
 
 @Module({
   imports: [
@@ -45,7 +46,8 @@ import { NewsModule } from './news/news.module';
     TagsModule,
     ExcercisesModule,
     ImageModule,
-    NewsModule
+    NewsModule,
+    TicketModule
   ]
 })
 export class AppModule {

@@ -226,7 +226,6 @@ const CreateExcerciseComponent = () => {
                   label='Límite de memoria'
                   id='memoryId'
                   onChange={val => {
-                    console.log(val)
                     field.onChange(val)}}
                   options={memoryLimits.map(item => {
                     const label: number = item.memoryLimit * 64
