@@ -14,6 +14,7 @@ import { Difficulty } from 'src/difficulty/entities/difficulty.entity';
 import { Time } from 'src/time/entities/time.entity';
 import { Memory } from 'src/memory/entities/memory.entity';
 import { Ticket } from 'src/ticket/entities/ticket.entity';
+import { Report } from 'src/report/entities/report.entity';
 
 @Entity()
 export class Excercise extends BaseEntity {
@@ -70,9 +71,12 @@ export class Excercise extends BaseEntity {
   @JoinTable()
   tags: Tag[];
 
-  @OneToMany(() => Ticket, ticketOriginal => ticketOriginal.originalExerciseId)
+  @OneToMany(() => Ticket, ticket => ticket.originalNoteId)
   ticketOriginal: Ticket[];
 
-  @OneToMany(() => Ticket, ticketModified => ticketModified.modifiedExerciseId)
+  @OneToMany(() => Ticket, ticket => ticket.modifiedNoteId)
   ticketModified: Ticket[];
+
+  @OneToMany(() => Report, report => report.excercise)
+  reports: Report[];
 }

@@ -16,6 +16,7 @@ import { ExcercisesModule } from './excercises/excercises.module';
 import { ImageModule } from './image/image.module';
 import { NewsModule } from './news/news.module';
 import { TicketModule } from './ticket/ticket.module';
+import { ReportModule } from './report/report.module';
 
 @Module({
   imports: [
@@ -47,7 +48,8 @@ import { TicketModule } from './ticket/ticket.module';
     ExcercisesModule,
     ImageModule,
     NewsModule,
-    TicketModule
+    TicketModule,
+    ReportModule
   ]
 })
 export class AppModule {
