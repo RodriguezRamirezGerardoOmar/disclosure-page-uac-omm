@@ -13,4 +13,12 @@ export class CreateNewsDto {
   @ApiProperty()
   @IsString()
   imageId: string;
+
+  @ApiProperty()
+  @IsString()
+  userAuthor: string;
+
+  @ApiProperty()
+  @IsString()
+  role: string;
 }

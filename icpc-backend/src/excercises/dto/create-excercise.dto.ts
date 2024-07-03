@@ -1,16 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsArray,
-  IsBoolean,
-  IsNumber,
-  IsObject,
-  IsString
-} from 'class-validator';
+import { IsArray, IsBoolean, IsObject, IsString } from 'class-validator';
 
 export class CreateExcerciseDto {
   @ApiProperty()
   @IsString()
-  name: string;
+  title: string;
 
   @ApiProperty()
   @IsObject()
@@ -25,7 +19,7 @@ export class CreateExcerciseDto {
   time: { value: number; id: string };
 
   @ApiProperty()
-  @IsNumber()
+  @IsString()
   memoryId: string;
 
   @ApiProperty()
@@ -71,4 +65,12 @@ export class CreateExcerciseDto {
   @ApiProperty()
   @IsBoolean()
   isVisible: boolean;
+
+  @ApiProperty()
+  @IsString()
+  userAuthor: string;
+
+  @ApiProperty()
+  @IsString()
+  role: string;
 }

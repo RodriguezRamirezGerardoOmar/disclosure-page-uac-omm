@@ -10,7 +10,7 @@ interface IUser {
   lastName: string
   userName: string
   email: string
-  rol: string
+  role: string
 }
 
 interface ICreateUser {
@@ -52,7 +52,7 @@ const useAuthStore = create<AuthState & Actions>()(
           const response = await api.post('/api/v1/auth/login', { email, password })
           set(() => ({ token: response.data.token }))
           if (get().token !== null) {
-            set(() => ({ isLogged: true }))
+            set(() => ({ isLogged: true, user: response.data.user }))
           }
         },
 

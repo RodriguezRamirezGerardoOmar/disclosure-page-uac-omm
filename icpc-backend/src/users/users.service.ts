@@ -101,7 +101,7 @@ export class UsersService {
     const user = await this.userRepository // find the user in the 'user' table by the username
       .createQueryBuilder('user')
       .leftJoinAndSelect('user.role', 'role') // join the 'role' table to the 'user' table
-      .where('user.username = :username', { username }) // find the user by the username
+      .where('user.userName = :username', { username }) // find the user by the username
       .getMany();
     if (user.length === 0) {
       return null; // return null if no user is found

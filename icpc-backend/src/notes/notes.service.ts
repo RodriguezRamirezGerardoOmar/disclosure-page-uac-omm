@@ -6,6 +6,13 @@ import { Repository } from 'typeorm';
 import { Note } from './entities/note.entity';
 import { Category } from '../categories/entities/category.entity';
 import { Comment } from '../comment/entities/comment.entity';
+import {
+  Ticket,
+  TicketOperation,
+  TicketStatus,
+  TicketType
+} from 'src/ticket/entities/ticket.entity';
+import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class NotesService {
@@ -15,7 +22,11 @@ export class NotesService {
     @InjectRepository(Category)
     private readonly categoryRepository: Repository<Category>,
     @InjectRepository(Comment)
-    private readonly commentRepository: Repository<Comment>
+    private readonly commentRepository: Repository<Comment>,
+    @InjectRepository(Ticket)
+    private readonly ticketRepository: Repository<Ticket>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>
   ) {}
 
   async create(createNoteDto: CreateNoteDto) {
@@ -24,7 +35,7 @@ export class NotesService {
       body: createNoteDto.description // check if comment exists
     });
     if (title !== null) {
-      throw new BadRequestException('Title already exists'); // throw error if title exists
+      throw new BadRequestException('Un apunte con ese título ya existe'); // throw error if title exists
     }
     const article = this.noteRepository.create(createNoteDto); // create note object
     const noteCategory = await this.categoryRepository.findOneBy({
@@ -46,17 +57,42 @@ export class NotesService {
       const newComment = await this.commentRepository.save(comment); // save the comment object to the database if it doesn't exist
       article.commentId = newComment; // assign the comment to the note object
     }
+    const user = await this.userRepository.findOneBy({
+      userName: createNoteDto.userAuthor
+    });
+    article.created_by = user.name; // assign the user's name to the note object
+    article.isVisible = createNoteDto.role === 'admin'; // if the author is an admin, the note is visible
     const newNote = await this.noteRepository.save(article); // save the note object to the database
-    return {
-      // return the note object
-      id: newNote.id,
-      categoryId: newNote.category,
-      title: newNote.title,
-      commentId: newNote.commentId,
-      tags: newNote.tags,
-      body: newNote.body,
-      isVisible: newNote.isVisible
-    };
+    const commentBody = `${user.name} ha creado un nuevo apunte con el título ${article.title}`;
+    const ticketComment = this.commentRepository.create({
+      body: commentBody
+    });
+    const commentId = await this.commentRepository.save(ticketComment); // save the comment object to the database
+    const ticket = this.ticketRepository.create({
+      itemType: TicketType.NOTE,
+      operation: TicketOperation.CREATE,
+      status:
+        createNoteDto.role === 'admin'
+          ? TicketStatus.ACCEPTED
+          : TicketStatus.PENDING,
+      originalNoteId: newNote,
+      commentId: commentId
+    });
+    const savedTicket = await this.ticketRepository.save(ticket); // save the ticket object to the database
+    if (newNote && savedTicket) {
+      return {
+        // return the note object
+        id: newNote.id,
+        categoryId: newNote.category,
+        title: newNote.title,
+        commentId: newNote.commentId,
+        tags: newNote.tags,
+        body: newNote.body,
+        isVisible: newNote.isVisible
+      };
+    } else {
+      throw new BadRequestException('Error al crear el apunte'); // throw error if note creation fails
+    }
   }
 
   async findAll() {
