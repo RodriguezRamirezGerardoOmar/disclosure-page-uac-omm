@@ -12,7 +12,6 @@ import { TextComponent } from '../components/text/TextComponent'
 
 export default function Home() {
   const categories = useUtilsStore.getState().categories
-  const notes = useNoteStore.getState().notes
   const tags = useUtilsStore.getState().tags
   const methods = useForm<FieldValues>()
   const [options, setOptions] = React.useState<Categories[]>(categories)
