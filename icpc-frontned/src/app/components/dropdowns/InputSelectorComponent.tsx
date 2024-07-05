@@ -9,6 +9,7 @@ interface InputSelectorProps {
   selectedOption: string
   id: string
   label: string
+  clearable?: boolean
   onChange: (val: any) => void
 }
 
@@ -69,6 +70,7 @@ const InputSelectorComponent = ({ ...props }: Readonly<InputSelectorProps>) => {
         getOptionLabel={option => option.label}
         getOptionValue={option => option.value}
         styles={colourStyles}
+        isClearable={(props.clearable === undefined) ? false : props.clearable}
       />
     </div>
   )

@@ -29,7 +29,7 @@ Author: Gerardo Omar Rodriguez Ramirez
 
 export default function NoteCardComponent({ ...props }: Readonly<NoteCardProps>) {
   return (
-    <BasicPanelComponent backgroundColor='bg-white dark:bg-dark-primary'>
+    <BasicPanelComponent backgroundColor='bg-white dark:bg-dark-primary w-full md:w-11/12'>
       <TextComponent
         sizeFont='s36'
         className='dark:text-dark-accent'>

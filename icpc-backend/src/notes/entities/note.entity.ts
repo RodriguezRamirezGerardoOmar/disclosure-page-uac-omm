@@ -26,7 +26,7 @@ export class Note extends BaseEntity {
   @JoinTable()
   commentId: Comment;
 
-  @ManyToMany(() => Tag, tag => tag.excercises)
+  @ManyToMany(() => Tag, tag => tag.notes)
   @JoinTable()
   tags: Tag[];
 

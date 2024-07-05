@@ -1,38 +1,88 @@
 'use client'
-import React from 'react'
+import React, { useEffect } from 'react'
 import NoteListComponent from '../components/NoteListComponent'
-import { SelectComponent } from '../components/dropdowns/SelectComponent'
 import { Controller, FieldValues, useForm } from 'react-hook-form'
 import { PaginationComponent } from '../components/paginations/PaginationComponent'
-const data = require('../notelist/listaApuntes.json')
-
-
+import { Categories, enumTextTags, Note, Tags } from '@/constants/types'
+import useNoteStore from '@/store/useNoteStore'
+import useUtilsStore from '@/store/useUtilsStore'
+import InputSelectorComponent from '../components/dropdowns/InputSelectorComponent'
+import TagSelectorComponent from '../components/forms/TagSelectorComponent'
+import { TextComponent } from '../components/text/TextComponent'
 
 export default function Home() {
+  const categories = useUtilsStore.getState().categories
+  const notes = useNoteStore.getState().notes
+  const tags = useUtilsStore.getState().tags
   const methods = useForm<FieldValues>()
-  const options = data.categories
+  const [options, setOptions] = React.useState<Categories[]>(categories)
+  const [category, setCategory] = React.useState('')
+  const [selectedTags, setSelectedTags] = React.useState<Tags[]>([])
+  const [data, setData] = React.useState<Note[]>([])
+  const getList = useNoteStore.getState().getList
+  const getCategories = useUtilsStore.getState().getCategories
+  useEffect(() => {
+    getCategories().then(response => {
+      setOptions(response)
+    })
+    getList(selectedTags, category).then(response => {
+      setData(response)
+    })
+  }, [category, getCategories, getList, selectedTags])
   return (
     <main className='grid min-h-screen grid-cols-1 place-items-center px-4 justify-between py-24'>
-      <form>
+      <form className='w-full'>
         <div>
-          <Controller
-            name='categories'
-            control={methods.control}
-            defaultValue={options[0].name}
-            render={({ field }) => (
-              <SelectComponent
-                selected={field.value}
-                onChange={newSelected => field.onChange(newSelected)}
-                options={options}
-                fieldName={field.name}
-                id='select'
-                labelText={'Categorías'}
-                className='px-6 my-2 sm:px-0'
-              />
-            )}
-          />
+          <div className='grid grid-cols-2 gap-2'>
+            <Controller
+              defaultValue={[]}
+              control={methods.control}
+              render={({ field }) => (
+                <InputSelectorComponent
+                  label='Categoría'
+                  id='category'
+                  onChange={val => {
+                    field.onChange(val)
+                    setCategory((val === null ? '' : val.label) as string)
+                  }}
+                  options={options.map(item => {
+                    return { label: item.name, value: item.id }
+                  })}
+                  selectedOption={field.value}
+                  clearable={true}
+                />
+              )}
+              name='category'
+            />
+            <Controller
+              name='tags'
+              defaultValue={[] as Tags[]}
+              control={methods.control}
+              render={({ field }) => (
+                <TagSelectorComponent
+                  id='tagSelector2'
+                  options={tags}
+                  selectedTags={field.value}
+                  onChange={val => {
+                    field.onChange(val)
+                    setSelectedTags(val)
+                  }}
+                />
+              )}
+              rules={{ required: true }}
+            />
+          </div>
           <div className='overflow-hidden px-4 py-5 sm:px-0'>
-            <NoteListComponent notes={data.notes} />
+            {data.length > 0 ? (
+              <NoteListComponent notes={data} />
+            ) : (
+              <TextComponent
+                className='text-center'
+                tag={enumTextTags.h1}
+                sizeFont='s20'>
+                No hay notas
+              </TextComponent>
+            )}
           </div>
           <PaginationComponent />
         </div>
