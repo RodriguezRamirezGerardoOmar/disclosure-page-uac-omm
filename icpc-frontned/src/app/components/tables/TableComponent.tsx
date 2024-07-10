@@ -1,30 +1,37 @@
-
+'use client'
 import TagListComponent from '../tags/TagListComponent'
 import { PaginationComponent } from '../paginations/PaginationComponent'
+import InputSelectorComponent from '../dropdowns/InputSelectorComponent'
+import TagSelectorComponent from '../forms/TagSelectorComponent'
+import { Exercise, Tags } from '@/constants/types'
+import { Controller, FieldValues, useForm } from 'react-hook-form'
+import { useEffect, useState } from 'react'
+import useUtilsStore from '@/store/useUtilsStore'
+import useExcerciseStore from '@/store/useExcerciseStore'
 const exercises = [
-  { id: 1, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example','ejemplo'] },
-  { id: 2, name: 'Lindsay Walton', dificult: 2, categorie: 'Algebra', tag: ['example','ejemplo'] },
-  { id: 3, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example','ejemplo'] },
-  { id: 4, name: 'Lindsay Walton', dificult: 3, categorie: 'Algebra', tag: ['example','ejemplo'] },
-  { id: 5, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example','ejemplo'] },
-  { id: 6, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example','ejemplo'] },
-  { id: 7, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example','ejemplo'] },
-  { id: 8, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example','ejemplo'] },
-  { id: 9, name: 'Lindsay Walton', dificult: 5, categorie: 'Algebra', tag: ['example','ejemplo'] },
-  { id: 10, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example','ejemplo'] },
-  { id: 11, name: 'Lindsay Walton', dificult: 2, categorie: 'Algebra', tag: ['example','ejemplo'] },
-  { id: 12, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example','ejemplo'] },
-  { id: 13, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example','ejemplo'] },
-  { id: 14, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example','ejemplo'] },
-  { id: 16, name: 'Lindsay Walton', dificult: 3, categorie: 'Algebra', tag: ['example','ejemplo'] },
-  { id: 17, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example','ejemplo'] },
-  { id: 18, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example','ejemplo'] },
-  { id: 19, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example','ejemplo'] },
-  { id: 20, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example','ejemplo'] },
-  { id: 21, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example','ejemplo'] },
-  { id: 22, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example','ejemplo'] },
-  { id: 23, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example','ejemplo'] },
-  { id: 24, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example','ejemplo'] }
+  { id: 1, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example', 'ejemplo'] },
+  { id: 2, name: 'Lindsay Walton', dificult: 2, categorie: 'Algebra', tag: ['example', 'ejemplo'] },
+  { id: 3, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example', 'ejemplo'] },
+  { id: 4, name: 'Lindsay Walton', dificult: 3, categorie: 'Algebra', tag: ['example', 'ejemplo'] },
+  { id: 5, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example', 'ejemplo'] },
+  { id: 6, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example', 'ejemplo'] },
+  { id: 7, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example', 'ejemplo'] },
+  { id: 8, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example', 'ejemplo'] },
+  { id: 9, name: 'Lindsay Walton', dificult: 5, categorie: 'Algebra', tag: ['example', 'ejemplo'] },
+  { id: 10, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example', 'ejemplo'] },
+  { id: 11, name: 'Lindsay Walton', dificult: 2, categorie: 'Algebra', tag: ['example', 'ejemplo'] },
+  { id: 12, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example', 'ejemplo'] },
+  { id: 13, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example', 'ejemplo'] },
+  { id: 14, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example', 'ejemplo'] },
+  { id: 16, name: 'Lindsay Walton', dificult: 3, categorie: 'Algebra', tag: ['example', 'ejemplo'] },
+  { id: 17, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example', 'ejemplo'] },
+  { id: 18, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example', 'ejemplo'] },
+  { id: 19, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example', 'ejemplo'] },
+  { id: 20, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example', 'ejemplo'] },
+  { id: 21, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example', 'ejemplo'] },
+  { id: 22, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example', 'ejemplo'] },
+  { id: 23, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example', 'ejemplo'] },
+  { id: 24, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example', 'ejemplo'] }
 ]
 
 /*
@@ -52,8 +59,98 @@ Author: Gerardo Omar Rodriguez Ramirez
 */
 
 export default function TableComponent() {
+  const tags = useUtilsStore().tags
+  const getTags = useUtilsStore.getState().getTags
+  const categories = useUtilsStore().categories
+  const getCategories = useUtilsStore.getState().getCategories
+  const difficulties = useUtilsStore().difficulty
+  const getDifficulties = useUtilsStore.getState().getDifficulties
+  const methods = useForm<FieldValues>()
+  const [tagOptions, setTagOptions] = useState<Tags[]>(tags)
+  const [category, setCategory] = useState('')
+  const [categoryOptions, setCategoryOptions] = useState(categories)
+  const [selectedTags, setSelectedTags] = useState<Tags[]>([])
+  const [difficultyOptions, setDifficultyOptions] = useState(difficulties)
+  const [difficulty, setDifficulty] = useState('')
+  const [exercises, setExercises] = useState<Exercise[]>([])
+  const getExerciseList = useExcerciseStore.getState().getExerciseList
+
+  useEffect(() => {
+    getCategories().then(response => {
+      setCategoryOptions(response)
+    })
+    getDifficulties().then(response => {
+      setDifficultyOptions(response)
+    })
+    getTags().then(response => {
+      setTagOptions(response)
+    })
+    getExerciseList(selectedTags, category, difficulty).then(response => {
+      setExercises(response)
+    })
+  }, [getCategories, getDifficulties, selectedTags, category, difficulty, getExerciseList])
+
   return (
     <div className='px-4 sm:px-6 lg:px-8 '>
+      <form className='w-full grid grid-cols-3 gap-2'>
+        <Controller
+          defaultValue={[]}
+          control={methods.control}
+          render={({ field }) => (
+            <InputSelectorComponent
+              label='Categoría'
+              id='category'
+              onChange={val => {
+                field.onChange(val)
+                setCategory((val === null ? '' : val.label) as string)
+              }}
+              options={categoryOptions.map(item => {
+                return { label: item.name, value: item.id }
+              })}
+              selectedOption={field.value}
+              clearable={true}
+            />
+          )}
+          name='category'
+        />
+        <Controller
+          name='tags'
+          defaultValue={[] as Tags[]}
+          control={methods.control}
+          render={({ field }) => (
+            <TagSelectorComponent
+              id='tagSelector2'
+              options={tagOptions}
+              selectedTags={field.value}
+              onChange={val => {
+                field.onChange(val)
+                setSelectedTags(val)
+              }}
+            />
+          )}
+          rules={{ required: true }}
+        />
+        <Controller
+          defaultValue={[]}
+          control={methods.control}
+          render={({ field }) => (
+            <InputSelectorComponent
+              label='Dificultad'
+              id='difficulty'
+              onChange={val => {
+                field.onChange(val)
+                setDifficulty((val === null ? '' : val.label) as string)
+              }}
+              options={difficultyOptions.map(item => {
+                return { label: item.name, value: item.id }
+              })}
+              selectedOption={field.value}
+              clearable={true}
+            />
+          )}
+          name='difficulty'
+        />
+      </form>
       <div className='mt-8 flow-root'>
         <div className='-mx-4 -my-2 sm:-mx-6 lg:-mx-8'>
           <div
@@ -64,32 +161,32 @@ export default function TableComponent() {
                 <tr>
                   <th
                     scope='col'
-                    className='sticky top-0 z-10 border-b border-gray-300 bg-white bg-opacity-75 py-3.5 pl-4 pr-3 
+                    className='sticky top-0 border-b border-gray-300 bg-white bg-opacity-75 py-3.5 pl-4 pr-3 
                     text-left text-sm font-semibold text-gray-500 backdrop-blur 
                     backdrop-filter sm:pl-6 lg:pl-8'>
                     NOMBRE
                   </th>
                   <th
                     scope='col'
-                    className='sticky top-0 z-10 border-b border-gray-300 bg-white bg-opacity-75 px-3 py-3.5 text-left text-sm
+                    className='sticky top-0 border-b border-gray-300 bg-white bg-opacity-75 px-3 py-3.5 text-left text-sm
                     font-semibold text-gray-500 backdrop-blur backdrop-filter'>
                     DIFICULTAD
                   </th>
                   <th
                     scope='col'
-                    className='sticky top-0 z-10 hidden border-b border-gray-300 bg-white bg-opacity-75 px-3 py-3.5
+                    className='sticky top-0 hidden border-b border-gray-300 bg-white bg-opacity-75 px-3 py-3.5
                     text-left text-sm font-semibold text-gray-500 backdrop-blur backdrop-filter lg:table-cell'>
                     CATEGORIA
                   </th>
                   <th
                     scope='col'
-                    className='sticky top-0 z-10 border-b border-gray-300 bg-white bg-opacity-75 px-3 
+                    className='sticky top-0 border-b border-gray-300 bg-white bg-opacity-75 px-3 
                     py-3.5 text-left text-sm font-semibold text-gray-500 backdrop-blur backdrop-filter'>
                     ETIQUETAS
                   </th>
                   <th
                     scope='col'
-                    className='sticky top-0 z-10 border-b border-gray-300 bg-white bg-opacity-75 
+                    className='sticky top-0 border-b border-gray-300 bg-white bg-opacity-75 
                     py-3.5 pl-3 pr-4 backdrop-blur backdrop-filter sm:pr-6 lg:pr-8'>
                     <span className='sr-only'>Edit</span>
                   </th>
@@ -103,7 +200,7 @@ export default function TableComponent() {
                     <td
                       className={classNames(
                         id !== Object.keys(exercise).length - 1 ? 'border-b border-gray-200' : '',
-                        'whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8'
+                        'whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 dark:text-dark-accent sm:pl-6 lg:pl-8'
                       )}>
                       {exercise.name}
                     </td>
@@ -112,26 +209,34 @@ export default function TableComponent() {
                         id !== Object.keys(exercise).length - 1 ? 'border-b border-gray-200' : '',
                         'whitespace-nowrap flex gap-1 px-3 py-4 text-sm text-gray-500'
                       )}>
-                        { 
+                      {
                         //itera sobre el numero de dificultad y pinta tantas estrellas como sea el numero
-                        Array.from(Array(exercise.dificult), (_, i) => (
-                          <img alt='' src='icons/estrellas.svg' key={i}  className='h-5 w-5'  />
+                        Array.from(Array(exercise.difficulty.level), (_, i) => (
+                          <img
+                            alt=''
+                            src='icons/estrellas.svg'
+                            key={i}
+                            className='h-5 w-5'
+                          />
                         ))
                       }
                     </td>
                     <td
                       className={classNames(
                         id !== Object.keys(exercise).length - 1 ? 'border-b border-gray-200' : '',
-                        'whitespace-nowrap hidden px-3 py-4 text-sm text-gray-500 lg:table-cell'
+                        'whitespace-nowrap hidden px-3 py-4 text-sm text-gray-500 dark:text-dark-accent lg:table-cell'
                       )}>
-                      {exercise.categorie}
+                      {exercise.category.name}
                     </td>
                     <td
                       className={classNames(
                         id !== Object.keys(exercise).length - 1 ? 'border-b border-gray-200' : '',
                         'whitespace-nowrap text-sm text-gray-500'
                       )}>
-                        <TagListComponent tags={exercise.tag.map(tag => ({id: 1, name: tag, color: '#66bb00'}))} showIcon={false} />
+                      <TagListComponent
+                        tags={exercise.tags.map((tag, index) => ({ id: index, name: tag.name, color: tag.color }))}
+                        showIcon={false}
+                      />
                     </td>
                     <td
                       className={classNames(

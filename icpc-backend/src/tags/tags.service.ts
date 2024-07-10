@@ -17,7 +17,10 @@ export class TagsService {
   }
 
   async findAll() {
-    return await this.tagRepository.find();
+    return await this.tagRepository
+      .createQueryBuilder('tag')
+      .orderBy('tag.name', 'ASC')
+      .getMany();
   }
 
   async findOne(id: string) {

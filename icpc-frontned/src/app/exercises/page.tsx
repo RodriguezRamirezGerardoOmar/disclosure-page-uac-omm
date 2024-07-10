@@ -15,7 +15,7 @@ export default function Home() {
         <TextComponent
           sizeFont='s14'
           tag={enumTextTags.p}
-          className='text-dark-primary dark:text-dark-secondary'>
+          className='text-dark-primary dark:text-dark-accent'>
           Aquí encontrarás ejercicios de diferentes temas de programación
         </TextComponent>
       </div>

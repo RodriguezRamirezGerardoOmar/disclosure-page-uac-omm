@@ -39,7 +39,10 @@ export class CategoriesService {
   }
 
   async findAll() {
-    return await this.categoryRepository.find();
+    return await this.categoryRepository
+      .createQueryBuilder('category')
+      .orderBy('category.name', 'ASC')
+      .getMany();
   }
 
   async findOne(id: string) {
