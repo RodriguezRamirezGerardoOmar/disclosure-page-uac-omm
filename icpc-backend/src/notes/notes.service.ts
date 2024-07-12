@@ -2,10 +2,12 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateNoteDto } from './dto/create-note.dto';
 import { UpdateNoteDto } from './dto/update-note.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { Note } from './entities/note.entity';
 import { Category } from '../categories/entities/category.entity';
 import { Comment } from '../comment/entities/comment.entity';
+import { GetNoteListDto } from './dto/get-note-list.dto';
+import { Tag } from 'src/tags/entities/tag.entity';
 import {
   Ticket,
   TicketOperation,
@@ -23,6 +25,8 @@ export class NotesService {
     private readonly categoryRepository: Repository<Category>,
     @InjectRepository(Comment)
     private readonly commentRepository: Repository<Comment>,
+    @InjectRepository(Tag)
+    private readonly tagRepository: Repository<Tag>,
     @InjectRepository(Ticket)
     private readonly ticketRepository: Repository<Ticket>,
     @InjectRepository(User)
@@ -111,8 +115,86 @@ export class NotesService {
     return notes;
   }
 
+  async findNoteList(noteListDto: GetNoteListDto) {
+    if (noteListDto.category && noteListDto.tags.length > 0) {
+      const category = await this.categoryRepository.findOneBy({
+        name: noteListDto.category
+      });
+      const tags = await this.tagRepository
+        .createQueryBuilder('tag')
+        .where('tag.name IN (:...tags)', {
+          tags: noteListDto.tags.map(tag => tag.name)
+        })
+        .getMany();
+      const res = await this.noteRepository
+        .createQueryBuilder('note')
+        .where('note.categoryId = :categoryId', { categoryId: category.id })
+        .andWhere('isVisible = :isVisible', { isVisible: true })
+        .leftJoinAndSelect('note.category', 'category')
+        .leftJoinAndSelect('note.tags', 'tags')
+        .getMany();
+      const sent = [];
+      const names = tags.map(tag => tag.name);
+      for (const note of res) {
+        for (const tag of note.tags) {
+          if (names.includes(tag.name)) {
+            sent.push(note);
+          }
+        }
+      }
+      return sent;
+    } else if (!noteListDto.category && noteListDto.tags.length > 0) {
+      const tags = await this.tagRepository
+        .createQueryBuilder('tag')
+        .where('tag.name IN (:...tags)', {
+          tags: noteListDto.tags.map(tag => tag.name)
+        })
+        .getMany();
+      const res = await this.noteRepository
+        .createQueryBuilder('note')
+        .where('isVisible = :isVisible', { isVisible: true })
+        .leftJoinAndSelect('note.category', 'category')
+        .leftJoinAndSelect('note.tags', 'tags')
+        .getMany();
+      const sent = [];
+      const names = tags.map(tag => tag.name);
+      for (const note of res) {
+        for (const tag of note.tags) {
+          if (names.includes(tag.name)) {
+            sent.push(note);
+          }
+        }
+      }
+      return sent;
+    } else if (noteListDto.category && noteListDto.tags.length === 0) {
+      const category = await this.categoryRepository.findOneBy({
+        name: noteListDto.category
+      });
+      return await this.noteRepository
+        .createQueryBuilder('note')
+        .where('note.categoryId = :categoryId', { categoryId: category.id })
+        .andWhere('isVisible = :isVisible', { isVisible: true })
+        .leftJoinAndSelect('note.category', 'category')
+        .leftJoinAndSelect('note.tags', 'tags')
+        .getMany();
+    } else {
+      return this.noteRepository
+        .createQueryBuilder('note')
+        .where('isVisible = :isVisible', { isVisible: true })
+        .leftJoinAndSelect('note.category', 'category')
+        .leftJoinAndSelect('note.tags', 'tags')
+        .getMany();
+    }
+  }
+
   async findOne(id: string) {
-    return await this.noteRepository.findOneBy({ id });
+    const note = await this.noteRepository
+      .createQueryBuilder('note')
+      .leftJoinAndSelect('note.tags', 'tags')
+      .where('note.id = :id', { id })
+      .leftJoinAndSelect('note.commentId', 'comment')
+      .getOne();
+    return note;
   }
 
   async findOneByTitle(title: string) {

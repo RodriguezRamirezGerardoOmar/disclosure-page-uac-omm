@@ -7,7 +7,8 @@ import cn from 'classnames'
 
 interface ISelectProps {
   options: {
-    id: number
+    index: number
+    id: string
     name: string
   }[]
   fieldName: string
@@ -87,7 +88,7 @@ export function SelectComponent({ ...props }: Readonly<ISelectProps>) {
             }
             options={props.options.map(option => (
               <ListboxOption
-                key={option.id}
+                key={option.index}
                 className={({ active }) =>
                   classNames(
                     active ? 'dark:bg-secondary bg-gray-100 text-secondary dark:text-white' : 'text-gray-900',

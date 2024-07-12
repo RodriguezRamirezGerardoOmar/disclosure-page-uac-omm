@@ -11,4 +11,7 @@ export class Tag extends BaseEntity {
 
   @ManyToMany(() => Tag, tag => tag.excercises)
   excercises: Tag[];
+
+  @ManyToMany(() => Tag, tag => tag.notes)
+  notes: Tag[];
 }

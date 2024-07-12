@@ -1,18 +1,9 @@
 import React from 'react'
 import NoteItemComponent from '../components/NoteItemComponent'
+import { Note } from '@/constants/types'
 
 interface NoteListProps {
-  notes: {
-    id: number
-    tagId: number
-    title: string
-    description: string
-    tags: {
-      id: number
-      name: string
-      color: string
-    }[]
-  }[]
+  notes: Note[]
 }
 
 /*
@@ -28,9 +19,9 @@ Author: Gerardo Omar Rodriguez Ramirez
 const NoteListComponent = ({ ...props }: Readonly<NoteListProps>) => {
   return (
     <div className='grid grid-rows-10 gap-4'>
-      {props.notes.map(note => (
-        <a key={note.id} href="/note/1">
-          <NoteItemComponent note={note} />
+      {props.notes.map((note, index) => (
+        <a key={index} href={`note/${note.id}`}>
+          <NoteItemComponent note={note} index={index+1}/>
         </a>
       ))}
     </div>
