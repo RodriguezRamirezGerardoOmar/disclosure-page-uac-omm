@@ -14,6 +14,7 @@ import useUtilsStore from '@/store/useUtilsStore'
 import useNoteStore from '@/store/useNoteStore'
 import InputSelectorCreateComponent from '../dropdowns/InputSelectorCreateComponent'
 import { toast } from 'sonner'
+import useAuthStore from '@/store/useStore'
 
 /*
 Input: None
@@ -71,7 +72,9 @@ const CreateNoteComponent = () => {
       body: String(data.content),
       categoryId: { name: data.category.label, id: data.category.value },
       tags: data.tags,
-      isVisible: false
+      isVisible: (useAuthStore.getState().user?.role === 'admin' ? true : false),
+      userAuthor: String(useAuthStore.getState().user?.userName),
+      role: String(useAuthStore.getState().user?.role)
     })
 
     if ('statusCode' in response && response.statusCode === 201) {

@@ -32,6 +32,7 @@ export class ImageController {
   constructor(private readonly imageService: ImageService) {}
 
   @Post('upload')
+  @UseGuards(AuthGuard)
   @ApiOperation({ summary: 'Upload an image' })
   @ApiConsumes('multipart/form-data')
   @ApiBody({

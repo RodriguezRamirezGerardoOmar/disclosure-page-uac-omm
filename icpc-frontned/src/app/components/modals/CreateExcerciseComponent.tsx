@@ -6,7 +6,6 @@ import LogoComponent from '../LogoComponent'
 import { TextComponent } from '../text/TextComponent'
 import { Categories, enumTextTags, Tags, Difficulties, TimeLimit, MemoryLimit, Option } from '@/constants/types'
 import TextFieldComponent from '../forms/TextFieldComponent'
-import { SelectComponent } from '../dropdowns/SelectComponent'
 import TagSelectorComponent from '../forms/TagSelectorComponent'
 import MarkdownAreaComponent from '../forms/MarkdownAreaComponent'
 import SubmitComponent from '../forms/SubmitComponent'
@@ -15,6 +14,7 @@ import useUtilsStore from '@/store/useUtilsStore'
 import { toast } from 'sonner'
 import InputSelectorComponent from '../dropdowns/InputSelectorComponent'
 import InputSelectorCreateComponent from '../dropdowns/InputSelectorCreateComponent'
+import useAuthStore from '@/store/useStore'
 
 /*
 Input: None
@@ -69,7 +69,7 @@ const CreateExcerciseComponent = () => {
 
   const onSubmit: SubmitHandler<FieldValues> = async data => {
     const response = await createExcercise({
-      name: String(data.name),
+      title: String(data.name),
       category: data.category,
       difficulty: data.difficulty,
       time: { value: parseInt(data.time.label), id: data.time.id },
@@ -84,7 +84,9 @@ const CreateExcerciseComponent = () => {
       example_input: String(data.example_input),
       example_output: String(data.example_output),
       solution: String(data.solution),
-      isVisible: false
+      isVisible: false,
+      userAuthor: String(useAuthStore.getState().user?.userName),
+      role: String(useAuthStore.getState().user?.role)
     })
 
     if ('statusCode' in response && response.statusCode === 201) {

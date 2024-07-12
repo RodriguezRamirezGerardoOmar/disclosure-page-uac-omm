@@ -26,13 +26,13 @@ export class LoginResponseDto {
   @ApiProperty({
     type: 'object',
     properties: {
-      username: { type: 'string' },
+      userName: { type: 'string' },
       email: { type: 'string' },
       role: { type: 'string' }
     }
   })
   user: {
-    username: string;
+    userName: string;
     email: string;
     role: string;
   };

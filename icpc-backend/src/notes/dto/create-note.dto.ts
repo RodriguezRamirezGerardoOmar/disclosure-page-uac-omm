@@ -28,6 +28,14 @@ export class CreateNoteDto {
   @ApiProperty()
   @IsBoolean()
   isVisible: boolean;
+
+  @ApiProperty()
+  @IsString()
+  userAuthor: string;
+
+  @ApiProperty()
+  @IsString()
+  role: string;
 }
 
 export class CreateNoteResponseDto extends CreateNoteDto {}

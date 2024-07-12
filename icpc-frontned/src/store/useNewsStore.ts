@@ -12,6 +12,8 @@ interface ICreateNews {
   title: string
   imageId: string
   body: string
+  userAuthor: string
+  role: string
 }
 
 interface NewsState {

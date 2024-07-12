@@ -12,6 +12,7 @@ import { ExcercisesService } from './excercises.service';
 import { CreateExcerciseDto } from './dto/create-excercise.dto';
 import { UpdateExcerciseDto } from './dto/update-excercise.dto';
 import {
+  ApiBadRequestResponse,
   ApiBearerAuth,
   ApiCreatedResponse,
   ApiInternalServerErrorResponse,
@@ -32,17 +33,28 @@ export class ExcercisesController {
     description: 'The exercise has been successfully created.'
   })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+  @ApiBadRequestResponse({ description: 'Bad request' })
   @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
   create(@Body() createExcerciseDto: CreateExcerciseDto) {
     return this.excercisesService.create(createExcerciseDto);
   }
 
   @Get()
+  @ApiCreatedResponse({
+    description: 'Los ejercicios se han obtenido exitosamente.'
+  })
+  @ApiBadRequestResponse({ description: 'Bad request' })
+  @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
   findAll() {
     return this.excercisesService.findAll();
   }
 
   @Get(':id')
+  @ApiCreatedResponse({
+    description: 'El ejercicio se ha obtenido exitosamente.'
+  })
+  @ApiBadRequestResponse({ description: 'Bad request' })
+  @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
   findOne(@Param('id') id: string) {
     return this.excercisesService.findOne(id);
   }
