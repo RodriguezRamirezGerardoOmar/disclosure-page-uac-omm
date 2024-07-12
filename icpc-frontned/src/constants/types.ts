@@ -155,7 +155,7 @@ export interface DBImage {
 
 export interface Exercise {
   id: string
-  name: string
+  title: string
   category: Categories
   difficulty: Difficulties
   time: TimeLimit

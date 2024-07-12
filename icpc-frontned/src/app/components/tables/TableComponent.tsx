@@ -8,31 +8,6 @@ import { Controller, FieldValues, useForm } from 'react-hook-form'
 import { useEffect, useState } from 'react'
 import useUtilsStore from '@/store/useUtilsStore'
 import useExcerciseStore from '@/store/useExcerciseStore'
-const exercises = [
-  { id: 1, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example', 'ejemplo'] },
-  { id: 2, name: 'Lindsay Walton', dificult: 2, categorie: 'Algebra', tag: ['example', 'ejemplo'] },
-  { id: 3, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example', 'ejemplo'] },
-  { id: 4, name: 'Lindsay Walton', dificult: 3, categorie: 'Algebra', tag: ['example', 'ejemplo'] },
-  { id: 5, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example', 'ejemplo'] },
-  { id: 6, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example', 'ejemplo'] },
-  { id: 7, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example', 'ejemplo'] },
-  { id: 8, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example', 'ejemplo'] },
-  { id: 9, name: 'Lindsay Walton', dificult: 5, categorie: 'Algebra', tag: ['example', 'ejemplo'] },
-  { id: 10, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example', 'ejemplo'] },
-  { id: 11, name: 'Lindsay Walton', dificult: 2, categorie: 'Algebra', tag: ['example', 'ejemplo'] },
-  { id: 12, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example', 'ejemplo'] },
-  { id: 13, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example', 'ejemplo'] },
-  { id: 14, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example', 'ejemplo'] },
-  { id: 16, name: 'Lindsay Walton', dificult: 3, categorie: 'Algebra', tag: ['example', 'ejemplo'] },
-  { id: 17, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example', 'ejemplo'] },
-  { id: 18, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example', 'ejemplo'] },
-  { id: 19, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example', 'ejemplo'] },
-  { id: 20, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example', 'ejemplo'] },
-  { id: 21, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example', 'ejemplo'] },
-  { id: 22, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example', 'ejemplo'] },
-  { id: 23, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example', 'ejemplo'] },
-  { id: 24, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example', 'ejemplo'] }
-]
 
 /*
 Input: a list of strings that define CSS classes
@@ -88,7 +63,7 @@ export default function TableComponent() {
     getExerciseList(selectedTags, category, difficulty).then(response => {
       setExercises(response)
     })
-  }, [getCategories, getDifficulties, selectedTags, category, difficulty, getExerciseList])
+  }, [getCategories, getDifficulties, selectedTags, category, difficulty, getExerciseList, getTags])
 
   return (
     <div className='px-4 sm:px-6 lg:px-8 '>
@@ -202,7 +177,7 @@ export default function TableComponent() {
                         id !== Object.keys(exercise).length - 1 ? 'border-b border-gray-200' : '',
                         'whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 dark:text-dark-accent sm:pl-6 lg:pl-8'
                       )}>
-                      {exercise.name}
+                      {exercise.title}
                     </td>
                     <td
                       className={classNames(
@@ -244,9 +219,9 @@ export default function TableComponent() {
                         'relative whitespace-nowrap py-4 pr-4 pl-3 text-right text-sm font-medium sm:pr-8 lg:pr-8'
                       )}>
                       <a
-                        href='#'
+                        href={`/exercises/${exercise.id}`}
                         className='text-indigo-600 hover:text-indigo-900'>
-                        Edit<span className='sr-only'>, {exercise.name}</span>
+                        Leer<span className='sr-only'>, {exercise.title}</span>
                       </a>
                     </td>
                   </tr>

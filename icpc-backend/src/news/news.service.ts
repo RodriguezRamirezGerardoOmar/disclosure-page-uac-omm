@@ -65,6 +65,7 @@ export class NewsService {
       .createQueryBuilder('news')
       .leftJoinAndSelect('news.imageId', 'image')
       .select(['news', 'image.id'])
+      .where('news.isVisible = :isVisible', { isVisible: true })
       .orderBy('news.created_at', 'DESC')
       .getMany();
     return res;

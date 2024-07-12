@@ -80,6 +80,7 @@ export class ExcercisesService {
     }
     const newExcercise = this.excerciseRepository.create({
       ...createExcerciseDto,
+      title: name,
       memoryId: newExcerciseMemory
     });
     newExcercise.category = newExcerciseCategory;

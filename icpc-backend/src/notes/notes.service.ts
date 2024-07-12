@@ -132,6 +132,7 @@ export class NotesService {
         .andWhere('isVisible = :isVisible', { isVisible: true })
         .leftJoinAndSelect('note.category', 'category')
         .leftJoinAndSelect('note.tags', 'tags')
+        .leftJoinAndSelect('note.commentId', 'comment')
         .getMany();
       const sent = [];
       const names = tags.map(tag => tag.name);
@@ -155,6 +156,7 @@ export class NotesService {
         .where('isVisible = :isVisible', { isVisible: true })
         .leftJoinAndSelect('note.category', 'category')
         .leftJoinAndSelect('note.tags', 'tags')
+        .leftJoinAndSelect('note.commentId', 'comment')
         .getMany();
       const sent = [];
       const names = tags.map(tag => tag.name);
@@ -176,6 +178,7 @@ export class NotesService {
         .andWhere('isVisible = :isVisible', { isVisible: true })
         .leftJoinAndSelect('note.category', 'category')
         .leftJoinAndSelect('note.tags', 'tags')
+        .leftJoinAndSelect('note.commentId', 'comment')
         .getMany();
     } else {
       return this.noteRepository
@@ -183,6 +186,7 @@ export class NotesService {
         .where('isVisible = :isVisible', { isVisible: true })
         .leftJoinAndSelect('note.category', 'category')
         .leftJoinAndSelect('note.tags', 'tags')
+        .leftJoinAndSelect('note.commentId', 'comment')
         .getMany();
     }
   }

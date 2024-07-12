@@ -30,7 +30,7 @@ const NoteItemComponent = ({ ...props }: Readonly<NoteItemProps>) => {
           showIcon={false}
         />
       </div>
-      <TextComponent className='p-1'>{props.note.commentId?.body}</TextComponent>
+      <TextComponent className='p-1'>{props.note.commentId.body}</TextComponent>
     </div>
   )
 }
