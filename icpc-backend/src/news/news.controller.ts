@@ -11,7 +11,14 @@ import {
 import { NewsService } from './news.service';
 import { CreateNewsDto } from './dto/create-news.dto';
 import { UpdateNewsDto } from './dto/update-news.dto';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBadRequestResponse,
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiInternalServerErrorResponse,
+  ApiTags,
+  ApiUnauthorizedResponse
+} from '@nestjs/swagger';
 import { AuthGuard } from 'src/auth/guard/auth.guard';
 
 @Controller('news')
@@ -22,16 +29,32 @@ export class NewsController {
   @Post()
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
+  @ApiCreatedResponse({
+    description: 'La noticia ha sido creada exitosamente.'
+  })
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+  @ApiBadRequestResponse({ description: 'Bad request' })
+  @ApiInternalServerErrorResponse({ description: 'Internal server error' })
   create(@Body() createNewsDto: CreateNewsDto) {
     return this.newsService.create(createNewsDto);
   }
 
   @Get()
+  @ApiCreatedResponse({
+    description: 'Las noticias se han obtenido exitosamente.'
+  })
+  @ApiBadRequestResponse({ description: 'Bad request' })
+  @ApiInternalServerErrorResponse({ description: 'Internal server error' })
   findAll() {
     return this.newsService.findAll();
   }
 
   @Get(':id')
+  @ApiCreatedResponse({
+    description: 'La noticia se ha obtenido exitosamente.'
+  })
+  @ApiBadRequestResponse({ description: 'Bad request' })
+  @ApiInternalServerErrorResponse({ description: 'Internal server error' })
   findOne(@Param('id') id: string) {
     return this.newsService.findOne(id);
   }
@@ -39,6 +62,12 @@ export class NewsController {
   @Patch(':id')
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
+  @ApiCreatedResponse({
+    description: 'La noticia se ha actualizado exitosamente.'
+  })
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+  @ApiBadRequestResponse({ description: 'Bad request' })
+  @ApiInternalServerErrorResponse({ description: 'Internal server error' })
   update(@Param('id') id: string, @Body() updateNewsDto: UpdateNewsDto) {
     return this.newsService.update(id, updateNewsDto);
   }
@@ -46,6 +75,12 @@ export class NewsController {
   @Delete(':id')
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
+  @ApiCreatedResponse({
+    description: 'La noticia se ha borrado exitosamente.'
+  })
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+  @ApiBadRequestResponse({ description: 'Bad request' })
+  @ApiInternalServerErrorResponse({ description: 'Internal server error' })
   remove(@Param('id') id: string) {
     return this.newsService.remove(id);
   }

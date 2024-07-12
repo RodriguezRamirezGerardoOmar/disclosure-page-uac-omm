@@ -10,7 +10,7 @@ const api = axios.create({
 })
 
 interface ICreateExcercise {
-  name: string
+  title: string
   category: { name: string, id: string }
   difficulty: { name: string, id: string }
   time: { value: number, id: string}
@@ -26,6 +26,8 @@ interface ICreateExcercise {
   example_output: string
   solution: string
   isVisible: boolean
+  userAuthor: string
+  role: string
 }
 
 interface Actions {

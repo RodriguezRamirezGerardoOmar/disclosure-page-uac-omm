@@ -16,6 +16,8 @@ interface ICreateNote {
   description: string
   body: string
   isVisible: boolean
+  userAuthor: string
+  role: string
 }
 
 interface NoteState {

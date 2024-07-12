@@ -12,6 +12,7 @@ import MarkdownAreaComponent from '../forms/MarkdownAreaComponent'
 import useNewsStore from '@/store/useNewsStore'
 import useUtilsStore from '@/store/useUtilsStore'
 import { toast } from 'sonner'
+import useAuthStore from '@/store/useStore'
 
 /*
 Input: None
@@ -34,7 +35,9 @@ const CreateNewsComponent = () => {
       const response = await createNews({
         title: String(formData.title),
         imageId: uploadedImage.data?.id,
-        body: String(formData.content)
+        body: String(formData.content),
+        userAuthor: String(useAuthStore.getState().user?.userName),
+        role: String(useAuthStore.getState().user?.role)
       })
       if ('statusCode' in response && response.statusCode === 201) {
         toast.success(response.message, {
