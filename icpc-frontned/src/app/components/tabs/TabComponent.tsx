@@ -26,15 +26,15 @@ Author: Gerardo Omar Rodriguez Ramirez
 
 // Update type annotation of the 'tabs' parameter
 export default function TabComponent({
-  tabs
-}: {
+  tabs, handleChange
+}: Readonly<{
   readonly tabs: ReadonlyArray<{
     icon: any
     href: string | undefined
     name: string
     current?: boolean
-  }>
-}) {
+  }>, handleChange: (tabName: string) => void
+}>) {
   const [activeTab, setActiveTab] = useState(tabs.find(tab => tab.current)?.name)
 
   const handleTabChange = (tabName: string) => {
@@ -82,6 +82,7 @@ export default function TabComponent({
                 onClick={e => {
                   e.preventDefault()
                   handleTabChange(tab.name)
+                  handleChange(tab.name)
                 }}
                 aria-current={tab.name === activeTab ? 'page' : undefined}>
                 <tab.icon

@@ -1,11 +1,16 @@
 'use client'
-import { SubmitHandler, useForm } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { ButtonComponent } from '../components/buttons/ButtonComponent'
 import TextFieldComponent from '../components/forms/TextFieldComponent'
 import TabComponent from '../components/tabs/TabComponent'
 import { NewspaperIcon, ArchiveBoxIcon, ListBulletIcon, BookmarkIcon } from '@heroicons/react/20/solid'
 import useAuthStore from '@/store/useStore'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import useNewsStore from '@/store/useNewsStore'
+import { Exercise, News, Note } from '@/constants/types'
+import ProfileTableComponent from '../components/tables/ProfileTableComponent'
+import useExcerciseStore from '@/store/useExcerciseStore'
+import useNoteStore from '@/store/useNoteStore'
 
 const myTabs = [
   { name: 'Ejercicios', href: '#', icon: ListBulletIcon, current: true },
@@ -14,14 +19,51 @@ const myTabs = [
   { name: 'Pendientes', href: '#', icon: ArchiveBoxIcon, current: false }
 ]
 
+const availableTabs = {
+  EXERCISES: 'Ejercicios',
+  NOTES: 'Apuntes',
+  NEWS: 'Noticias',
+  PENDING: 'Pendientes'
+}
+
 function Page() {
   const methods = useForm()
 
   const user = useAuthStore(state => state.user)
   const getProfile = useAuthStore(state => state.getProfile)
 
+  const [ tableData, setTableData ] = useState<News[] | Note[] | Exercise[]>([])
+  const [ mode, setMode ] = useState('exercises')
+  const getNews = useNewsStore.getState().getNews
+  const getExercises = useExcerciseStore.getState().getExerciseList
+  const getNotes = useNoteStore.getState().getList
+
+  const handleChange = async (data: string) => {
+    const tab = data
+    switch (tab){
+      case availableTabs.EXERCISES:
+        const exercises: Exercise[] = await getExercises([],"","")
+        setTableData(exercises)
+        setMode('exercises')
+        break;
+      case availableTabs.NOTES:
+        const notes: Note[] = await getNotes([],"")
+        setTableData(notes)
+        setMode('notes')
+        break;
+      case availableTabs.NEWS:
+        const news: News[] = await getNews()
+        setTableData(news)
+        setMode('news')
+        break;
+      case availableTabs.PENDING:
+        break;
+    }
+  }
+
   useEffect(() => {
     getProfile()
+    handleChange('Ejercicios')
   }, [])
 
   return (
@@ -123,7 +165,10 @@ function Page() {
               </form>
             </div>
             <div className='mx-10'>
-              <TabComponent tabs={myTabs} />
+              <TabComponent tabs={myTabs} handleChange={handleChange} />
+            </div>
+            <div className='mx-10'>
+              <ProfileTableComponent data={tableData} itemType={mode}/>
             </div>
           </div>
         </main>
