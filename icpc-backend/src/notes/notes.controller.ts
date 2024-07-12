@@ -20,6 +20,7 @@ import {
   ApiUnauthorizedResponse
 } from '@nestjs/swagger';
 import { AuthGuard } from '../auth/guard/auth.guard';
+import { GetNoteListDto } from './dto/get-note-list.dto';
 
 @Controller()
 @ApiTags('Notes')
@@ -60,6 +61,15 @@ export class NotesController {
   @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
   findOne(@Param('id') id: string) {
     return this.notesService.findOne(id);
+  }
+
+  @Post('notes/list/')
+  @ApiCreatedResponse({
+    description: 'The notes has been successfully retrieved.'
+  })
+  @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
+  list(@Body() noteListDto: GetNoteListDto) {
+    return this.notesService.findNoteList(noteListDto);
   }
 
   // Endpoint for a get request to retrieve all notes in a category, at "/notes/category/:categoryId"

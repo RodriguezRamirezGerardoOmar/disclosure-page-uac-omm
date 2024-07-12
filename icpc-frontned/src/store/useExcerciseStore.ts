@@ -26,6 +26,8 @@ interface ICreateExcercise {
   example_output: string
   solution: string
   isVisible: boolean
+  userAuthor: string
+  role: string
 }
 
 interface Actions {

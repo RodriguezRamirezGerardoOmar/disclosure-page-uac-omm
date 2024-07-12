@@ -10,6 +10,14 @@ import { Difficulty } from 'src/difficulty/entities/difficulty.entity';
 import { Time } from 'src/time/entities/time.entity';
 import { Tag } from 'src/tags/entities/tag.entity';
 import { GetExerciseListDto } from './dto/get-exercise-list.dto';
+import {
+  Ticket,
+  TicketOperation,
+  TicketStatus,
+  TicketType
+} from 'src/ticket/entities/ticket.entity';
+import { User } from 'src/users/entities/user.entity';
+import { Comment } from 'src/comment/entities/comment.entity';
 
 @Injectable()
 export class ExcercisesService {
@@ -25,13 +33,19 @@ export class ExcercisesService {
     @InjectRepository(Memory)
     private readonly memoryRepository: Repository<Memory>,
     @InjectRepository(Tag)
-    private readonly tagRepository: Repository<Tag>
+    private readonly tagRepository: Repository<Tag>,
+    @InjectRepository(Ticket)
+    private readonly ticketRepository: Repository<Ticket>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+    @InjectRepository(Comment)
+    private readonly commentRepository: Repository<Comment>
   ) {}
 
   async create(createExcerciseDto: CreateExcerciseDto) {
     const { name, category, difficulty, time, memoryId } = createExcerciseDto;
     const newExcerciseName = await this.excerciseRepository.findOneBy({
-      name: name
+      title: name
     });
     if (newExcerciseName !== null) {
       throw new BadRequestException(
@@ -71,8 +85,33 @@ export class ExcercisesService {
     newExcercise.category = newExcerciseCategory;
     newExcercise.difficulty = newExcerciseDifficulty;
     newExcercise.time = newExcerciseTime;
-    const response = await this.excerciseRepository.save(newExcercise);
-    return response;
+    const user = await this.userRepository.findOneBy({
+      userName: createExcerciseDto.userAuthor
+    });
+    newExcercise.created_by = user.name;
+    newExcercise.isVisible = createExcerciseDto.role === 'admin';
+    const savedExcercise = await this.excerciseRepository.save(newExcercise);
+    const commentBody = `${user.name} ha creado un nuevo ejercicio con el nombre ${newExcercise.title}`;
+    const comment = this.commentRepository.create({
+      body: commentBody
+    });
+    const commentId = await this.commentRepository.save(comment);
+    const ticket = this.ticketRepository.create({
+      itemType: TicketType.EXERCISE,
+      operation: TicketOperation.CREATE,
+      status:
+        createExcerciseDto.role === 'admin'
+          ? TicketStatus.ACCEPTED
+          : TicketStatus.PENDING,
+      originalExerciseId: savedExcercise,
+      commentId: commentId
+    });
+    const savedTicket = await this.ticketRepository.save(ticket);
+    if (savedExcercise && savedTicket) {
+      return savedExcercise;
+    } else {
+      throw new BadRequestException('Error al crear el ejercicio');
+    }
   }
 
   async findAll() {
@@ -84,7 +123,7 @@ export class ExcercisesService {
   }
 
   async findOneByName(name: string) {
-    return await this.excerciseRepository.findOneBy({ name });
+    return await this.excerciseRepository.findOneBy({ title: name });
   }
 
   async getList(body: GetExerciseListDto) {

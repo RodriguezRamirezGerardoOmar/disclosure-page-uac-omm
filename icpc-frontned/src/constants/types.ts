@@ -135,6 +135,18 @@ export interface News {
   }
 }
 
+export interface Note {
+  id: string
+  title: string
+  body: string
+  isVisible: boolean
+  tags: Tags[]
+  commentId: {
+    id: string
+    body: string
+  }
+}
+
 export interface DBImage {
   id: string
   assetName: string

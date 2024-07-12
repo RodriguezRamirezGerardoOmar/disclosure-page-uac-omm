@@ -2,13 +2,16 @@ import React from 'react'
 import NoteCardComponent from '../../components/cards/NoteCardComponent'
 import { TextComponent } from '@/app/components/text/TextComponent'
 import { serialize } from 'next-mdx-remote/serialize'
-import data from '@/app/note/apunte.json'
 import remarkMath from 'remark-math'
 import rehypeKatex from 'rehype-katex'
+import useNoteStore from '@/store/useNoteStore'
+import { Note } from '@/constants/types'
 
 export default async function Page({ params }: Readonly<{ params: { id: string } }>) {
-  if (data.id.toString() === params.id) {
-    const mdx = await serialize(data.content, {
+  const getNote = useNoteStore.getState().getNote
+  if (params.id) {
+    const note: Note = await getNote(params.id)
+    const mdx = await serialize(note.body, {
       mdxOptions: {
         remarkPlugins: [remarkMath],
         rehypePlugins: [rehypeKatex as any]
@@ -17,10 +20,10 @@ export default async function Page({ params }: Readonly<{ params: { id: string }
     return (
       <main className='grid min-h-screen grid-cols-1 place-items-center justify-between py-24'>
         <NoteCardComponent
-          title={data.title}
-          description={data.description}
+          title={note.title}
+          description={note.commentId.body}
           content={mdx.compiledSource}
-          tags={data.tags}
+          tags={note.tags}
           showButton={true}
         />
       </main>

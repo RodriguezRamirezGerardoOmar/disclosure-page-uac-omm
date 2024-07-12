@@ -19,7 +19,7 @@ import { Report } from 'src/report/entities/report.entity';
 @Entity()
 export class Excercise extends BaseEntity {
   @Column({ nullable: false })
-  name: string;
+  title: string;
 
   @Column('text', { nullable: false })
   description: string;

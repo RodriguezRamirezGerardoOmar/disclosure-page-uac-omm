@@ -65,4 +65,12 @@ export class CreateExcerciseDto {
   @ApiProperty()
   @IsBoolean()
   isVisible: boolean;
+
+  @ApiProperty()
+  @IsString()
+  userAuthor: string;
+
+  @ApiProperty()
+  @IsString()
+  role: string;
 }
