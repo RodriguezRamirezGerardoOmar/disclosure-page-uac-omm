@@ -17,7 +17,10 @@ export class DifficultyService {
   }
 
   async findAll() {
-    return await this.difficultyRepository.find();
+    return await this.difficultyRepository
+      .createQueryBuilder('difficulty')
+      .orderBy('difficulty.level', 'ASC')
+      .getMany();
   }
 
   async findOne(id: string) {

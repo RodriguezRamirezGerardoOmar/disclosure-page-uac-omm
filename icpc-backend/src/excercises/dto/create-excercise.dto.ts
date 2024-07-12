@@ -4,7 +4,7 @@ import { IsArray, IsBoolean, IsObject, IsString } from 'class-validator';
 export class CreateExcerciseDto {
   @ApiProperty()
   @IsString()
-  title: string;
+  name: string;
 
   @ApiProperty()
   @IsObject()

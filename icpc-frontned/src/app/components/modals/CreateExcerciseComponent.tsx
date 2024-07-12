@@ -69,11 +69,11 @@ const CreateExcerciseComponent = () => {
 
   const onSubmit: SubmitHandler<FieldValues> = async data => {
     const response = await createExcercise({
-      title: String(data.name),
-      category: data.category,
-      difficulty: data.difficulty,
+      name: String(data.name),
+      category: { name: data.category.label, id: data.category.value},
+      difficulty: {name: data.difficulty.label, id: data.difficulty.id},
       time: { value: parseInt(data.time.label), id: data.time.id },
-      memoryId: String(data.memoryId.value),
+      memoryId: data.memoryId.value,
       input: String(data.input),
       output: String(data.output),
       constraints: String(data.constraints),
@@ -177,7 +177,8 @@ const CreateExcerciseComponent = () => {
                 <InputSelectorCreateComponent
                   label='Categoría'
                   id='category'
-                  onChange={val => field.onChange(val)}
+                  onChange={val => {
+                    field.onChange(val)}}
                   options={categories.map(item => {
                     return { label: item.name, value: item.id }
                   })}

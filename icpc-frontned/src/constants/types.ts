@@ -152,3 +152,17 @@ export interface DBImage {
   assetName: string
   data: Buffer
 }
+
+export interface Exercise {
+  id: string
+  name: string
+  category: Categories
+  difficulty: Difficulties
+  time: TimeLimit
+  memoryId: MemoryLimit
+  input: string
+  output: string
+  constraints: string
+  clue: string
+  tags: Tags[]
+}

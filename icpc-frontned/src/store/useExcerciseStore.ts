@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
-import { IApiResponse, TResponseBasicError } from '@/constants/types'
+import { Exercise, IApiResponse, TResponseBasicError } from '@/constants/types'
 import { Tags } from '@/constants/types'
 import useAuthStore from './useStore'
 
@@ -10,7 +10,7 @@ const api = axios.create({
 })
 
 interface ICreateExcercise {
-  title: string
+  name: string
   category: { name: string, id: string }
   difficulty: { name: string, id: string }
   time: { value: number, id: string}
@@ -32,6 +32,8 @@ interface ICreateExcercise {
 
 interface Actions {
   createExcercise: (exercise: ICreateExcercise) => Promise<IApiResponse | TResponseBasicError>
+  getExercise: (id: string) => Promise<Exercise>
+  getExerciseList: (tags: Tags[], category?: string, difficulty?: string) => Promise<Exercise[]>
 }
 
 const useExcerciseStore = create<Actions>()(
@@ -51,7 +53,26 @@ const useExcerciseStore = create<Actions>()(
           } catch (error: any) {
             return error.response.data
           }
+        },
+
+        getExercise: async (id: string) => {
+          try {
+            const response = await api.get(`/api/v1/excercises/${id}`)
+            return response.data
+          } catch (error: any) {
+            return error.response.data
+          }
+        },
+
+        getExerciseList: async (tags: Tags[], category?: string, difficulty?: string) => {
+          try {
+            const response = await api.post('/api/v1/excercises/list', { tags, category, difficulty })
+            return response.data
+          } catch (error: any) {
+            return error.response.data
+          }
         }
+
       }),
       { name: 'exercise-store' }
     )

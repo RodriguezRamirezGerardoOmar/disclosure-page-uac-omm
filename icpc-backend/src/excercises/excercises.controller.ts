@@ -20,6 +20,7 @@ import {
   ApiUnauthorizedResponse
 } from '@nestjs/swagger';
 import { AuthGuard } from 'src/auth/guard/auth.guard';
+import { GetExerciseListDto } from './dto/get-exercise-list.dto';
 
 @Controller('excercises')
 @ApiTags('Excercises')
@@ -57,6 +58,11 @@ export class ExcercisesController {
   @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
   findOne(@Param('id') id: string) {
     return this.excercisesService.findOne(id);
+  }
+
+  @Post('/list')
+  getList(@Body() body: GetExerciseListDto) {
+    return this.excercisesService.getList(body);
   }
 
   @Patch(':id')

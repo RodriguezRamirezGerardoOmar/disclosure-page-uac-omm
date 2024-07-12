@@ -67,7 +67,6 @@ export class NewsService {
       .select(['news', 'image.id'])
       .orderBy('news.created_at', 'DESC')
       .getMany();
-    console.log(res);
     return res;
   }
 

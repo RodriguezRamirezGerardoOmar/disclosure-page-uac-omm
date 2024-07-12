@@ -9,6 +9,7 @@ import { Category } from 'src/categories/entities/category.entity';
 import { Difficulty } from 'src/difficulty/entities/difficulty.entity';
 import { Time } from 'src/time/entities/time.entity';
 import { Tag } from 'src/tags/entities/tag.entity';
+import { GetExerciseListDto } from './dto/get-exercise-list.dto';
 import {
   Ticket,
   TicketOperation,
@@ -42,9 +43,9 @@ export class ExcercisesService {
   ) {}
 
   async create(createExcerciseDto: CreateExcerciseDto) {
-    const { title, category, difficulty, time, memoryId } = createExcerciseDto;
+    const { name, category, difficulty, time, memoryId } = createExcerciseDto;
     const newExcerciseName = await this.excerciseRepository.findOneBy({
-      title: title
+      title: name
     });
     if (newExcerciseName !== null) {
       throw new BadRequestException(
@@ -125,6 +126,185 @@ export class ExcercisesService {
     return await this.excerciseRepository.findOneBy({ title: name });
   }
 
+  async getList(body: GetExerciseListDto) {
+    if (body.category && body.tags.length > 0 && !body.difficulty) {
+      const category = await this.categoryRepository.findOneBy({
+        name: body.category
+      });
+      const tags = await this.tagRepository
+        .createQueryBuilder('tag')
+        .where('tag.name IN (:...tags)', {
+          tags: body.tags.map(tag => tag.name)
+        })
+        .getMany();
+      const res = await this.excerciseRepository
+        .createQueryBuilder('excercise')
+        .where('excercise.categoryId = :categoryId', {
+          categoryId: category.id
+        })
+        .andWhere('isVisible = :isVisible', { isVisible: true })
+        .leftJoinAndSelect('excercise.category', 'category')
+        .leftJoinAndSelect('excercise.tags', 'tags')
+        .leftJoinAndSelect('excercise.difficulty', 'difficulty')
+        .getMany();
+      const sent = [];
+      const names = tags.map(tag => tag.name);
+      for (const excercise of res) {
+        for (const tag of excercise.tags) {
+          if (names.includes(tag.name) && !sent.includes(excercise)) {
+            sent.push(excercise);
+          }
+        }
+      }
+      return sent;
+    } else if (!body.category && body.tags.length > 0 && !body.difficulty) {
+      const tags = await this.tagRepository
+        .createQueryBuilder('tag')
+        .where('tag.name IN (:...tags)', {
+          tags: body.tags.map(tag => tag.name)
+        })
+        .getMany();
+      const res = await this.excerciseRepository
+        .createQueryBuilder('excercise')
+        .where('isVisible = :isVisible', { isVisible: true })
+        .leftJoinAndSelect('excercise.category', 'category')
+        .leftJoinAndSelect('excercise.tags', 'tags')
+        .leftJoinAndSelect('excercise.difficulty', 'difficulty')
+        .getMany();
+      const sent = [];
+      const names = tags.map(tag => tag.name);
+      for (const excercise of res) {
+        for (const tag of excercise.tags) {
+          if (names.includes(tag.name) && !sent.includes(excercise)) {
+            sent.push(excercise);
+          }
+        }
+      }
+      return sent;
+    } else if (body.category && body.tags.length === 0 && !body.difficulty) {
+      const category = await this.categoryRepository.findOneBy({
+        name: body.category
+      });
+      return await this.excerciseRepository
+        .createQueryBuilder('excercise')
+        .where('excercise.categoryId = :categoryId', {
+          categoryId: category.id
+        })
+        .andWhere('isVisible = :isVisible', { isVisible: true })
+        .leftJoinAndSelect('excercise.category', 'category')
+        .leftJoinAndSelect('excercise.tags', 'tags')
+        .leftJoinAndSelect('excercise.difficulty', 'difficulty')
+        .getMany();
+    } else if (!body.category && body.tags.length === 0 && !body.difficulty) {
+      return this.excerciseRepository
+        .createQueryBuilder('excercise')
+        .where('isVisible = :isVisible', { isVisible: true })
+        .leftJoinAndSelect('excercise.category', 'category')
+        .leftJoinAndSelect('excercise.tags', 'tags')
+        .leftJoinAndSelect('excercise.difficulty', 'difficulty')
+        .getMany();
+    } else if (body.category && body.tags.length > 0 && body.difficulty) {
+      const category = await this.categoryRepository.findOneBy({
+        name: body.category
+      });
+      const tags = await this.tagRepository
+        .createQueryBuilder('tag')
+        .where('tag.name IN (:...tags)', {
+          tags: body.tags.map(tag => tag.name)
+        })
+        .getMany();
+      const difficulty = await this.difficultyRepository.findOneBy({
+        name: body.difficulty
+      });
+      const res = await this.excerciseRepository
+        .createQueryBuilder('excercise')
+        .where('excercise.categoryId = :categoryId', {
+          categoryId: category.id
+        })
+        .andWhere('isVisible = :isVisible', { isVisible: true })
+        .andWhere('excercise.difficultyId = :difficultyId', {
+          difficultyId: difficulty.id
+        })
+        .leftJoinAndSelect('excercise.category', 'category')
+        .leftJoinAndSelect('excercise.tags', 'tags')
+        .leftJoinAndSelect('excercise.difficulty', 'difficulty')
+        .getMany();
+      const sent = [];
+      const names = tags.map(tag => tag.name);
+      for (const excercise of res) {
+        for (const tag of excercise.tags) {
+          if (names.includes(tag.name) && !sent.includes(excercise)) {
+            sent.push(excercise);
+          }
+        }
+      }
+      return sent;
+    } else if (!body.category && body.tags.length > 0 && body.difficulty) {
+      const tags = await this.tagRepository
+        .createQueryBuilder('tag')
+        .where('tag.name IN (:...tags)', {
+          tags: body.tags.map(tag => tag.name)
+        })
+        .getMany();
+      const difficulty = await this.difficultyRepository.findOneBy({
+        name: body.difficulty
+      });
+      const res = await this.excerciseRepository
+        .createQueryBuilder('excercise')
+        .where('isVisible = :isVisible', { isVisible: true })
+        .andWhere('excercise.difficultyId = :difficultyId', {
+          difficultyId: difficulty.id
+        })
+        .leftJoinAndSelect('excercise.category', 'category')
+        .leftJoinAndSelect('excercise.tags', 'tags')
+        .leftJoinAndSelect('excercise.difficulty', 'difficulty')
+        .getMany();
+      const sent = [];
+      const names = tags.map(tag => tag.name);
+      for (const excercise of res) {
+        for (const tag of excercise.tags) {
+          if (names.includes(tag.name) && !sent.includes(excercise)) {
+            sent.push(excercise);
+          }
+        }
+      }
+      return sent;
+    } else if (body.category && body.tags.length === 0 && body.difficulty) {
+      const category = await this.categoryRepository.findOneBy({
+        name: body.category
+      });
+      const difficulty = await this.difficultyRepository.findOneBy({
+        name: body.difficulty
+      });
+      return await this.excerciseRepository
+        .createQueryBuilder('excercise')
+        .where('excercise.categoryId = :categoryId', {
+          categoryId: category.id
+        })
+        .andWhere('excercise.difficultyId = :difficultyId', {
+          difficultyId: difficulty.id
+        })
+        .andWhere('isVisible = :isVisible', { isVisible: true })
+        .leftJoinAndSelect('excercise.category', 'category')
+        .leftJoinAndSelect('excercise.tags', 'tags')
+        .leftJoinAndSelect('excercise.difficulty', 'difficulty')
+        .getMany();
+    } else {
+      const difficulty = await this.difficultyRepository.findOneBy({
+        name: body.difficulty
+      });
+      return this.excerciseRepository
+        .createQueryBuilder('excercise')
+        .where('isVisible = :isVisible', { isVisible: true })
+        .andWhere('excercise.difficultyId = :difficultyId', {
+          difficultyId: difficulty.id
+        })
+        .leftJoinAndSelect('excercise.category', 'category')
+        .leftJoinAndSelect('excercise.tags', 'tags')
+        .leftJoinAndSelect('excercise.difficulty', 'difficulty')
+        .getMany();
+    }
+  }
   async update(id: string, updateExcerciseDto: UpdateExcerciseDto) {
     const excercise = await this.excerciseRepository.findOneBy({ id });
     return await this.memoryRepository.save({
