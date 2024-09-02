@@ -95,6 +95,7 @@ export default function TabComponent({
                 <span>{tab.name}</span>
               </a>
             ))}
+            <button className="py-2 px-4 font-medium">Create</button>
           </nav>
         </div>
       </div>
