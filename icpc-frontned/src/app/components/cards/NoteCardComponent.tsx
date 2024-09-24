@@ -45,7 +45,7 @@ export default function NoteCardComponent({ ...props }: Readonly<NoteCardProps>)
         className='text-gray-500 dark:text-dark-accent font-medium my-4'>
         {props.description}
       </TextComponent>
-      <div className='prose text-accent dark:text-dark-accent'>
+      <div className='w-full'>
         <MarkdownBodyComponent body={props.content} />
       </div>
       {props.showButton ? (
