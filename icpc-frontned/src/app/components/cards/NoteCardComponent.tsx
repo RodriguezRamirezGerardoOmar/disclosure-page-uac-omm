@@ -1,9 +1,9 @@
 'use client'
 import { BasicPanelComponent } from '@/app/components/panels/BasicPanelComponent'
 import { TextComponent } from '../text/TextComponent'
-import { MDXRemote } from 'next-mdx-remote'
 import TagListComponent from '../tags/TagListComponent'
 import { ButtonComponent } from '../buttons/ButtonComponent'
+import MarkdownBodyComponent from '../panels/MarkdownBodyComponent'
 
 interface NoteCardProps {
   title: string
@@ -42,16 +42,12 @@ export default function NoteCardComponent({ ...props }: Readonly<NoteCardProps>)
       />
       <TextComponent
         sizeFont='s14'
-        className='text-gray-500 font-medium my-4'>
+        className='text-gray-500 dark:text-dark-accent font-medium my-4'>
         {props.description}
       </TextComponent>
-
-      <MDXRemote
-        compiledSource={props.content}
-        frontmatter={undefined}
-        scope={undefined}
-      />
-
+      <div className='prose text-accent dark:text-dark-accent'>
+        <MarkdownBodyComponent body={props.content} />
+      </div>
       {props.showButton ? (
         <div className='grid justify-items-center my-4'>
           <a href='/exercises'>

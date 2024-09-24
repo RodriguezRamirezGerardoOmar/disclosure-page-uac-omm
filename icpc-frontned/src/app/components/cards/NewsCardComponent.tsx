@@ -2,7 +2,7 @@ import React from 'react'
 import { BasicPanelComponent } from '../panels/BasicPanelComponent'
 import { TextComponent } from '../text/TextComponent'
 import { enumTextTags, News } from '@/constants/types'
-import NewsBodyComponent from '../panels/NewsBodyComponent'
+import MarkdownBodyComponent from '../panels/MarkdownBodyComponent'
 import useNewsStore from '@/store/useNewsStore'
 import { serialize } from 'next-mdx-remote/serialize'
 import rehypeKatex from 'rehype-katex'
@@ -58,7 +58,7 @@ async function NewsCardComponent({ ...props }: Readonly<NewsCardComponentProps>)
         className='text-gray-500 font-medium my-4'>
         {news.createdAt ?? ''}
       </TextComponent>
-      <NewsBodyComponent body={body.compiledSource} />
+      <MarkdownBodyComponent body={body.compiledSource} />
     </BasicPanelComponent>
   )
 }
