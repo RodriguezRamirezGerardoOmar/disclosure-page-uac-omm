@@ -8,7 +8,13 @@ interface NewsBodyComponentProps {
 
 function MarkdownBodyComponent({ ...props }: Readonly<NewsBodyComponentProps>) {
   return (
-    <div className='prose text-accent dark:text-dark-accent prose-a:text-dark-accent'>
+    <div
+      className={`w-full prose text-accent dark:text-dark-accent
+      [&_a]:text-dark-accent [&_a]:dark:text-dark-complementary
+      prose-headings:dark:text-dark-accent
+      [&_img]:m-auto
+    prose-strong:dark:text-dark-accent
+    prose-blockquote:dark:text-dark-accent max-w-max`}>
       <MDXRemote
         compiledSource={props.body}
         scope={undefined}

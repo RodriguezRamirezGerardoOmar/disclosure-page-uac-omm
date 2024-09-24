@@ -36,7 +36,7 @@ async function NewsCardComponent({ ...props }: Readonly<NewsCardComponentProps>)
   })
   //const image = await getCover(news.imageId.id)
   return (
-    <BasicPanelComponent backgroundColor='bg-white dark:bg-dark-primary'>
+    <BasicPanelComponent backgroundColor='bg-white dark:bg-dark-primary lg:w-11/12'>
       <TextComponent
         sizeFont='s36'
         className='dark:text-dark-accent my-4'
@@ -44,7 +44,7 @@ async function NewsCardComponent({ ...props }: Readonly<NewsCardComponentProps>)
         {news.title}
       </TextComponent>
       <img
-        className='object-cover w-full rounded-md'
+        className='object-cover w-full lg:w-1/3 m-auto rounded-md'
         alt=''
         src={process.env.NEXT_PUBLIC_API_URL + 'api/v1/image/' + news.imageId.id}
       />
