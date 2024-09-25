@@ -14,8 +14,8 @@ async function bootstrap() {
   app.setGlobalPrefix('api/v1');
 
   app.enableCors({
-    origin: 'http://localhost:3000',
-    methods: 'GET,POST,PUT,DELETE',
+    origin: '*',
+    methods: 'GET,POST,PATCH,DELETE,OPTIONS',
     credentials: true
   });
 

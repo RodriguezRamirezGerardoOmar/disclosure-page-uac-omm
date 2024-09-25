@@ -5,7 +5,7 @@ import TextFieldComponent from '../components/forms/TextFieldComponent'
 import TabComponent from '../components/tabs/TabComponent'
 import { NewspaperIcon, ArchiveBoxIcon, ListBulletIcon, BookmarkIcon } from '@heroicons/react/20/solid'
 import useAuthStore from '@/store/useStore'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import useNewsStore from '@/store/useNewsStore'
 import { Exercise, News, Note } from '@/constants/types'
 import ProfileTableComponent from '../components/tables/ProfileTableComponent'
@@ -38,7 +38,7 @@ function Page() {
   const getExercises = useExcerciseStore.getState().getExerciseList
   const getNotes = useNoteStore.getState().getList
 
-  const handleChange = async (data: string) => {
+  const handleChange = useCallback(async (data: string) => {
     const tab = data
     switch (tab){
       case availableTabs.EXERCISES:
@@ -59,12 +59,12 @@ function Page() {
       case availableTabs.PENDING:
         break;
     }
-  }
+  }, [getExercises, getNews, getNotes])
 
   useEffect(() => {
     getProfile()
-    handleChange('Ejercicios')
-  }, [])
+    handleChange(mode)
+  }, [getProfile, handleChange, mode])
 
   return (
     <div>
@@ -75,7 +75,7 @@ function Page() {
               <div>
                 <h2 className='text-base font-semibold leading-7 dark:text-white'>Información personal</h2>
                 <p className='mt-1 text-sm leading-6 text-gray-400'>
-                  Usa un correo electrónico permanente y un nombre de usuario único para que otros usuarios puedan encontrarte.
+                  Usa tu correo institucional.
                 </p>
               </div>
 
