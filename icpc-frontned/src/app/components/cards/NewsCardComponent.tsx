@@ -2,7 +2,7 @@ import React from 'react'
 import { BasicPanelComponent } from '../panels/BasicPanelComponent'
 import { TextComponent } from '../text/TextComponent'
 import { enumTextTags, News } from '@/constants/types'
-import NewsBodyComponent from '../panels/NewsBodyComponent'
+import MarkdownBodyComponent from '../panels/MarkdownBodyComponent'
 import useNewsStore from '@/store/useNewsStore'
 import { serialize } from 'next-mdx-remote/serialize'
 import rehypeKatex from 'rehype-katex'
@@ -36,7 +36,7 @@ async function NewsCardComponent({ ...props }: Readonly<NewsCardComponentProps>)
   })
   //const image = await getCover(news.imageId.id)
   return (
-    <BasicPanelComponent backgroundColor='bg-white dark:bg-dark-primary'>
+    <BasicPanelComponent backgroundColor='bg-white dark:bg-dark-primary lg:w-11/12'>
       <TextComponent
         sizeFont='s36'
         className='dark:text-dark-accent my-4'
@@ -44,7 +44,7 @@ async function NewsCardComponent({ ...props }: Readonly<NewsCardComponentProps>)
         {news.title}
       </TextComponent>
       <img
-        className='object-cover w-full rounded-md'
+        className='object-cover w-full lg:w-1/3 m-auto rounded-md'
         alt=''
         src={process.env.NEXT_PUBLIC_API_URL + 'api/v1/image/' + news.imageId.id}
       />
@@ -58,7 +58,7 @@ async function NewsCardComponent({ ...props }: Readonly<NewsCardComponentProps>)
         className='text-gray-500 font-medium my-4'>
         {news.createdAt ?? ''}
       </TextComponent>
-      <NewsBodyComponent body={body.compiledSource} />
+      <MarkdownBodyComponent body={body.compiledSource} />
     </BasicPanelComponent>
   )
 }
