@@ -1,11 +1,15 @@
 import axios from 'axios'
 import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
-import { Tags, Categories, Difficulties, TimeLimit, MemoryLimit, IApiResponse, TResponseBasicError, DBImage } from '@/constants/types'
+import {Tags, Categories, Difficulties, TimeLimit, MemoryLimit, IApiResponse, TResponseBasicError, DBImage, Quote} from '@/constants/types'
 import useAuthStore from './useStore'
 
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL
+})
+
+const quoteApi = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_QUOTE_URL
 })
 
 interface UtilsState {
@@ -15,6 +19,7 @@ interface UtilsState {
   timeLimit: TimeLimit[]
   memoryLimit: MemoryLimit[]
   images: { [key: string]: DBImage }
+  quote: Quote
 }
 
 interface Actions {
@@ -27,6 +32,7 @@ interface Actions {
   createTimeLimit: (time: number) => Promise<IApiResponse | TResponseBasicError>
   getMemoryLimit: () => Promise<MemoryLimit[]>
   createImage: (image: File) => Promise<IApiResponse | TResponseBasicError>
+  getDailyQuote: () => Promise<Quote>
 }
 
 const useUtilsStore = create<Actions & UtilsState>()(
@@ -39,6 +45,7 @@ const useUtilsStore = create<Actions & UtilsState>()(
         timeLimit: [] as TimeLimit[],
         memoryLimit: [] as MemoryLimit[],
         images: [] as unknown as { [key: string]: DBImage },
+        quote: { phrase: '', author: '' },
 
         getTags: async (): Promise<Tags[]> => {
           try {
@@ -140,6 +147,19 @@ const useUtilsStore = create<Actions & UtilsState>()(
               Authorization: `Bearer ${useAuthStore.getState().token}`
             }
           })
+        },
+
+        getDailyQuote: async (): Promise<Quote> => {
+          try {
+            const response = await quoteApi.get('/')
+            set(() => ({ quote: response.data }))
+            return response.data
+          } catch (error: any) {
+            return {
+              phrase: "",
+              author : ""
+            }
+          }
         }
       }),
       {

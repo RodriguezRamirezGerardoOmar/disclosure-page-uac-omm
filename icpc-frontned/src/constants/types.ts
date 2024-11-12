@@ -171,3 +171,23 @@ export interface Exercise {
   solution: string
   author: string
 }
+
+export interface Quote {
+  phrase: string
+  author : string
+}
+/*
+export const AllTabs = {
+  EXERCISES: 'Ejercicios',
+  NOTES: 'Apuntes',
+  NEWS: 'Noticias',
+  REPORTS: 'Reportes',
+  CHANGES: 'Cambios',
+  CATEGORIES: 'Categoría',
+  TAGS: 'Etiqueta',
+  TIME: 'Tiempo',
+  MEMORY: 'Memoria',
+  DIFFICULTY: 'Dificultad',
+  ACCOUNT: 'Cuentas',
+}
+*/

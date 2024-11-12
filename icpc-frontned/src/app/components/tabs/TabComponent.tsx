@@ -1,5 +1,4 @@
 import { useState } from 'react'
-
 /*
 Input: a list of strings that define CSS classes
 Output: a single string of Tailwind CSS
@@ -25,17 +24,22 @@ Author: Gerardo Omar Rodriguez Ramirez
 */
 
 // Update type annotation of the 'tabs' parameter
-export default function TabComponent({
-  tabs, handleChange
+export default function TabComponent({ myTabs, adminTabs, handleChange
 }: Readonly<{
-  readonly tabs: ReadonlyArray<{
-    icon: any
+  readonly myTabs: ReadonlyArray<{
+//    icon: any 
+    href: string | undefined
+    name: string
+    current?: boolean
+  }>  
+  readonly adminTabs: ReadonlyArray<{
+//   icon: any
     href: string | undefined
     name: string
     current?: boolean
   }>, handleChange: (tabName: string) => void
 }>) {
-  const [activeTab, setActiveTab] = useState(tabs.find(tab => tab.current)?.name)
+  const [activeTab, setActiveTab] = useState(myTabs.find(tab => tab.current)?.name)
 
   const handleTabChange = (tabName: string) => {
     setActiveTab(tabName)
@@ -55,7 +59,7 @@ export default function TabComponent({
           className='block w-full rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500'
           value={activeTab}
           onChange={e => handleTabChange(e.target.value)}>
-          {tabs.map(tab => (
+          {myTabs.map(tab => (
             <option
               key={tab.name}
               value={tab.name}>
@@ -66,18 +70,19 @@ export default function TabComponent({
       </div>
       <div className='hidden sm:block'>
         <div className='border-b border-gray-200'>
-          <nav
-            className='-mb-px flex space-x-8'
+          <div className='flex flex-row gap-16'>
+          <div 
+            className=' flex flex-row space-x-2'
             aria-label='Tabs'>
-            {tabs.map(tab => (
+            {myTabs.map(tab => (
               <a
                 key={tab.name}
                 href={tab.href}
                 className={classNames(
                   tab.name === activeTab
                     ? 'border-indigo-500 text-indigo-600'
-                    : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700',
-                  'group inline-flex items-center border-b-2 py-4 px-1 text-sm font-medium'
+                    : 'border-transparent text-white hover:border-gray-300 hover:text-gray-700',
+                  'group inline-flex items-center border-b-2 py-2 px-1 text-xs font-medium'
                 )}
                 onClick={e => {
                   e.preventDefault()
@@ -85,17 +90,48 @@ export default function TabComponent({
                   handleChange(tab.name)
                 }}
                 aria-current={tab.name === activeTab ? 'page' : undefined}>
-                <tab.icon
+                {/*<tab.icon
                   className={classNames(
                     tab.name === activeTab ? 'text-indigo-500' : 'text-gray-400 group-hover:text-gray-500',
                     '-ml-0.5 mr-2 h-5 w-5'
                   )}
                   aria-hidden='true'
-                />
+                />*/}
                 <span>{tab.name}</span>
               </a>
             ))}
-          </nav>
+          </div>
+          <div 
+            className='bg-primary rounded-md flex flex-row space-x-2'
+            aria-label='Tabs'>
+            {adminTabs.map(tab => (
+              <a
+                key={tab.name}
+                href={tab.href}
+                className={classNames(
+                  tab.name === activeTab
+                    ? 'border-indigo-500 text-indigo-600'
+                    : 'border-transparent text-white hover:border-gray-300 hover:text-gray-700',
+                  'group inline-flex items-center border-b-2 py-2 px-1 text-xs font-medium  last:bg-complementary last:space-20 last:rounded-md last:text-gray-700'
+                )}
+                onClick={e => {
+                  e.preventDefault()
+                  handleTabChange(tab.name)
+                  handleChange(tab.name)
+                }}
+                aria-current={tab.name === activeTab ? 'page' : undefined}>
+                {/*<tab.icon
+                  className={classNames(
+                    tab.name === activeTab ? 'text-indigo-500' : 'text-gray-400 group-hover:text-gray-500',
+                    '-ml-0.5 mr-2 h-5 w-5'
+                  )}
+                  aria-hidden='true'
+                />*/}
+                <span>{tab.name}</span>
+              </a>
+            ))}
+          </div>
+          </div>          
         </div>
       </div>
     </div>

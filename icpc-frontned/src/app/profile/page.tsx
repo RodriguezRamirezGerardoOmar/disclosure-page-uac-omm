@@ -7,24 +7,27 @@ import { NewspaperIcon, ArchiveBoxIcon, ListBulletIcon, BookmarkIcon } from '@he
 import useAuthStore from '@/store/useStore'
 import { useCallback, useEffect, useState } from 'react'
 import useNewsStore from '@/store/useNewsStore'
-import { Exercise, News, Note } from '@/constants/types'
+import { Categories, Exercise, News, Note, Tags, AllTabs } from '@/constants/types'
 import ProfileTableComponent from '../components/tables/ProfileTableComponent'
 import useExcerciseStore from '@/store/useExcerciseStore'
 import useNoteStore from '@/store/useNoteStore'
+import useUtilsStore from '@/store/useUtilsStore'
 
 const myTabs = [
   { name: 'Ejercicios', href: '#', icon: ListBulletIcon, current: true },
   { name: 'Apuntes', href: '#', icon: BookmarkIcon, current: false },
   { name: 'Noticias', href: '#', icon: NewspaperIcon, current: false },
-  { name: 'Pendientes', href: '#', icon: ArchiveBoxIcon, current: false }
+  { name: 'Reportes', href: '#', icon: ArchiveBoxIcon, current: false },
 ]
-
-const availableTabs = {
-  EXERCISES: 'Ejercicios',
-  NOTES: 'Apuntes',
-  NEWS: 'Noticias',
-  PENDING: 'Pendientes'
-}
+const adminTabs = [
+  { name: 'Cambios', href: '#', icon: ArchiveBoxIcon, current: false },
+  { name: 'Categoría', href: '#', icon: ListBulletIcon, current: false },
+  { name: 'Etiqueta', href: '#', icon: BookmarkIcon, current: false },
+  { name: 'Tiempo', href: '#', icon: NewspaperIcon, current: false },
+  { name: 'Memoria', href: '#', icon: ArchiveBoxIcon, current: false },
+  { name: 'Dificultad', href: '#', icon: ArchiveBoxIcon, current: false },
+  { name: 'Cuentas', href: '#', icon: ArchiveBoxIcon, current: false }
+]
 
 function Page() {
   const methods = useForm()
@@ -32,31 +35,69 @@ function Page() {
   const user = useAuthStore(state => state.user)
   const getProfile = useAuthStore(state => state.getProfile)
 
-  const [ tableData, setTableData ] = useState<News[] | Note[] | Exercise[]>([])
+  const [ tableData, setTableData ] = useState<News[] | Note[] | Exercise[] | Categories[] | Tags[] | Time[] | Memory[] | Difficulty[] | Account[]>([])
   const [ mode, setMode ] = useState('exercises')
   const getNews = useNewsStore.getState().getNews
   const getExercises = useExcerciseStore.getState().getExerciseList
   const getNotes = useNoteStore.getState().getList
+  const getCategories = useUtilsStore.getState().getCategories
+  const getTags = useUtilsStore.getState().getTags
+  const getTime = useUtilsStore.getState().getTime
+  const getMemory = useUtilsStore.getState().getMemory
+  const getDifficulty = useUtilsStore.getState().getDifficulty
+  const getAccount = useUtilsStore.getState().getAccount
 
   const handleChange = useCallback(async (data: string) => {
     const tab = data
     switch (tab){
-      case availableTabs.EXERCISES:
+      case AllTabs.EXERCISES:
         const exercises: Exercise[] = await getExercises([],"","")
         setTableData(exercises)
         setMode('exercises')
         break;
-      case availableTabs.NOTES:
+      case AllTabs.NOTES:
         const notes: Note[] = await getNotes([],"")
         setTableData(notes)
         setMode('notes')
         break;
-      case availableTabs.NEWS:
+      case AllTabs.NEWS:
         const news: News[] = await getNews()
         setTableData(news)
         setMode('news')
         break;
-      case availableTabs.PENDING:
+      case AllTabs.REPORTS:
+        break;
+      case AllTabs.CHANGES:
+        break;
+      case AllTabs.CATEGORIES:
+        const categories: Categories[] = await getCategories()
+        setTableData(categories)
+        setMode('categories')
+        break;
+      case AllTabs.TAGS:
+        const tags: Tags[] = await getTags()
+        setTableData(tags)
+        setMode('Tags')
+        break;
+      case AllTabs.TIME:
+        const time: Time[] = await getTime()
+        setTableData(time)
+        setMode('time')
+        break;
+      case AllTabs.MEMORY:
+        const memory: Memory[] = await getMemory()
+        setTableData(memory)
+        setMode('memory')
+        break;
+      case AllTabs.DIFFICULTY:
+        const difficulty: Difficulty[] = await getDifficulty()
+        setTableData(difficulty)
+        setMode('difficulty')
+        break;
+      case AllTabs.ACCOUNT:
+        const account: Account[] = await getAccount()
+        setTableData(account)
+        setMode('account')
         break;
     }
   }, [getExercises, getNews, getNotes])
@@ -131,7 +172,7 @@ function Page() {
                       <TextFieldComponent
                         id='email'
                         fieldName='email'
-                        labelText='Correo Electronico'
+                        labelText='Correo Electrónico'
                         register={methods.register}
                         necessary={false}
                         type='email'
@@ -165,7 +206,7 @@ function Page() {
               </form>
             </div>
             <div className='mx-10'>
-              <TabComponent tabs={myTabs} handleChange={handleChange} />
+              <TabComponent myTabs={myTabs} adminTabs={adminTabs} handleChange={handleChange} />
             </div>
             <div className='mx-10'>
               <ProfileTableComponent data={tableData} itemType={mode}/>

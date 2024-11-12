@@ -1,13 +1,11 @@
-import { Exercise, News, Note } from '@/constants/types'
+import { Categories, Exercise, News, Note } from '@/constants/types'
 import React from 'react'
 import ThreeDotComponent from '../dropdowns/ThreeDotComponent'
 
 interface IProfileTableComponentProps {
-  data: News[] | Note[] | Exercise[]
+  data: News[] | Note[] | Exercise[] | Categories[]
   itemType: string
 }
-
-
 
 const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => {
   const handleEdit = (id: string, itemType: string) => {

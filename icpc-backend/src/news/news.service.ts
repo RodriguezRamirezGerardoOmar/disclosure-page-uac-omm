@@ -71,6 +71,18 @@ export class NewsService {
     return res;
   }
 
+  async latest() {
+    const res = await this.newsRepository
+      .createQueryBuilder('news')
+      .leftJoinAndSelect('news.imageId', 'image')
+      .select(['news', 'image.id'])
+      .where('news.isVisible = :isVisible', { isVisible: true })
+      .orderBy('news.created_at', 'DESC')
+      .limit(3)
+      .getMany();
+    return res;
+  }
+
   async findOne(id: string) {
     const res = await this.newsRepository
       .createQueryBuilder('news')

@@ -42,7 +42,7 @@ export const InfoCardComponent = ({ title = 'Title', exercises = 0, href = '#', 
             tag={enumTextTags.span}
             sizeFont='s14'
             className='text-gray-500 font-medium'>
-            {`Total de Ejercicios:`}
+            {`Total de ${title.toLowerCase()}:`}
           </TextComponent>
           <TextComponent
             tag={enumTextTags.h3}
