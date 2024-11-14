@@ -79,7 +79,7 @@ export interface Option {
 }
 
 export interface Tags {
-  id: number
+  id: string
   name: string
   color: string
 }
@@ -176,7 +176,7 @@ export interface Quote {
   phrase: string
   author : string
 }
-/*
+
 export const AllTabs = {
   EXERCISES: 'Ejercicios',
   NOTES: 'Apuntes',
@@ -188,6 +188,13 @@ export const AllTabs = {
   TIME: 'Tiempo',
   MEMORY: 'Memoria',
   DIFFICULTY: 'Dificultad',
-  ACCOUNT: 'Cuentas',
+  ACCOUNT: 'Cuentas'
 }
-*/
+
+export interface IProfileTableItem {
+  color: string
+  tagName: string
+  index: number
+  id: string
+  title: string
+}
