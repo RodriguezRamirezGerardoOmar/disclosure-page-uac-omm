@@ -176,7 +176,7 @@ export interface Quote {
   phrase: string
   author : string
 }
-/*
+
 export const AllTabs = {
   EXERCISES: 'Ejercicios',
   NOTES: 'Apuntes',
@@ -190,4 +190,16 @@ export const AllTabs = {
   DIFFICULTY: 'Dificultad',
   ACCOUNT: 'Cuentas',
 }
-*/
+
+  export interface Ticket {
+    itemType: TicketType,
+    description: string,
+    operation: TicketOperation,
+    originalExerciseId: Exercise,
+    modifiedExerciseId: Exercise,
+    originalNoteId: Note,
+    modifiedNoteId: Note,
+    originalNewsId: News,
+    modifiedNewsId: News,
+    status: TicketStatus
+  }
