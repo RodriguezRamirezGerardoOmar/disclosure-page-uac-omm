@@ -113,7 +113,57 @@ export class TicketService {
   }
 
   async findOne(id: string) {
-    return await this.ticketRepository.findOneBy({ id: id });
+    const ticket = await this.ticketRepository.findOneBy({ id: id });
+    switch (ticket.itemType) {
+      case TicketType.EXERCISE:
+        return ticket.operation == TicketOperation.UPDATE
+          ? await this.ticketRepository
+              .createQueryBuilder('ticket')
+              .where('ticket.id = :id', { id: id })
+              .leftJoinAndSelect(
+                'ticket.originalExerciseId',
+                'originalExerciseId'
+              )
+              .leftJoinAndSelect(
+                'ticket.modifiedExerciseId',
+                'modifiedExerciseId'
+              )
+              .getOne()
+          : await this.ticketRepository
+              .createQueryBuilder('ticket')
+              .where('ticket.id = :id', { id: id })
+              .leftJoinAndSelect(
+                'ticket.originalExerciseId',
+                'originalExerciseId'
+              )
+              .getOne();
+      case TicketType.NOTE:
+        return ticket.operation == TicketOperation.UPDATE
+          ? await this.ticketRepository
+              .createQueryBuilder('ticket')
+              .where('ticket.id = :id', { id: id })
+              .leftJoinAndSelect('ticket.originalNoteId', 'originalNoteId')
+              .leftJoinAndSelect('ticket.modifiedNoteId', 'modifiedNoteId')
+              .getOne()
+          : await this.ticketRepository
+              .createQueryBuilder('ticket')
+              .where('ticket.id = :id', { id: id })
+              .leftJoinAndSelect('ticket.originalNoteId', 'originalNoteId')
+              .getOne();
+      case TicketType.NEWS:
+        return ticket.operation == TicketOperation.UPDATE
+          ? await this.ticketRepository
+              .createQueryBuilder('ticket')
+              .where('ticket.id = :id', { id: id })
+              .leftJoinAndSelect('ticket.originalNewsId', 'originalNewsId')
+              .leftJoinAndSelect('ticket.modifiedNewsId', 'modifiedNewsId')
+              .getOne()
+          : await this.ticketRepository
+              .createQueryBuilder('ticket')
+              .where('ticket.id = :id', { id: id })
+              .leftJoinAndSelect('ticket.originalNewsId', 'originalNewsId')
+              .getOne();
+    }
   }
 
   async update(id: string, updateTicketDto: UpdateTicketDto) {
