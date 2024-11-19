@@ -124,10 +124,16 @@ export class TicketService {
                 'ticket.originalExerciseId',
                 'originalExerciseId'
               )
+              .leftJoinAndSelect('originalExerciseId.category', 'category')
+              .leftJoinAndSelect('originalExerciseId.tags', 'tags')
+              .leftJoinAndSelect('originalExerciseId.difficulty', 'difficulty')
               .leftJoinAndSelect(
                 'ticket.modifiedExerciseId',
                 'modifiedExerciseId'
               )
+              .leftJoinAndSelect('modifiedExerciseId.category', 'category')
+              .leftJoinAndSelect('modifiedExerciseId.tags', 'tags')
+              .leftJoinAndSelect('modifiedExerciseId.difficulty', 'difficulty')
               .getOne()
           : await this.ticketRepository
               .createQueryBuilder('ticket')
@@ -136,6 +142,9 @@ export class TicketService {
                 'ticket.originalExerciseId',
                 'originalExerciseId'
               )
+              .leftJoinAndSelect('originalExerciseId.category', 'category')
+              .leftJoinAndSelect('originalExerciseId.tags', 'tags')
+              .leftJoinAndSelect('originalExerciseId.difficulty', 'difficulty')
               .getOne();
       case TicketType.NOTE:
         return ticket.operation == TicketOperation.UPDATE
@@ -143,12 +152,17 @@ export class TicketService {
               .createQueryBuilder('ticket')
               .where('ticket.id = :id', { id: id })
               .leftJoinAndSelect('ticket.originalNoteId', 'originalNoteId')
+              .leftJoinAndSelect('originalNoteId.commentId', 'comment')
+              .leftJoinAndSelect('originalNoteId.category', 'category')
               .leftJoinAndSelect('ticket.modifiedNoteId', 'modifiedNoteId')
+              .leftJoinAndSelect('modifiedNoteId.commentId', 'comment')
+              .leftJoinAndSelect('modifiedNoteId.category', 'category')
               .getOne()
           : await this.ticketRepository
               .createQueryBuilder('ticket')
               .where('ticket.id = :id', { id: id })
               .leftJoinAndSelect('ticket.originalNoteId', 'originalNoteId')
+              .leftJoinAndSelect('originalNoteId.commentId', 'comment')
               .getOne();
       case TicketType.NEWS:
         return ticket.operation == TicketOperation.UPDATE
