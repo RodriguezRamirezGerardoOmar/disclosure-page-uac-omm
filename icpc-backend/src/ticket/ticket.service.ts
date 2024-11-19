@@ -149,6 +149,8 @@ export class TicketService {
               .leftJoinAndSelect('originalExerciseId.category', 'category')
               .leftJoinAndSelect('originalExerciseId.tags', 'tags')
               .leftJoinAndSelect('originalExerciseId.difficulty', 'difficulty')
+              .leftJoinAndSelect('originalExerciseId.time', 'time')
+              .leftJoinAndSelect('originalExerciseId.memoryId', 'memory')
               .getOne();
       case TicketType.NOTE:
         return ticket.operation == TicketOperation.UPDATE
