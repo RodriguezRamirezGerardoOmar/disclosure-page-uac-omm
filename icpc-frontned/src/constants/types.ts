@@ -79,7 +79,7 @@ export interface Option {
 }
 
 export interface Tags {
-  id: number
+  id: string
   name: string
   color: string
 }
@@ -188,7 +188,15 @@ export const AllTabs = {
   TIME: 'Tiempo',
   MEMORY: 'Memoria',
   DIFFICULTY: 'Dificultad',
-  ACCOUNT: 'Cuentas',
+  ACCOUNT: 'Cuentas'
+}
+
+export interface IProfileTableItem {
+  color: string
+  tagName: string
+  index: number
+  id: string
+  title: string
 }
 
   export interface Ticket {
