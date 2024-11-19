@@ -126,14 +126,18 @@ export class TicketService {
               )
               .leftJoinAndSelect('originalExerciseId.category', 'category')
               .leftJoinAndSelect('originalExerciseId.tags', 'tags')
+              .leftJoinAndSelect('originalExerciseId.memoryId', 'memory')
               .leftJoinAndSelect('originalExerciseId.difficulty', 'difficulty')
+              .leftJoinAndSelect('originalExerciseId.time', 'time')
               .leftJoinAndSelect(
                 'ticket.modifiedExerciseId',
                 'modifiedExerciseId'
               )
               .leftJoinAndSelect('modifiedExerciseId.category', 'category')
               .leftJoinAndSelect('modifiedExerciseId.tags', 'tags')
+              .leftJoinAndSelect('modifiedExerciseId.memoryId', 'memory')
               .leftJoinAndSelect('modifiedExerciseId.difficulty', 'difficulty')
+              .leftJoinAndSelect('modifiedExerciseId.time', 'time')
               .getOne()
           : await this.ticketRepository
               .createQueryBuilder('ticket')
