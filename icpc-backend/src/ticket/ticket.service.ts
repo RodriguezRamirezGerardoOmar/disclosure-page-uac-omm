@@ -152,9 +152,11 @@ export class TicketService {
               .createQueryBuilder('ticket')
               .where('ticket.id = :id', { id: id })
               .leftJoinAndSelect('ticket.originalNoteId', 'originalNoteId')
-              .leftJoinAndSelect('ticket.modifiedNoteId', 'modifiedNoteId')
               .leftJoinAndSelect('originalNoteId.commentId', 'comment')
+              .leftJoinAndSelect('originalNoteId.category', 'category')
+              .leftJoinAndSelect('ticket.modifiedNoteId', 'modifiedNoteId')
               .leftJoinAndSelect('modifiedNoteId.commentId', 'comment')
+              .leftJoinAndSelect('modifiedNoteId.category', 'category')
               .getOne()
           : await this.ticketRepository
               .createQueryBuilder('ticket')
