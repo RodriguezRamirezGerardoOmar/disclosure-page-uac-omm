@@ -32,14 +32,12 @@ export const LastNewsComponent = () => {
         <TextComponent
           tag={enumTextTags.h2}
           sizeFont='s20'
-          className='font-bold text-gray-800'>
+          className='font-bold text-gray-800 dark:text-dark-accent'>
           Últimas Noticias
         </TextComponent>
 
         <div className='flex justify-end'>
-          <Link
-            href='/noticias'
-            className='text-primary'>
+          <Link href='/noticias' className='text-primary dark:text-dark-accent'>
             Ver más noticias
           </Link>
         </div>

@@ -2,17 +2,17 @@ import { Injectable } from '@nestjs/common';
 import { CreateTicketDto } from './dto/create-ticket.dto';
 import { UpdateTicketDto } from './dto/update-ticket.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Ticket } from './entities/ticket.entity';
+import {
+  Ticket,
+  TicketType,
+  TicketStatus,
+  TicketOperation
+} from './entities/ticket.entity';
 import { Repository } from 'typeorm';
 import { Excercise } from 'src/excercises/entities/excercise.entity';
 import { Note } from 'src/notes/entities/note.entity';
 import { News } from 'src/news/entities/news.entity';
 import { Comment } from 'src/comment/entities/comment.entity';
-import {
-  TicketType,
-  TicketStatus,
-  TicketOperation
-} from './entities/ticket.entity';
 import { Image } from 'src/image/entities/image.entity';
 
 @Injectable()
@@ -42,7 +42,7 @@ export class TicketService {
       body: createTicketDto.description
     });
     if (comment === null) {
-      comment = await this.commentRepository.create();
+      comment = this.commentRepository.create();
       comment.body = createTicketDto.description;
       comment = await this.commentRepository.save(comment);
     }
