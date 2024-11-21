@@ -12,7 +12,6 @@ interface IColorPickerProps {
 const ColorPickerComponent = ({ register, fieldName, id }: Readonly<IColorPickerProps>) => {
   const [color, setColor] = useState('#000000')
   useEffect(() => {
-    console.log(color)
   }, [color])
   return (
     <input
