@@ -94,4 +94,8 @@ export class NewsController {
   remove(@Param('id') id: string) {
     return this.newsService.remove(id);
   }
+  @Get('latest')
+  findLatest() {
+    return this.newsService.latest();
+  }
 }
