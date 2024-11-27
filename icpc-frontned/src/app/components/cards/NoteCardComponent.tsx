@@ -4,17 +4,14 @@ import { TextComponent } from '../text/TextComponent'
 import TagListComponent from '../tags/TagListComponent'
 import { ButtonComponent } from '../buttons/ButtonComponent'
 import MarkdownBodyComponent from '../panels/MarkdownBodyComponent'
+import { Tags } from '@/constants/types'
 
 interface NoteCardProps {
   title: string
   description: string
   content: string
   showButton: boolean
-  tags: {
-    id: number
-    name: string
-    color: string
-  }[]
+  tags: Tags[]
 }
 
 /*

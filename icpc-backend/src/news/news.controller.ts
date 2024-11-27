@@ -59,16 +59,6 @@ export class NewsController {
     return this.newsService.findOne(id);
   }
 
-  @Get('latest')
-  @ApiCreatedResponse({
-    description: 'Las últimas noticias se han obtenido exitosamente.'
-  })
-  @ApiBadRequestResponse({ description: 'Error en la petición' })
-  @ApiInternalServerErrorResponse({ description: 'Error interno del servidor' })
-  findLatest() {
-    return this.newsService.findLatest();
-  }
-
   @Patch(':id')
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
@@ -93,9 +83,5 @@ export class NewsController {
   @ApiInternalServerErrorResponse({ description: 'Internal server error' })
   remove(@Param('id') id: string) {
     return this.newsService.remove(id);
-  }
-  @Get('latest')
-  findLatest() {
-    return this.newsService.latest();
   }
 }
