@@ -5,7 +5,7 @@ import NewsItemComponent from '../cards/NewsItemComponent'
 import useNewsStore from '@/store/useNewsStore'
 
 export const LastNewsComponent = async () => {
-  const lastNews = await useNewsStore.getState().getLatest();
+  const lastNews = await useNewsStore.getState().getNews(3);
   return (
     <div className='h-full'>
       <div className='flex justify-between'>

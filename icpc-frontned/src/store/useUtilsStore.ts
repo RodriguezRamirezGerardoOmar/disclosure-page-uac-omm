@@ -25,10 +25,12 @@ interface UtilsState {
 
 interface Actions {
   getTags: () => Promise<Tags[]>
+  createTag: ({ name, color }: { name: string; color: string }) => Promise<IApiResponse | TResponseBasicError>
   getCategories: () => Promise<Categories[]>
   getCategory: (id: string) => Promise<Categories>
   createCategory: ({ name, commentId }: { name: string; commentId: string }) => Promise<IApiResponse | TResponseBasicError>
   getDifficulties: () => Promise<Difficulties[]>
+  createDifficulty: ({ level, name }: { level: number; name: string }) => Promise<IApiResponse | TResponseBasicError>
   getTimeLimit: () => Promise<TimeLimit[]>
   createTimeLimit: (time: number) => Promise<IApiResponse | TResponseBasicError>
   getMemoryLimit: () => Promise<MemoryLimit[]>
@@ -54,6 +56,23 @@ const useUtilsStore = create<Actions & UtilsState>()(
           try {
             const response = await api.get('/api/v1/tags')
             set(() => ({ tags: response.data }))
+            return response.data
+          } catch (error: any) {
+            return error.response.data
+          }
+        },
+
+        createTag: async ({ name, color }): Promise<IApiResponse | TResponseBasicError> => {
+          try {
+            const response = await api.post(
+              '/api/v1/difficulty',
+              { name, color },
+              {
+                headers: {
+                  Authorization: `Bearer ${useAuthStore.getState().token}`
+                }
+              }
+            )
             return response.data
           } catch (error: any) {
             return error.response.data
@@ -100,6 +119,23 @@ const useUtilsStore = create<Actions & UtilsState>()(
           try {
             const response = await api.get('/api/v1/difficulty')
             set(() => ({ difficulty: response.data }))
+            return response.data
+          } catch (error: any) {
+            return error.response.data
+          }
+        },
+
+        createDifficulty: async ({ level, name }): Promise<IApiResponse | TResponseBasicError> => {
+          try {
+            const response = await api.post(
+              '/api/v1/difficulty',
+              { level, name },
+              {
+                headers: {
+                  Authorization: `Bearer ${useAuthStore.getState().token}`
+                }
+              }
+            )
             return response.data
           } catch (error: any) {
             return error.response.data

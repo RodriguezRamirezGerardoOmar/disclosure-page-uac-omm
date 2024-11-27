@@ -21,16 +21,9 @@ interface NewsState {
 }
 
 interface Actions {
-<<<<<<< HEAD
   createNews: (news: ICreateNews) => Promise<IApiResponse | TResponseBasicError>;
   getNews: (limit?: number) => Promise<News[]>;
   getNewsArticle: (id: string) => Promise<News>;
-=======
-  createNews: (news: ICreateNews) => Promise<IApiResponse | TResponseBasicError>
-  getNews: () => Promise<News[]>
-  getNewsArticle: (id: string) => Promise<News>
-  getLatest: () => Promise<News[]>
->>>>>>> bcdbb61548684b2a12c44790262346235a97b0c2
 }
 
 const useNewsStore = create<Actions & NewsState>()(
@@ -83,7 +76,7 @@ const useNewsStore = create<Actions & NewsState>()(
             return latestNews;
           }
           catch (error: any) {
-            return error.response.data
+            return error.response
           }
         }
       }),
