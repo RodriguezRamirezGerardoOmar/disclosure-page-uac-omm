@@ -1,48 +1,25 @@
-'use client'
-import React, { useState, useEffect } from 'react'
-
+import React from 'react'
 import ExerciseCardComponent from '@/app/components/cards/ExerciseCardComponent'
 import NewsCardComponent from '@/app/components/cards/NewsCardComponent'
 import NoteCardComponent from '@/app/components/cards/NoteCardComponent'
 import useUtilsStore from '@/store/useUtilsStore'
-import { Ticket, TicketType, TicketOperation } from '@/constants/types'
+import { Ticket, TicketType, TicketOperation, enumTextTags } from '@/constants/types'
 import { serialize } from 'next-mdx-remote/serialize'
 import remarkMath from 'remark-math'
 import rehypeKatex from 'rehype-katex'
-import { MDXRemoteSerializeResult } from 'next-mdx-remote'
+import { TextComponent } from '@/app/components/text/TextComponent'
 
-const TicketPage = ({ params }: Readonly<{ params: { id: string } }>) => {
-  const [ticket, setTicket] = useState<Ticket>() 
-  const [mdx, setMdx] = useState<MDXRemoteSerializeResult<Record<string, unknown>, Record<string, unknown>> | undefined>(undefined);
-  const getTicket = useUtilsStore.getState().getTicket
-
- 
-
-  useEffect(() => {
-    const fetchTicket = async () => {
-      // Aquí iría la lógica para obtener los datos del ticket
-      const data = await getTicket(params.id)
-      setTicket(data)
-    }
-    
-    const serializeNote = async (body: string) =>{
-      const data = await serialize(body, {
-        mdxOptions: 
-        {
-          remarkPlugins: [remarkMath],
-          rehypePlugins: [rehypeKatex as any]
-        }
-      })
-      setMdx(data);
-    }
-
-
-
-    fetchTicket() 
-    if (ticket?.itemType == TicketType.NOTE){ 
-      serializeNote(ticket.originalNoteId.body)
-    }
-  }, [params.id])
+const TicketPage = async ({ params }: Readonly<{ params: { id: string } }>) => {
+  async function serializeNote(mdx: string) {
+    return await serialize(mdx, {
+      mdxOptions: {
+        remarkPlugins: [remarkMath],
+        rehypePlugins: [rehypeKatex as any]
+      }
+    })
+  }
+  const ticket: Ticket = await useUtilsStore.getState().getTicket(params.id)
+  let pageContent = <></>
 
   if (!ticket) return <div>Cargando...</div>
 
@@ -50,38 +27,75 @@ const TicketPage = ({ params }: Readonly<{ params: { id: string } }>) => {
   if (ticket.operation == TicketOperation.UPDATE) {
     switch (ticket.itemType) {
       case TicketType.EXERCISE:
-        return <ExerciseCardComponent exercise={ticket.originalExerciseId} />
+        pageContent = <ExerciseCardComponent exercise={ticket.originalExerciseId} />
+        break
 
       case TicketType.NEWS:
-        return <NewsCardComponent id={ticket.originalNewsId.id}  />
+        pageContent = <NewsCardComponent id={ticket.originalNewsId.id} />
+        break
 
       case TicketType.NOTE:
-        return <NoteCardComponent
-        title={ticket.originalNoteId.title}
-        description={ticket.originalNoteId.commentId.body}
-        content={mdx?.compiledSource ? mdx.compiledSource : 'Apunte no disponible'}
-        tags={ticket.originalNoteId.tags}
-        showButton={true} />
+        pageContent = (
+          <div className='grid place-items-center grid-cols-1 gap-16'>
+            <div>
+              <TextComponent
+                tag={enumTextTags.h1}
+                sizeFont='s20'
+                className='font-bold text-gray-800 dark:text-dark-accent'>
+                Nota original
+              </TextComponent>
+              <NoteCardComponent
+                title={ticket.originalNoteId.title}
+                description={ticket.originalNoteId.commentId.body}
+                content={(await serializeNote(ticket.originalNoteId.body)).compiledSource}
+                tags={ticket.originalNoteId.tags}
+                showButton={false}
+              />
+            </div>
+            <div>
+              <TextComponent
+                tag={enumTextTags.h1}
+                sizeFont='s20'
+                className='font-bold text-gray-800 dark:text-dark-accent'>
+                Nota modificada
+              </TextComponent>
+              <NoteCardComponent
+                title={ticket.modifiedNoteId.title}
+                description={ticket.modifiedNoteId.commentId.body}
+                content={(await serializeNote(ticket.modifiedNoteId.body)).compiledSource}
+                tags={ticket.modifiedNoteId.tags}
+                showButton={false}
+              />
+            </div>
+          </div>
+        )
+        break
     }
-  }
-  
-  else {
+  } else {
     switch (ticket.itemType) {
       case TicketType.EXERCISE:
-        return <ExerciseCardComponent exercise={ticket.originalExerciseId} />
+        pageContent = <ExerciseCardComponent exercise={ticket.originalExerciseId} />
+        break
 
       case TicketType.NEWS:
-        return <NewsCardComponent id={ticket.originalNewsId.id}  />
+        pageContent = <NewsCardComponent id={ticket.originalNewsId.id} />
+        break
 
       case TicketType.NOTE:
-        return <NoteCardComponent
-        title={ticket.originalNoteId.title}
-        description={ticket.originalNoteId.commentId.body}
-        content={mdx?.compiledSource ? mdx.compiledSource : 'Apunte no disponible'}
-        tags={ticket.originalNoteId.tags}
-        showButton={true} />
+        pageContent = (
+          <NoteCardComponent
+            title={ticket.originalNoteId.title}
+            description={ticket.originalNoteId.commentId.body}
+            content={(await serializeNote(ticket.originalNoteId.body)).compiledSource}
+            tags={ticket.originalNoteId.tags}
+            showButton={false}
+          />
+        )
+        break
     }
   }
+
+  return <main className='grid min-h-screen grid-cols-1 place-items-center justify-between py-24'>{pageContent}</main>
 }
 
 export default TicketPage
