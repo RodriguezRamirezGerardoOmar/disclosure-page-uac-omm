@@ -160,15 +160,19 @@ export class TicketService {
               .leftJoinAndSelect('ticket.originalNoteId', 'originalNoteId')
               .leftJoinAndSelect('originalNoteId.commentId', 'comment')
               .leftJoinAndSelect('originalNoteId.category', 'category')
+              .leftJoinAndSelect('originalNoteId.tags', 'tags')
               .leftJoinAndSelect('ticket.modifiedNoteId', 'modifiedNoteId')
               .leftJoinAndSelect('modifiedNoteId.commentId', 'comment')
               .leftJoinAndSelect('modifiedNoteId.category', 'category')
+              .leftJoinAndSelect('originalNoteId.tags', 'tags')
               .getOne()
           : await this.ticketRepository
               .createQueryBuilder('ticket')
               .where('ticket.id = :id', { id: id })
               .leftJoinAndSelect('ticket.originalNoteId', 'originalNoteId')
               .leftJoinAndSelect('originalNoteId.commentId', 'comment')
+              .leftJoinAndSelect('originalNoteId.category', 'category')
+              .leftJoinAndSelect('originalNoteId.tags', 'tags')
               .getOne();
       case TicketType.NEWS:
         return ticket.operation == TicketOperation.UPDATE
