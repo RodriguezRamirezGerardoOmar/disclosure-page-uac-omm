@@ -4,7 +4,7 @@ import axios from 'axios'
 import { IApiResponse, TResponseBasicError } from '@/constants/types'
 
 // Define user and auth response types
-interface IUser {
+export interface IUser {
   id: string
   name: string
   lastName: string

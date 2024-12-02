@@ -1,11 +1,15 @@
 import axios from 'axios'
 import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
-import { Tags, Categories, Difficulties, TimeLimit, MemoryLimit, IApiResponse, TResponseBasicError, DBImage } from '@/constants/types'
+import {Tags, Categories, Difficulties, TimeLimit, MemoryLimit, IApiResponse, TResponseBasicError, DBImage, Quote, Ticket} from '@/constants/types'
 import useAuthStore from './useStore'
 
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL
+})
+
+const quoteApi = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_QUOTE_URL
 })
 
 interface UtilsState {
@@ -15,17 +19,24 @@ interface UtilsState {
   timeLimit: TimeLimit[]
   memoryLimit: MemoryLimit[]
   images: { [key: string]: DBImage }
+  quote: Quote
+  ticket: Ticket
 }
 
 interface Actions {
   getTags: () => Promise<Tags[]>
+  createTag: ({ name, color }: { name: string; color: string }) => Promise<IApiResponse | TResponseBasicError>
   getCategories: () => Promise<Categories[]>
+  getCategory: (id: string) => Promise<Categories>
   createCategory: ({ name, commentId }: { name: string; commentId: string }) => Promise<IApiResponse | TResponseBasicError>
   getDifficulties: () => Promise<Difficulties[]>
+  createDifficulty: ({ level, name }: { level: number; name: string }) => Promise<IApiResponse | TResponseBasicError>
   getTimeLimit: () => Promise<TimeLimit[]>
   createTimeLimit: (time: number) => Promise<IApiResponse | TResponseBasicError>
   getMemoryLimit: () => Promise<MemoryLimit[]>
   createImage: (image: File) => Promise<IApiResponse | TResponseBasicError>
+  getDailyQuote: () => Promise<Quote>
+  getTicket: (id:string) => Promise <Ticket>
 }
 
 const useUtilsStore = create<Actions & UtilsState>()(
@@ -38,6 +49,8 @@ const useUtilsStore = create<Actions & UtilsState>()(
         timeLimit: [] as TimeLimit[],
         memoryLimit: [] as MemoryLimit[],
         images: [] as unknown as { [key: string]: DBImage },
+        quote: { phrase: '', author: '' }, 
+        ticket: null as unknown as Ticket,
 
         getTags: async (): Promise<Tags[]> => {
           try {
@@ -49,10 +62,36 @@ const useUtilsStore = create<Actions & UtilsState>()(
           }
         },
 
+        createTag: async ({ name, color }): Promise<IApiResponse | TResponseBasicError> => {
+          try {
+            const response = await api.post(
+              '/api/v1/difficulty',
+              { name, color },
+              {
+                headers: {
+                  Authorization: `Bearer ${useAuthStore.getState().token}`
+                }
+              }
+            )
+            return response.data
+          } catch (error: any) {
+            return error.response.data
+          }
+        },
+
         getCategories: async (): Promise<Categories[]> => {
           try {
             const response = await api.get('/api/v1/categories')
             set(() => ({ categories: response.data }))
+            return response.data
+          } catch (error: any) {
+            return error.response.data
+          }
+        },
+
+        getCategory: async (id: string): Promise<Categories> => {
+          try {
+            const response = await api.get(`/api/v1/categories/${id}`)
             return response.data
           } catch (error: any) {
             return error.response.data
@@ -80,6 +119,23 @@ const useUtilsStore = create<Actions & UtilsState>()(
           try {
             const response = await api.get('/api/v1/difficulty')
             set(() => ({ difficulty: response.data }))
+            return response.data
+          } catch (error: any) {
+            return error.response.data
+          }
+        },
+
+        createDifficulty: async ({ level, name }): Promise<IApiResponse | TResponseBasicError> => {
+          try {
+            const response = await api.post(
+              '/api/v1/difficulty',
+              { level, name },
+              {
+                headers: {
+                  Authorization: `Bearer ${useAuthStore.getState().token}`
+                }
+              }
+            )
             return response.data
           } catch (error: any) {
             return error.response.data
@@ -130,6 +186,29 @@ const useUtilsStore = create<Actions & UtilsState>()(
               Authorization: `Bearer ${useAuthStore.getState().token}`
             }
           })
+        },
+
+        getDailyQuote: async (): Promise<Quote> => {
+          try {
+            const response = await quoteApi.get('/')
+            set(() => ({ quote: response.data }))
+            return response.data
+          } catch (error: any) {
+            return {
+              phrase: "",
+              author : ""
+            }
+          }
+        },
+
+        getTicket: async (id:string): Promise<Ticket> => {
+          try {
+            const response = await api.get(`/api/v1/ticket/${id}`)
+            set(() => ({ ticket: response.data }))
+            return response.data
+          } catch (error: any) {
+            return error.response.data
+          }
         }
       }),
       {

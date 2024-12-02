@@ -1,13 +1,13 @@
-import { Exercise, News, Note } from '@/constants/types'
 import React from 'react'
 import ThreeDotComponent from '../dropdowns/ThreeDotComponent'
+import { IProfileTableItem } from '@/constants/types'
+import { TextComponent } from '../text/TextComponent'
+import TagComponent from '../tags/TagComponent'
 
 interface IProfileTableComponentProps {
-  data: News[] | Note[] | Exercise[]
+  data: IProfileTableItem[]
   itemType: string
 }
-
-
 
 const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => {
   const handleEdit = (id: string, itemType: string) => {
@@ -16,6 +16,7 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
   const handleDelete = (id: string, itemType: string) => {
     console.log('Le picó en Eliminar', id, itemType)
   }
+
   return (
     <table className='min-w-full border-separate border-spacing-0'>
       <thead>
@@ -31,21 +32,28 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
             scope='col'
             className='sticky top-0 z-10 border-b border-gray-300 bg-white bg-opacity-75 py-3.5 pl-4 pr-3 
                     text-left text-sm font-semibold text-gray-500 backdrop-blur 
-                    backdrop-filter sm:pl-6 lg:pl-8'>
-          </th>
+                    backdrop-filter sm:pl-6 lg:pl-8'></th>
         </tr>
       </thead>
       <tbody>
-        {props.data.map((news) => (
+        {props.data.map(item => (
           <tr
-            key={news.index}
+            key={item.index}
             className='cursor-pointer hover:bg-slate-200'>
             <td
-              className='whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 dark:text-dark-accent sm:pl-6 lg:pl-8'>
-              {news.title}
+              className={`whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 
+              dark:text-dark-accent sm:pl-6 lg:pl-8 w-full justify-between items-center`}>
+              <TextComponent>{item.title}</TextComponent>
+              {typeof item === 'object' && item.hasOwnProperty('color') && <TagComponent color={item.color} tagName={item.title} showIcon={false} />}
+              
             </td>
             <td className='whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 dark:text-dark-accent sm:pl-6 lg:pl-8'>
-              <ThreeDotComponent handleDelete={handleDelete} handleEdit={handleEdit} id={news.id} itemType='news'  />
+            <ThreeDotComponent
+                handleDelete={handleDelete}
+                handleEdit={handleEdit}
+                id={item.id}
+                itemType={props.itemType}
+              />
             </td>
           </tr>
         ))}

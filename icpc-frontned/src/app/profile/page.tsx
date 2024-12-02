@@ -4,27 +4,30 @@ import { ButtonComponent } from '../components/buttons/ButtonComponent'
 import TextFieldComponent from '../components/forms/TextFieldComponent'
 import TabComponent from '../components/tabs/TabComponent'
 import { NewspaperIcon, ArchiveBoxIcon, ListBulletIcon, BookmarkIcon } from '@heroicons/react/20/solid'
-import useAuthStore from '@/store/useStore'
-import { useEffect, useState } from 'react'
+import useAuthStore, { IUser } from '@/store/useStore'
+import { useCallback, useEffect, useState } from 'react'
 import useNewsStore from '@/store/useNewsStore'
-import { Exercise, News, Note } from '@/constants/types'
+import { Categories, Exercise, News, Note, Tags, AllTabs, TimeLimit, MemoryLimit, Difficulties, IProfileTableItem } from '@/constants/types'
 import ProfileTableComponent from '../components/tables/ProfileTableComponent'
 import useExcerciseStore from '@/store/useExcerciseStore'
 import useNoteStore from '@/store/useNoteStore'
+import useUtilsStore from '@/store/useUtilsStore'
 
 const myTabs = [
   { name: 'Ejercicios', href: '#', icon: ListBulletIcon, current: true },
   { name: 'Apuntes', href: '#', icon: BookmarkIcon, current: false },
   { name: 'Noticias', href: '#', icon: NewspaperIcon, current: false },
-  { name: 'Pendientes', href: '#', icon: ArchiveBoxIcon, current: false }
+  { name: 'Reportes', href: '#', icon: ArchiveBoxIcon, current: false }
 ]
-
-const availableTabs = {
-  EXERCISES: 'Ejercicios',
-  NOTES: 'Apuntes',
-  NEWS: 'Noticias',
-  PENDING: 'Pendientes'
-}
+const adminTabs = [
+  { name: 'Cambios', href: '#', icon: ArchiveBoxIcon, current: false },
+  { name: 'Categoría', href: '#', icon: ListBulletIcon, current: false },
+  { name: 'Etiqueta', href: '#', icon: BookmarkIcon, current: false },
+  { name: 'Tiempo', href: '#', icon: NewspaperIcon, current: false },
+  { name: 'Memoria', href: '#', icon: ArchiveBoxIcon, current: false },
+  { name: 'Dificultad', href: '#', icon: ArchiveBoxIcon, current: false },
+  { name: 'Cuentas', href: '#', icon: ArchiveBoxIcon, current: false }
+]
 
 function Page() {
   const methods = useForm()
@@ -32,39 +35,106 @@ function Page() {
   const user = useAuthStore(state => state.user)
   const getProfile = useAuthStore(state => state.getProfile)
 
-  const [ tableData, setTableData ] = useState<News[] | Note[] | Exercise[]>([])
-  const [ mode, setMode ] = useState('exercises')
+  const [tableData, setTableData] = useState<IProfileTableItem[]>([])
+  const [mode, setMode] = useState(AllTabs.EXERCISES)
   const getNews = useNewsStore.getState().getNews
   const getExercises = useExcerciseStore.getState().getExerciseList
   const getNotes = useNoteStore.getState().getList
+  const getCategories = useUtilsStore.getState().getCategories
+  const getTags = useUtilsStore.getState().getTags
+  const getTime = useUtilsStore.getState().getTimeLimit
+  const getMemory = useUtilsStore.getState().getMemoryLimit
+  const getDifficulty = useUtilsStore.getState().getDifficulties
 
-  const handleChange = async (data: string) => {
-    const tab = data
-    switch (tab){
-      case availableTabs.EXERCISES:
-        const exercises: Exercise[] = await getExercises([],"","")
-        setTableData(exercises)
-        setMode('exercises')
-        break;
-      case availableTabs.NOTES:
-        const notes: Note[] = await getNotes([],"")
-        setTableData(notes)
-        setMode('notes')
-        break;
-      case availableTabs.NEWS:
-        const news: News[] = await getNews()
-        setTableData(news)
-        setMode('news')
-        break;
-      case availableTabs.PENDING:
-        break;
-    }
-  }
+  const handleChange = useCallback(
+    async (data: string) => {
+      const tab = data
+      switch (tab) {
+        case AllTabs.EXERCISES:
+          const exercises: Exercise[] = await getExercises([], '', '')
+          const mappedExercises = exercises.map((exercise, index) => {
+            return { index, ...exercise }
+          })
+          setTableData(mappedExercises)
+          setMode(AllTabs.EXERCISES)
+          break
+        case AllTabs.NOTES:
+          const notes: Note[] = await getNotes([], '')
+          const mappedNotes = notes.map((note, index) => {
+            return { index, ...note }
+          })
+          setTableData(mappedNotes)
+          setMode(AllTabs.NOTES)
+          break
+        case AllTabs.NEWS:
+          const news: News[] = await getNews()
+          const mappedNews = news.map((note, index) => {
+            return { index, title: note.title, id: note.id }
+          })
+          setTableData(mappedNews)
+          setMode(AllTabs.NEWS)
+          break
+        case AllTabs.REPORTS:
+          break
+        case AllTabs.CHANGES:
+          break
+        case AllTabs.CATEGORIES:
+          const categories: Categories[] = await getCategories()
+          const mappedCategories = categories.map((category, index) => {
+            return { index, title: category.name, id: category.id }
+          })
+          setTableData(mappedCategories)
+          setMode(AllTabs.CATEGORIES)
+          break
+        case AllTabs.TAGS:
+          const tags: Tags[] = await getTags()
+          const mappedTags = tags.map((tag, index) => {
+            return { index, title: tag.name, id: tag.id }
+          })
+          setTableData(mappedTags)
+          setMode(AllTabs.TAGS)
+          break
+        case AllTabs.TIME:
+          const time: TimeLimit[] = await getTime()
+          const mappedTime = time.map((time, index) => {
+            return { index, title: time.timeLimit.toString(), id: time.id }
+          })
+          setTableData(mappedTime)
+          setMode(AllTabs.TIME)
+          break
+        case AllTabs.MEMORY:
+          const memory: MemoryLimit[] = await getMemory()
+          const mappedMemory = memory.map((memory, index) => {
+            return { index, title: memory.memoryLimit.toString(), id: memory.id }
+          })
+          setTableData(mappedMemory)
+          setMode(AllTabs.MEMORY)
+          break
+        case AllTabs.DIFFICULTY:
+          const difficulty: Difficulties[] = await getDifficulty()
+          const mappedDifficulty = difficulty.map((difficulty, index) => {
+            return { index, title: difficulty.name, id: difficulty.id }
+          })
+          setTableData(mappedDifficulty)
+          setMode(AllTabs.DIFFICULTY)
+          break
+        case AllTabs.ACCOUNT:
+          const account: IUser[] = await getAccount()
+          const mappedAccount = account.map((account, index) => {
+            return { index, title: account.userName, id: account.id }
+          })
+          setTableData(mappedAccount)
+          setMode(AllTabs.ACCOUNT)
+          break
+      }
+    },
+    [getCategories, getDifficulty, getExercises, getMemory, getNews, getNotes, getTags, getTime]
+  )
 
   useEffect(() => {
     getProfile()
-    handleChange('Ejercicios')
-  }, [])
+    handleChange(mode)
+  }, [getProfile, handleChange, mode])
 
   return (
     <div>
@@ -74,9 +144,7 @@ function Page() {
             <div className='grid max-w-7xl grid-cols-1 gap-x-8 gap-y-10 px-4 py-16 sm:px-6 md:grid-cols-3 lg:px-8'>
               <div>
                 <h2 className='text-base font-semibold leading-7 dark:text-white'>Información personal</h2>
-                <p className='mt-1 text-sm leading-6 text-gray-400'>
-                  Usa un correo electrónico permanente y un nombre de usuario único para que otros usuarios puedan encontrarte.
-                </p>
+                <p className='mt-1 text-sm leading-6 text-gray-400'>Usa tu correo institucional.</p>
               </div>
 
               <form className='md:col-span-2'>
@@ -131,7 +199,7 @@ function Page() {
                       <TextFieldComponent
                         id='email'
                         fieldName='email'
-                        labelText='Correo Electronico'
+                        labelText='Correo Electrónico'
                         register={methods.register}
                         necessary={false}
                         type='email'
@@ -165,10 +233,18 @@ function Page() {
               </form>
             </div>
             <div className='mx-10'>
-              <TabComponent tabs={myTabs} handleChange={handleChange} />
+              <TabComponent
+                myTabs={myTabs}
+                adminTabs={adminTabs}
+                handleChange={handleChange}
+                isAdmin={user?.role === 'admin'}
+              />
             </div>
             <div className='mx-10'>
-              <ProfileTableComponent data={tableData} itemType={mode}/>
+              <ProfileTableComponent
+                data={tableData}
+                itemType={mode}
+              />
             </div>
           </div>
         </main>

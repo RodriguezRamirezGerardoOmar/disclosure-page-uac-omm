@@ -79,7 +79,7 @@ export interface Option {
 }
 
 export interface Tags {
-  id: number
+  id: string
   name: string
   color: string
 }
@@ -156,13 +156,58 @@ export interface DBImage {
 export interface Exercise {
   id: string
   title: string
+  description: string
   category: Categories
   difficulty: Difficulties
   time: TimeLimit
   memoryId: MemoryLimit
   input: string
   output: string
+  example_input: string
+  example_output: string
   constraints: string
   clue: string
   tags: Tags[]
+  solution: string
+  author: string
 }
+
+export interface Quote {
+  phrase: string
+  author : string
+}
+
+export const AllTabs = {
+  EXERCISES: 'Ejercicios',
+  NOTES: 'Apuntes',
+  NEWS: 'Noticias',
+  REPORTS: 'Reportes',
+  CHANGES: 'Cambios',
+  CATEGORIES: 'Categoría',
+  TAGS: 'Etiqueta',
+  TIME: 'Tiempo',
+  MEMORY: 'Memoria',
+  DIFFICULTY: 'Dificultad',
+  ACCOUNT: 'Cuentas'
+}
+
+export interface IProfileTableItem {
+  color: string
+  tagName: string
+  index: number
+  id: string
+  title: string
+}
+
+  export interface Ticket {
+    itemType: TicketType,
+    description: string,
+    operation: TicketOperation,
+    originalExerciseId: Exercise,
+    modifiedExerciseId: Exercise,
+    originalNoteId: Note,
+    modifiedNoteId: Note,
+    originalNewsId: News,
+    modifiedNewsId: News,
+    status: TicketStatus
+  }

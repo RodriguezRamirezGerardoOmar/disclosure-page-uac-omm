@@ -1,13 +1,10 @@
 import React from 'react'
 import TagComponent from './TagComponent'
 import cn from 'classnames'
+import { Tags } from '@/constants/types'
 
 interface TagListProps {
-  tags: {
-    id: number
-    name: string
-    color: string
-  }[]
+  tags: Tags[]
   showIcon: boolean
   className?: string
 }
@@ -26,9 +23,9 @@ const TagListComponent = ({ ...props }: Readonly<TagListProps>) => {
   const style = cn('flex flex-wrap gap-x-2', props.className)
   return (
     <div className={style}>
-      {props.tags.map(tag => (
+      {props.tags.map((tag, index) => (
         <TagComponent
-          key={tag.id}
+          key={index}
           tagName={tag.name}
           color={tag.color}
           showIcon={props.showIcon}

@@ -1,42 +1,43 @@
 import Image from 'next/image'
 import { CardWithHeaderComponent } from './components/cards/CardWithHeaderComponent'
 import { TextComponent } from './components/text/TextComponent'
-import { enumTextTags } from '@/constants/types'
+import { enumTextTags, Quote } from '@/constants/types'
 import { InfoCardComponent } from './components/cards/InfoCardComponent'
 import { DataCardComponent } from './components/cards/DataCardComponent'
 import { LastNewsComponent } from './components/ui/LastNewsComponent'
+import useUtilsStore from '@/store/useUtilsStore'
 
-export default function Home() {
-  //TODO: Agregar descripciones pertinentes a cada item
+export default async function Home() {
+  //TODO: Agregar descripciones pertinentes a cada item+
+  const dailyQuote:Quote = await useUtilsStore.getState ().getDailyQuote()
   const items = [
     {
       title: 'Noticias',
       icon: 'NewspaperIcon',
-      info: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      href: '#',
+      info: 'Mantente al día con los eventos más recientes y las actualizaciones del mundo tecnológico y académico. Explora nuestras noticias para estar siempre informado.',
+      href: 'newslist',
       exercises: 126
     },
     {
       title: 'Ejercicios',
       icon: 'ListBulletIcon',
-      info: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      href: '#',
+      info: 'Pon a prueba tus habilidades con nuestra amplia colección de ejercicios diseñados para fortalecer tus conocimientos en programación y resolver problemas desafiantes.',
+      href: 'exercises',
       exercises: 255
     },
     {
       title: 'Apuntes',
       icon: 'BookOpenIcon',
-      info: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      href: '#',
+      info: 'Accede a una variedad de apuntes detallados que te ayudarán a consolidar tus conocimientos y profundizar en conceptos clave para tu aprendizaje.',
+      href: 'notelist',
       exercises: 150
     }
   ]
 
   const dataCard = {
     title: 'Cita del dia',
-    info: `“El objetivo del rigor no es destruir toda intuición, sino que debería usarse para destruir 
-    la mala intuición a la vez que clarificar y elevar la buena intuición.”`,
-    autor: 'TERENCE TAO'
+    info: `“${dailyQuote.phrase}”`,
+    autor: dailyQuote.author
   }
 
   const dataRamdomCard = {
@@ -61,10 +62,10 @@ export default function Home() {
       </section>
       <CardWithHeaderComponent
         title={'¡Bienvenido a la comunidad de desarrolladores de software!'}
-        comments={`Esta pagina ha nacido con el proposito de recoger de forma libre y gratuita material
-de preparacion para olimpiadas de matematicas destinado a alumnos de enseñanza secundaria.
-Encontraras dicho material organizado por categorias con unidades teoricas, ejercicios resueltos y ejercicios propuestos 
-de diferentes niveles.`}
+        comments={`Esta página ha nacido con el propósito de recoger de forma libre y gratuita 
+material de preparación para olimpiadas de matemáticas destinado a alumnos de enseñanza secundaria. 
+Encontrarás dicho material organizado por categorías con unidades teóricas, ejercicios resueltos y 
+ejercicios propuestos de diferentes niveles.`}
         className='z-10 -mt-36 shadow-lg max-w-4xl'
       />
 
@@ -73,7 +74,7 @@ de diferentes niveles.`}
           tag={enumTextTags.h3}
           sizeFont='s20'
           className='font-medium'>
-          La resolucion de probelmas
+          La resolución de problemas
         </TextComponent>
         <TextComponent
           tag={enumTextTags.p}
@@ -99,17 +100,17 @@ de diferentes niveles.`}
 
       <div className='flex flex-col md:flex-row-reverse gap-4 h-full'>
         <div className='flex flex-col gap-4 my-7 px-4 md:px-0 md:pr-4'>
-            <DataCardComponent
-              title={dataCard.title}
-              info={dataCard.info}
-              autor={dataCard.autor}
-            />
-            <DataCardComponent
-              title={dataRamdomCard.title}
-              info={dataRamdomCard.info}
-              autor={dataRamdomCard.autor}
-              image={dataRamdomCard.image}
-            />
+          <DataCardComponent
+            title={dataCard.title}
+            info={dataCard.info}
+            autor={dataCard.autor}
+          />
+          <DataCardComponent
+            title={dataRamdomCard.title}
+            info={dataRamdomCard.info}
+            autor={dataRamdomCard.autor}
+            image={dataRamdomCard.image}
+          />
         </div>
         <div className='px-4 md:px-0 md:pl-4 h-full'>
           <LastNewsComponent />
