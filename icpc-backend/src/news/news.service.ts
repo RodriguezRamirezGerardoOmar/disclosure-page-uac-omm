@@ -4,6 +4,7 @@ import { UpdateNewsDto } from './dto/update-news.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { News } from './entities/news.entity';
 import { Repository } from 'typeorm';
+import { Like } from 'typeorm';
 import {
   Ticket,
   TicketOperation,
@@ -90,4 +91,12 @@ export class NewsService {
     const news = await this.newsRepository.findOneBy({ id: id });
     return await this.newsRepository.remove(news);
   }
+
+  async search(query: string): Promise<News[]> {
+    return this.newsRepository.find({
+      where: { title: Like(`%${query}%`) },
+      take: 5,
+    });
+  }
 }
+
