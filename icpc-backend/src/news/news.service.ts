@@ -95,8 +95,7 @@ export class NewsService {
   async search(query: string): Promise<News[]> {
     return this.newsRepository.find({
       where: { title: Like(`%${query}%`) },
-      take: 5,
+      take: 5
     });
   }
 }
-
