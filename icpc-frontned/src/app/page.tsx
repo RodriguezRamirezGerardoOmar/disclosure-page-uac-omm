@@ -6,33 +6,42 @@ import { InfoCardComponent } from './components/cards/InfoCardComponent'
 import { DataCardComponent } from './components/cards/DataCardComponent'
 import { LastNewsComponent } from './components/ui/LastNewsComponent'
 import useUtilsStore from '@/store/useUtilsStore'
+import useNewsStore from '@/store/useNewsStore'
 
 export default async function Home() {
   //TODO: Agregar descripciones pertinentes a cada item+
   const dailyQuote:Quote = await useUtilsStore.getState ().getDailyQuote()
+  
+  // Obtén los contadores usando las funciones correspondientes
+  const [newsCount, exercisesCount, notesCount] = await Promise.all([
+    useNewsStore.getState().getCount(), // Llama a la función `getCount` para obtener el valor actualizado
+    useExercisesStore.getState().getExercisesCount(),
+    useNotesStore.getState().getNotesCount(),
+  ]);
+
   const items = [
     {
       title: 'Noticias',
       icon: 'NewspaperIcon',
       info: 'Mantente al día con los eventos más recientes y las actualizaciones del mundo tecnológico y académico. Explora nuestras noticias para estar siempre informado.',
       href: 'newslist',
-      exercises: 126
+      count: newsCount,
     },
     {
       title: 'Ejercicios',
       icon: 'ListBulletIcon',
       info: 'Pon a prueba tus habilidades con nuestra amplia colección de ejercicios diseñados para fortalecer tus conocimientos en programación y resolver problemas desafiantes.',
       href: 'exercises',
-      exercises: 255
+      count: exercisesCount,
     },
     {
       title: 'Apuntes',
       icon: 'BookOpenIcon',
       info: 'Accede a una variedad de apuntes detallados que te ayudarán a consolidar tus conocimientos y profundizar en conceptos clave para tu aprendizaje.',
       href: 'notelist',
-      exercises: 150
-    }
-  ]
+      count: notesCount,
+    },
+  ];
 
   const dataCard = {
     title: 'Cita del dia',

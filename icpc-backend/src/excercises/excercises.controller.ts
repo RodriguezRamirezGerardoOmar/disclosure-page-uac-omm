@@ -101,4 +101,9 @@ export class ExcercisesController {
   remove(@Param('id') id: string) {
     return this.excercisesService.remove(id);
   }
+
+  @Get('count')
+  async getCount(): Promise<number> {
+    return this.excercisesService.getCount();
+  }
 }

@@ -217,4 +217,8 @@ export class NotesService {
     const note = await this.noteRepository.findOneBy({ id });
     return await this.noteRepository.remove(note);
   }
+
+  async getCount(): Promise<number> {
+    return this.noteRepository.count();
+  }
 }

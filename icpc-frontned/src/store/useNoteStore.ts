@@ -22,6 +22,7 @@ interface ICreateNote {
 
 interface NoteState {
   notes: Note[]
+  notesCount: number[]
 }
 
 interface Actions {
@@ -29,6 +30,7 @@ interface Actions {
   getNote: (id: string) => Promise<Note>
   getList: (tags: Tags[], category?: string) => Promise<Note[]>
   search: (query: string) => Promise<Note[]>
+  getCount: () => Promise<number>; // Acción para obtener el conteo
 }
 
 const useNoteStore = create<Actions & NoteState>()(
@@ -36,6 +38,7 @@ const useNoteStore = create<Actions & NoteState>()(
     persist(
       (set, get) => ({
         notes: [],
+        notesCount: 0, // Inicializa el conteo en 0
         createNote: async (note: ICreateNote) => {
           try {
             const response = await api.post('/api/v1/notes', note, {
@@ -84,8 +87,18 @@ const useNoteStore = create<Actions & NoteState>()(
             console.error('Error searching notes:', error)
             return []
           }
+        },
+        getCount: async (): Promise<number> => {
+          try {
+            const response = await api.get('/api/v1/notes/count');
+            const count = response.data.count || 0;
+            set(() => ({ notesCount: count })); // Actualiza el conteo en el estado
+            return count;
+          } catch (error: any) {
+            console.error('Error getting news count:', error);
+            return 0; 
+          }
         }
-
       }),
       { name: 'note-store' }
     )

@@ -333,4 +333,8 @@ export class ExcercisesService {
       take: 5,
     });
   }
+
+  async getCount(): Promise<number> {
+    return this.excerciseRepository.count();
+  }
 }

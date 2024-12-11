@@ -105,4 +105,9 @@ export class NotesController {
   remove(@Param('id') id: string) {
     return this.notesService.remove(id);
   }
+
+  @Get('count')
+  async getCount(): Promise<number> {
+    return this.notesService.getCount();
+  }
 }

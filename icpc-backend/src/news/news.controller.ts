@@ -49,6 +49,11 @@ export class NewsController {
     return this.newsService.findAll();
   }
 
+  @Get('count')
+  async getCount(): Promise<number> {
+    return this.newsService.getCount();
+  }
+
   @Get(':id')
   @ApiCreatedResponse({
     description: 'La noticia se ha obtenido exitosamente.'
