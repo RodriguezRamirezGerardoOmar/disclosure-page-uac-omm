@@ -22,7 +22,7 @@ interface ICreateNote {
 
 interface NoteState {
   notes: Note[]
-  notesCount: number[]
+  notesCount: number
 }
 
 interface Actions {
@@ -39,6 +39,7 @@ const useNoteStore = create<Actions & NoteState>()(
       (set, get) => ({
         notes: [],
         notesCount: 0, // Inicializa el conteo en 0
+
         createNote: async (note: ICreateNote) => {
           try {
             const response = await api.post('/api/v1/notes', note, {
@@ -91,7 +92,8 @@ const useNoteStore = create<Actions & NoteState>()(
         getCount: async (): Promise<number> => {
           try {
             const response = await api.get('/api/v1/notes/count');
-            const count = response.data.count || 0;
+            const count = response.data
+            console.log(response)
             set(() => ({ notesCount: count })); // Actualiza el conteo en el estado
             return count;
           } catch (error: any) {

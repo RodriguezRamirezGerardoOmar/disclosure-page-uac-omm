@@ -82,7 +82,7 @@ const useNewsStore = create<Actions & NewsState>()(
         getCount: async (): Promise<number> => {
           try {
             const response = await api.get('/api/v1/news/count');
-            const count = response.data.count || 0;
+            const count = response.data || 0;
             set(() => ({ newsCount: count })); // Actualiza el conteo en el estado
             return count;
           } catch (error: any) {

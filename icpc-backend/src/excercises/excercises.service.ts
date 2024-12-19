@@ -326,15 +326,15 @@ export class ExcercisesService {
     const excercise = await this.excerciseRepository.findOneBy({ id });
     return await this.excerciseRepository.remove(excercise);
   }
-  
+
   async search(query: string): Promise<Excercise[]> {
     return this.excerciseRepository.find({
       where: { title: Like(`%${query}%`) },
-      take: 5,
+      take: 5
     });
   }
 
   async getCount(): Promise<number> {
-    return this.excerciseRepository.count();
+    return await this.excerciseRepository.count();
   }
 }

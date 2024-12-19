@@ -1,15 +1,20 @@
+'use client'
 import { NewspaperIcon, ListBulletIcon, BookOpenIcon } from '@heroicons/react/24/outline'
 import { BasicPanelComponent } from '../panels/BasicPanelComponent'
 import { TextComponent } from '../text/TextComponent'
 import { enumTextTags } from '@/constants/types'
 import Link from 'next/link'
+import { useEffect, useState } from 'react'
+import useNewsStore from '@/store/useNewsStore'
+import useExerciseStore from '@/store/useExcerciseStore'
+import useNoteStore from '@/store/useNoteStore'
 
 interface IInfoCardComponentProps {
   title: string
   icon: string
   info: string
   href: string
-  exercises: number
+  type: number
 }
 
 /*
@@ -22,7 +27,32 @@ Date: 21 - 03 - 2024
 Author: Gerardo Omar Rodriguez Ramirez
 */
 
-export const InfoCardComponent = ({ title = 'Title', exercises = 0, href = '#', ...props }: IInfoCardComponentProps) => {
+export const InfoCardComponent = ({ title = 'Title', type = 0, href = '#', ...props }: IInfoCardComponentProps) => {
+  const getExerciseCount = useExerciseStore(state => state.getCount)
+  const getNotesCount = useNoteStore(state => state.getCount)
+  const getNewsCount = useNewsStore(state => state.getCount)
+
+  const [value, setValue] = useState<number>(0)
+
+  useEffect(() => {
+    switch (type) {
+      case 0:
+        getExerciseCount().then(response => {
+          setValue(response)
+        })
+        break
+      case 1:
+        getNotesCount().then(response => {
+          setValue(response)
+        })
+        break
+      case 2:
+        getNewsCount().then(response => {
+          setValue(response)
+        })
+        break
+    }
+  }, [getExerciseCount, getNotesCount, getNewsCount])
   return (
     <BasicPanelComponent>
       <div className='flex justify-between items-center'>
@@ -48,7 +78,7 @@ export const InfoCardComponent = ({ title = 'Title', exercises = 0, href = '#', 
             tag={enumTextTags.h3}
             sizeFont='s14'
             className='font-medium text-secondary'>
-            {exercises.toString()}
+            {value.toString()}
           </TextComponent>
         </div>
       </div>

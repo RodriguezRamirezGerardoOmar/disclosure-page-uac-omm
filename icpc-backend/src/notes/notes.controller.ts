@@ -106,7 +106,7 @@ export class NotesController {
     return this.notesService.remove(id);
   }
 
-  @Get('count')
+  @Get('notes/count')
   async getCount(): Promise<number> {
     return this.notesService.getCount();
   }

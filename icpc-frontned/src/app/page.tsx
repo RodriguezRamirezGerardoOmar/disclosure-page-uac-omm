@@ -7,17 +7,18 @@ import { DataCardComponent } from './components/cards/DataCardComponent'
 import { LastNewsComponent } from './components/ui/LastNewsComponent'
 import useUtilsStore from '@/store/useUtilsStore'
 import useNewsStore from '@/store/useNewsStore'
+import useExcerciseStore from '@/store/useExcerciseStore'
+import useNoteStore from '@/store/useNoteStore'
+import { use } from 'react'
 
 export default async function Home() {
-  //TODO: Agregar descripciones pertinentes a cada item+
-  const dailyQuote:Quote = await useUtilsStore.getState ().getDailyQuote()
-  
+  //TODO: Agregar descripciones pertinentes a cada item
+  const dailyQuote: Quote = await useUtilsStore.getState().getDailyQuote()
+
   // Obtén los contadores usando las funciones correspondientes
-  const [newsCount, exercisesCount, notesCount] = await Promise.all([
-    useNewsStore.getState().getCount(), // Llama a la función `getCount` para obtener el valor actualizado
-    useExercisesStore.getState().getExercisesCount(),
-    useNotesStore.getState().getNotesCount(),
-  ]);
+  const newsCount = await useNewsStore.getState().getCount()
+  const exercisesCount = await useExcerciseStore.getState().getCount()
+  const notesCount = await useNoteStore.getState().getCount()
 
   const items = [
     {
@@ -25,23 +26,23 @@ export default async function Home() {
       icon: 'NewspaperIcon',
       info: 'Mantente al día con los eventos más recientes y las actualizaciones del mundo tecnológico y académico. Explora nuestras noticias para estar siempre informado.',
       href: 'newslist',
-      count: newsCount,
+      type: 2
     },
     {
       title: 'Ejercicios',
       icon: 'ListBulletIcon',
       info: 'Pon a prueba tus habilidades con nuestra amplia colección de ejercicios diseñados para fortalecer tus conocimientos en programación y resolver problemas desafiantes.',
       href: 'exercises',
-      count: exercisesCount,
+      type: 0
     },
     {
       title: 'Apuntes',
       icon: 'BookOpenIcon',
       info: 'Accede a una variedad de apuntes detallados que te ayudarán a consolidar tus conocimientos y profundizar en conceptos clave para tu aprendizaje.',
       href: 'notelist',
-      count: notesCount,
-    },
-  ];
+      type: 1
+    }
+  ]
 
   const dataCard = {
     title: 'Cita del dia',
@@ -101,7 +102,7 @@ ejercicios propuestos de diferentes niveles.`}
               icon={item.icon}
               info={item.info}
               href={item.href}
-              exercises={item.exercises}
+              type={item.type}
             />
           ))}
         </div>

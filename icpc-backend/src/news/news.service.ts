@@ -100,6 +100,6 @@ export class NewsService {
   }
 
   async getCount(): Promise<number> {
-    return this.newsRepository.count();
+    return await this.newsRepository.countBy({ isVisible: true });
   }
 }
