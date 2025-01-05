@@ -17,39 +17,46 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
     console.log('Le picó en Eliminar', id, itemType)
   }
 
-  const tableData = props.data.length !== 0 ? (props.data.map(item => (
-    <tr
-      key={item.index}
-      className='cursor-pointer hover:bg-slate-200'>
-      <td
-        className={`whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 
+  const tableData =
+    props.data.length !== 0 ? (
+      props.data.map(item => (
+        <tr
+          key={item.index}
+          className='cursor-pointer hover:bg-slate-200'>
+          <td
+            className={`whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 
         dark:text-dark-accent sm:pl-6 lg:pl-8 w-full justify-between items-center`}>
-        <TextComponent>{item.title}</TextComponent>
-        {item.tagName && item.color && (
-          <div className='max-w-min'>
-            <TagComponent
-              color={item.color}
-              tagName={item.title}
-              showIcon={false}
+            <TextComponent>{item.title}</TextComponent>
+            {item.tagName && item.color && (
+              <div className='max-w-min'>
+                <TagComponent
+                  color={item.color}
+                  tagName={item.title}
+                  showIcon={false}
+                />
+              </div>
+            )}
+          </td>
+          <td className={`whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium 
+            text-gray-900 dark:text-dark-accent sm:pl-6 lg:pl-8 justify-between items-center`}>
+            <ThreeDotComponent
+              handleDelete={handleDelete}
+              handleEdit={handleEdit}
+              id={item.id}
+              itemType={props.itemType}
             />
-          </div>
-        )}
-      </td>
-      <td className='whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 dark:text-dark-accent sm:pl-6 lg:pl-8'>
-        <ThreeDotComponent
-          handleDelete={handleDelete}
-          handleEdit={handleEdit}
-          id={item.id}
-          itemType={props.itemType}
-        />
-      </td>
-    </tr>
-  ))) : (<tr>
-    <td
-      className='whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 
+          </td>
+        </tr>
+      ))
+    ) : (
+      <tr>
+        <td
+          className='whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 
       dark:text-dark-accent sm:pl-6 lg:pl-8 w-full justify-between items-center'>
-      <TextComponent>¡Ups! No hay elementos para mostrar</TextComponent></td>
-  </tr>)
+          <TextComponent>¡Ups! No hay elementos para mostrar</TextComponent>
+        </td>
+      </tr>
+    )
 
   return (
     <table className='min-w-full border-separate border-spacing-0'>
@@ -69,9 +76,7 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
                     backdrop-filter sm:pl-6 lg:pl-8'></th>
         </tr>
       </thead>
-      <tbody>
-        {tableData}
-      </tbody>
+      <tbody>{tableData}</tbody>
     </table>
   )
 }

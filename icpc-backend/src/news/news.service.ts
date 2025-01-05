@@ -98,4 +98,10 @@ export class NewsService {
       take: 5
     });
   }
+
+  async count(): Promise<number> {
+    return this.newsRepository.count({
+      where: { isVisible: true }
+    });
+  }
 }
