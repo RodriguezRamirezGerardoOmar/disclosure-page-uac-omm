@@ -1,3 +1,4 @@
+
 import React from 'react'
 import ExerciseCardComponent from '@/app/components/cards/ExerciseCardComponent'
 import NewsCardComponent from '@/app/components/cards/NewsCardComponent'
@@ -8,32 +9,35 @@ import { serialize } from 'next-mdx-remote/serialize'
 import remarkMath from 'remark-math'
 import rehypeKatex from 'rehype-katex'
 import { TextComponent } from '@/app/components/text/TextComponent'
+import { ButtonComponent } from '@/app/components/buttons/ButtonComponent'
+import { TicketActions } from '@/app/ticket/TicketActions';
 
 const TicketPage = async ({ params }: Readonly<{ params: { id: string } }>) => {
+  const ticket: Ticket = await useUtilsStore.getState().getTicket(params.id);
+
   async function serializeNote(mdx: string) {
     return await serialize(mdx, {
       mdxOptions: {
         remarkPlugins: [remarkMath],
-        rehypePlugins: [rehypeKatex as any]
-      }
-    })
+        rehypePlugins: [rehypeKatex as any],
+      },
+    });
   }
-  const ticket: Ticket = await useUtilsStore.getState().getTicket(params.id)
-  let pageContent = <></>
 
-  if (!ticket) return <div>Cargando...</div>
+  if (!ticket) return <div>Cargando...</div>;
 
-  /* Vista simplificada del componente original */
-  if (ticket.operation == TicketOperation.UPDATE) {
+  let pageContent = <></>;
+  if (ticket.operation === TicketOperation.UPDATE) {
     switch (ticket.itemType) {
       case TicketType.EXERCISE:
         pageContent = (
-          <div className='grid place-items-center grid-cols-1 gap-16'>
+          <div className="grid place-items-center grid-cols-1 gap-16">
             <div>
               <TextComponent
                 tag={enumTextTags.h1}
-                sizeFont='s20'
-                className='font-bold text-gray-800 dark:text-dark-accent'>
+                sizeFont="s20"
+                className="font-bold text-gray-800 dark:text-dark-accent"
+              >
                 Ejercicio original
               </TextComponent>
               <ExerciseCardComponent exercise={ticket.originalExerciseId} />
@@ -41,24 +45,26 @@ const TicketPage = async ({ params }: Readonly<{ params: { id: string } }>) => {
             <div>
               <TextComponent
                 tag={enumTextTags.h1}
-                sizeFont='s20'
-                className='font-bold text-gray-800 dark:text-dark-accent'>
+                sizeFont="s20"
+                className="font-bold text-gray-800 dark:text-dark-accent"
+              >
                 Ejercicio modificado
               </TextComponent>
               <ExerciseCardComponent exercise={ticket.modifiedExerciseId} />
             </div>
           </div>
-        )
-        break
+        );
+        break;
 
       case TicketType.NEWS:
         pageContent = (
-          <div className='grid place-items-center grid-cols-1 gap-16'>
+          <div className="grid place-items-center grid-cols-1 gap-16">
             <div>
               <TextComponent
                 tag={enumTextTags.h1}
-                sizeFont='s20'
-                className='font-bold text-gray-800 dark:text-dark-accent'>
+                sizeFont="s20"
+                className="font-bold text-gray-800 dark:text-dark-accent"
+              >
                 Noticia original
               </TextComponent>
               <NewsCardComponent id={ticket.originalNewsId.id} />
@@ -66,24 +72,26 @@ const TicketPage = async ({ params }: Readonly<{ params: { id: string } }>) => {
             <div>
               <TextComponent
                 tag={enumTextTags.h1}
-                sizeFont='s20'
-                className='font-bold text-gray-800 dark:text-dark-accent'>
+                sizeFont="s20"
+                className="font-bold text-gray-800 dark:text-dark-accent"
+              >
                 Noticia modificada
               </TextComponent>
               <NewsCardComponent id={ticket.modifiedNewsId.id} />
             </div>
           </div>
-        )
-        break
+        );
+        break;
 
       case TicketType.NOTE:
         pageContent = (
-          <div className='grid place-items-center grid-cols-1 gap-16'>
+          <div className="grid place-items-center grid-cols-1 gap-16">
             <div>
               <TextComponent
                 tag={enumTextTags.h1}
-                sizeFont='s20'
-                className='font-bold text-gray-800 dark:text-dark-accent'>
+                sizeFont="s20"
+                className="font-bold text-gray-800 dark:text-dark-accent"
+              >
                 Nota original
               </TextComponent>
               <NoteCardComponent
@@ -97,8 +105,9 @@ const TicketPage = async ({ params }: Readonly<{ params: { id: string } }>) => {
             <div>
               <TextComponent
                 tag={enumTextTags.h1}
-                sizeFont='s20'
-                className='font-bold text-gray-800 dark:text-dark-accent'>
+                sizeFont="s20"
+                className="font-bold text-gray-800 dark:text-dark-accent"
+              >
                 Nota modificada
               </TextComponent>
               <NoteCardComponent
@@ -110,18 +119,18 @@ const TicketPage = async ({ params }: Readonly<{ params: { id: string } }>) => {
               />
             </div>
           </div>
-        )
-        break
+        );
+        break;
     }
   } else {
     switch (ticket.itemType) {
       case TicketType.EXERCISE:
-        pageContent = <ExerciseCardComponent exercise={ticket.originalExerciseId} />
-        break
+        pageContent = <ExerciseCardComponent exercise={ticket.originalExerciseId} />;
+        break;
 
       case TicketType.NEWS:
-        pageContent = <NewsCardComponent id={ticket.originalNewsId.id} />
-        break
+        pageContent = <NewsCardComponent id={ticket.originalNewsId.id} />;
+        break;
 
       case TicketType.NOTE:
         pageContent = (
@@ -132,12 +141,17 @@ const TicketPage = async ({ params }: Readonly<{ params: { id: string } }>) => {
             tags={ticket.originalNoteId.tags}
             showButton={false}
           />
-        )
-        break
+        );
+        break;
     }
   }
 
-  return <main className='grid min-h-screen grid-cols-1 place-items-center justify-between py-24'>{pageContent}</main>
-}
+  return (
+    <main className="grid min-h-screen grid-cols-1 place-items-center justify-between py-24">
+      {pageContent}
+      <TicketActions ticketId={ticket.id} />
+    </main>
+  );
+};
 
-export default TicketPage
+export default TicketPage;
