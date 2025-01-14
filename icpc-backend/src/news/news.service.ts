@@ -3,6 +3,7 @@ import { CreateNewsDto } from './dto/create-news.dto';
 import { UpdateNewsDto } from './dto/update-news.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { News } from './entities/news.entity';
+import { Image } from '../image/entities/image.entity';
 import { Repository } from 'typeorm';
 import { Like } from 'typeorm';
 import {
@@ -24,7 +25,9 @@ export class NewsService {
     @InjectRepository(Comment)
     private readonly commentRepository: Repository<Comment>,
     @InjectRepository(User)
-    private readonly userRepository: Repository<User>
+    private readonly userRepository: Repository<User>,
+    @InjectRepository(Image)
+    private readonly imageRepository: Repository<Image>
   ) {}
   async create(createNewsDto: CreateNewsDto) {
     const news = await this.newsRepository.findOneBy({
@@ -33,8 +36,14 @@ export class NewsService {
     if (news !== null) {
       throw new BadRequestException('Una noticia con este título ya existe');
     } else {
-      const news = this.newsRepository.create(createNewsDto);
-      news.isVisible = true;
+      const image = await this.imageRepository.findOneBy({
+        id: createNewsDto.imageId
+      });
+      const news = this.newsRepository.create();
+      news.imageId = image;
+      news.body = createNewsDto.body;
+      news.title = createNewsDto.title;
+      news.isVisible = createNewsDto.role === 'admin';
       const user = await this.userRepository.findOneBy({
         userName: createNewsDto.userAuthor
       });
@@ -48,7 +57,10 @@ export class NewsService {
       const ticket = this.ticketRepository.create({
         itemType: TicketType.NEWS,
         operation: TicketOperation.CREATE,
-        status: TicketStatus.ACCEPTED,
+        status:
+          createNewsDto.role === 'admin'
+            ? TicketStatus.ACCEPTED
+            : TicketStatus.PENDING,
         originalNewsId: news,
         commentId: commentId
       });
@@ -83,8 +95,15 @@ export class NewsService {
   }
 
   async update(id: string, updateNewsDto: UpdateNewsDto) {
+    const image = await this.imageRepository.findBy({
+      id: updateNewsDto.imageId
+    });
     const news = await this.newsRepository.findOneBy({ id: id });
-    return await this.newsRepository.save({ ...news, ...updateNewsDto });
+    return await this.newsRepository.save({
+      ...news,
+      ...updateNewsDto,
+      ...image
+    });
   }
 
   async remove(id: string) {

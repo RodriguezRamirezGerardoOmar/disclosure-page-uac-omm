@@ -395,7 +395,7 @@ export class TicketService {
             const image = await this.imageRepository.findOneBy({
               ...item.imageId
             });
-            if (image.news.length === 1) {
+            if (image.news) {
               await this.imageRepository.remove(image);
             }
             res = await this.newsRepository.remove(item);

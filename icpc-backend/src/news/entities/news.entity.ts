@@ -17,14 +17,14 @@ export class News extends BaseEntity {
 
   @ManyToOne(() => Image, image => image.news)
   @JoinTable()
-  imageId: string;
+  imageId: Image;
 
-  @OneToMany(() => Ticket, ticket => ticket.originalNoteId, {
+  @OneToMany(() => Ticket, ticket => ticket.originalNewsId, {
     onDelete: 'CASCADE'
   })
   ticketOriginal: Ticket[];
 
-  @OneToMany(() => Ticket, ticket => ticket.modifiedNoteId, {
+  @OneToMany(() => Ticket, ticket => ticket.modifiedNewsId, {
     onDelete: 'CASCADE'
   })
   ticketModified: Ticket[];

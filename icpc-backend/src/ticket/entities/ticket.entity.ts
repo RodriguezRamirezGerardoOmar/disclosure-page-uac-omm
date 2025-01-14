@@ -25,27 +25,31 @@ export enum TicketStatus {
 
 @Entity()
 export class Ticket extends BaseEntity {
-  @ManyToOne(() => Excercise, excercise => excercise.ticketOriginal)
+  @ManyToOne(() => Excercise, excercise => excercise.ticketOriginal, {
+    onDelete: 'SET NULL'
+  })
   @JoinTable()
   originalExerciseId: Excercise;
 
-  @ManyToOne(() => Excercise, excercise => excercise.ticketModified)
+  @ManyToOne(() => Excercise, excercise => excercise.ticketModified, {
+    onDelete: 'SET NULL'
+  })
   @JoinTable()
   modifiedExerciseId: Excercise;
 
-  @ManyToOne(() => News, news => news.ticketOriginal)
+  @ManyToOne(() => News, news => news.ticketOriginal, { onDelete: 'SET NULL' })
   @JoinTable()
   originalNewsId: News;
 
-  @ManyToOne(() => News, news => news.ticketModified)
+  @ManyToOne(() => News, news => news.ticketModified, { onDelete: 'SET NULL' })
   @JoinTable()
   modifiedNewsId: News;
 
-  @ManyToOne(() => Note, note => note.ticketOriginal)
+  @ManyToOne(() => Note, note => note.ticketOriginal, { onDelete: 'SET NULL' })
   @JoinTable()
   originalNoteId: Note;
 
-  @ManyToOne(() => Note, note => note.ticketModified)
+  @ManyToOne(() => Note, note => note.ticketModified, { onDelete: 'SET NULL' })
   @JoinTable()
   modifiedNoteId: Note;
 
