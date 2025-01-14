@@ -2,16 +2,18 @@
 
 import React from 'react';
 import { ButtonComponent } from '@/app/components/buttons/ButtonComponent';
+import useUtilsStore from '@/store/useUtilsStore';
 
 interface TicketActionsProps {
   ticketId: string;
 }
 
 export const TicketActions: React.FC<TicketActionsProps> = ({ ticketId }) => {
+  const approveTicket = useUtilsStore (state => state.approveTicket)
   const acceptTicket = async () => {
     try {
-      const response = await fetch(`/ticket/approve/${ticketId}`, { method: 'POST' });
-      if (response.ok) {
+      const response = await approveTicket(ticketId);
+      if ('statusCode' in response && response.statusCode == 201) {
         console.log('Ticket aprobado');
         alert('El ticket ha sido aprobado con éxito.');
       } else {
@@ -24,10 +26,11 @@ export const TicketActions: React.FC<TicketActionsProps> = ({ ticketId }) => {
     }
   };
 
-  const rejectTicket = async () => {
+  const rejectTicket = useUtilsStore (state => state.rejectTicket)
+  const denyTicket = async () => {
     try {
-      const response = await fetch(`/ticket/reject/${ticketId}`, { method: 'POST' });
-      if (response.ok) {
+      const response = await rejectTicket(ticketId);
+      if ('statusCode' in response && response.statusCode == 201) {
         console.log('Ticket rechazado');
         alert('El ticket ha sido rechazado con éxito.');
       } else {
@@ -43,7 +46,7 @@ export const TicketActions: React.FC<TicketActionsProps> = ({ ticketId }) => {
   return (
     <div className='flex gap-4 mt-8'>
       <ButtonComponent text='Aceptar' className='bg-green-500 text-white hover:bg-green-600' onClick={acceptTicket} />
-      <ButtonComponent text='Denegar' className='bg-red-500 text-white hover:bg-red-600' onClick={rejectTicket} />
+      <ButtonComponent text='Denegar' className='bg-red-500 text-white hover:bg-red-600' onClick={denyTicket} />
     </div>
   );
 };
