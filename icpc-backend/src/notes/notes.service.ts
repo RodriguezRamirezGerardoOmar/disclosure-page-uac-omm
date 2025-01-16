@@ -210,7 +210,8 @@ export class NotesService {
 
   async update(id: string, updateNoteDto: UpdateNoteDto) {
     const note = await this.noteRepository.findOneBy({ id: String(id) });
-    return await this.noteRepository.save({ ...note, ...updateNoteDto });
+    const updatedNote = await this.noteRepository.save({ ...note, ...updateNoteDto });
+    return updatedNote;
   }
 
   async remove(id: string) {

@@ -314,6 +314,7 @@ export class ExcercisesService {
         .getMany();
     }
   }
+
   async update(id: string, updateExcerciseDto: UpdateExcerciseDto) {
     const excercise = await this.excerciseRepository.findOneBy({ id });
     return await this.memoryRepository.save({

@@ -21,16 +21,17 @@ import {
 } from '@nestjs/swagger';
 import { AuthGuard } from '../auth/guard/auth.guard';
 import { GetNoteListDto } from './dto/get-note-list.dto';
+import { LoggerService } from '../services/logger.service'; // Importa el LoggerService
 
 @Controller()
 @ApiTags('Notes')
 export class NotesController {
   constructor(
     private readonly notesService: NotesService,
-    private readonly commentService: CommentService
+    private readonly commentService: CommentService,
+    private readonly loggerService: LoggerService // Inyecta el LoggerService
   ) {}
 
-  // Endpoint for a post request to create a note, at "/notes"
   @Post('notes')
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
@@ -39,21 +40,21 @@ export class NotesController {
   })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
-  create(@Body() createNoteDto: CreateNoteDto) {
-    return this.notesService.create(createNoteDto);
+  async create(@Body() createNoteDto: CreateNoteDto) {
+    const createdNote = await this.notesService.create(createNoteDto);
+    this.loggerService.logChange('notes', 'create', createdNote); // Log de la operación
+    return createdNote;
   }
 
-  // Endpoint for a get request to retrieve all notes, at "/notes"
   @Get('notes')
   @ApiCreatedResponse({
-    description: 'The notes has been successfully retrieved.'
+    description: 'The notes have been successfully retrieved.'
   })
   @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
   findAll() {
     return this.notesService.findAll();
   }
 
-  // Endpoint for a get request to retrieve a note by id, at "/notes/:id"
   @Get('note/:id')
   @ApiCreatedResponse({
     description: 'The note has been successfully retrieved.'
@@ -65,17 +66,16 @@ export class NotesController {
 
   @Post('notes/list/')
   @ApiCreatedResponse({
-    description: 'The notes has been successfully retrieved.'
+    description: 'The notes have been successfully retrieved.'
   })
   @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
   list(@Body() noteListDto: GetNoteListDto) {
     return this.notesService.findNoteList(noteListDto);
   }
 
-  // Endpoint for a get request to retrieve all notes in a category, at "/notes/category/:categoryId"
   @Get('notes/category/:categoryId')
   @ApiCreatedResponse({
-    description: 'The notes has been successfully retrieved.'
+    description: 'The notes have been successfully retrieved.'
   })
   @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
   findAllInCategory(@Param('categoryId') categoryId: string) {
@@ -90,8 +90,10 @@ export class NotesController {
   })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
-  update(@Param('id') id: string, @Body() updateNoteDto: UpdateNoteDto) {
-    return this.notesService.update(id, updateNoteDto);
+  async update(@Param('id') id: string, @Body() updateNoteDto: UpdateNoteDto) {
+    const updatedNote = await this.notesService.update(id, updateNoteDto);
+    this.loggerService.logChange('notes', 'update', { id, ...updateNoteDto }); // Log de la operación
+    return updatedNote;
   }
 
   @Delete('note/:id')
@@ -102,7 +104,9 @@ export class NotesController {
   })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
-  remove(@Param('id') id: string) {
-    return this.notesService.remove(id);
+  async remove(@Param('id') id: string) {
+    const deletedNote = await this.notesService.remove(id);
+    this.loggerService.logChange('notes', 'delete', { id }); // Log de la operación
+    return deletedNote;
   }
 }
