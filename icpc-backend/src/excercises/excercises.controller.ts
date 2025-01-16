@@ -100,7 +100,7 @@ export class ExcercisesController {
     return this.exercisesService.update(id, updateExcerciseDto);
   }
 
-  @Delete(':id')
+  @Delete(':id/:user')
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
   @ApiCreatedResponse({
@@ -108,7 +108,7 @@ export class ExcercisesController {
   })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
-  remove(@Param('id') id: string) {
-    return this.exercisesService.remove(id);
+  remove(@Param('id') id: string, @Param('user') user: string) {
+    return this.exercisesService.remove(id, user);
   }
 }

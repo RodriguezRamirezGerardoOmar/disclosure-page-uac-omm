@@ -1,8 +1,13 @@
 import React from 'react'
 import ThreeDotComponent from '../dropdowns/ThreeDotComponent'
-import { IProfileTableItem } from '@/constants/types'
+import { IProfileTableItem, AllTabs } from '@/constants/types'
 import { TextComponent } from '../text/TextComponent'
 import TagComponent from '../tags/TagComponent'
+import useExcerciseStore from '@/store/useExcerciseStore'
+import useNoteStore from '@/store/useNoteStore'
+import useNewsStore from '@/store/useNewsStore'
+import useUtilsStore from '@/store/useUtilsStore'
+import useStore from '@/store/useStore'
 
 interface IProfileTableComponentProps {
   data: IProfileTableItem[]
@@ -10,13 +15,62 @@ interface IProfileTableComponentProps {
 }
 
 const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => {
+  const deleteExercise = useExcerciseStore(state => state.deleteExercise)
+  const deleteNote = useNoteStore(state => state.deleteNote)
+  const deleteNews = useNewsStore(state => state.deleteNews)
+  const deleteCategory = useUtilsStore(state => state.deleteCategory)
+  const deleteTag = useUtilsStore(state => state.deleteTag)
+  const deleteTimeLimit = useUtilsStore(state => state.deleteTimeLimit)
+  const deleteMemoryLimit = useUtilsStore(state => state.deleteMemoryLimit)
+  const deleteDifficulty = useUtilsStore(state => state.deleteDifficulty)
+  const deleteUser = useStore(state => state.deleteUser)
+
   const handleEdit = (id: string, itemType: string) => {
     console.log('Le picó en Editar', id, itemType)
   }
-  const handleDelete = (id: string, itemType: string) => {
-    console.log('Le picó en Eliminar', id, itemType)
+  const handleDelete = (id: string) => {
+    switch(props.itemType) {
+      case AllTabs.EXERCISES:
+        deleteExercise(id)
+        console.log('Borró un ejercicio', id)
+        break;
+      case AllTabs.NOTES:
+        deleteNote(id)
+        console.log('Borró un apunte', id)
+        break;
+      case AllTabs.NEWS:
+        deleteNews(id)
+        console.log('Borró una noticia', id)
+        break;
+      case AllTabs.CATEGORIES:
+        deleteCategory(id)
+        console.log('Borró una categoría', id)
+        break;
+      case AllTabs.TAGS:
+        deleteTag(id)
+        console.log('Borró una tag', id)
+        break;
+      case AllTabs.TIME:
+        deleteTimeLimit(id)
+        console.log('Borró un límite de tiempo', id)
+        break;
+      case AllTabs.MEMORY:
+        deleteMemoryLimit(id)
+        console.log('Borró un límite de memoria', id)
+        break;
+      case AllTabs.DIFFICULTY:
+        deleteDifficulty(id)
+        console.log('Borró una dificultad', id)
+        break;
+      case AllTabs.ACCOUNT:
+        deleteUser(id)
+        console.log('Borró un usuario', id)
+        break;
+      default:
+        console.log('No se encontró el tipo de item')
+        break;
+      }
   }
-
   const tableData =
     props.data.length !== 0 ? (
       props.data.map(item => (

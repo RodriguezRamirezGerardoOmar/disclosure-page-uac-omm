@@ -82,7 +82,7 @@ export class NewsController {
     return this.newsService.update(id, updateNewsDto);
   }
 
-  @Delete(':id')
+  @Delete(':id/:user')
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
   @ApiCreatedResponse({
@@ -91,7 +91,7 @@ export class NewsController {
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiBadRequestResponse({ description: 'Bad request' })
   @ApiInternalServerErrorResponse({ description: 'Internal server error' })
-  remove(@Param('id') id: string) {
-    return this.newsService.remove(id);
+  remove(@Param('id') id: string, @Param('user') user: string) {
+    return this.newsService.remove(id, user);
   }
 }

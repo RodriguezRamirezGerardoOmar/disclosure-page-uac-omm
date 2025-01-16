@@ -323,9 +323,52 @@ export class ExcercisesService {
     });
   }
 
-  async remove(id: string) {
+  async remove(id: string, user: string) {
     const excercise = await this.exerciseRepository.findOneBy({ id });
-    return await this.exerciseRepository.remove(excercise);
+    const userId = await this.userRepository
+      .createQueryBuilder('user')
+      .where('user.id = :userId', { userId: user })
+      .leftJoinAndSelect('user.role', 'role')
+      .getOne();
+    if (userId.role.role === 'admin') {
+      const commentBody = `${userId.name} ha eliminado el ejercicio con el nombre ${excercise.title}`;
+      const comment = this.commentRepository.create({
+        body: commentBody
+      });
+      const commentId = await this.commentRepository.save(comment);
+      const ticket = this.ticketRepository.create({
+        itemType: TicketType.EXERCISE,
+        operation: TicketOperation.DELETE,
+        status: TicketStatus.ACCEPTED,
+        originalExerciseId: excercise,
+        commentId: commentId
+      });
+      const savedTicket = await this.ticketRepository.save(ticket);
+      if (savedTicket) {
+        return await this.exerciseRepository.remove(excercise);
+      } else {
+        throw new BadRequestException('Error al eliminar el ejercicio');
+      }
+    } else {
+      const commentBody = `${userId.name} ha eliminado el ejercicio con el nombre ${excercise.title}`;
+      const comment = this.commentRepository.create({
+        body: commentBody
+      });
+      const commentId = await this.commentRepository.save(comment);
+      const ticket = this.ticketRepository.create({
+        itemType: TicketType.EXERCISE,
+        operation: TicketOperation.DELETE,
+        status: TicketStatus.PENDING,
+        originalExerciseId: excercise,
+        commentId: commentId
+      });
+      const savedTicket = await this.ticketRepository.save(ticket);
+      if (savedTicket) {
+        return savedTicket;
+      } else {
+        throw new BadRequestException('Error al eliminar el ejercicio');
+      }
+    }
   }
 
   async search(query: string): Promise<Excercise[]> {
