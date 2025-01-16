@@ -97,6 +97,11 @@ const CreateNoteComponent = () => {
       }
     }
   }
+
+  const clearForm = () => {
+    methods.reset() // Resetea todos los campos del formulario
+  }
+
   return (
     <form
       onSubmit={methods.handleSubmit(onSubmit)}
@@ -135,8 +140,7 @@ const CreateNoteComponent = () => {
                 handleCreate={handleCreateCategory}
                 selectedOption={field.value}
               />
-            )}
-            name='category'
+            )} name='category'
           />
           <Controller
             name='tags'
@@ -178,11 +182,12 @@ const CreateNoteComponent = () => {
         <div className='mt-4'>
           <button
             type='button'
+            onClick={clearForm}
             className='inline-flex items-center gap-x-2 rounded-md bg-primary text-complementary px-3.5 py-2.5 
               font-medium shadow-sm hover:bg-secondary focus-visible:outline 
               focus-visible:outline-offset-2 focus-visible:outline-complementary'
             >
-            {}Borrar formulario
+            Borrar formulario
           </button>
         </div>
       </BasicPanelComponent>
