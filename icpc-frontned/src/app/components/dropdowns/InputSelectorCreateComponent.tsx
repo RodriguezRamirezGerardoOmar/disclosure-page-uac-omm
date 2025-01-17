@@ -1,4 +1,4 @@
-import React, { useRef, useImperativeHandle, forwardRef, useState } from 'react';
+import React, { useRef, useImperativeHandle, forwardRef } from 'react';
 import { TextComponent } from '../text/TextComponent';
 import { enumTextTags, Option } from '@/constants/types';
 import CreatableSelect from 'react-select/creatable';
@@ -11,7 +11,7 @@ interface InputSelectorCreateProps {
   id: string;
   label: string;
   onChange: (val: Option | null) => void;
-  handleCreate: (val: Option) => Option;
+  handleCreate: (val: Option) => void;
 }
 
 const colourStyles: StylesConfig<Option> = {
@@ -41,12 +41,12 @@ const colourStyles: StylesConfig<Option> = {
 const InputSelectorCreateComponent = forwardRef(
   ({ options, selectedOption, id, label, onChange, handleCreate }: InputSelectorCreateProps, ref) => {
     const inputRef = useRef<SelectInstance<Option>>(null);
-    const [key, setKey] = useState(0); // Clave para forzar re-renderizado del componente
 
+    // Exponer el método `clear` al componente padre
     useImperativeHandle(ref, () => ({
       clear() {
-        setKey(prevKey => prevKey + 1); // Cambia la clave para reiniciar
-        onChange(null); // Notifica al padre que se limpió
+        inputRef.current?.clearValue(); // Limpia el valor seleccionado
+        onChange(null); // Notifica automáticamente al componente padre
       },
     }));
 
@@ -56,10 +56,9 @@ const InputSelectorCreateComponent = forwardRef(
           {label}
         </TextComponent>
         <CreatableSelect
-          key={key} // Forzar reinicialización completa
           instanceId={id}
           options={options}
-          value={selectedOption} // Estado controlado
+          value={selectedOption} // Usar valor controlado
           isSearchable={true}
           isClearable={true}
           styles={colourStyles}
@@ -67,12 +66,12 @@ const InputSelectorCreateComponent = forwardRef(
           getOptionValue={option => option.value}
           ref={inputRef}
           onChange={newValue => {
-            onChange(newValue); // Notifica al padre del cambio
+            onChange(newValue); // Notifica al padre sobre cambios
           }}
           onCreateOption={inputValue => {
-            const option = { label: inputValue, value: inputValue };
-            const newOption = handleCreate(option);
-            onChange(newOption);
+            const newOption = { label: inputValue, value: inputValue };
+            handleCreate(newOption); // Agrega la nueva opción
+            onChange(newOption); // Notifica con la nueva opción
           }}
         />
       </div>

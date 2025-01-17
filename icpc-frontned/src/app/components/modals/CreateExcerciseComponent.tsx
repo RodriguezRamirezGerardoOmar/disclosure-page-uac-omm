@@ -46,7 +46,8 @@ const CreateExcerciseComponent = () => {
   
   const selectRef = useRef<{ clear: () => void }>(null); 
   const [selectedTags, setSelectedTags] = useState<Tags[]>([]); // Controlar tags seleccionados
-  const [selectedCategory, setSelectedCategory] = useState<Option | null>(null); // Controlar categoría seleccionada
+  const [selectedCategory, setSelectedCategory] = useState<Option | null>(null); // Controlar categoría seleccionada  
+  const [selectedMemory, setSelectedMemory] = useState<Option | null>(null); // Controlar categoría seleccionada
 
   let [tags, setTags] = useState<Tags[]>(tagList)
   let [categories, setCategories] = useState<Categories[]>(categoriesList)
@@ -153,6 +154,7 @@ const CreateExcerciseComponent = () => {
   const clearForm = () => {
     methods.reset(); // Resetea todos los campos del formulario
     setSelectedCategory(null); // Reinicia el estado controlado de categoría
+    setSelectedMemory(null); // Reinicia el estado controlado de memoria
     setUpdate(!update); // Fuerza la actualización de los selectores si es necesario
     if (selectRef.current) {
       selectRef.current.clear(); // Limpia el selector de categoría
@@ -225,17 +227,16 @@ const CreateExcerciseComponent = () => {
               name='difficulty'
             />
             <Controller
-              defaultValue={{ label: '', value: '' }} // Define un valor por defecto
+              defaultValue={[]}
               control={methods.control}
               render={({ field }) => (
                 <InputSelectorCreateComponent
                   label='Límite de tiempo'
                   id='time'
                   onChange={val => field.onChange(val)}
-                  options={timeLimits.map(item => ({
-                    label: item.timeLimit.toString(),
-                    value: item.id,
-                  }))}
+                  options={timeLimits.map(item => {
+                    return { label: item.timeLimit.toString(), value: item.id }
+                  })}
                   handleCreate={handleCreateTimeLimit}
                   selectedOption={field.value}
                 />
