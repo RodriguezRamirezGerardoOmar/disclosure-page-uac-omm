@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { Controller, FieldValues, SubmitHandler, useForm } from 'react-hook-form'
 import { BasicPanelComponent } from '../panels/BasicPanelComponent'
 import LogoComponent from '../LogoComponent'
@@ -43,6 +43,11 @@ const CreateExcerciseComponent = () => {
   const createTimeLimit = useUtilsStore(state => state.createTimeLimit)
   const createCategory = useUtilsStore(state => state.createCategory)
 
+  
+  const selectRef = useRef<{ clear: () => void }>(null); 
+  const [selectedTags, setSelectedTags] = useState<Tags[]>([]); // Controlar tags seleccionados
+  const [selectedCategory, setSelectedCategory] = useState<Option | null>(null); // Controlar categoría seleccionada
+
   let [tags, setTags] = useState<Tags[]>(tagList)
   let [categories, setCategories] = useState<Categories[]>(categoriesList)
   let [difficulty, setDifficulty] = useState<Difficulties[]>(difficultiesList)
@@ -71,8 +76,8 @@ const CreateExcerciseComponent = () => {
   const onSubmit: SubmitHandler<FieldValues> = async data => {
     const response = await createExcercise({
       name: String(data.name),
-      category: { name: data.category.label, id: data.category.value},
-      difficulty: {name: data.difficulty.label, id: data.difficulty.id},
+      category: { name: data.category.label, id: data.category.value },
+      difficulty: { name: data.difficulty.label, id: data.difficulty.id },
       time: { value: parseInt(data.time.label), id: data.time.id },
       memoryId: data.memoryId.value,
       input: String(data.input),
@@ -146,8 +151,13 @@ const CreateExcerciseComponent = () => {
   }
 
   const clearForm = () => {
-    methods.reset() // Resetea todos los campos del formulario
-  }
+    methods.reset(); // Resetea todos los campos del formulario
+    setSelectedCategory(null); // Reinicia el estado controlado de categoría
+    setUpdate(!update); // Fuerza la actualización de los selectores si es necesario
+    if (selectRef.current) {
+      selectRef.current.clear(); // Limpia el selector de categoría
+    }
+  };
 
   return (
     <form
@@ -178,13 +188,16 @@ const CreateExcerciseComponent = () => {
             <Controller
               defaultValue={[]}
               control={methods.control}
-              rules={{required:true}}
+              rules={{ required: true }}
               render={({ field }) => (
                 <InputSelectorCreateComponent
                   label='Categoría'
                   id='category'
+                  ref={selectRef} // Conectar referencia correctamente
                   onChange={val => {
-                    field.onChange(val)}}
+                    field.onChange(val)
+                    setSelectedCategory(val) // Actualiza el estado controlado
+                  }}
                   options={categories.map(item => {
                     return { label: item.name, value: item.id }
                   })}
@@ -197,7 +210,7 @@ const CreateExcerciseComponent = () => {
             <Controller
               defaultValue={[]}
               control={methods.control}
-              rules={{required:true}}
+              rules={{ required: true }}
               render={({ field }) => (
                 <InputSelectorComponent
                   label='Nivel de dificultad'
@@ -212,16 +225,17 @@ const CreateExcerciseComponent = () => {
               name='difficulty'
             />
             <Controller
-              defaultValue={[]}
+              defaultValue={{ label: '', value: '' }} // Define un valor por defecto
               control={methods.control}
               render={({ field }) => (
                 <InputSelectorCreateComponent
                   label='Límite de tiempo'
                   id='time'
                   onChange={val => field.onChange(val)}
-                  options={timeLimits.map(item => {
-                    return { label: item.timeLimit.toString(), value: item.id }
-                  })}
+                  options={timeLimits.map(item => ({
+                    label: item.timeLimit.toString(),
+                    value: item.id,
+                  }))}
                   handleCreate={handleCreateTimeLimit}
                   selectedOption={field.value}
                 />
@@ -236,7 +250,8 @@ const CreateExcerciseComponent = () => {
                   label='Límite de memoria'
                   id='memoryId'
                   onChange={val => {
-                    field.onChange(val)}}
+                    field.onChange(val)
+                  }}
                   options={memoryLimits.map(item => {
                     const label: number = item.memoryLimit * 64
                     return { label: label.toString(), value: item.id }
@@ -268,7 +283,7 @@ const CreateExcerciseComponent = () => {
               name='restriction'
               defaultValue=''
               control={methods.control}
-              rules={{required:true}}
+              rules={{ required: true }}
               render={({ field }) => (
                 <MarkdownAreaComponent
                   value={field.value}
@@ -278,7 +293,7 @@ const CreateExcerciseComponent = () => {
                 />
               )}
             />
-            
+
             <TextFieldComponent
               labelText='Pista'
               register={methods.register}
@@ -293,12 +308,13 @@ const CreateExcerciseComponent = () => {
               defaultValue={[]}
               control={methods.control}
               render={({ field }) => (
-                <TagSelectorComponent
-                  id='tagSelector'
-                  options={tags}
-                  selectedTags={field.value}
-                  onChange={val => field.onChange(val)}
-                />
+              <TagSelectorComponent
+                id='tagSelector2'
+                options={tags}
+                selectedTags={field.value}
+                onChange={val => field.onChange(val)}
+                onClear={() => field.onChange([])} // Reinicia las etiquetas seleccionadas
+              />
               )}
               rules={{ required: true }}
             />
@@ -317,7 +333,7 @@ const CreateExcerciseComponent = () => {
               name='description'
               defaultValue=''
               control={methods.control}
-              rules={{required:true}}
+              rules={{ required: true }}
               render={({ field }) => (
                 <MarkdownAreaComponent
                   value={field.value}
@@ -345,7 +361,7 @@ const CreateExcerciseComponent = () => {
               name='solution'
               defaultValue=''
               control={methods.control}
-              rules={{required:true}}
+              rules={{ required: true }}
               render={({ field }) => (
                 <MarkdownAreaComponent
                   value={field.value}
@@ -365,9 +381,8 @@ const CreateExcerciseComponent = () => {
             type='button'
             onClick={clearForm}
             className='inline-flex items-center gap-x-2 rounded-md bg-primary text-complementary px-3.5 py-2.5 
-              font-medium shadow-sm hover:bg-secondary focus-visible:outline 
-              focus-visible:outline-offset-2 focus-visible:outline-complementary'
-            >
+    font-medium shadow-sm hover:bg-secondary focus-visible:outline 
+    focus-visible:outline-offset-2 focus-visible:outline-complementary'>
             Borrar formulario
           </button>
         </div>
