@@ -12,11 +12,12 @@ interface IImageInputProps {
 }
 
 /*
-Input: a register function, an onChange handler, and reset logic
+Input: a register function, a setValue function and a field name
 Output: a form input to upload an image
 Return value: a form input to upload an image to a form
-Variables: register, onChange, fieldName, fileElem, image, setSelectedFile
-Date: 19 - 01 - 2025
+Function: creates a form input component
+Variables: register, setValue, fieldName, fileElem, selectedFile, handleFileChange
+Date: 21 - 03 - 2024
 Author: Gerardo Omar Rodriguez Ramirez
 */
 
