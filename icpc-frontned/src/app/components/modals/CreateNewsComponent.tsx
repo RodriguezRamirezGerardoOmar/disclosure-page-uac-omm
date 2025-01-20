@@ -27,7 +27,10 @@ Author: Gerardo Omar Rodriguez Ramirez
 const CreateNewsComponent = () => {
   const methods = useForm<FieldValues>()
   const createNews = useNewsStore(state => state.createNews)
-  const createImage = useUtilsStore((state: { createImage: (image: File) => Promise<IApiResponse<{}> | TResponseBasicError> }) => state.createImage)
+  const createImage = useUtilsStore(
+    (state: { createImage: (image: File) => Promise<IApiResponse<{}> | TResponseBasicError> }) => state.createImage
+  )
+  const [resetImage, setResetImage] = React.useState(false) // Controla el reseteo de la imagen
 
   const onSubmit: SubmitHandler<FieldValues> = async formData => {
     const uploadedImage = await createImage(formData.file)
@@ -72,10 +75,10 @@ const CreateNewsComponent = () => {
   }
 
   const clearForm = () => {
-    methods.reset() // Resetea todos los campos del formulario
+    methods.reset() // Resetea los campos del formulario
+    setResetImage(prev => !prev) // Alterna el estado para forzar la reactividad
   }
-
-
+  
   return (
     <form
       onSubmit={methods.handleSubmit(onSubmit)}
@@ -105,13 +108,14 @@ const CreateNewsComponent = () => {
             name='file'
             defaultValue={null}
             control={methods.control}
-            rules={{required:true}}
+            rules={{ required: true }}
             render={({ field }) => (
               <ImageInputComponent
                 value={field.value}
                 register={methods.register}
                 onChange={field.onChange}
                 fieldName='file'
+                resetImage={resetImage} // Pasamos el estado de reseteo
               />
             )}
           />
@@ -137,8 +141,7 @@ const CreateNewsComponent = () => {
             onClick={clearForm}
             className='inline-flex items-center gap-x-2 rounded-md bg-primary text-complementary px-3.5 py-2.5 
               font-medium shadow-sm hover:bg-secondary focus-visible:outline 
-              focus-visible:outline-offset-2 focus-visible:outline-complementary'
-            >
+              focus-visible:outline-offset-2 focus-visible:outline-complementary'>
             Borrar formulario
           </button>
         </div>

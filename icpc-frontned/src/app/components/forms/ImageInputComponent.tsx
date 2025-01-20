@@ -1,30 +1,52 @@
 'use client'
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import { FieldValues, UseFormRegister } from 'react-hook-form'
 import { TextComponent } from '../text/TextComponent'
 
 interface IImageInputProps {
   register: UseFormRegister<FieldValues>
-  onChange: (newValue: File) => void
+  onChange: (newValue: File | null) => void
   fieldName: string
-  value: any
+  value: File | null
+  resetImage: boolean
 }
 
 /*
-Input: a register function, a setValue function and a field name
+Input: a register function, an onChange handler, and reset logic
 Output: a form input to upload an image
 Return value: a form input to upload an image to a form
-Function: creates a form input component
-Variables: register, setValue, fieldName, fileElem, selectedFile, handleFileChange
-Date: 21 - 03 - 2024
+Variables: register, onChange, fieldName, fileElem, image, setSelectedFile
+Date: 19 - 01 - 2025
 Author: Gerardo Omar Rodriguez Ramirez
 */
 
-const ImageInputComponent = ({ ...props }: Readonly<IImageInputProps>) => {
+const ImageInputComponent = ({ resetImage, ...props }: Readonly<IImageInputProps>) => {
   const fileElem = useRef<HTMLInputElement>(null)
-  const [image, setImage] = useState('')
+  const [image, setImage] = useState<string | null>(null)
   const [selectedFile, setSelectedFile] = useState(false)
   const iconURL = '/icons/image.svg'
+
+  // Resetear imagen cuando la prop resetImage cambie
+  useEffect(() => {
+    if (resetImage) {
+      setImage(null)
+      setSelectedFile(false)
+      props.onChange(null) 
+    }
+  }, [resetImage, props])
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0] || null
+    if (file) {
+      setImage(URL.createObjectURL(file))
+      props.onChange(file)
+      setSelectedFile(true)
+    } else {
+      setImage(null)
+      props.onChange(null)
+      setSelectedFile(false)
+    }
+  }
 
   return (
     <button
@@ -36,8 +58,8 @@ const ImageInputComponent = ({ ...props }: Readonly<IImageInputProps>) => {
       }}>
       <img
         className={selectedFile ? 'mx-auto' : 'mx-auto h-6 w-6'}
-        src={selectedFile ? image : iconURL}
-        alt='ícono'
+        src={selectedFile && image ? image : iconURL}
+        alt='Ícono de subida'
       />
       <TextComponent
         className='mt-2 block font-semibold text-gray-900 dark:text-dark-accent'
@@ -50,13 +72,7 @@ const ImageInputComponent = ({ ...props }: Readonly<IImageInputProps>) => {
         ref={fileElem}
         accept='image/*'
         className='hidden'
-        onChange={e => {
-          if (e.target.files) {
-            setImage(URL.createObjectURL(e.target.files[0]))
-            props.onChange(e.target.files[0])
-            setSelectedFile(true)
-          }
-        }}
+        onChange={handleFileChange}
       />
     </button>
   )
