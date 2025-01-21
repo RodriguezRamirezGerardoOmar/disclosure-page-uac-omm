@@ -18,7 +18,6 @@ import {
 } from 'src/ticket/entities/ticket.entity';
 import { User } from 'src/users/entities/user.entity';
 import { Comment } from 'src/comment/entities/comment.entity';
-import { GetCountDto } from 'src/notes/dto/get-count.dto';
 
 @Injectable()
 export class ExcercisesService {

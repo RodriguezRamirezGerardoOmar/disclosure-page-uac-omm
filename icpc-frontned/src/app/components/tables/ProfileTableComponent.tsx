@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Dispatch, SetStateAction } from 'react'
 import ThreeDotComponent from '../dropdowns/ThreeDotComponent'
 import { IProfileTableItem, AllTabs } from '@/constants/types'
 import { TextComponent } from '../text/TextComponent'
@@ -8,10 +8,13 @@ import useNoteStore from '@/store/useNoteStore'
 import useNewsStore from '@/store/useNewsStore'
 import useUtilsStore from '@/store/useUtilsStore'
 import useStore from '@/store/useStore'
+import { toast } from 'sonner'
 
 interface IProfileTableComponentProps {
   data: IProfileTableItem[]
   itemType: string
+  update: boolean
+  setUpdate: Dispatch<SetStateAction<boolean>>
 }
 
 const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => {
@@ -28,48 +31,77 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
   const handleEdit = (id: string, itemType: string) => {
     console.log('Le picó en Editar', id, itemType)
   }
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
+    let response;
     switch(props.itemType) {
       case AllTabs.EXERCISES:
-        deleteExercise(id)
+        response = await deleteExercise(id)
+        if ('statusCode' in response && response.statusCode === 200) {
+          toast.success(response.message, { duration: 5000, style: { backgroundColor: 'green', color: 'white' } })
+        }
         console.log('Borró un ejercicio', id)
         break;
       case AllTabs.NOTES:
-        deleteNote(id)
-        console.log('Borró un apunte', id)
+        response = await deleteNote(id)
+        if ('statusCode' in response && response.statusCode === 200) {
+          toast.success(response.message, { duration: 5000, style: { backgroundColor: 'green', color: 'white' } })
+        }
+        console.log(response)
         break;
       case AllTabs.NEWS:
-        deleteNews(id)
+        response = await deleteNews(id)
+        if ('statusCode' in response && response.statusCode === 200) {
+          toast.success(response.message, { duration: 5000, style: { backgroundColor: 'green', color: 'white' } })
+        }
         console.log('Borró una noticia', id)
         break;
       case AllTabs.CATEGORIES:
-        deleteCategory(id)
+        response = await deleteCategory(id)
+        if ('statusCode' in response && response.statusCode === 200) {
+          toast.success(response.message, { duration: 5000, style: { backgroundColor: 'green', color: 'white' } })
+        }
         console.log('Borró una categoría', id)
         break;
       case AllTabs.TAGS:
-        deleteTag(id)
+        response = await deleteTag(id)
+        if ('statusCode' in response && response.statusCode === 200) {
+          toast.success(response.message, { duration: 5000, style: { backgroundColor: 'green', color: 'white' } })
+        }
         console.log('Borró una tag', id)
         break;
       case AllTabs.TIME:
-        deleteTimeLimit(id)
+        response = await deleteTimeLimit(id)
+        if ('statusCode' in response && response.statusCode === 200) {
+          toast.success(response.message, { duration: 5000, style: { backgroundColor: 'green', color: 'white' } })
+        }
         console.log('Borró un límite de tiempo', id)
         break;
       case AllTabs.MEMORY:
-        deleteMemoryLimit(id)
+        response = await deleteMemoryLimit(id)
+        if ('statusCode' in response && response.statusCode === 200) {
+          toast.success(response.message, { duration: 5000, style: { backgroundColor: 'green', color: 'white' } })
+        }
         console.log('Borró un límite de memoria', id)
         break;
       case AllTabs.DIFFICULTY:
-        deleteDifficulty(id)
+        response = await deleteDifficulty(id)
+        if ('statusCode' in response && response.statusCode === 200) {
+          toast.success(response.message, { duration: 5000, style: { backgroundColor: 'green', color: 'white' } })
+        }
         console.log('Borró una dificultad', id)
         break;
       case AllTabs.ACCOUNT:
-        deleteUser(id)
+        response = await deleteUser(id)
+        if ('statusCode' in response && response.statusCode === 200) {
+          toast.success(response.message, { duration: 5000, style: { backgroundColor: 'green', color: 'white' } })
+        }
         console.log('Borró un usuario', id)
         break;
       default:
         console.log('No se encontró el tipo de item')
         break;
       }
+    props.setUpdate(!props.update)
   }
   const tableData =
     props.data.length !== 0 ? (
