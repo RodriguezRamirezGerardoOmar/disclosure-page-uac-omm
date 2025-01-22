@@ -314,6 +314,7 @@ export class ExcercisesService {
         .getMany();
     }
   }
+
   async update(id: string, updateExcerciseDto: UpdateExcerciseDto) {
     const excercise = await this.exerciseRepository.findOneBy({ id });
     return await this.memoryRepository.save({
@@ -377,7 +378,7 @@ export class ExcercisesService {
     });
   }
 
-  async count() {
+  async getCount() {
     const count = await this.exerciseRepository.find();
     console.log(count);
     return { count };
