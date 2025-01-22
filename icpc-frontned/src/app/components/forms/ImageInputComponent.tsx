@@ -28,10 +28,16 @@ const ImageInputComponent = forwardRef(({ cover, ...props }: IImageInputProps, r
   const iconURL = '/icons/image.svg'
 
   useImperativeHandle(ref, () => ({
-    resetImageInput: () => {
-      setImage(null)
-      setSelectedFile(false)
-      props.onChange(null)
+    resetImageInput: (newCover: string | null = null) => {
+      if (newCover) {
+        setImage(`${process.env.NEXT_PUBLIC_API_URL}api/v1/image/${newCover}`)
+        setSelectedFile(true)
+        props.onChange(null) // Opcional, asegura que el valor del input no interfiera
+      } else {
+        setImage(null)
+        setSelectedFile(false)
+        props.onChange(null)
+      }
       if (fileElem.current) {
         fileElem.current.value = ''
       }

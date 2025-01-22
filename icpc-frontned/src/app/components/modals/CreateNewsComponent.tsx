@@ -107,9 +107,35 @@ const CreateNewsComponent = (props: CreateNewsComponentProps) => {
   }
 
   const clearForm = () => {
-    methods.reset()
-    setCoverImage('')
-    imageInputRef.current?.resetImageInput() // Resetea el campo de imagen
+    if (props.id) {
+      // Si hay un ID, recargamos los datos originales de la noticia
+      const fetchNews = async () => {
+        const news = await getNewsArticle(props.id!)
+        if (news) {
+          methods.reset({
+            title: news.title,
+            file: process.env.NEXT_PUBLIC_API_URL + 'api/v1/image/' + news.imageId.id,
+            content: news.body
+          })
+          setCoverImage(news.imageId.id)
+          imageInputRef.current?.resetImageInput(news.imageId.id) // Restablece la imagen original
+        } else {
+          toast.error('No se pudo recargar la noticia.', {
+            duration: 5000,
+            style: {
+              backgroundColor: '#ff0000',
+              color: '#ffffff'
+            }
+          })
+        }
+      }
+      fetchNews()
+    } else {
+      // Si no hay ID, limpia completamente el formulario
+      methods.reset()
+      setCoverImage('')
+      imageInputRef.current?.resetImageInput(null)
+    }
   }
 
   return (
