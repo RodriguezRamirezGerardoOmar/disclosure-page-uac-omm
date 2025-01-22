@@ -378,7 +378,7 @@ export class ExcercisesService {
     });
   }
 
-  async count() {
+  async getCount() {
     const count = await this.exerciseRepository.find();
     console.log(count);
     return { count };

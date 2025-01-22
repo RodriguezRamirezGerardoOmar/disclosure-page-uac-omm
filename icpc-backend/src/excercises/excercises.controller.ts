@@ -27,7 +27,7 @@ import { LoggerService } from '../services/logger.service'; // Importa el Logger
 @ApiTags('Exercises')
 export class ExcercisesController {
   constructor(
-    private readonly excercisesService: ExcercisesService,
+    private readonly exercisesService: ExcercisesService,
     private readonly loggerService: LoggerService // Inyecta el LoggerService
   ) {}
 
@@ -41,7 +41,7 @@ export class ExcercisesController {
   @ApiBadRequestResponse({ description: 'Bad request' })
   @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
   async create(@Body() createExcerciseDto: CreateExcerciseDto) {
-    const createdExercise = await this.excercisesService.create(
+    const createdExercise = await this.exercisesService.create(
       createExcerciseDto
     );
     this.loggerService.logChange('excercises', 'create', createdExercise); // Log de la operación
@@ -75,17 +75,7 @@ export class ExcercisesController {
   @ApiBadRequestResponse({ description: 'Bad request' })
   @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
   count() {
-    return this.exercisesService.count();
-  }
-
-  @Get('count')
-  @ApiCreatedResponse({
-    description: 'The exercise count has been successfully obtained.'
-  })
-  @ApiBadRequestResponse({ description: 'Bad request' })
-  @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
-  count() {
-    return this.excercisesService.getCount();
+    return this.exercisesService.getCount();
   }
 
   @Post('/list')
@@ -115,7 +105,7 @@ export class ExcercisesController {
     @Param('id') id: string,
     @Body() updateExcerciseDto: UpdateExcerciseDto
   ) {
-    const updatedExercise = await this.excercisesService.update(
+    const updatedExercise = await this.exercisesService.update(
       id,
       updateExcerciseDto
     );
@@ -127,6 +117,7 @@ export class ExcercisesController {
   }
 
   @Delete(':id/:user')
+  @Delete(':id/:user')
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
   @ApiCreatedResponse({
@@ -135,7 +126,7 @@ export class ExcercisesController {
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
   async remove(@Param('id') id: string, @Param('user') user: string) {
-    const deletedExercise = await this.excercisesService.remove(id, user);
+    const deletedExercise = await this.exercisesService.remove(id, user);
     this.loggerService.logChange('excercises', 'delete', { id }); // Log de la operación
     return deletedExercise;
   }
