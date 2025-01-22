@@ -7,6 +7,12 @@ import { User } from './entities/user.entity';
 import { Role } from 'src/roles/entities/role.entity';
 import * as bcrypt from 'bcrypt';
 import { RoleEnum } from 'src/common/enums/role.enum';
+import { Comment } from 'src/comment/entities/comment.entity';
+import {
+  Ticket,
+  TicketOperation,
+  TicketStatus
+} from 'src/ticket/entities/ticket.entity';
 
 // This file contains all the logic to perform the database queries.
 
@@ -16,7 +22,11 @@ export class UsersService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     @InjectRepository(Role)
-    private readonly roleRepository: Repository<Role>
+    private readonly roleRepository: Repository<Role>,
+    @InjectRepository(Comment)
+    private readonly commentRepository: Repository<Comment>,
+    @InjectRepository(Ticket)
+    private readonly ticketRepository: Repository<Ticket>
   ) {}
 
   async create(createUserDto: CreateUserDto) {
@@ -91,7 +101,20 @@ export class UsersService {
 
   async remove(id: string) {
     const user = await this.userRepository.findOneBy({ id });
-    return await this.userRepository.remove(user);
+    const ticketCommentBody = `El usuario ${user.userName} ha sido eliminado`;
+    const comment = this.commentRepository.create({ body: ticketCommentBody });
+    const savedComment = await this.commentRepository.save(comment);
+    const ticket = this.ticketRepository.create({
+      operation: TicketOperation.DELETE,
+      status: TicketStatus.ACCEPTED,
+      commentId: savedComment
+    });
+    const savedTicket = await this.ticketRepository.save(ticket);
+    if (savedTicket) {
+      return await this.userRepository.remove(user);
+    } else {
+      throw new BadRequestException('Error al eliminar el usuario');
+    }
   }
 
   async findOneByUsername(username: string) {

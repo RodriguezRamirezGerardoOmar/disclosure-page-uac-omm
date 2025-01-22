@@ -35,12 +35,12 @@ interface ExcerciseState {
   excerciseCount: number
 }
 
-// Acciones
 interface Actions {
-  createExcercise: (excercise: ICreateExcercise) => Promise<IApiResponse | TResponseBasicError>
-  getExcercise: (id: string) => Promise<Exercise>
-  getExcerciseList: (tags: Tags[], category?: string, difficulty?: string) => Promise<Exercise[]>
+  createExcercise: (exercise: ICreateExcercise) => Promise<IApiResponse | TResponseBasicError>
+  getExercise: (id: string) => Promise<Exercise>
+  getExerciseList: (tags: Tags[], category?: string, difficulty?: string) => Promise<Exercise[]>
   search: (query: string) => Promise<Exercise[]>
+  deleteExercise: (id: string) => Promise<IApiResponse | TResponseBasicError>
   getCount: () => Promise<number>
 }
 
@@ -66,7 +66,7 @@ const useExcerciseStore = create<Actions & ExcerciseState>()(
           }
         },
 
-        getExcercise: async (id: string) => {
+        getExercise: async (id: string) => {
           try {
             const response = await api.get(`/api/v1/excercises/${id}`)
             return response.data
@@ -75,7 +75,7 @@ const useExcerciseStore = create<Actions & ExcerciseState>()(
           }
         },
 
-        getExcerciseList: async (tags: Tags[], category?: string, difficulty?: string) => {
+        getExerciseList: async (tags: Tags[], category?: string, difficulty?: string) => {
           try {
             const response = await api.post('/api/v1/excercises/list', { tags, category, difficulty })
             return response.data
@@ -103,6 +103,19 @@ const useExcerciseStore = create<Actions & ExcerciseState>()(
           } catch (error: any) {
             console.error('Error getting excercise count:', error)
             return 0
+          }
+        },
+        
+        deleteExercise: async (id: string) => {
+          try {
+            const response = await api.delete(`/api/v1/excercises/${id}/${useAuthStore.getState().user?.id}`, {
+              headers: {
+                Authorization: `Bearer ${useAuthStore.getState().token}`
+              }
+            })
+            return response.data
+          } catch (error: any) {
+            return error.response.data
           }
         }
       }),

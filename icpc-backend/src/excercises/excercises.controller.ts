@@ -21,11 +21,15 @@ import {
 } from '@nestjs/swagger';
 import { AuthGuard } from 'src/auth/guard/auth.guard';
 import { GetExerciseListDto } from './dto/get-exercise-list.dto';
+import { LoggerService } from '../services/logger.service'; // Importa el LoggerService
 
 @Controller('excercises')
-@ApiTags('Excercises')
+@ApiTags('Exercises')
 export class ExcercisesController {
-  constructor(private readonly excercisesService: ExcercisesService) {}
+  constructor(
+    private readonly exercisesService: ExcercisesService,
+    private readonly loggerService: LoggerService // Inyecta el LoggerService
+  ) {}
 
   @Post()
   @ApiBearerAuth()
@@ -36,8 +40,12 @@ export class ExcercisesController {
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiBadRequestResponse({ description: 'Bad request' })
   @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
-  create(@Body() createExcerciseDto: CreateExcerciseDto) {
-    return this.excercisesService.create(createExcerciseDto);
+  async create(@Body() createExcerciseDto: CreateExcerciseDto) {
+    const createdExercise = await this.exercisesService.create(
+      createExcerciseDto
+    );
+    this.loggerService.logChange('excercises', 'create', createdExercise); // Log de la operación
+    return createdExercise;
   }
 
   @Get()
@@ -47,7 +55,7 @@ export class ExcercisesController {
   @ApiBadRequestResponse({ description: 'Bad request' })
   @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
   findAll() {
-    return this.excercisesService.findAll();
+    return this.exercisesService.findAll();
   }
 
   @Get(':id')
@@ -57,12 +65,22 @@ export class ExcercisesController {
   @ApiBadRequestResponse({ description: 'Bad request' })
   @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
   findOne(@Param('id') id: string) {
-    return this.excercisesService.findOne(id);
+    return this.exercisesService.findOne(id);
+  }
+
+  @Get('count')
+  @ApiCreatedResponse({
+    description: 'The exercise count has been successfully obtained.'
+  })
+  @ApiBadRequestResponse({ description: 'Bad request' })
+  @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
+  count() {
+    return this.exercisesService.getCount();
   }
 
   @Post('/list')
   getList(@Body() body: GetExerciseListDto) {
-    return this.excercisesService.getList(body);
+    return this.exercisesService.getList(body);
   }
 
   @Post('search/:query')
@@ -72,7 +90,7 @@ export class ExcercisesController {
   @ApiBadRequestResponse({ description: 'Bad request' })
   @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
   search(@Param('query') query: string) {
-    return this.excercisesService.search(query);
+    return this.exercisesService.search(query);
   }
 
   @Patch(':id')
@@ -83,14 +101,23 @@ export class ExcercisesController {
   })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
-  update(
+  async update(
     @Param('id') id: string,
     @Body() updateExcerciseDto: UpdateExcerciseDto
   ) {
-    return this.excercisesService.update(id, updateExcerciseDto);
+    const updatedExercise = await this.exercisesService.update(
+      id,
+      updateExcerciseDto
+    );
+    this.loggerService.logChange('excercises', 'update', {
+      id,
+      ...updateExcerciseDto
+    }); // Log de la operación
+    return updatedExercise;
   }
 
-  @Delete(':id')
+  @Delete(':id/:user')
+  @Delete(':id/:user')
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
   @ApiCreatedResponse({
@@ -98,12 +125,9 @@ export class ExcercisesController {
   })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
-  remove(@Param('id') id: string) {
-    return this.excercisesService.remove(id);
-  }
-
-  @Get('count')
-  async getCount(): Promise<number> {
-    return this.excercisesService.getCount();
+  async remove(@Param('id') id: string, @Param('user') user: string) {
+    const deletedExercise = await this.exercisesService.remove(id, user);
+    this.loggerService.logChange('excercises', 'delete', { id }); // Log de la operación
+    return deletedExercise;
   }
 }

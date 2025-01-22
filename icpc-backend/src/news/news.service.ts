@@ -3,8 +3,7 @@ import { CreateNewsDto } from './dto/create-news.dto';
 import { UpdateNewsDto } from './dto/update-news.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { News } from './entities/news.entity';
-import { Repository } from 'typeorm';
-import { Like } from 'typeorm';
+import { Repository, Like } from 'typeorm';
 import {
   Ticket,
   TicketOperation,
@@ -87,9 +86,50 @@ export class NewsService {
     return await this.newsRepository.save({ ...news, ...updateNewsDto });
   }
 
-  async remove(id: string) {
+  async remove(id: string, user: string) {
     const news = await this.newsRepository.findOneBy({ id: id });
-    return await this.newsRepository.remove(news);
+    const userId = await this.userRepository
+      .createQueryBuilder('user')
+      .where('user.id = :userId', { userId: user })
+      .leftJoinAndSelect('user.role', 'role')
+      .getOne();
+    if (userId.role.role === 'admin') {
+      const commentBody = `${userId.name} ha eliminado la noticia con el título ${news.title}`;
+      const comment = this.commentRepository.create({
+        body: commentBody
+      });
+      const commentId = await this.commentRepository.save(comment);
+      const ticket = this.ticketRepository.create({
+        itemType: TicketType.NEWS,
+        operation: TicketOperation.DELETE,
+        status: TicketStatus.ACCEPTED,
+        originalNewsId: news,
+        commentId: commentId
+      });
+      const savedTicket = await this.ticketRepository.save(ticket);
+      if (savedTicket) {
+        return await this.newsRepository.remove(news);
+      } else {
+        throw new BadRequestException('Error al eliminar la noticia');
+      }
+    } else {
+      const commentBody = `${userId.name} ha eliminado la noticia con el título ${news.title}`;
+      const comment = this.commentRepository.create({
+        body: commentBody
+      });
+      const commentId = await this.commentRepository.save(comment);
+      const ticket = this.ticketRepository.create({
+        itemType: TicketType.NEWS,
+        operation: TicketOperation.DELETE,
+        status: TicketStatus.PENDING,
+        originalNewsId: news,
+        commentId: commentId
+      });
+      const savedTicket = await this.ticketRepository.save(ticket);
+      if (savedTicket) {
+        return savedTicket;
+      }
+    }
   }
 
   async search(query: string): Promise<News[]> {

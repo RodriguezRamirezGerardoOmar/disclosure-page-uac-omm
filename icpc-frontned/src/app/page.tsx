@@ -24,21 +24,24 @@ export default async function Home() {
     {
       title: 'Noticias',
       icon: 'NewspaperIcon',
-      info: 'Mantente al día con los eventos más recientes y las actualizaciones del mundo tecnológico y académico. Explora nuestras noticias para estar siempre informado.',
+      info: `Mantente al día con los eventos más recientes y las actualizaciones del mundo tecnológico y académico.
+       Explora nuestras noticias para estar siempre informado.`,
       href: 'newslist',
       type: 2
     },
     {
       title: 'Ejercicios',
       icon: 'ListBulletIcon',
-      info: 'Pon a prueba tus habilidades con nuestra amplia colección de ejercicios diseñados para fortalecer tus conocimientos en programación y resolver problemas desafiantes.',
+      info: `Pon a prueba tus habilidades con nuestra amplia colección de ejercicios diseñados para fortalecer tus conocimientos en programación
+       y resolver problemas desafiantes.`,
       href: 'exercises',
       type: 0
     },
     {
       title: 'Apuntes',
       icon: 'BookOpenIcon',
-      info: 'Accede a una variedad de apuntes detallados que te ayudarán a consolidar tus conocimientos y profundizar en conceptos clave para tu aprendizaje.',
+      info: `Accede a una variedad de apuntes detallados que te ayudarán a consolidar tus conocimientos y
+       profundizar en conceptos clave para tu aprendizaje.`,
       href: 'notelist',
       type: 1
     }

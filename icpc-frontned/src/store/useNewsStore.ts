@@ -27,6 +27,8 @@ interface Actions {
   getNewsArticle: (id: string) => Promise<News>;
   search: (query: string) => Promise<News[]>;
   getCount: () => Promise<number>; // Acción para obtener el conteo
+  deleteNews: (id: string) => Promise<IApiResponse | TResponseBasicError>
+  
 }
 
 const useNewsStore = create<Actions & NewsState>()(
@@ -88,6 +90,32 @@ const useNewsStore = create<Actions & NewsState>()(
           } catch (error: any) {
             console.error('Error getting news count:', error);
             return 0; 
+          }
+        },
+
+        deleteNews: async (id: string) => {
+          try {
+            const response = await api.delete(`/api/v1/news/${id}/${useAuthStore.getState().user?.id}`, {
+              headers: {
+                Authorization: `Bearer ${useAuthStore.getState().token}`
+              }
+            });
+            return response.data;
+          } catch (error: any) {
+            return error.response.data;
+          }
+        },
+
+        deleteNews: async (id: string) => {
+          try {
+            const response = await api.delete(`/api/v1/news/${id}/${useAuthStore.getState().user?.id}`, {
+              headers: {
+                Authorization: `Bearer ${useAuthStore.getState().token}`
+              }
+            });
+            return response.data;
+          } catch (error: any) {
+            return error.response.data;
           }
         }
       }),
