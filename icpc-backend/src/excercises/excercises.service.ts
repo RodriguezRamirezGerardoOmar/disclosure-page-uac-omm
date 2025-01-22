@@ -375,7 +375,6 @@ export class ExcercisesService {
     return await this.exerciseRepository.find({
       where: { title: Like(`%${query}%`) },
       take: 5
-      take: 5
     });
   }
 

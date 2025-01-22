@@ -277,8 +277,4 @@ export class NotesService {
       where: { isVisible: true }
     });
   }
-
-  async getCount(): Promise<number> {
-    return this.noteRepository.countBy({ isVisible: true });
-  }
 }

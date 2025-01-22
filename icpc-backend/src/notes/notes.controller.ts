@@ -118,9 +118,4 @@ export class NotesController {
     this.loggerService.logChange('notes', 'delete', { id }); // Log de la operación
     return deletedNote;
   }
-
-  @Get('notes/count')
-  async getCount(): Promise<number> {
-    return this.notesService.getCount();
-  }
 }
