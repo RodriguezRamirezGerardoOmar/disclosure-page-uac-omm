@@ -29,7 +29,7 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
   const deleteUser = useStore(state => state.deleteUser)
 
   const handleEdit = (id: string, itemType: string) => {
-    console.log('Le picó en Editar', id, itemType)
+    toast.success('Le picó en Editar' + id + itemType, { duration: 5000, style: { backgroundColor: 'green', color: 'white' } })
   }
   const handleDelete = async (id: string) => {
     let response;
@@ -39,66 +39,54 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
         if ('statusCode' in response && response.statusCode === 200) {
           toast.success(response.message, { duration: 5000, style: { backgroundColor: 'green', color: 'white' } })
         }
-        console.log('Borró un ejercicio', id)
         break;
       case AllTabs.NOTES:
         response = await deleteNote(id)
         if ('statusCode' in response && response.statusCode === 200) {
           toast.success(response.message, { duration: 5000, style: { backgroundColor: 'green', color: 'white' } })
         }
-        console.log(response)
         break;
       case AllTabs.NEWS:
         response = await deleteNews(id)
         if ('statusCode' in response && response.statusCode === 200) {
           toast.success(response.message, { duration: 5000, style: { backgroundColor: 'green', color: 'white' } })
         }
-        console.log('Borró una noticia', id)
         break;
       case AllTabs.CATEGORIES:
         response = await deleteCategory(id)
         if ('statusCode' in response && response.statusCode === 200) {
           toast.success(response.message, { duration: 5000, style: { backgroundColor: 'green', color: 'white' } })
         }
-        console.log('Borró una categoría', id)
         break;
       case AllTabs.TAGS:
         response = await deleteTag(id)
         if ('statusCode' in response && response.statusCode === 200) {
           toast.success(response.message, { duration: 5000, style: { backgroundColor: 'green', color: 'white' } })
         }
-        console.log('Borró una tag', id)
         break;
       case AllTabs.TIME:
         response = await deleteTimeLimit(id)
         if ('statusCode' in response && response.statusCode === 200) {
           toast.success(response.message, { duration: 5000, style: { backgroundColor: 'green', color: 'white' } })
         }
-        console.log('Borró un límite de tiempo', id)
         break;
       case AllTabs.MEMORY:
         response = await deleteMemoryLimit(id)
         if ('statusCode' in response && response.statusCode === 200) {
           toast.success(response.message, { duration: 5000, style: { backgroundColor: 'green', color: 'white' } })
         }
-        console.log('Borró un límite de memoria', id)
         break;
       case AllTabs.DIFFICULTY:
         response = await deleteDifficulty(id)
         if ('statusCode' in response && response.statusCode === 200) {
           toast.success(response.message, { duration: 5000, style: { backgroundColor: 'green', color: 'white' } })
         }
-        console.log('Borró una dificultad', id)
         break;
       case AllTabs.ACCOUNT:
         response = await deleteUser(id)
         if ('statusCode' in response && response.statusCode === 200) {
           toast.success(response.message, { duration: 5000, style: { backgroundColor: 'green', color: 'white' } })
         }
-        console.log('Borró un usuario', id)
-        break;
-      default:
-        console.log('No se encontró el tipo de item')
         break;
       }
     props.setUpdate(!props.update)
