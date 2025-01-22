@@ -25,7 +25,7 @@ interface Actions {
   getNews: (limit?: number) => Promise<News[]>
   getNewsArticle: (id: string) => Promise<News>
   search: (query: string) => Promise<News[]>
-  
+  deleteNews: (id: string) => Promise<IApiResponse | TResponseBasicError>
 }
 
 const useNewsStore = create<Actions & NewsState>()(
@@ -79,6 +79,19 @@ const useNewsStore = create<Actions & NewsState>()(
               console.error('Error searching news:', error);
               return []; // Retorna una lista vacía en caso de error
             }
+          }
+        },
+
+        deleteNews: async (id: string) => {
+          try {
+            const response = await api.delete(`/api/v1/news/${id}/${useAuthStore.getState().user?.id}`, {
+              headers: {
+                Authorization: `Bearer ${useAuthStore.getState().token}`
+              }
+            });
+            return response.data;
+          } catch (error: any) {
+            return error.response.data;
           }
         }
       }),

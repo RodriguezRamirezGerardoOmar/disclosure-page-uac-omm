@@ -1,15 +1,31 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateTagDto } from './dto/create-tag.dto';
 import { UpdateTagDto } from './dto/update-tag.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Tag } from './entities/tag.entity';
+import { Comment } from 'src/comment/entities/comment.entity';
+import {
+  Ticket,
+  TicketOperation,
+  TicketStatus
+} from 'src/ticket/entities/ticket.entity';
+import { Excercise } from 'src/excercises/entities/excercise.entity';
+import { Note } from 'src/notes/entities/note.entity';
 
 @Injectable()
 export class TagsService {
   constructor(
     @InjectRepository(Tag)
-    private readonly tagRepository: Repository<Tag>
+    private readonly tagRepository: Repository<Tag>,
+    @InjectRepository(Comment)
+    private readonly commentRepository: Repository<Comment>,
+    @InjectRepository(Ticket)
+    private readonly ticketRepository: Repository<Ticket>,
+    @InjectRepository(Excercise)
+    private readonly excerciseRepository: Repository<Excercise>,
+    @InjectRepository(Note)
+    private readonly noteRepository: Repository<Note>
   ) {}
 
   async create(createTagDto: CreateTagDto) {
@@ -33,7 +49,52 @@ export class TagsService {
   }
 
   async remove(id: string) {
-    const tag = await this.tagRepository.findOneBy({ id });
-    return await this.tagRepository.remove(tag);
+    const allTags = await this.tagRepository.find();
+    if (allTags.length === 1) {
+      throw new BadRequestException('No se puede eliminar la única etiqueta');
+    }
+    let pivot = allTags[0];
+    if (pivot.id === id) {
+      pivot = allTags[1];
+    }
+    const tag = await this.tagRepository
+      .createQueryBuilder('tag')
+      .leftJoinAndSelect('tag.excercises', 'excercises')
+      .leftJoinAndSelect('excercises.tags', 'exerciseTags')
+      .leftJoinAndSelect('tag.notes', 'notes')
+      .leftJoinAndSelect('notes.tags', 'noteTags')
+      .where('tag.id = :id', { id: id })
+      .getOne();
+    const ticketCommentBody = `La etiqueta ${tag.name} ha sido eliminada`;
+    const comment = this.commentRepository.create({ body: ticketCommentBody });
+    const ticket = this.ticketRepository.create({
+      operation: TicketOperation.DELETE,
+      status: TicketStatus.ACCEPTED,
+      commentId: comment
+    });
+    const savedTicket = await this.ticketRepository.save(ticket);
+    if (savedTicket) {
+      if (tag.excercises.length > 0) {
+        for (const exercise of tag.excercises) {
+          exercise.tags = exercise.tags.filter(t => t.id !== id);
+          if (exercise.tags.length === 0) {
+            exercise.tags.push(pivot);
+          }
+          await this.excerciseRepository.save(exercise);
+        }
+      }
+      if (tag.notes.length > 0) {
+        for (const note of tag.notes) {
+          note.tags = note.tags.filter(t => t.id !== id);
+          if (note.tags.length === 0) {
+            note.tags.push(pivot);
+          }
+          await this.noteRepository.save(note);
+        }
+      }
+      return await this.tagRepository.remove(tag);
+    } else {
+      throw new BadRequestException('Error al eliminar la etiqueta');
+    }
   }
 }

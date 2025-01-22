@@ -94,7 +94,7 @@ export class NotesController {
     return this.notesService.update(id, updateNoteDto);
   }
 
-  @Delete('note/:id')
+  @Delete('note/:id/:user')
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
   @ApiCreatedResponse({
@@ -102,7 +102,7 @@ export class NotesController {
   })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
-  remove(@Param('id') id: string) {
-    return this.notesService.remove(id);
+  remove(@Param('id') id: string, @Param('user') user: string) {
+    return this.notesService.remove(id, user);
   }
 }

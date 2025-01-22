@@ -1,4 +1,6 @@
 import { BaseEntity } from 'src/entities/base.entity';
+import { Excercise } from 'src/excercises/entities/excercise.entity';
+import { Note } from 'src/notes/entities/note.entity';
 import { Column, Entity, ManyToMany } from 'typeorm';
 
 @Entity()
@@ -9,9 +11,9 @@ export class Tag extends BaseEntity {
   @Column({ nullable: false, unique: true })
   color: string;
 
-  @ManyToMany(() => Tag, tag => tag.excercises)
-  excercises: Tag[];
+  @ManyToMany(() => Excercise, excercise => excercise.tags)
+  excercises: Excercise[];
 
-  @ManyToMany(() => Tag, tag => tag.notes)
-  notes: Tag[];
+  @ManyToMany(() => Note, note => note.tags)
+  notes: Note[];
 }

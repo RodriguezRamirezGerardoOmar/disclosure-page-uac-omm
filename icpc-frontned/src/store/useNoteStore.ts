@@ -1,8 +1,7 @@
 import axios from 'axios'
 import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
-import { IApiResponse, Note, TResponseBasicError } from '@/constants/types'
-import { Tags } from '@/constants/types'
+import { IApiResponse, Note, TResponseBasicError, Tags } from '@/constants/types'
 import useAuthStore from './useStore'
 
 const api = axios.create({
@@ -29,6 +28,7 @@ interface Actions {
   getNote: (id: string) => Promise<Note>
   getList: (tags: Tags[], category?: string) => Promise<Note[]>
   search: (query: string) => Promise<Note[]>
+  deleteNote: (id: string) => Promise<IApiResponse | TResponseBasicError>
 }
 
 const useNoteStore = create<Actions & NoteState>()(
@@ -69,8 +69,7 @@ const useNoteStore = create<Actions & NoteState>()(
 
             if (response.status === 201) {
               return response.data
-            }
-            else return [];
+            } else return []
           } catch (error: any) {
             return error.response.data
           }
@@ -84,8 +83,20 @@ const useNoteStore = create<Actions & NoteState>()(
             console.error('Error searching notes:', error)
             return []
           }
-        }
+        },
 
+        deleteNote: async (id: string) => {
+          try {
+            const response = await api.delete(`/api/v1/note/${id}/${useAuthStore.getState().user?.id}`, {
+              headers: {
+                Authorization: `Bearer ${useAuthStore.getState().token}`
+              }
+            })
+            return response.data
+          } catch (error: any) {
+            return error.response.data
+          }
+        }
       }),
       { name: 'note-store' }
     )

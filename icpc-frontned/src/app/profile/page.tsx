@@ -50,6 +50,7 @@ function Page() {
 
   const [tableData, setTableData] = useState<IProfileTableItem[]>([])
   const [mode, setMode] = useState(AllTabs.EXERCISES)
+  const [update, setUpdate] = useState<boolean>(false)
   const getNews = useNewsStore.getState().getNews
   const getExercises = useExcerciseStore.getState().getExerciseList
   const getNotes = useNoteStore.getState().getList
@@ -162,7 +163,7 @@ function Page() {
   useEffect(() => {
     getProfile()
     handleChange(mode)
-  }, [getProfile, handleChange, mode])
+  }, [getProfile, handleChange, mode, update])
 
   return (
     <div>
@@ -272,6 +273,8 @@ function Page() {
               <ProfileTableComponent
                 data={tableData}
                 itemType={mode}
+                update={update}
+                setUpdate={setUpdate}
               />
             </div>
           </div>

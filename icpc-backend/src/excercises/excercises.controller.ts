@@ -23,9 +23,9 @@ import { AuthGuard } from 'src/auth/guard/auth.guard';
 import { GetExerciseListDto } from './dto/get-exercise-list.dto';
 
 @Controller('excercises')
-@ApiTags('Excercises')
+@ApiTags('Exercises')
 export class ExcercisesController {
-  constructor(private readonly excercisesService: ExcercisesService) {}
+  constructor(private readonly exercisesService: ExcercisesService) {}
 
   @Post()
   @ApiBearerAuth()
@@ -37,7 +37,7 @@ export class ExcercisesController {
   @ApiBadRequestResponse({ description: 'Bad request' })
   @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
   create(@Body() createExcerciseDto: CreateExcerciseDto) {
-    return this.excercisesService.create(createExcerciseDto);
+    return this.exercisesService.create(createExcerciseDto);
   }
 
   @Get()
@@ -47,7 +47,7 @@ export class ExcercisesController {
   @ApiBadRequestResponse({ description: 'Bad request' })
   @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
   findAll() {
-    return this.excercisesService.findAll();
+    return this.exercisesService.findAll();
   }
 
   @Get(':id')
@@ -57,12 +57,22 @@ export class ExcercisesController {
   @ApiBadRequestResponse({ description: 'Bad request' })
   @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
   findOne(@Param('id') id: string) {
-    return this.excercisesService.findOne(id);
+    return this.exercisesService.findOne(id);
+  }
+
+  @Get('count')
+  @ApiCreatedResponse({
+    description: 'The exercise count has been successfully obtained.'
+  })
+  @ApiBadRequestResponse({ description: 'Bad request' })
+  @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
+  count() {
+    return this.exercisesService.count();
   }
 
   @Post('/list')
   getList(@Body() body: GetExerciseListDto) {
-    return this.excercisesService.getList(body);
+    return this.exercisesService.getList(body);
   }
 
   @Post('search/:query')
@@ -72,7 +82,7 @@ export class ExcercisesController {
   @ApiBadRequestResponse({ description: 'Bad request' })
   @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
   search(@Param('query') query: string) {
-    return this.excercisesService.search(query);
+    return this.exercisesService.search(query);
   }
 
   @Patch(':id')
@@ -87,10 +97,10 @@ export class ExcercisesController {
     @Param('id') id: string,
     @Body() updateExcerciseDto: UpdateExcerciseDto
   ) {
-    return this.excercisesService.update(id, updateExcerciseDto);
+    return this.exercisesService.update(id, updateExcerciseDto);
   }
 
-  @Delete(':id')
+  @Delete(':id/:user')
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
   @ApiCreatedResponse({
@@ -98,7 +108,7 @@ export class ExcercisesController {
   })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
-  remove(@Param('id') id: string) {
-    return this.excercisesService.remove(id);
+  remove(@Param('id') id: string, @Param('user') user: string) {
+    return this.exercisesService.remove(id, user);
   }
 }

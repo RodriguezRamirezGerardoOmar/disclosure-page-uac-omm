@@ -38,14 +38,19 @@ interface UtilsState {
 interface Actions {
   getTags: () => Promise<Tags[]>
   createTag: ({ name, color }: { name: string; color: string }) => Promise<IApiResponse | TResponseBasicError>
+  deleteTag: (id: string) => Promise<IApiResponse | TResponseBasicError>
   getCategories: () => Promise<Categories[]>
   getCategory: (id: string) => Promise<Categories>
   createCategory: ({ name, commentId }: { name: string; commentId: string }) => Promise<IApiResponse | TResponseBasicError>
+  deleteCategory: (id: string) => Promise<IApiResponse | TResponseBasicError>
   getDifficulties: () => Promise<Difficulties[]>
   createDifficulty: ({ level, name }: { level: number; name: string }) => Promise<IApiResponse | TResponseBasicError>
+  deleteDifficulty: (id: string) => Promise<IApiResponse | TResponseBasicError>,
   getTimeLimit: () => Promise<TimeLimit[]>
   createTimeLimit: (time: number) => Promise<IApiResponse | TResponseBasicError>
+  deleteTimeLimit: (id: string) => Promise<IApiResponse | TResponseBasicError>
   getMemoryLimit: () => Promise<MemoryLimit[]>
+  deleteMemoryLimit: (id: string) => Promise<IApiResponse | TResponseBasicError>
   createImage: (image: File) => Promise<IApiResponse | TResponseBasicError>
   getDailyQuote: () => Promise<Quote>
   getTickets: () => Promise<Ticket[]>
@@ -94,6 +99,19 @@ const useUtilsStore = create<Actions & UtilsState>()(
           }
         },
 
+        deleteTag: async (id: string): Promise<IApiResponse | TResponseBasicError> => {
+          try {
+            const response = await api.delete(`/api/v1/tags/${id}`, {
+              headers: {
+                Authorization: `Bearer ${useAuthStore.getState().token}`
+              }
+            })
+            return response.data
+          } catch (error: any) {
+            return error.response.data
+          }
+        },
+
         getCategories: async (): Promise<Categories[]> => {
           try {
             const response = await api.get('/api/v1/categories')
@@ -130,6 +148,19 @@ const useUtilsStore = create<Actions & UtilsState>()(
           }
         },
 
+        deleteCategory: async (id: string): Promise<IApiResponse | TResponseBasicError> => {
+          try {
+            const response = await api.delete(`/api/v1/categories/${id}`, {
+              headers: {
+                Authorization: `Bearer ${useAuthStore.getState().token}`
+              }
+            })
+            return response.data
+          } catch (error: any) {
+            return error.response.data
+          }
+        },
+
         getDifficulties: async (): Promise<Difficulties[]> => {
           try {
             const response = await api.get('/api/v1/difficulty')
@@ -151,6 +182,19 @@ const useUtilsStore = create<Actions & UtilsState>()(
                 }
               }
             )
+            return response.data
+          } catch (error: any) {
+            return error.response.data
+          }
+        },
+
+        deleteDifficulty: async (id: string): Promise<IApiResponse | TResponseBasicError> => {
+          try {
+            const response = await api.delete(`/api/v1/difficulty/${id}`, {
+              headers: {
+                Authorization: `Bearer ${useAuthStore.getState().token}`
+              }
+            })
             return response.data
           } catch (error: any) {
             return error.response.data
@@ -183,10 +227,37 @@ const useUtilsStore = create<Actions & UtilsState>()(
             return error.response.data
           }
         },
+
+        deleteTimeLimit: async (id: string): Promise<IApiResponse | TResponseBasicError> => {
+          try {
+            const response = await api.delete(`/api/v1/time/${id}`, {
+              headers: {
+                Authorization: `Bearer ${useAuthStore.getState().token}`
+              }
+            })
+            return response.data
+          } catch (error: any) {
+            return error.response.data
+          }
+        },
+
         getMemoryLimit: async (): Promise<MemoryLimit[]> => {
           try {
             const response = await api.get('/api/v1/memory')
             set(() => ({ memoryLimit: response.data }))
+            return response.data
+          } catch (error: any) {
+            return error.response.data
+          }
+        },
+
+        deleteMemoryLimit: async (id: string): Promise<IApiResponse | TResponseBasicError> => {
+          try {
+            const response = await api.delete(`/api/v1/memory/${id}`, {
+              headers: {
+                Authorization: `Bearer ${useAuthStore.getState().token}`
+              }
+            })
             return response.data
           } catch (error: any) {
             return error.response.data
@@ -253,6 +324,7 @@ const useUtilsStore = create<Actions & UtilsState>()(
             const response = await api.get('/api/v1/report', {
               headers: {
                 Authorization: `Bearer ${useAuthStore.getState().token}`
+
               }
             })
             return response.data
