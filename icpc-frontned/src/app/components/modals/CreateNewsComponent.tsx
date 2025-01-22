@@ -1,5 +1,5 @@
 'use client'
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import { FieldValues, Controller, useForm, SubmitHandler } from 'react-hook-form'
 import { BasicPanelComponent } from '../panels/BasicPanelComponent'
 import { IApiResponse, TResponseBasicError, enumTextTags } from '@/constants/types'
@@ -13,6 +13,7 @@ import useNewsStore from '@/store/useNewsStore'
 import useUtilsStore from '@/store/useUtilsStore'
 import { toast } from 'sonner'
 import useAuthStore from '@/store/useStore'
+import { Content } from 'next/font/google'
 
 /*
 Input: None
@@ -24,13 +25,44 @@ Date: 07 - 05 - 2024
 Author: Gerardo Omar Rodriguez Ramirez
 */
 
-const CreateNewsComponent = () => {
+interface CreateNewsComponentProps {
+  id?: string
+}
+
+const CreateNewsComponent = (props: CreateNewsComponentProps) => {
   const methods = useForm<FieldValues>()
   const createNews = useNewsStore(state => state.createNews)
+  const getNewsArticle = useNewsStore(state => state.getNewsArticle)
   const createImage = useUtilsStore(
     (state: { createImage: (image: File) => Promise<IApiResponse<{}> | TResponseBasicError> }) => state.createImage
   )
-  const [resetImage, setResetImage] = React.useState(false) // Controla el reseteo de la imagen
+  const imageInputRef = useRef<{ resetImageInput: () => void } | null>(null)
+  const [coverImage, setCoverImage] = React.useState('')
+
+  useEffect(() => {
+    if (props.id) {
+      const fetchNews = async () => {
+        const news = await getNewsArticle(props.id!)
+        if (news) {
+          methods.reset({
+            title: news.title,
+            file: process.env.NEXT_PUBLIC_API_URL + 'api/v1/image/' + news.imageId.id,
+            content: news.body
+          })
+          setCoverImage(news.imageId.id)
+        } else {
+          toast.error('No se encontró la noticia con el ID proporcionado.', {
+            duration: 5000,
+            style: {
+              backgroundColor: '#ff0000',
+              color: '#ffffff'
+            }
+          })
+        }
+      }
+      fetchNews()
+    }
+  }, [props.id, methods, getNewsArticle])
 
   const onSubmit: SubmitHandler<FieldValues> = async formData => {
     const uploadedImage = await createImage(formData.file)
@@ -75,73 +107,74 @@ const CreateNewsComponent = () => {
   }
 
   const clearForm = () => {
-    methods.reset() // Resetea los campos del formulario
-    setResetImage(prev => !prev) // Alterna el estado para forzar la reactividad
+    methods.reset()
+    setCoverImage('')
+    imageInputRef.current?.resetImageInput() // Resetea el campo de imagen
   }
-  
+
   return (
     <form
       onSubmit={methods.handleSubmit(onSubmit)}
-      className={`margin-auto md:mx-auto max-w-7xl md:px-4 w-full h-full lg:px-8 lg:w-2/3 lg:h-auto 
-    min-h-screen place-items-center justify-between py-24`}>
-      <BasicPanelComponent backgroundColor='bg-white dark:bg-dark-primary'>
-        <div className='flex flex-col items-center'>
+      className="margin-auto md:mx-auto max-w-7xl md:px-4 w-full h-full lg:px-8 lg:w-2/3 lg:h-auto 
+    min-h-screen place-items-center justify-between py-24">
+      <BasicPanelComponent backgroundColor="bg-white dark:bg-dark-primary">
+        <div className="flex flex-col items-center">
           <LogoComponent size={100} />
           <TextComponent
             tag={enumTextTags.h1}
-            sizeFont='s16'
-            className='dark:text-dark-accent'>
+            sizeFont="s16"
+            className="dark:text-dark-accent">
             Crear noticia
           </TextComponent>
 
           <TextFieldComponent
-            labelText='Título'
-            fieldName='title'
-            id='title'
+            labelText="Título"
+            fieldName="title"
+            id="title"
             register={methods.register}
             necessary={true}
-            auto='off'
-            type='text'
-            className='m-4'
+            auto="off"
+            type="text"
+            className="m-4"
           />
           <Controller
-            name='file'
+            name="file"
             defaultValue={null}
             control={methods.control}
             rules={{ required: true }}
             render={({ field }) => (
               <ImageInputComponent
+                ref={imageInputRef} // Referencia para resetear desde el padre
                 value={field.value}
                 register={methods.register}
                 onChange={field.onChange}
-                fieldName='file'
-                resetImage={resetImage} // Pasamos el estado de reseteo
+                fieldName="file"
+                cover={coverImage}
               />
             )}
           />
-
           <Controller
-            name='content'
-            defaultValue=''
+            name="content"
+            defaultValue=""
             control={methods.control}
             render={({ field }) => (
               <MarkdownAreaComponent
                 value={field.value}
                 onChange={newValue => field.onChange(newValue)}
-                labelText='Cuerpo de la noticia'
-                className='p-2'
+                labelText="Cuerpo de la noticia"
+                className="p-2"
               />
             )}
           />
-          <SubmitComponent text='Crear noticia' />
+          <SubmitComponent text="Crear noticia" />
         </div>
-        <div className='mt-4'>
+        <div className="mt-4">
           <button
-            type='button'
+            type="button"
             onClick={clearForm}
-            className='inline-flex items-center gap-x-2 rounded-md bg-primary text-complementary px-3.5 py-2.5 
+            className="inline-flex items-center gap-x-2 rounded-md bg-primary text-complementary px-3.5 py-2.5 
               font-medium shadow-sm hover:bg-secondary focus-visible:outline 
-              focus-visible:outline-offset-2 focus-visible:outline-complementary'>
+              focus-visible:outline-offset-2 focus-visible:outline-complementary">
             Borrar formulario
           </button>
         </div>
@@ -149,5 +182,4 @@ const CreateNewsComponent = () => {
     </form>
   )
 }
-
 export default CreateNewsComponent
