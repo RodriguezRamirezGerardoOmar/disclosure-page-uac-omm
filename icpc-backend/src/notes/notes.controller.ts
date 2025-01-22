@@ -96,7 +96,7 @@ export class NotesController {
     return updatedNote;
   }
 
-  @Delete('note/:id')
+  @Delete('note/:id/:user')
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
   @ApiCreatedResponse({
@@ -104,8 +104,8 @@ export class NotesController {
   })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
-  async remove(@Param('id') id: string) {
-    const deletedNote = await this.notesService.remove(id);
+  async remove(@Param('id') id: string, @Param('user') user: string) {
+    const deletedNote = await this.notesService.remove(id, user);
     this.loggerService.logChange('notes', 'delete', { id }); // Log de la operación
     return deletedNote;
   }

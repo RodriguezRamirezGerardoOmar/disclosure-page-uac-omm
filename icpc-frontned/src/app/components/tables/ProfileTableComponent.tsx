@@ -1,21 +1,136 @@
-import React from 'react'
+import React, { Dispatch, SetStateAction } from 'react'
 import ThreeDotComponent from '../dropdowns/ThreeDotComponent'
-import { IProfileTableItem } from '@/constants/types'
+import { IProfileTableItem, AllTabs } from '@/constants/types'
 import { TextComponent } from '../text/TextComponent'
 import TagComponent from '../tags/TagComponent'
+import useExcerciseStore from '@/store/useExcerciseStore'
+import useNoteStore from '@/store/useNoteStore'
+import useNewsStore from '@/store/useNewsStore'
+import useUtilsStore from '@/store/useUtilsStore'
+import useStore from '@/store/useStore'
+import { toast } from 'sonner'
 
 interface IProfileTableComponentProps {
   data: IProfileTableItem[]
   itemType: string
+  update: boolean
+  setUpdate: Dispatch<SetStateAction<boolean>>
 }
 
 const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => {
+  const deleteExercise = useExcerciseStore(state => state.deleteExercise)
+  const deleteNote = useNoteStore(state => state.deleteNote)
+  const deleteNews = useNewsStore(state => state.deleteNews)
+  const deleteCategory = useUtilsStore(state => state.deleteCategory)
+  const deleteTag = useUtilsStore(state => state.deleteTag)
+  const deleteTimeLimit = useUtilsStore(state => state.deleteTimeLimit)
+  const deleteMemoryLimit = useUtilsStore(state => state.deleteMemoryLimit)
+  const deleteDifficulty = useUtilsStore(state => state.deleteDifficulty)
+  const deleteUser = useStore(state => state.deleteUser)
+
   const handleEdit = (id: string, itemType: string) => {
-    console.log('Le picó en Editar', id, itemType)
+    toast.success('Le picó en Editar' + id + itemType, { duration: 5000, style: { backgroundColor: 'green', color: 'white' } })
   }
-  const handleDelete = (id: string, itemType: string) => {
-    console.log('Le picó en Eliminar', id, itemType)
+  const handleDelete = async (id: string) => {
+    let response;
+    switch(props.itemType) {
+      case AllTabs.EXERCISES:
+        response = await deleteExercise(id)
+        if ('statusCode' in response && response.statusCode === 200) {
+          toast.success(response.message, { duration: 5000, style: { backgroundColor: 'green', color: 'white' } })
+        }
+        break;
+      case AllTabs.NOTES:
+        response = await deleteNote(id)
+        if ('statusCode' in response && response.statusCode === 200) {
+          toast.success(response.message, { duration: 5000, style: { backgroundColor: 'green', color: 'white' } })
+        }
+        break;
+      case AllTabs.NEWS:
+        response = await deleteNews(id)
+        if ('statusCode' in response && response.statusCode === 200) {
+          toast.success(response.message, { duration: 5000, style: { backgroundColor: 'green', color: 'white' } })
+        }
+        break;
+      case AllTabs.CATEGORIES:
+        response = await deleteCategory(id)
+        if ('statusCode' in response && response.statusCode === 200) {
+          toast.success(response.message, { duration: 5000, style: { backgroundColor: 'green', color: 'white' } })
+        }
+        break;
+      case AllTabs.TAGS:
+        response = await deleteTag(id)
+        if ('statusCode' in response && response.statusCode === 200) {
+          toast.success(response.message, { duration: 5000, style: { backgroundColor: 'green', color: 'white' } })
+        }
+        break;
+      case AllTabs.TIME:
+        response = await deleteTimeLimit(id)
+        if ('statusCode' in response && response.statusCode === 200) {
+          toast.success(response.message, { duration: 5000, style: { backgroundColor: 'green', color: 'white' } })
+        }
+        break;
+      case AllTabs.MEMORY:
+        response = await deleteMemoryLimit(id)
+        if ('statusCode' in response && response.statusCode === 200) {
+          toast.success(response.message, { duration: 5000, style: { backgroundColor: 'green', color: 'white' } })
+        }
+        break;
+      case AllTabs.DIFFICULTY:
+        response = await deleteDifficulty(id)
+        if ('statusCode' in response && response.statusCode === 200) {
+          toast.success(response.message, { duration: 5000, style: { backgroundColor: 'green', color: 'white' } })
+        }
+        break;
+      case AllTabs.ACCOUNT:
+        response = await deleteUser(id)
+        if ('statusCode' in response && response.statusCode === 200) {
+          toast.success(response.message, { duration: 5000, style: { backgroundColor: 'green', color: 'white' } })
+        }
+        break;
+      }
+    props.setUpdate(!props.update)
   }
+  const tableData =
+    props.data.length !== 0 ? (
+      props.data.map(item => (
+        <tr
+          key={item.index}
+          className='cursor-pointer hover:bg-slate-200'>
+          <td
+            className={`whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 
+        dark:text-dark-accent sm:pl-6 lg:pl-8 w-full justify-between items-center`}>
+            <TextComponent>{item.title}</TextComponent>
+            {item.tagName && item.color && (
+              <div className='max-w-min'>
+                <TagComponent
+                  color={item.color}
+                  tagName={item.title}
+                  showIcon={false}
+                />
+              </div>
+            )}
+          </td>
+          <td className={`whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium 
+            text-gray-900 dark:text-dark-accent sm:pl-6 lg:pl-8 justify-between items-center`}>
+            <ThreeDotComponent
+              handleDelete={handleDelete}
+              handleEdit={handleEdit}
+              id={item.id}
+              itemType={props.itemType}
+            />
+          </td>
+        </tr>
+      ))
+    ) : (
+      <tr>
+        <td
+          className='whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 
+      dark:text-dark-accent sm:pl-6 lg:pl-8 w-full justify-between items-center'>
+          <TextComponent>¡Ups! No hay elementos para mostrar</TextComponent>
+        </td>
+      </tr>
+    )
 
   return (
     <table className='min-w-full border-separate border-spacing-0'>
@@ -35,29 +150,7 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
                     backdrop-filter sm:pl-6 lg:pl-8'></th>
         </tr>
       </thead>
-      <tbody>
-        {props.data.map(item => (
-          <tr
-            key={item.index}
-            className='cursor-pointer hover:bg-slate-200'>
-            <td
-              className={`whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 
-              dark:text-dark-accent sm:pl-6 lg:pl-8 w-full justify-between items-center`}>
-              <TextComponent>{item.title}</TextComponent>
-              {typeof item === 'object' && item.hasOwnProperty('color') && <TagComponent color={item.color} tagName={item.title} showIcon={false} />}
-              
-            </td>
-            <td className='whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 dark:text-dark-accent sm:pl-6 lg:pl-8'>
-            <ThreeDotComponent
-                handleDelete={handleDelete}
-                handleEdit={handleEdit}
-                id={item.id}
-                itemType={props.itemType}
-              />
-            </td>
-          </tr>
-        ))}
-      </tbody>
+      <tbody>{tableData}</tbody>
     </table>
   )
 }

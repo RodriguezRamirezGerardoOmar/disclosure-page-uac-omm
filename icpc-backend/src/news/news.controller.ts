@@ -90,7 +90,7 @@ export class NewsController {
     return updatedNews;
   }
 
-  @Delete(':id')
+  @Delete(':id/:user')
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
   @ApiCreatedResponse({
@@ -99,8 +99,8 @@ export class NewsController {
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiBadRequestResponse({ description: 'Bad request' })
   @ApiInternalServerErrorResponse({ description: 'Internal server error' })
-  async remove(@Param('id') id: string) {
-    const deletedNews = await this.newsService.remove(id);
+  async remove(@Param('id') id: string, @Param('user') user: string) {
+    const deletedNews = await this.newsService.remove(id, user);
     this.loggerService.logChange('news', 'delete', { id }); // Log de la operación
     return deletedNews;
   }

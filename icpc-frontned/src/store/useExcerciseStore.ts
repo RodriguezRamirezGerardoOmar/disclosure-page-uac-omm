@@ -1,8 +1,7 @@
 import axios from 'axios'
 import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
-import { Exercise, IApiResponse, TResponseBasicError } from '@/constants/types'
-import { Tags } from '@/constants/types'
+import { Exercise, IApiResponse, TResponseBasicError, Tags } from '@/constants/types'
 import useAuthStore from './useStore'
 
 const api = axios.create({
@@ -11,9 +10,9 @@ const api = axios.create({
 
 interface ICreateExcercise {
   name: string
-  category: { name: string, id: string }
-  difficulty: { name: string, id: string }
-  time: { value: number, id: string}
+  category: { name: string; id: string }
+  difficulty: { name: string; id: string }
+  time: { value: number; id: string }
   memoryId: string
   input: string
   output: string
@@ -35,7 +34,7 @@ interface Actions {
   getExercise: (id: string) => Promise<Exercise>
   getExerciseList: (tags: Tags[], category?: string, difficulty?: string) => Promise<Exercise[]>
   search: (query: string) => Promise<Exercise[]>
-
+  deleteExercise: (id: string) => Promise<IApiResponse | TResponseBasicError>
 }
 
 const useExcerciseStore = create<Actions>()(
@@ -74,7 +73,7 @@ const useExcerciseStore = create<Actions>()(
             return error.response.data
           }
         },
-        
+
         search: async (query: string) => {
           try {
             const response = await api.post(`/api/v1/excercises/search/${query}`)
@@ -83,8 +82,20 @@ const useExcerciseStore = create<Actions>()(
             console.error('Error searching exercises:', error)
             return []
           }
-        }
+        },
 
+        deleteExercise: async (id: string) => {
+          try {
+            const response = await api.delete(`/api/v1/excercises/${id}/${useAuthStore.getState().user?.id}`, {
+              headers: {
+                Authorization: `Bearer ${useAuthStore.getState().token}`
+              }
+            })
+            return response.data
+          } catch (error: any) {
+            return error.response.data
+          }
+        }
       }),
       { name: 'exercise-store' }
     )
