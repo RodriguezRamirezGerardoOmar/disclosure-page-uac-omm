@@ -82,6 +82,15 @@ export class NotesController {
     return this.notesService.findAllInCategory(categoryId);
   }
 
+  @Get('notes/count')
+  @ApiCreatedResponse({
+    description: 'The number of notes has been successfully recovered.'
+  })
+  @ApiInternalServerErrorResponse({ description: 'Internal Server Error.' })
+  getCount() {
+    return this.notesService.getCount();
+  }
+
   @Patch('note/:id')
   @ApiBearerAuth()
   @UseGuards(AuthGuard)

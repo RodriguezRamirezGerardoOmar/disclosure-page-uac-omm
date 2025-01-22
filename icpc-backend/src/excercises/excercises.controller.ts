@@ -55,7 +55,7 @@ export class ExcercisesController {
   @ApiBadRequestResponse({ description: 'Bad request' })
   @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
   findAll() {
-    return this.excercisesService.findAll();
+    return this.exercisesService.findAll();
   }
 
   @Get(':id')
@@ -65,7 +65,17 @@ export class ExcercisesController {
   @ApiBadRequestResponse({ description: 'Bad request' })
   @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
   findOne(@Param('id') id: string) {
-    return this.excercisesService.findOne(id);
+    return this.exercisesService.findOne(id);
+  }
+
+  @Get('count')
+  @ApiCreatedResponse({
+    description: 'The exercise count has been successfully obtained.'
+  })
+  @ApiBadRequestResponse({ description: 'Bad request' })
+  @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
+  count() {
+    return this.exercisesService.count();
   }
 
   @Get('count')
@@ -80,7 +90,7 @@ export class ExcercisesController {
 
   @Post('/list')
   getList(@Body() body: GetExerciseListDto) {
-    return this.excercisesService.getList(body);
+    return this.exercisesService.getList(body);
   }
 
   @Post('search/:query')
@@ -90,7 +100,7 @@ export class ExcercisesController {
   @ApiBadRequestResponse({ description: 'Bad request' })
   @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
   search(@Param('query') query: string) {
-    return this.excercisesService.search(query);
+    return this.exercisesService.search(query);
   }
 
   @Patch(':id')

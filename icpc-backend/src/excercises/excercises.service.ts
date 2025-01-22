@@ -378,9 +378,9 @@ export class ExcercisesService {
     });
   }
 
-  async getCount() {
-    return await this.exerciseRepository.count({
-      where: { isVisible: true }
-    });
+  async count() {
+    const count = await this.exerciseRepository.find();
+    console.log(count);
+    return { count };
   }
 }
