@@ -48,7 +48,7 @@ export default function TableComponent() {
   const [difficultyOptions, setDifficultyOptions] = useState(difficulties)
   const [difficulty, setDifficulty] = useState('')
   const [exercises, setExercises] = useState<Exercise[]>([])
-  const getExcerciseList = useExcerciseStore.getState().getExcerciseList
+  const getExcerciseList = useExcerciseStore.getState().getExerciseList
 
   useEffect(() => {
     getCategories().then(response => {

@@ -97,8 +97,9 @@ const useExcerciseStore = create<Actions & ExcerciseState>()(
         getCount: async (): Promise<number> => {
           try {
             const response = await api.get('/api/v1/excercises/count')
-            const count = response.data || 0
-            set({ excerciseCount: count }) // Actualización del estado corregida
+            const count = response.data
+            console.log(response)
+            set(() => ({ excerciseCount: count })) // Actualización del estado corregida
             return count
           } catch (error: any) {
             console.error('Error getting excercise count:', error)

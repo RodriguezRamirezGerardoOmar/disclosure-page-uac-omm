@@ -6,19 +6,10 @@ import { InfoCardComponent } from './components/cards/InfoCardComponent'
 import { DataCardComponent } from './components/cards/DataCardComponent'
 import { LastNewsComponent } from './components/ui/LastNewsComponent'
 import useUtilsStore from '@/store/useUtilsStore'
-import useNewsStore from '@/store/useNewsStore'
-import useExcerciseStore from '@/store/useExcerciseStore'
-import useNoteStore from '@/store/useNoteStore'
-import { use } from 'react'
 
 export default async function Home() {
   //TODO: Agregar descripciones pertinentes a cada item
   const dailyQuote: Quote = await useUtilsStore.getState().getDailyQuote()
-
-  // Obtén los contadores usando las funciones correspondientes
-  const newsCount = await useNewsStore.getState().getCount()
-  const exercisesCount = await useExcerciseStore.getState().getCount()
-  const notesCount = await useNoteStore.getState().getCount()
 
   const items = [
     {

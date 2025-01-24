@@ -6,7 +6,7 @@ import { enumTextTags } from '@/constants/types'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import useNewsStore from '@/store/useNewsStore'
-import useExerciseStore from '@/store/useExcerciseStore'
+import useExcerciseStore from '@/store/useExcerciseStore'
 import useNoteStore from '@/store/useNoteStore'
 
 interface IInfoCardComponentProps {
@@ -28,7 +28,7 @@ Author: Gerardo Omar Rodriguez Ramirez
 */
 
 export const InfoCardComponent = ({ title = 'Title', type = 0, href = '#', ...props }: IInfoCardComponentProps) => {
-  const getExerciseCount = useExerciseStore(state => state.getCount)
+  const getExerciseCount = useExcerciseStore(state => state.getCount)
   const getNotesCount = useNoteStore(state => state.getCount)
   const getNewsCount = useNewsStore(state => state.getCount)
 

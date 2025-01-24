@@ -68,7 +68,7 @@ export class ExcercisesController {
     return this.exercisesService.findOne(id);
   }
 
-  @Get('count')
+  @Get('/count')
   @ApiCreatedResponse({
     description: 'The exercise count has been successfully obtained.'
   })
@@ -116,7 +116,6 @@ export class ExcercisesController {
     return updatedExercise;
   }
 
-  @Delete(':id/:user')
   @Delete(':id/:user')
   @ApiBearerAuth()
   @UseGuards(AuthGuard)

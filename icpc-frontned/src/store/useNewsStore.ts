@@ -104,19 +104,6 @@ const useNewsStore = create<Actions & NewsState>()(
           } catch (error: any) {
             return error.response.data;
           }
-        },
-
-        deleteNews: async (id: string) => {
-          try {
-            const response = await api.delete(`/api/v1/news/${id}/${useAuthStore.getState().user?.id}`, {
-              headers: {
-                Authorization: `Bearer ${useAuthStore.getState().token}`
-              }
-            });
-            return response.data;
-          } catch (error: any) {
-            return error.response.data;
-          }
         }
       }),
       { name: 'news-store' } // Nombre para persistencia

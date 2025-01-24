@@ -379,6 +379,8 @@ export class ExcercisesService {
   }
 
   async getCount(): Promise<number> {
-    return await this.exerciseRepository.count();
+    const count = await this.exerciseRepository.countBy({ isVisible: true });
+    console.log(count);
+    return count;
   }
 }
