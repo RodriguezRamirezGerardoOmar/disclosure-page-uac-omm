@@ -92,7 +92,6 @@ const useNoteStore = create<Actions & NoteState>()(
           try {
             const response = await api.get('/api/v1/notes/count');
             const count = response.data
-            console.log(response)
             set(() => ({ notesCount: count })); // Actualiza el conteo en el estado
             return count;
           } catch (error: any) {
