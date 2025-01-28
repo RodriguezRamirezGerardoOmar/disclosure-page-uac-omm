@@ -131,16 +131,16 @@ const CreateNoteComponent = (props: CreateNotesComponentProps) => {
 
   const clearForm = () => {
     if (props.id) {
-      // Si hay un ID, recargamos los datos originales de la nota
+      // Si hay un ID, recarga los datos originales
       const fetchNote = async () => {
         const note = await getNotesArticle(props.id!)
         if (note) {
           methods.reset({
             title: note.title,
-            description: note.body,
-            content: note.body,
             category: { label: note.category.name, value: note.category.id },
-            tags: note.tags
+            tags: note.tags,
+            description: note.body,
+            content: note.body
           })
           setSelectedCategory({ label: note.category.name, value: note.category.id })
           setSelectedTags(note.tags)

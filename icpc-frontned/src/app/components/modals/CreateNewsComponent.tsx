@@ -141,30 +141,30 @@ const CreateNewsComponent = (props: CreateNewsComponentProps) => {
   return (
     <form
       onSubmit={methods.handleSubmit(onSubmit)}
-      className="margin-auto md:mx-auto max-w-7xl md:px-4 w-full h-full lg:px-8 lg:w-2/3 lg:h-auto 
-    min-h-screen place-items-center justify-between py-24">
-      <BasicPanelComponent backgroundColor="bg-white dark:bg-dark-primary">
-        <div className="flex flex-col items-center">
+      className='margin-auto md:mx-auto max-w-7xl md:px-4 w-full h-full lg:px-8 lg:w-2/3 lg:h-auto 
+    min-h-screen place-items-center justify-between py-24'>
+      <BasicPanelComponent backgroundColor='bg-white dark:bg-dark-primary'>
+        <div className='flex flex-col items-center'>
           <LogoComponent size={100} />
           <TextComponent
             tag={enumTextTags.h1}
-            sizeFont="s16"
-            className="dark:text-dark-accent">
+            sizeFont='s16'
+            className='dark:text-dark-accent'>
             Crear noticia
           </TextComponent>
 
           <TextFieldComponent
-            labelText="Título"
-            fieldName="title"
-            id="title"
+            labelText='Título'
+            fieldName='title'
+            id='title'
             register={methods.register}
             necessary={true}
-            auto="off"
-            type="text"
-            className="m-4"
+            auto='off'
+            type='text'
+            className='m-4'
           />
           <Controller
-            name="file"
+            name='file'
             defaultValue={null}
             control={methods.control}
             rules={{ required: true }}
@@ -174,33 +174,33 @@ const CreateNewsComponent = (props: CreateNewsComponentProps) => {
                 value={field.value}
                 register={methods.register}
                 onChange={field.onChange}
-                fieldName="file"
+                fieldName='file'
                 cover={coverImage}
               />
             )}
           />
           <Controller
-            name="content"
-            defaultValue=""
+            name='content'
+            defaultValue=''
             control={methods.control}
             render={({ field }) => (
               <MarkdownAreaComponent
                 value={field.value}
                 onChange={newValue => field.onChange(newValue)}
-                labelText="Cuerpo de la noticia"
-                className="p-2"
+                labelText='Cuerpo de la noticia'
+                className='p-2'
               />
             )}
           />
-          <SubmitComponent text="Crear noticia" />
+          <SubmitComponent text='Crear noticia' />
         </div>
-        <div className="mt-4">
+        <div className='mt-4'>
           <button
-            type="button"
+            type='button'
             onClick={clearForm}
-            className="inline-flex items-center gap-x-2 rounded-md bg-primary text-complementary px-3.5 py-2.5 
+            className='inline-flex items-center gap-x-2 rounded-md bg-primary text-complementary px-3.5 py-2.5 
               font-medium shadow-sm hover:bg-secondary focus-visible:outline 
-              focus-visible:outline-offset-2 focus-visible:outline-complementary">
+              focus-visible:outline-offset-2 focus-visible:outline-complementary'>
             Borrar formulario
           </button>
         </div>

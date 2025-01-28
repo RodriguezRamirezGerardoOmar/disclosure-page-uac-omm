@@ -43,6 +43,9 @@ export class Excercise extends BaseEntity {
   author: string;
 
   @Column('text', { nullable: false })
+  clue: string;
+
+  @Column('text', { nullable: false })
   solution: string;
 
   @Column({ nullable: false })
