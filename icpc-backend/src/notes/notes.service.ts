@@ -2,7 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateNoteDto } from './dto/create-note.dto';
 import { UpdateNoteDto } from './dto/update-note.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { Note } from './entities/note.entity';
 import { Category } from '../categories/entities/category.entity';
 import { Comment } from '../comment/entities/comment.entity';
@@ -211,11 +211,71 @@ export class NotesService {
 
   async update(id: string, updateNoteDto: UpdateNoteDto) {
     const note = await this.noteRepository.findOneBy({ id: String(id) });
-    return await this.noteRepository.save({ ...note, ...updateNoteDto });
+    const updatedNote = await this.noteRepository.save({
+      ...note,
+      ...updateNoteDto
+    });
+    return updatedNote;
   }
 
-  async remove(id: string) {
+  async remove(id: string, user: string) {
     const note = await this.noteRepository.findOneBy({ id });
-    return await this.noteRepository.remove(note);
+    const userId = await this.userRepository
+      .createQueryBuilder('user')
+      .where('user.id = :userId', { userId: user })
+      .leftJoinAndSelect('user.role', 'role')
+      .getOne();
+    if (userId.role.role === 'admin') {
+      const commentBody = `${userId.name} ha eliminado el apunte con el título ${note.title}`;
+      const comment = this.commentRepository.create({
+        body: commentBody
+      });
+      const commentId = await this.commentRepository.save(comment);
+      const ticket = this.ticketRepository.create({
+        itemType: TicketType.NOTE,
+        operation: TicketOperation.DELETE,
+        status: TicketStatus.ACCEPTED,
+        originalNoteId: note,
+        commentId: commentId
+      });
+      const savedTicket = await this.ticketRepository.save(ticket);
+      if (savedTicket) {
+        return await this.noteRepository.remove(note);
+      } else {
+        throw new BadRequestException('Error al eliminar el apunte');
+      }
+    } else {
+      const commentBody = `${userId.name} ha eliminado el apunte con el título ${note.title}`;
+      const comment = this.commentRepository.create({
+        body: commentBody
+      });
+      const commentId = await this.commentRepository.save(comment);
+      const ticket = this.ticketRepository.create({
+        itemType: TicketType.NOTE,
+        operation: TicketOperation.DELETE,
+        status: TicketStatus.PENDING,
+        originalNoteId: note,
+        commentId: commentId
+      });
+      const savedTicket = await this.ticketRepository.save(ticket);
+      if (savedTicket) {
+        return await this.noteRepository.remove(note);
+      } else {
+        throw new BadRequestException('Error al eliminar el apunte');
+      }
+    }
+  }
+
+  async search(query: string): Promise<Note[]> {
+    return this.noteRepository.find({
+      where: { title: Like(`%${query}%`) },
+      take: 5
+    });
+  }
+
+  async getCount(): Promise<number> {
+    return this.noteRepository.count({
+      where: { isVisible: true }
+    });
   }
 }

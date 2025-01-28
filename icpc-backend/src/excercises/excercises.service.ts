@@ -23,7 +23,7 @@ import { Comment } from 'src/comment/entities/comment.entity';
 export class ExcercisesService {
   constructor(
     @InjectRepository(Excercise)
-    private readonly excerciseRepository: Repository<Excercise>,
+    private readonly exerciseRepository: Repository<Excercise>,
     @InjectRepository(Category)
     private readonly categoryRepository: Repository<Category>,
     @InjectRepository(Difficulty)
@@ -44,7 +44,7 @@ export class ExcercisesService {
 
   async create(createExcerciseDto: CreateExcerciseDto) {
     const { name, category, difficulty, time, memoryId } = createExcerciseDto;
-    const newExcerciseName = await this.excerciseRepository.findOneBy({
+    const newExcerciseName = await this.exerciseRepository.findOneBy({
       title: name
     });
     if (newExcerciseName !== null) {
@@ -78,7 +78,7 @@ export class ExcercisesService {
     if (newExcerciseMemory === null) {
       throw new BadRequestException('El límite de memoria elegido no existe');
     }
-    const newExcercise = this.excerciseRepository.create({
+    const newExcercise = this.exerciseRepository.create({
       ...createExcerciseDto,
       title: name,
       memoryId: newExcerciseMemory
@@ -91,7 +91,7 @@ export class ExcercisesService {
     });
     newExcercise.created_by = user.name;
     newExcercise.isVisible = createExcerciseDto.role === 'admin';
-    const savedExcercise = await this.excerciseRepository.save(newExcercise);
+    const savedExcercise = await this.exerciseRepository.save(newExcercise);
     const commentBody = `${user.name} ha creado un nuevo ejercicio con el nombre ${newExcercise.title}`;
     const comment = this.commentRepository.create({
       body: commentBody
@@ -116,11 +116,11 @@ export class ExcercisesService {
   }
 
   async findAll() {
-    return await this.excerciseRepository.find();
+    return await this.exerciseRepository.find();
   }
 
   async findOne(id: string) {
-    return await this.excerciseRepository
+    return await this.exerciseRepository
       .createQueryBuilder('excercise')
       .where('excercise.id = :id', { id })
       .leftJoinAndSelect('excercise.category', 'category')
@@ -132,7 +132,7 @@ export class ExcercisesService {
   }
 
   async findOneByName(name: string) {
-    return await this.excerciseRepository.findOneBy({ title: name });
+    return await this.exerciseRepository.findOneBy({ title: name });
   }
 
   async getList(body: GetExerciseListDto) {
@@ -146,7 +146,7 @@ export class ExcercisesService {
           tags: body.tags.map(tag => tag.name)
         })
         .getMany();
-      const res = await this.excerciseRepository
+      const res = await this.exerciseRepository
         .createQueryBuilder('excercise')
         .where('excercise.categoryId = :categoryId', {
           categoryId: category.id
@@ -173,7 +173,7 @@ export class ExcercisesService {
           tags: body.tags.map(tag => tag.name)
         })
         .getMany();
-      const res = await this.excerciseRepository
+      const res = await this.exerciseRepository
         .createQueryBuilder('excercise')
         .where('isVisible = :isVisible', { isVisible: true })
         .leftJoinAndSelect('excercise.category', 'category')
@@ -194,7 +194,7 @@ export class ExcercisesService {
       const category = await this.categoryRepository.findOneBy({
         name: body.category
       });
-      return await this.excerciseRepository
+      return await this.exerciseRepository
         .createQueryBuilder('excercise')
         .where('excercise.categoryId = :categoryId', {
           categoryId: category.id
@@ -205,7 +205,7 @@ export class ExcercisesService {
         .leftJoinAndSelect('excercise.difficulty', 'difficulty')
         .getMany();
     } else if (!body.category && body.tags.length === 0 && !body.difficulty) {
-      return this.excerciseRepository
+      return this.exerciseRepository
         .createQueryBuilder('excercise')
         .where('isVisible = :isVisible', { isVisible: true })
         .leftJoinAndSelect('excercise.category', 'category')
@@ -225,7 +225,7 @@ export class ExcercisesService {
       const difficulty = await this.difficultyRepository.findOneBy({
         name: body.difficulty
       });
-      const res = await this.excerciseRepository
+      const res = await this.exerciseRepository
         .createQueryBuilder('excercise')
         .where('excercise.categoryId = :categoryId', {
           categoryId: category.id
@@ -258,7 +258,7 @@ export class ExcercisesService {
       const difficulty = await this.difficultyRepository.findOneBy({
         name: body.difficulty
       });
-      const res = await this.excerciseRepository
+      const res = await this.exerciseRepository
         .createQueryBuilder('excercise')
         .where('isVisible = :isVisible', { isVisible: true })
         .andWhere('excercise.difficultyId = :difficultyId', {
@@ -285,7 +285,7 @@ export class ExcercisesService {
       const difficulty = await this.difficultyRepository.findOneBy({
         name: body.difficulty
       });
-      return await this.excerciseRepository
+      return await this.exerciseRepository
         .createQueryBuilder('excercise')
         .where('excercise.categoryId = :categoryId', {
           categoryId: category.id
@@ -302,7 +302,7 @@ export class ExcercisesService {
       const difficulty = await this.difficultyRepository.findOneBy({
         name: body.difficulty
       });
-      return this.excerciseRepository
+      return this.exerciseRepository
         .createQueryBuilder('excercise')
         .where('isVisible = :isVisible', { isVisible: true })
         .andWhere('excercise.difficultyId = :difficultyId', {
@@ -314,23 +314,73 @@ export class ExcercisesService {
         .getMany();
     }
   }
+
   async update(id: string, updateExcerciseDto: UpdateExcerciseDto) {
-    const excercise = await this.excerciseRepository.findOneBy({ id });
+    const excercise = await this.exerciseRepository.findOneBy({ id });
     return await this.memoryRepository.save({
       ...excercise,
       ...updateExcerciseDto
     });
   }
 
-  async remove(id: string) {
-    const excercise = await this.excerciseRepository.findOneBy({ id });
-    return await this.excerciseRepository.remove(excercise);
+  async remove(id: string, user: string) {
+    const excercise = await this.exerciseRepository.findOneBy({ id });
+    const userId = await this.userRepository
+      .createQueryBuilder('user')
+      .where('user.id = :userId', { userId: user })
+      .leftJoinAndSelect('user.role', 'role')
+      .getOne();
+    if (userId.role.role === 'admin') {
+      const commentBody = `${userId.name} ha eliminado el ejercicio con el nombre ${excercise.title}`;
+      const comment = this.commentRepository.create({
+        body: commentBody
+      });
+      const commentId = await this.commentRepository.save(comment);
+      const ticket = this.ticketRepository.create({
+        itemType: TicketType.EXERCISE,
+        operation: TicketOperation.DELETE,
+        status: TicketStatus.ACCEPTED,
+        originalExerciseId: excercise,
+        commentId: commentId
+      });
+      const savedTicket = await this.ticketRepository.save(ticket);
+      if (savedTicket) {
+        return await this.exerciseRepository.remove(excercise);
+      } else {
+        throw new BadRequestException('Error al eliminar el ejercicio');
+      }
+    } else {
+      const commentBody = `${userId.name} ha eliminado el ejercicio con el nombre ${excercise.title}`;
+      const comment = this.commentRepository.create({
+        body: commentBody
+      });
+      const commentId = await this.commentRepository.save(comment);
+      const ticket = this.ticketRepository.create({
+        itemType: TicketType.EXERCISE,
+        operation: TicketOperation.DELETE,
+        status: TicketStatus.PENDING,
+        originalExerciseId: excercise,
+        commentId: commentId
+      });
+      const savedTicket = await this.ticketRepository.save(ticket);
+      if (savedTicket) {
+        return savedTicket;
+      } else {
+        throw new BadRequestException('Error al eliminar el ejercicio');
+      }
+    }
   }
-  
+
   async search(query: string): Promise<Excercise[]> {
-    return this.excerciseRepository.find({
+    return await this.exerciseRepository.find({
       where: { title: Like(`%${query}%`) },
-      take: 5,
+      take: 5
     });
+  }
+
+  async getCount() {
+    const count = await this.exerciseRepository.find();
+    console.log(count);
+    return { count };
   }
 }

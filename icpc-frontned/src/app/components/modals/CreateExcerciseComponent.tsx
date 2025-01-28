@@ -151,7 +151,7 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
       role: String(useAuthStore.getState().user?.role)
     })
 
-    if ('statusCode' in response && response.statusCode === 201) {
+    if ('statusCode' in response && response.statusCode === 200) {
       toast.success(response.message, {
         duration: 5000,
         style: {

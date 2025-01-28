@@ -9,7 +9,6 @@ CreateExcerciseDto {
 
   @ApiProperty()
   @IsObject()
-  @Matches(/[a-zA-Z]/)
   category: { name: string; id: string };
 
   @ApiProperty()

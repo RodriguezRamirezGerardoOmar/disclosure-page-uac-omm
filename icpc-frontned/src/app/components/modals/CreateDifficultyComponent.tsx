@@ -13,8 +13,13 @@ Formulario para creación de categorías
 Fecha: 12 - 11 - 2024  
 */
 
-const CreateDifficultyComponent = () => {
-  const methods = useForm<FieldValues>()
+interface CreateDifficultyComponentProps {
+  methods: UseFormReturn<FieldValues>
+  onCancel: () => void
+  onCreateDifficulty: (DifficultyName: string) => void
+}
+
+const CreateDifficultyComponent: React.FC<CreateDifficultyComponentProps> = ({ methods, onCancel, onCreateDifficulty }) => {
   const createDifficulty = useUtilsStore(state => state.createDifficulty)
   const onSubmit: SubmitHandler<FieldValues> = async data => {
     const response = await createDifficulty({ level: Number(data.DifficultyName), name: String(data.DifficultyName) })
