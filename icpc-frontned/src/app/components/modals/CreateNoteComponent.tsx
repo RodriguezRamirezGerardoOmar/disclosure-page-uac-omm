@@ -48,38 +48,52 @@ const CreateNoteComponent = (props: CreateNotesComponentProps) => {
   const getNotesArticle = useNoteStore(state => state.getNote)
 
   useEffect(() => {
-    if (props.id) {
-      const fetchNotes = async () => {
-        const note = await getNotesArticle(props.id!)
-        if (note) {
-          methods.reset({
-            title: note.title,
-            description: note.body,
-            content: note.body,
-            category: { label: note.category.name, value: note.category.id },
-            tags: note.tags
-          })
-          setSelectedCategory({ label: note.category.name, value: note.category.id })
-          setSelectedTags(note.tags)
-        } else {
-          toast.error('No se encontró la nota con el ID proporcionado.', {
-            duration: 5000,
-            style: {
-              backgroundColor: '#ff0000',
-              color: '#ffffff'
-            }
-          })
+    const fetchNotes = async () => {
+      try {
+        // Carga datos sin ID
+        getTags().then(response => {
+          setTags(response)
+        })
+        getCategories().then(response => {
+          setCategories(response)
+        })
+
+        // Si hay un ID, cargar los datos de la nota
+        if (props.id) {
+          const note = await getNotesArticle(props.id)
+          if (note) {
+            methods.reset({
+              title: note.title,
+              description: note.body,
+              content: note.body,
+              category: { label: note.category.name, value: note.category.id },
+              tags: note.tags
+            })
+            setSelectedCategory({ label: note.category.name, value: note.category.id })
+            setSelectedTags(note.tags)
+          } else {
+            toast.error('No se encontró la nota con el ID proporcionado.', {
+              duration: 5000,
+              style: {
+                backgroundColor: '#ff0000',
+                color: '#ffffff'
+              }
+            })
+          }
         }
+      } catch (error) {
+        toast.error('Error al cargar los datos iniciales.', {
+          duration: 5000,
+          style: {
+            backgroundColor: '#ff0000',
+            color: '#ffffff'
+          }
+        })
       }
-      getTags().then(response => {
-        setTags(response)
-      })
-      getCategories().then(response => {
-        setCategories(response)
-      })
-      fetchNotes()
     }
-  }, [props.id, methods, getNotesArticle, getTags, getCategories])
+
+    fetchNotes()
+  }, [props.id, methods, getTags, getCategories, getNotesArticle])
 
   const handleCreateCategory = async (newValue: Option) => {
     const category = newValue.label

@@ -63,56 +63,70 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
   let [update, setUpdate] = useState<boolean>(false)
 
   useEffect(() => {
-    if (props.id) {
-      const fetchExercise = async () => {
-        const exercise = await getExercise(props.id!)
-        if (exercise) {
-          methods.reset({
-            name: exercise.title,
-            category: { label: exercise.category.name, value: exercise.category.id },
-            difficulty: { label: exercise.difficulty.name, value: exercise.difficulty.id },
-            time: { label: exercise.time.timeLimit, value: exercise.time.id },
-            memoryId: { label: exercise.memoryId.memoryLimit, value: exercise.memoryId.id },
-            input: exercise.input,
-            output: exercise.output,
-            restriction: exercise.constraints,
-            clue: exercise.clue,
-            tags: exercise.tags,
-            author: exercise.author,
-            description: exercise.description,
-            example_input: exercise.example_input,
-            example_output: exercise.example_output,
-            solution: exercise.solution
-          })
-          setSelectedCategory({ label: exercise.category.name, value: exercise.category.id })
-          setSelectedTags(exercise.tags)
-        } else {
-          toast.error('No se encontró el ejercicio con el ID proporcionado.', {
-            duration: 5000,
-            style: {
-              backgroundColor: '#ff0000',
-              color: '#ffffff'
-            }
-          })
+    const fetchExercise = async () => {
+      try {
+        // Carga datos sin ID
+        getTags().then(response => {
+          setTags(response)
+        })
+        getCategories().then(response => {
+          setCategories(response)
+        })
+        getDifficulties().then(response => {
+          setDifficulty(response)
+        })
+        getTimeLimit().then(response => {
+          setTimeLimits(response)
+        })
+        getMemoryLimit().then(response => {
+          setMemoryLimits(response)
+        })
+
+        // Si hay un ID, cargar los datos de el ejercicio
+        if (props.id) {
+          const exercise = await getExercise(props.id!)
+          if (exercise) {
+            methods.reset({
+              name: exercise.title,
+              category: { label: exercise.category.name, value: exercise.category.id },
+              difficulty: { label: exercise.difficulty.name, value: exercise.difficulty.id },
+              time: { label: exercise.time.timeLimit, value: exercise.time.id },
+              memoryId: { label: exercise.memoryId.memoryLimit, value: exercise.memoryId.id },
+              input: exercise.input,
+              output: exercise.output,
+              restriction: exercise.constraints,
+              clue: exercise.clue,
+              tags: exercise.tags,
+              author: exercise.author,
+              description: exercise.description,
+              example_input: exercise.example_input,
+              example_output: exercise.example_output,
+              solution: exercise.solution
+            })
+            setSelectedCategory({ label: exercise.category.name, value: exercise.category.id })
+            setSelectedTags(exercise.tags)
+          } else {
+            toast.error('No se encontró el ejercicio con el ID proporcionado.', {
+              duration: 5000,
+              style: {
+                backgroundColor: '#ff0000',
+                color: '#ffffff'
+              }
+            })
+          }
         }
+      } catch (error) {
+        toast.error('Error al cargar los datos iniciales.', {
+          duration: 5000,
+          style: {
+            backgroundColor: '#ff0000',
+            color: '#ffffff'
+          }
+        })
       }
-      getTags().then(response => {
-        setTags(response)
-      })
-      getCategories().then(response => {
-        setCategories(response)
-      })
-      getDifficulties().then(response => {
-        setDifficulty(response)
-      })
-      getTimeLimit().then(response => {
-        setTimeLimits(response)
-      })
-      getMemoryLimit().then(response => {
-        setMemoryLimits(response)
-      })
-      fetchExercise()
     }
+
+    fetchExercise()
   }, [props.id, methods, getExercise, getCategories, getDifficulties, getTags, getTimeLimit, getMemoryLimit, update])
 
   const onSubmit: SubmitHandler<FieldValues> = async data => {
