@@ -37,6 +37,7 @@ const CreateNoteComponent = (props: CreateNotesComponentProps) => {
   const getCategories = useUtilsStore(state => state.getCategories)
   const categoriesList = useUtilsStore(state => state.categories)
   const createNote = useNoteStore(state => state.createNote)
+  const updateNote = useNoteStore(state => state.updateNote)
   const createCategory = useUtilsStore(state => state.createCategory)
 
   const selectRef = useRef<{ clear: () => void }>(null)
@@ -113,33 +114,54 @@ const CreateNoteComponent = (props: CreateNotesComponentProps) => {
   }
 
   const onSubmit: SubmitHandler<FieldValues> = async data => {
-    const response = await createNote({
+    // Función para procesar la respuesta de las operaciones
+    const processResponse = async (response: any) => {
+      if ('statusCode' in response) {
+        const toastOptions = {
+          duration: 5000,
+          style: {
+            backgroundColor: response.statusCode === 201 ? 'green' : '#ff0000',
+            color: '#ffffff'
+          }
+        }
+
+        if (response.statusCode === 201) {
+          toast.success(response.message, toastOptions)
+        } else {
+          toast.error(response.message, toastOptions)
+        }
+      } else if ('message' in response) {
+        toast.error(response.message as string, {
+          duration: 5000,
+          style: {
+            backgroundColor: '#ff0000',
+            color: '#ffffff'
+          }
+        })
+      }
+    }
+
+    // Objeto base con los datos comunes
+    const noteData = {
       title: String(data.title),
       description: String(data.description),
       body: String(data.content),
       categoryId: { name: data.category.label, id: data.category.value },
       tags: data.tags,
-      isVisible: useAuthStore.getState().user?.role === 'admin' ? true : false,
+      isVisible: useAuthStore.getState().user?.role === 'admin',
       userAuthor: String(useAuthStore.getState().user?.userName),
       role: String(useAuthStore.getState().user?.role)
-    })
+    }
 
-    if ('statusCode' in response && response.statusCode === 201) {
-      toast.success(response.message, {
-        duration: 5000,
-        style: {
-          backgroundColor: 'green',
-          color: '#ffffff'
-        }
-      })
-    } else if ('message' in response) {
-      toast.error(response.message, {
-        duration: 5000,
-        style: {
-          backgroundColor: '#ff0000',
-          color: '#ffffff'
-        }
-      })
+    // Si hay un ID, actualizar la nota existente
+    if (props.id) {
+      const response = await updateNote(noteData, props.id)
+      await processResponse(response)
+    }
+    // Si no hay ID, crear una nueva nota
+    else {
+      const response = await createNote(noteData)
+      await processResponse(response)
     }
   }
 

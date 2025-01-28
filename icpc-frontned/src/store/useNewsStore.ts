@@ -22,6 +22,7 @@ interface NewsState {
 
 interface Actions {
   createNews: (news: ICreateNews) => Promise<IApiResponse | TResponseBasicError>
+  updateNews: (news: ICreateNews, id:string) => Promise<IApiResponse | TResponseBasicError>
   getNews: (limit?: number) => Promise<News[]>
   getNewsArticle: (id: string) => Promise<News>
   search: (query: string) => Promise<News[]>
@@ -36,6 +37,20 @@ const useNewsStore = create<Actions & NewsState>()(
         createNews: async (news: ICreateNews) => {
           try {
             const response = await api.post('/api/v1/news', news, {
+              headers: {
+                Authorization: `Bearer ${useAuthStore.getState().token}` // Usa el token de autorización
+              }
+            });
+            if (response.status === 201) {
+              return response.data;
+            }
+          } catch (error: any) {
+            return error.response.data; // Maneja errores
+          }
+        },        
+        updateNews: async (news: ICreateNews, id:string) => {
+          try {
+            const response = await api.patch(`/api/v1/news/${id}`, news, {
               headers: {
                 Authorization: `Bearer ${useAuthStore.getState().token}` // Usa el token de autorización
               }

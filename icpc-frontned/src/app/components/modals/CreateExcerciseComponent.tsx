@@ -36,6 +36,7 @@ interface CreateExerciseComponentProps {
 const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
   const methods = useForm<FieldValues>()
   const createExcercise = useExcerciseStore(state => state.createExcercise)
+  const updateExcercise = useExcerciseStore(state => state.updateExcercise)
   const getTags = useUtilsStore(state => state.getTags)
   const tagList = useUtilsStore(state => state.tags)
   const getCategories = useUtilsStore(state => state.getCategories)
@@ -130,12 +131,40 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
   }, [props.id, methods, getExercise, getCategories, getDifficulties, getTags, getTimeLimit, getMemoryLimit, update])
 
   const onSubmit: SubmitHandler<FieldValues> = async data => {
-    const response = await createExcercise({
+    // Función para procesar la respuesta de las operaciones
+    const processResponse = async (response: any) => {
+      if ('statusCode' in response) {
+        const toastOptions = {
+          duration: 5000,
+          style: {
+            backgroundColor: response.statusCode === 200 ? 'green' : '#ff0000',
+            color: '#ffffff'
+          }
+        };
+  
+        if (response.statusCode === 200) {
+          toast.success(response.message, toastOptions);
+        } else {
+          toast.error(response.message, toastOptions);
+        }
+      } else if ('message' in response) {
+        toast.error(response.message as string, {
+          duration: 5000,
+          style: {
+            backgroundColor: '#ff0000',
+            color: '#ffffff'
+          }
+        });
+      }
+    };
+  
+    // Objeto base con los datos comunes
+    const exerciseData = {
       name: String(data.name),
       category: { name: data.category.label, id: data.category.value },
       difficulty: { name: data.difficulty.label, id: data.difficulty.id },
       time: { value: parseInt(data.time.label), id: data.time.id },
-      memoryId: data.memoryId.value,
+      memoryId: String(data.memoryId.value),
       input: String(data.input),
       output: String(data.output),
       constraints: String(data.constraints),
@@ -149,29 +178,20 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
       isVisible: false,
       userAuthor: String(useAuthStore.getState().user?.userName),
       role: String(useAuthStore.getState().user?.role)
-    })
-
-    if ('statusCode' in response && response.statusCode === 200) {
-      toast.success(response.message, {
-        duration: 5000,
-        style: {
-          backgroundColor: 'green',
-          color: '#ffffff'
-        }
-      })
-    } else {
-      if ('message' in response) {
-        toast.error(response.message, {
-          duration: 5000,
-          style: {
-            backgroundColor: '#ff0000',
-            color: '#ffffff'
-          }
-        })
-      }
+    };
+  
+    // Si hay un ID, actualizar el ejercicio existente
+    if (props.id) {
+      const response = await updateExcercise(exerciseData, props.id);
+      await processResponse(response);
+    } 
+    // Si no hay ID, crear un nuevo ejercicio
+    else {
+      const response = await createExcercise(exerciseData);
+      await processResponse(response);
     }
-  }
-
+  };
+  
   const handleCreateCategory = async (newValue: Option) => {
     const category = newValue.label
     const response = await createCategory({ name: category, commentId: category })
@@ -342,7 +362,7 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
                     field.onChange(val)
                   }}
                   options={memoryLimits.map(item => {
-                    const label: number = item.memoryLimit * 64
+                    const label: number = item.memoryLimit
                     return { label: label.toString(), value: item.id }
                   })}
                   selectedOption={field.value}

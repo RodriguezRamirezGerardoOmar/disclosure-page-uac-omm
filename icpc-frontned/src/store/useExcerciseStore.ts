@@ -31,6 +31,7 @@ interface ICreateExcercise {
 
 interface Actions {
   createExcercise: (exercise: ICreateExcercise) => Promise<IApiResponse | TResponseBasicError>
+  updateExcercise: (exercise: ICreateExcercise, id:string) => Promise<IApiResponse | TResponseBasicError>
   getExercise: (id: string) => Promise<Exercise>
   getExerciseList: (tags: Tags[], category?: string, difficulty?: string) => Promise<Exercise[]>
   search: (query: string) => Promise<Exercise[]>
@@ -44,6 +45,21 @@ const useExcerciseStore = create<Actions>()(
         createExcercise: async (exercise: ICreateExcercise) => {
           try {
             const response = await api.post('/api/v1/excercises', exercise, {
+              headers: {
+                Authorization: `Bearer ${useAuthStore.getState().token}`
+              }
+            })
+            if (response.status === 201) {
+              return response.data
+            }
+          } catch (error: any) {
+            return error.response.data
+          }
+        },
+        
+        updateExcercise: async (exercise: ICreateExcercise, id:string) => {
+          try {
+            const response = await api.patch(`/api/v1/excercises/${id}`, exercise, {
               headers: {
                 Authorization: `Bearer ${useAuthStore.getState().token}`
               }

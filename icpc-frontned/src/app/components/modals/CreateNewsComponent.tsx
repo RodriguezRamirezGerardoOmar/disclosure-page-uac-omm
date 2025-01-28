@@ -36,7 +36,8 @@ const CreateNewsComponent = (props: CreateNewsComponentProps) => {
   const createImage = useUtilsStore(
     (state: { createImage: (image: File) => Promise<IApiResponse<{}> | TResponseBasicError> }) => state.createImage
   )
-  const imageInputRef = useRef<{ resetImageInput: () => void } | null>(null)
+  const updateImage = useUtilsStore(state => state.updateImage)
+  const imageInputRef = useRef<{ resetImageInput: (id?: string) => void } | null>(null)
   const [coverImage, setCoverImage] = React.useState('')
 
   useEffect(() => {
@@ -65,26 +66,32 @@ const CreateNewsComponent = (props: CreateNewsComponentProps) => {
   }, [props.id, methods, getNewsArticle])
 
   const onSubmit: SubmitHandler<FieldValues> = async formData => {
-    const uploadedImage = await createImage(formData.file)
-    if ('data' in uploadedImage) {
-      const response = await createNews({
-        title: String(formData.title),
-        imageId: uploadedImage.data?.id,
-        body: String(formData.content),
-        userAuthor: String(useAuthStore.getState().user?.userName),
-        role: String(useAuthStore.getState().user?.role)
-      })
-      if ('statusCode' in response && response.statusCode === 201) {
-        toast.success(response.message, {
-          duration: 5000,
-          style: {
-            backgroundColor: 'green',
-            color: '#ffffff'
-          }
+    const processResponse = async (uploadedImage: any) => {
+      if ('data' in uploadedImage) {
+        const response = await createNews({
+          title: String(formData.title),
+          imageId: uploadedImage.data?.id,
+          body: String(formData.content),
+          userAuthor: String(useAuthStore.getState().user?.userName),
+          role: String(useAuthStore.getState().user?.role)
         })
-      } else {
-        if ('message' in response) {
-          toast.error(response.message, {
+
+        if ('statusCode' in response) {
+          const toastOptions = {
+            duration: 5000,
+            style: {
+              backgroundColor: response.statusCode === 201 ? 'green' : '#ff0000',
+              color: '#ffffff'
+            }
+          }
+
+          if (response.statusCode === 201) {
+            toast.success(response.message, toastOptions)
+          } else {
+            toast.error(response.message, toastOptions)
+          }
+        } else if ('message' in response) {
+          toast.error(response.message as string, {
             duration: 5000,
             style: {
               backgroundColor: '#ff0000',
@@ -92,9 +99,7 @@ const CreateNewsComponent = (props: CreateNewsComponentProps) => {
             }
           })
         }
-      }
-    } else {
-      if ('message' in uploadedImage) {
+      } else if ('message' in uploadedImage) {
         toast.error(uploadedImage.message as string, {
           duration: 5000,
           style: {
@@ -104,6 +109,10 @@ const CreateNewsComponent = (props: CreateNewsComponentProps) => {
         })
       }
     }
+
+    const uploadedImage = props.id ? await updateImage(formData.file, props.id) : await createImage(formData.file)
+
+    await processResponse(uploadedImage)
   }
 
   const clearForm = () => {
@@ -134,7 +143,7 @@ const CreateNewsComponent = (props: CreateNewsComponentProps) => {
       // Si no hay ID, limpia completamente el formulario
       methods.reset()
       setCoverImage('')
-      imageInputRef.current?.resetImageInput(null)
+      imageInputRef.current?.resetImageInput()
     }
   }
 
