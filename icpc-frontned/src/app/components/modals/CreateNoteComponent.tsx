@@ -37,6 +37,7 @@ const CreateNoteComponent = (props: CreateNotesComponentProps) => {
   const getCategories = useUtilsStore(state => state.getCategories)
   const categoriesList = useUtilsStore(state => state.categories)
   const createNote = useNoteStore(state => state.createNote)
+  const updateNote = useNoteStore(state => state.updateNote)
   const createCategory = useUtilsStore(state => state.createCategory)
 
   const selectRef = useRef<{ clear: () => void }>(null)
@@ -48,38 +49,52 @@ const CreateNoteComponent = (props: CreateNotesComponentProps) => {
   const getNotesArticle = useNoteStore(state => state.getNote)
 
   useEffect(() => {
-    if (props.id) {
-      const fetchNotes = async () => {
-        const note = await getNotesArticle(props.id!)
-        if (note) {
-          methods.reset({
-            title: note.title,
-            description: note.body,
-            content: note.body,
-            category: { label: note.category.name, value: note.category.id },
-            tags: note.tags
-          })
-          setSelectedCategory({ label: note.category.name, value: note.category.id })
-          setSelectedTags(note.tags)
-        } else {
-          toast.error('No se encontró la nota con el ID proporcionado.', {
-            duration: 5000,
-            style: {
-              backgroundColor: '#ff0000',
-              color: '#ffffff'
-            }
-          })
+    const fetchNotes = async () => {
+      try {
+        // Carga datos sin ID
+        getTags().then(response => {
+          setTags(response)
+        })
+        getCategories().then(response => {
+          setCategories(response)
+        })
+
+        // Si hay un ID, cargar los datos de la nota
+        if (props.id) {
+          const note = await getNotesArticle(props.id)
+          if (note) {
+            methods.reset({
+              title: note.title,
+              description: note.body,
+              content: note.body,
+              category: { label: note.category.name, value: note.category.id },
+              tags: note.tags
+            })
+            setSelectedCategory({ label: note.category.name, value: note.category.id })
+            setSelectedTags(note.tags)
+          } else {
+            toast.error('No se encontró la nota con el ID proporcionado.', {
+              duration: 5000,
+              style: {
+                backgroundColor: '#ff0000',
+                color: '#ffffff'
+              }
+            })
+          }
         }
+      } catch (error) {
+        toast.error('Error al cargar los datos iniciales.', {
+          duration: 5000,
+          style: {
+            backgroundColor: '#ff0000',
+            color: '#ffffff'
+          }
+        })
       }
-      getTags().then(response => {
-        setTags(response)
-      })
-      getCategories().then(response => {
-        setCategories(response)
-      })
-      fetchNotes()
     }
-  }, [props.id, methods, getNotesArticle, getTags, getCategories])
+
+    fetchNotes()
+  }, [props.id, methods, getTags, getCategories, getNotesArticle])
 
   const handleCreateCategory = async (newValue: Option) => {
     const category = newValue.label
@@ -99,48 +114,69 @@ const CreateNoteComponent = (props: CreateNotesComponentProps) => {
   }
 
   const onSubmit: SubmitHandler<FieldValues> = async data => {
-    const response = await createNote({
+    // Función para procesar la respuesta de las operaciones
+    const processResponse = async (response: any) => {
+      if ('statusCode' in response) {
+        const toastOptions = {
+          duration: 5000,
+          style: {
+            backgroundColor: response.statusCode === 201 ? 'green' : '#ff0000',
+            color: '#ffffff'
+          }
+        }
+
+        if (response.statusCode === 201) {
+          toast.success(response.message, toastOptions)
+        } else {
+          toast.error(response.message, toastOptions)
+        }
+      } else if ('message' in response) {
+        toast.error(response.message as string, {
+          duration: 5000,
+          style: {
+            backgroundColor: '#ff0000',
+            color: '#ffffff'
+          }
+        })
+      }
+    }
+
+    // Objeto base con los datos comunes
+    const noteData = {
       title: String(data.title),
       description: String(data.description),
       body: String(data.content),
       categoryId: { name: data.category.label, id: data.category.value },
       tags: data.tags,
-      isVisible: useAuthStore.getState().user?.role === 'admin' ? true : false,
+      isVisible: useAuthStore.getState().user?.role === 'admin',
       userAuthor: String(useAuthStore.getState().user?.userName),
       role: String(useAuthStore.getState().user?.role)
-    })
+    }
 
-    if ('statusCode' in response && response.statusCode === 201) {
-      toast.success(response.message, {
-        duration: 5000,
-        style: {
-          backgroundColor: 'green',
-          color: '#ffffff'
-        }
-      })
-    } else if ('message' in response) {
-      toast.error(response.message, {
-        duration: 5000,
-        style: {
-          backgroundColor: '#ff0000',
-          color: '#ffffff'
-        }
-      })
+    // Si hay un ID, actualizar la nota existente
+    if (props.id) {
+      const response = await updateNote(noteData, props.id)
+      await processResponse(response)
+    }
+    // Si no hay ID, crear una nueva nota
+    else {
+      const response = await createNote(noteData)
+      await processResponse(response)
     }
   }
 
   const clearForm = () => {
     if (props.id) {
-      // Si hay un ID, recargamos los datos originales de la nota
+      // Si hay un ID, recarga los datos originales
       const fetchNote = async () => {
         const note = await getNotesArticle(props.id!)
         if (note) {
           methods.reset({
             title: note.title,
-            description: note.body,
-            content: note.body,
             category: { label: note.category.name, value: note.category.id },
-            tags: note.tags
+            tags: note.tags,
+            description: note.body,
+            content: note.body
           })
           setSelectedCategory({ label: note.category.name, value: note.category.id })
           setSelectedTags(note.tags)
