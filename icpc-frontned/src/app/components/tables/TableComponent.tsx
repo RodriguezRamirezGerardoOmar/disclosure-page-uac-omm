@@ -209,7 +209,7 @@ export default function TableComponent() {
                         'whitespace-nowrap text-sm text-gray-500'
                       )}>
                       <TagListComponent
-                        tags={exercise.tags.map((tag, index) => ({ id: index, name: tag.name, color: tag.color }))}
+                        tags={exercise.tags}
                         showIcon={false}
                       />
                     </td>

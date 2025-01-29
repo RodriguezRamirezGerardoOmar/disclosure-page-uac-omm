@@ -8,7 +8,8 @@ import { Comment } from 'src/comment/entities/comment.entity';
 import {
   Ticket,
   TicketOperation,
-  TicketStatus
+  TicketStatus,
+  TicketType
 } from 'src/ticket/entities/ticket.entity';
 import { Excercise } from 'src/excercises/entities/excercise.entity';
 
@@ -27,10 +28,26 @@ export class TimeService {
 
   async create(createTimeDto: CreateTimeDto) {
     const newVal = await this.timeRepository.save(createTimeDto);
-    return {
-      id: newVal.id,
-      timeLimit: newVal.timeLimit
-    };
+    if (newVal) {
+      const ticketBody = `Se ha creado un nuevo límite de tiempo: ${newVal.timeLimit.toString()}`;
+      const commentId = this.commentRepository.create({
+        body: ticketBody
+      });
+      const savedComment = await this.commentRepository.save(commentId);
+      if (savedComment) {
+        const ticket = this.ticketRepository.create({
+          operation: TicketOperation.CREATE,
+          status: TicketStatus.ACCEPTED,
+          itemType: TicketType.UTILS,
+          commentId: savedComment
+        });
+        await this.ticketRepository.save(ticket);
+      }
+      return {
+        id: newVal.id,
+        timeLimit: newVal.timeLimit
+      };
+    }
   }
 
   async findAll() {
@@ -86,6 +103,7 @@ export class TimeService {
     const ticket = this.ticketRepository.create({
       operation: TicketOperation.DELETE,
       status: TicketStatus.ACCEPTED,
+      itemType: TicketType.UTILS,
       commentId: savedComment
     });
     if (ticket) {

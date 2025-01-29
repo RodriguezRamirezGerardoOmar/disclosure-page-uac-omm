@@ -317,9 +317,14 @@ export class ExcercisesService {
 
   async update(id: string, updateExcerciseDto: UpdateExcerciseDto) {
     const excercise = await this.exerciseRepository.findOneBy({ id });
-    return await this.memoryRepository.save({
-      ...excercise,
-      ...updateExcerciseDto
+    const { memoryId, ...updateData } = updateExcerciseDto;
+    const memory = await this.memoryRepository.findOneBy({ id: memoryId });
+    if (!memory) {
+      throw new BadRequestException('El límite de memoria elegido no existe');
+    }
+    return await this.exerciseRepository.update(id, {
+      ...updateData,
+      memoryId: memory
     });
   }
 

@@ -8,7 +8,8 @@ import { Comment } from '../comment/entities/comment.entity';
 import {
   Ticket,
   TicketOperation,
-  TicketStatus
+  TicketStatus,
+  TicketType
 } from 'src/ticket/entities/ticket.entity';
 import { Note } from 'src/notes/entities/note.entity';
 import { Excercise } from 'src/excercises/entities/excercise.entity';
@@ -35,7 +36,6 @@ export class CategoriesService {
     let comment = await this.commentRepository.findOneBy({
       body: createCategoryDto.commentId
     });
-    console.log(comment);
     if (comment === null) {
       comment = this.commentRepository.create({
         body: createCategoryDto.commentId
@@ -44,11 +44,27 @@ export class CategoriesService {
     const newCategory = this.categoryRepository.create(createCategoryDto);
     newCategory.comment = comment;
     const category = await this.categoryRepository.save(newCategory);
-    return {
-      id: category.id,
-      name: category.name,
-      commentId: comment
-    };
+    const ticketCommentBody = `La categoría ${category.name} ha sido creada`;
+    const ticketComment = this.commentRepository.create({
+      body: ticketCommentBody
+    });
+    const ticketCommentId = await this.commentRepository.save(ticketComment);
+    const ticket = this.ticketRepository.create({
+      operation: TicketOperation.CREATE,
+      status: TicketStatus.ACCEPTED,
+      itemType: TicketType.UTILS,
+      commentId: ticketCommentId
+    });
+    const savedTicket = await this.ticketRepository.save(ticket);
+    if (category && savedTicket) {
+      return {
+        id: category.id,
+        name: category.name,
+        commentId: comment
+      };
+    } else {
+      throw new BadRequestException('Error al crear la categoría');
+    }
   }
 
   async findAll() {
@@ -96,6 +112,7 @@ export class CategoriesService {
     const ticket = this.ticketRepository.create({
       operation: TicketOperation.DELETE,
       status: TicketStatus.ACCEPTED,
+      itemType: TicketType.UTILS,
       commentId: ticketCommentId
     });
     const savedTicket = await this.ticketRepository.save(ticket);
