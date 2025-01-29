@@ -8,7 +8,8 @@ import { Comment } from 'src/comment/entities/comment.entity';
 import {
   Ticket,
   TicketOperation,
-  TicketStatus
+  TicketStatus,
+  TicketType
 } from 'src/ticket/entities/ticket.entity';
 import { Excercise } from 'src/excercises/entities/excercise.entity';
 
@@ -26,7 +27,26 @@ export class DifficultyService {
   ) {}
 
   async create(createDifficultyDto: CreateDifficultyDto) {
-    return await this.difficultyRepository.save(createDifficultyDto);
+    const savedDifficulty = await this.difficultyRepository.save(
+      createDifficultyDto
+    );
+    if (savedDifficulty) {
+      const ticketCommentBody = `La dificultad ${savedDifficulty.name} ha sido creada`;
+      const comment = this.commentRepository.create({
+        body: ticketCommentBody
+      });
+      const savedComment = await this.commentRepository.save(comment);
+      const ticket = this.ticketRepository.create({
+        operation: TicketOperation.CREATE,
+        status: TicketStatus.ACCEPTED,
+        itemType: TicketType.UTILS,
+        commentId: savedComment
+      });
+      await this.ticketRepository.save(ticket);
+      return savedDifficulty;
+    } else {
+      throw new BadRequestException('Error al crear la dificultad');
+    }
   }
 
   async findAll() {
@@ -68,6 +88,7 @@ export class DifficultyService {
     const ticket = this.ticketRepository.create({
       operation: TicketOperation.DELETE,
       status: TicketStatus.ACCEPTED,
+      itemType: TicketType.UTILS,
       commentId: savedComment
     });
     if (ticket) {

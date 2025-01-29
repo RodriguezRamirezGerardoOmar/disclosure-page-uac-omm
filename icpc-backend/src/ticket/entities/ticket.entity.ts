@@ -14,7 +14,9 @@ export enum TicketOperation {
 export enum TicketType {
   EXERCISE = 'exercise',
   NOTE = 'note',
-  NEWS = 'news'
+  NEWS = 'news',
+  UTILS = 'utils',
+  USER = 'user'
 }
 
 export enum TicketStatus {

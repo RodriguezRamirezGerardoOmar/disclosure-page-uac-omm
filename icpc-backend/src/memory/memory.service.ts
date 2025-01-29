@@ -8,7 +8,8 @@ import { Comment } from 'src/comment/entities/comment.entity';
 import {
   Ticket,
   TicketOperation,
-  TicketStatus
+  TicketStatus,
+  TicketType
 } from 'src/ticket/entities/ticket.entity';
 import { Excercise } from 'src/excercises/entities/excercise.entity';
 
@@ -42,7 +43,21 @@ export class MemoryService {
       memoryLimit: finalValue
     });
     if (memory) {
-      return memory;
+      const ticketCommentBody = `Se ha creado el límite de memoria ${memory.memoryLimit.toString()}`;
+      const comment = this.commentRepository.create({
+        body: ticketCommentBody
+      });
+      const savedComment = await this.commentRepository.save(comment);
+      const ticket = this.ticketRepository.create({
+        operation: TicketOperation.CREATE,
+        status: TicketStatus.ACCEPTED,
+        itemType: TicketType.UTILS,
+        commentId: savedComment
+      });
+      const savedTicket = await this.ticketRepository.save(ticket);
+      if (savedTicket) {
+        return memory;
+      }
     } else return await this.memoryRepository.save({ memoryLimit: finalValue });
   }
 
@@ -84,6 +99,7 @@ export class MemoryService {
     const ticket = this.ticketRepository.create({
       operation: TicketOperation.DELETE,
       status: TicketStatus.ACCEPTED,
+      itemType: TicketType.UTILS,
       commentId: savedComment
     });
     const savedTicket = await this.ticketRepository.save(ticket);

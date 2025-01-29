@@ -8,7 +8,8 @@ import { Comment } from 'src/comment/entities/comment.entity';
 import {
   Ticket,
   TicketOperation,
-  TicketStatus
+  TicketStatus,
+  TicketType
 } from 'src/ticket/entities/ticket.entity';
 import { Excercise } from 'src/excercises/entities/excercise.entity';
 import { Note } from 'src/notes/entities/note.entity';
@@ -29,7 +30,26 @@ export class TagsService {
   ) {}
 
   async create(createTagDto: CreateTagDto) {
-    return await this.tagRepository.save(createTagDto);
+    const savedTag = await this.tagRepository.save(createTagDto);
+    if (savedTag) {
+      const ticketCommentBody = `La etiqueta ${savedTag.name} ha sido creada`;
+      const comment = this.commentRepository.create({
+        body: ticketCommentBody
+      });
+      const savedComment = await this.commentRepository.save(comment);
+      const ticket = this.ticketRepository.create({
+        operation: TicketOperation.CREATE,
+        status: TicketStatus.ACCEPTED,
+        itemType: TicketType.UTILS,
+        commentId: savedComment
+      });
+      await this.ticketRepository.save(ticket);
+      if (savedComment && ticket) {
+        return savedTag;
+      }
+    } else {
+      throw new BadRequestException('Error al crear la etiqueta');
+    }
   }
 
   async findAll() {
@@ -70,6 +90,7 @@ export class TagsService {
     const ticket = this.ticketRepository.create({
       operation: TicketOperation.DELETE,
       status: TicketStatus.ACCEPTED,
+      itemType: TicketType.UTILS,
       commentId: comment
     });
     const savedTicket = await this.ticketRepository.save(ticket);

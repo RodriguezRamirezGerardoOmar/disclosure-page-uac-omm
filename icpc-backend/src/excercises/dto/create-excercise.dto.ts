@@ -4,8 +4,7 @@ import {
   IsBoolean,
   IsObject,
   IsOptional,
-  IsString,
-  Matches
+  IsString
 } from 'class-validator';
 
 export class CreateExcerciseDto {
