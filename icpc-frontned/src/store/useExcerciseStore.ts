@@ -1,19 +1,19 @@
 import axios from 'axios'
 import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
-import { Exercise, IApiResponse, TResponseBasicError } from '@/constants/types'
-import { Tags } from '@/constants/types'
+import { Exercise, IApiResponse, TResponseBasicError, Tags } from '@/constants/types'
 import useAuthStore from './useStore'
 
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL
 })
 
+// Interfaz para crear un ejercicio
 interface ICreateExcercise {
   name: string
   category: { name: string, id: string }
   difficulty: { name: string, id: string }
-  time: { value: number, id: string}
+  time: { value: number, id: string }
   memoryId: string
   input: string
   output: string
@@ -30,21 +30,29 @@ interface ICreateExcercise {
   role: string
 }
 
+// Estado inicial
+interface ExcerciseState {
+  excerciseCount: number
+}
+
 interface Actions {
   createExcercise: (exercise: ICreateExcercise) => Promise<IApiResponse | TResponseBasicError>
   getExercise: (id: string) => Promise<Exercise>
   getExerciseList: (tags: Tags[], category?: string, difficulty?: string) => Promise<Exercise[]>
   search: (query: string) => Promise<Exercise[]>
-
+  deleteExercise: (id: string) => Promise<IApiResponse | TResponseBasicError>
+  getCount: () => Promise<number>
 }
 
-const useExcerciseStore = create<Actions>()(
+const useExcerciseStore = create<Actions & ExcerciseState>()(
   devtools(
     persist(
-      () => ({
-        createExcercise: async (exercise: ICreateExcercise) => {
+      (set, get) => ({
+        excerciseCount: 0, 
+
+        createExcercise: async (excercise: ICreateExcercise) => {
           try {
-            const response = await api.post('/api/v1/excercises', exercise, {
+            const response = await api.post('/api/v1/excercises', excercise, {
               headers: {
                 Authorization: `Bearer ${useAuthStore.getState().token}`
               }
@@ -52,8 +60,9 @@ const useExcerciseStore = create<Actions>()(
             if (response.status === 201) {
               return response.data
             }
+            return { error: 'Unexpected response status' }
           } catch (error: any) {
-            return error.response.data
+            return error?.response?.data || { error: 'An unexpected error occurred' }
           }
         },
 
@@ -62,7 +71,7 @@ const useExcerciseStore = create<Actions>()(
             const response = await api.get(`/api/v1/excercises/${id}`)
             return response.data
           } catch (error: any) {
-            return error.response.data
+            return error?.response?.data || { error: 'An unexpected error occurred' }
           }
         },
 
@@ -71,22 +80,46 @@ const useExcerciseStore = create<Actions>()(
             const response = await api.post('/api/v1/excercises/list', { tags, category, difficulty })
             return response.data
           } catch (error: any) {
-            return error.response.data
+            return error?.response?.data || []
           }
         },
-        
+
         search: async (query: string) => {
           try {
             const response = await api.post(`/api/v1/excercises/search/${query}`)
             return response.data
           } catch (error: any) {
-            console.error('Error searching exercises:', error)
+            console.error('Error searching excercises:', error)
             return []
           }
-        }
+        },
 
+        getCount: async (): Promise<number> => {
+          try {
+            const response = await api.get('/api/v1/excercises/count');
+            const count = response.data
+            set(() => ({ excerciseCount: count })) // Actualización del estado corregida
+            return count
+          } catch (error: any) {
+            console.error('Error getting excercise count:', error)
+            return 0
+          }
+        },
+        
+        deleteExercise: async (id: string) => {
+          try {
+            const response = await api.delete(`/api/v1/excercises/${id}/${useAuthStore.getState().user?.id}`, {
+              headers: {
+                Authorization: `Bearer ${useAuthStore.getState().token}`
+              }
+            })
+            return response.data
+          } catch (error: any) {
+            return error.response.data
+          }
+        }
       }),
-      { name: 'exercise-store' }
+      { name: 'excercise-store' }
     )
   )
 )

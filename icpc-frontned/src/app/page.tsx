@@ -8,8 +8,9 @@ import { LastNewsComponent } from './components/ui/LastNewsComponent'
 import useUtilsStore from '@/store/useUtilsStore'
 
 export default async function Home() {
-  //TODO: Agregar descripciones pertinentes a cada item+
+  //TODO: Agregar descripciones pertinentes a cada item
   const dailyQuote: Quote = await useUtilsStore.getState().getDailyQuote()
+
   const items = [
     {
       title: 'Noticias',
@@ -17,7 +18,7 @@ export default async function Home() {
       info: `Mantente al día con los eventos más recientes y las actualizaciones del mundo tecnológico y académico.
        Explora nuestras noticias para estar siempre informado.`,
       href: 'newslist',
-      exercises: 126
+      type: 2
     },
     {
       title: 'Ejercicios',
@@ -25,7 +26,7 @@ export default async function Home() {
       info: `Pon a prueba tus habilidades con nuestra amplia colección de ejercicios diseñados para fortalecer tus conocimientos en programación
        y resolver problemas desafiantes.`,
       href: 'exercises',
-      exercises: 255
+      type: 0
     },
     {
       title: 'Apuntes',
@@ -33,7 +34,7 @@ export default async function Home() {
       info: `Accede a una variedad de apuntes detallados que te ayudarán a consolidar tus conocimientos y
        profundizar en conceptos clave para tu aprendizaje.`,
       href: 'notelist',
-      exercises: 150
+      type: 1
     }
   ]
 
@@ -95,7 +96,7 @@ ejercicios propuestos de diferentes niveles.`}
               icon={item.icon}
               info={item.info}
               href={item.href}
-              exercises={item.exercises}
+              type={item.type}
             />
           ))}
         </div>

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { ExcercisesService } from './excercises.service';
 import { ExcercisesController } from './excercises.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -11,6 +11,7 @@ import { Memory } from 'src/memory/entities/memory.entity';
 import { Ticket } from 'src/ticket/entities/ticket.entity';
 import { User } from 'src/users/entities/user.entity';
 import { Comment } from 'src/comment/entities/comment.entity';
+import { AppModule } from '../app.module';
 
 @Module({
   imports: [
@@ -24,7 +25,8 @@ import { Comment } from 'src/comment/entities/comment.entity';
       Ticket,
       User,
       Comment
-    ])
+    ]),
+    forwardRef(() => AppModule)
   ],
   controllers: [ExcercisesController],
   providers: [ExcercisesService],

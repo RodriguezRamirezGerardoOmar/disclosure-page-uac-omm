@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { UsersModule } from './users/users.module';
 import { DataSource } from 'typeorm';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -17,6 +17,7 @@ import { ImageModule } from './image/image.module';
 import { NewsModule } from './news/news.module';
 import { TicketModule } from './ticket/ticket.module';
 import { ReportModule } from './report/report.module';
+import { LoggerService } from './services/logger.service';
 
 @Module({
   imports: [
@@ -45,12 +46,14 @@ import { ReportModule } from './report/report.module';
     TimeModule,
     DifficultyModule,
     TagsModule,
-    ExcercisesModule,
+    forwardRef(() => ExcercisesModule),
     ImageModule,
     NewsModule,
     TicketModule,
     ReportModule
-  ]
+  ],
+  providers: [LoggerService],
+  exports: [LoggerService]
 })
 export class AppModule {
   constructor(private dataSource: DataSource) {}
