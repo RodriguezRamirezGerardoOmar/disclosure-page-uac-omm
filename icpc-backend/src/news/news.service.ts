@@ -139,9 +139,7 @@ export class NewsService {
     });
   }
 
-  async count(): Promise<number> {
-    return this.newsRepository.count({
-      where: { isVisible: true }
-    });
+  async getCount(): Promise<number> {
+    return await this.newsRepository.countBy({ isVisible: true });
   }
 }
