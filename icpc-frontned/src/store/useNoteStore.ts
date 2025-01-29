@@ -26,6 +26,7 @@ interface NoteState {
 
 interface Actions {
   createNote: (note: any) => Promise<IApiResponse | TResponseBasicError>
+  updateNote: (note: any, id:string) => Promise<IApiResponse | TResponseBasicError>
   getNote: (id: string) => Promise<Note>
   getList: (tags: Tags[], category?: string) => Promise<Note[]>
   search: (query: string) => Promise<Note[]>
@@ -43,6 +44,21 @@ const useNoteStore = create<Actions & NoteState>()(
         createNote: async (note: ICreateNote) => {
           try {
             const response = await api.post('/api/v1/notes', note, {
+              headers: {
+                Authorization: `Bearer ${useAuthStore.getState().token}`
+              }
+            })
+            if (response.status === 201) {
+              return response.data
+            }
+          } catch (error: any) {
+            return error.response.data
+          }
+        },
+
+        updateNote: async (note: ICreateNote, id:string) => {
+          try {
+            const response = await api.patch(`/api/v1/note/${id}`, note, {
               headers: {
                 Authorization: `Bearer ${useAuthStore.getState().token}`
               }

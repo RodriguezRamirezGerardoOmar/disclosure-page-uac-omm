@@ -37,6 +37,7 @@ interface ExcerciseState {
 
 interface Actions {
   createExcercise: (exercise: ICreateExcercise) => Promise<IApiResponse | TResponseBasicError>
+  updateExcercise: (exercise: ICreateExcercise, id:string) => Promise<IApiResponse | TResponseBasicError>
   getExercise: (id: string) => Promise<Exercise>
   getExerciseList: (tags: Tags[], category?: string, difficulty?: string) => Promise<Exercise[]>
   search: (query: string) => Promise<Exercise[]>
@@ -63,6 +64,21 @@ const useExcerciseStore = create<Actions & ExcerciseState>()(
             return { error: 'Unexpected response status' }
           } catch (error: any) {
             return error?.response?.data || { error: 'An unexpected error occurred' }
+          }
+        },
+        
+        updateExcercise: async (exercise: ICreateExcercise, id:string) => {
+          try {
+            const response = await api.patch(`/api/v1/excercises/${id}`, exercise, {
+              headers: {
+                Authorization: `Bearer ${useAuthStore.getState().token}`
+              }
+            })
+            if (response.status === 201) {
+              return response.data
+            }
+          } catch (error: any) {
+            return error.response.data
           }
         },
 

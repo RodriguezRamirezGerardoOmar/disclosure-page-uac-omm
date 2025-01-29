@@ -195,6 +195,7 @@ export class NotesService {
     const note = await this.noteRepository
       .createQueryBuilder('note')
       .leftJoinAndSelect('note.tags', 'tags')
+      .leftJoinAndSelect('note.category', 'category')
       .where('note.id = :id', { id })
       .leftJoinAndSelect('note.commentId', 'comment')
       .getOne();

@@ -28,7 +28,6 @@ interface Actions {
   search: (query: string) => Promise<News[]>;
   getCount: () => Promise<number>; // Acción para obtener el conteo
   deleteNews: (id: string) => Promise<IApiResponse | TResponseBasicError>
-  
 }
 
 const useNewsStore = create<Actions & NewsState>()(
@@ -50,7 +49,22 @@ const useNewsStore = create<Actions & NewsState>()(
           } catch (error: any) {
             return error.response?.data || { error: 'Error al crear noticia' }; // Maneja errores
           }
-        },
+        },        
+        updateNews: async (news: ICreateNews, id:string) => {
+          try {
+            const response = await api.patch(`/api/v1/news/${id}`, news, {
+              headers: {
+                Authorization: `Bearer ${useAuthStore.getState().token}` // Usa el token de autorización
+              }
+            });
+            if (response.status === 201) {
+              return response.data;
+            }
+          } catch (error: any) {
+            return error.response?.data || { error: 'Error al crear noticia' }; // Maneja errores
+          }
+        },   
+        
         getNews: async (limit: number = 0): Promise<News[]> => {
           try {
             const response = await api.get('/api/v1/news');
