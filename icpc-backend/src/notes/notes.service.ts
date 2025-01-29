@@ -195,6 +195,7 @@ export class NotesService {
     const note = await this.noteRepository
       .createQueryBuilder('note')
       .leftJoinAndSelect('note.tags', 'tags')
+      .leftJoinAndSelect('note.category', 'category')
       .where('note.id = :id', { id })
       .leftJoinAndSelect('note.commentId', 'comment')
       .getOne();
@@ -273,8 +274,6 @@ export class NotesService {
   }
 
   async getCount(): Promise<number> {
-    return this.noteRepository.count({
-      where: { isVisible: true }
-    });
+    return await this.noteRepository.countBy({ isVisible: true });
   }
 }

@@ -68,7 +68,7 @@ export class ExcercisesController {
     return this.exercisesService.findOne(id);
   }
 
-  @Get('count')
+  @Get('/count')
   @ApiCreatedResponse({
     description: 'The exercise count has been successfully obtained.'
   })
@@ -89,8 +89,8 @@ export class ExcercisesController {
   })
   @ApiBadRequestResponse({ description: 'Bad request' })
   @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
-  search(@Param('query') query: string) {
-    return this.exercisesService.search(query);
+  async search(@Param('query') query: string) {
+    return await this.exercisesService.search(query);
   }
 
   @Patch(':id')
@@ -116,7 +116,6 @@ export class ExcercisesController {
     return updatedExercise;
   }
 
-  @Delete(':id/:user')
   @Delete(':id/:user')
   @ApiBearerAuth()
   @UseGuards(AuthGuard)

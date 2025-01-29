@@ -8,7 +8,7 @@ const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL // Configura la URL base de la API
 });
 
-interface ICreateNews { // Interfaces para el estado y las acciones del store
+interface ICreateNews {
   title: string;
   imageId: string;
   body: string;
@@ -18,13 +18,15 @@ interface ICreateNews { // Interfaces para el estado y las acciones del store
 
 interface NewsState {
   news: News[];
+  newsCount: number; // Nuevo campo para almacenar el conteo
 }
 
 interface Actions {
-  createNews: (news: ICreateNews) => Promise<IApiResponse | TResponseBasicError>
-  getNews: (limit?: number) => Promise<News[]>
-  getNewsArticle: (id: string) => Promise<News>
-  search: (query: string) => Promise<News[]>
+  createNews: (news: ICreateNews) => Promise<IApiResponse | TResponseBasicError>;
+  getNews: (limit?: number) => Promise<News[]>;
+  getNewsArticle: (id: string) => Promise<News>;
+  search: (query: string) => Promise<News[]>;
+  getCount: () => Promise<number>; // Acción para obtener el conteo
   deleteNews: (id: string) => Promise<IApiResponse | TResponseBasicError>
 }
 
@@ -33,6 +35,7 @@ const useNewsStore = create<Actions & NewsState>()(
     persist(
       (set, get) => ({
         news: [],
+        newsCount: 0, // Inicializa el conteo en 0
         createNews: async (news: ICreateNews) => {
           try {
             const response = await api.post('/api/v1/news', news, {
@@ -44,9 +47,24 @@ const useNewsStore = create<Actions & NewsState>()(
               return response.data;
             }
           } catch (error: any) {
-            return error.response.data; // Maneja errores
+            return error.response?.data || { error: 'Error al crear noticia' }; // Maneja errores
           }
-        },
+        },        
+        updateNews: async (news: ICreateNews, id:string) => {
+          try {
+            const response = await api.patch(`/api/v1/news/${id}`, news, {
+              headers: {
+                Authorization: `Bearer ${useAuthStore.getState().token}` // Usa el token de autorización
+              }
+            });
+            if (response.status === 201) {
+              return response.data;
+            }
+          } catch (error: any) {
+            return error.response?.data || { error: 'Error al crear noticia' }; // Maneja errores
+          }
+        },   
+        
         getNews: async (limit: number = 0): Promise<News[]> => {
           try {
             const response = await api.get('/api/v1/news');
@@ -57,7 +75,7 @@ const useNewsStore = create<Actions & NewsState>()(
             set(() => ({ news: limitedNews })); // Actualiza el estado
             return limitedNews; // Retorna las noticias limitadas
           } catch (error: any) {
-            return error.response.data; // Maneja errores
+            return error.response?.data || []; // Maneja errores
           }
         },
         getNewsArticle: async (id: string): Promise<News> => {
@@ -65,7 +83,7 @@ const useNewsStore = create<Actions & NewsState>()(
             const response = await api.get(`/api/v1/news/${id}`);
             return { ...response.data, index: 0 }; // Devuelve la noticia específica
           } catch (error: any) {
-            return error.response.data; // Maneja errores
+            throw error.response?.data || new Error('Error al obtener noticia'); // Maneja errores
           }
         },
         search: async (query: string): Promise<News[]> => {
@@ -73,12 +91,19 @@ const useNewsStore = create<Actions & NewsState>()(
             const response = await api.post(`/api/v1/news/search/${query}`);
             return response.data;
           } catch (error: any) {
-            if (error.response) {
-              return error.response.data; // Maneja errores con respuesta del servidor
-            } else {
-              console.error('Error searching news:', error);
-              return []; // Retorna una lista vacía en caso de error
-            }
+            console.error('Error searching news:', error);
+            return []; // Retorna una lista vacía en caso de error
+          }
+        },
+        getCount: async (): Promise<number> => {
+          try {
+            const response = await api.get('/api/v1/news/count');
+            const count = response.data || 0;
+            set(() => ({ newsCount: count })); // Actualiza el conteo en el estado
+            return count;
+          } catch (error: any) {
+            console.error('Error getting news count:', error);
+            return 0; 
           }
         },
 

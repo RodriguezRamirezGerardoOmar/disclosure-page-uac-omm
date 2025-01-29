@@ -143,6 +143,7 @@ export interface Note {
   body: string
   isVisible: boolean
   tags: Tags[]
+  category: Categories
   commentId: {
     id: string
     body: string
