@@ -4,7 +4,7 @@ import { TextComponent } from '../text/TextComponent'
 interface IInfoCardComponentProps {
   title: string
   info: string
-  autor: string
+  autor?: string
   image?: string
 }
 

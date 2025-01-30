@@ -54,6 +54,7 @@ interface Actions {
   createImage: (image: File) => Promise<IApiResponse | TResponseBasicError>
   updateImage: (image: File, id:string) => Promise<IApiResponse | TResponseBasicError>
   getDailyQuote: () => Promise<Quote>
+  getRandomFact: () => Promise<string>
   getTickets: () => Promise<Ticket[]>
   getPendingTickets: () => Promise<Ticket[]>
   getTicket: (id: string) => Promise<Ticket>
@@ -295,6 +296,15 @@ const useUtilsStore = create<Actions & UtilsState>()(
               phrase: '',
               author: ''
             }
+          }
+        },
+
+        getRandomFact: async (): Promise<string> => {
+          try {
+            const response = await api.get('/api/v1/facts')
+            return response.data
+          } catch (error: any) {
+            return ''
           }
         },
 

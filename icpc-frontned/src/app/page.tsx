@@ -8,8 +8,8 @@ import { LastNewsComponent } from './components/ui/LastNewsComponent'
 import useUtilsStore from '@/store/useUtilsStore'
 
 export default async function Home() {
-  //TODO: Agregar descripciones pertinentes a cada item
   const dailyQuote: Quote = await useUtilsStore.getState().getDailyQuote()
+  const RandomFact: string = await useUtilsStore.getState().getRandomFact()
 
   const items = [
     {
@@ -46,9 +46,10 @@ export default async function Home() {
 
   const dataRamdomCard = {
     title: 'Dato aleatorio',
-    info: `“El objetivo del rigor no es destruir toda intuición, sino que debería usarse para destruir 
-    la mala intuición a la vez que clarificar y elevar la buena intuición.”`,
-    autor: 'TERENCE TAO',
+    //info: `“El objetivo del rigor no es destruir toda intuición, sino que debería usarse para destruir 
+    //la mala intuición a la vez que clarificar y elevar la buena intuición.”`,
+    info: `“${RandomFact}”`,
+    //autor: 'TERENCE TAO',
     image: 'images/dumie-data.png'
   }
 
@@ -112,8 +113,8 @@ ejercicios propuestos de diferentes niveles.`}
           <DataCardComponent
             title={dataRamdomCard.title}
             info={dataRamdomCard.info}
-            autor={dataRamdomCard.autor}
-            image={dataRamdomCard.image}
+            //autor={dataRamdomCard.autor}
+            //image={dataRamdomCard.image}
           />
         </div>
         <div className='px-4 md:px-0 md:pl-4 h-full'>

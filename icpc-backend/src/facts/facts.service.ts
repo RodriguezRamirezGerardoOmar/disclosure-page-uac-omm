@@ -4,46 +4,48 @@ import * as path from 'path';
 import { CreateFactDto } from './dto/create-fact.dto';
 import { UpdateFactDto } from './dto/update-fact.dto';
 
-const DATA_FILE = path.join('/facts.json');
-
 @Injectable()
 export class FactsService {
-  private facts = this.loadFacts();
+  private facts: string[] = this.loadFacts();
 
   private loadFacts() {
-    const data = fs.readFileSync(DATA_FILE, 'utf8');
+    const data = fs.readFileSync('src/facts/facts.json', 'utf8');
     return JSON.parse(data);
   }
 
   private saveFacts() {
-    fs.writeFileSync(DATA_FILE, JSON.stringify(this.facts, null, 2), 'utf8');
+    fs.writeFileSync(
+      'src/facts/facts.json',
+      JSON.stringify(this.facts, null, 2),
+      'utf8'
+    );
   }
 
   findAll() {
-    return this.facts;
+    const index = Math.floor(Math.random() * this.facts.length);
+    const fact = this.facts[index];
+    return fact;
   }
 
   findOne(id: number) {
-    return this.facts.find(fact => fact.id === id) || null;
+    return this.facts[id];
   }
 
   create(createFactDto: CreateFactDto) {
-    const newFact = { id: Date.now(), ...createFactDto };
-    this.facts.push(newFact);
+    this.facts.push(createFactDto.text);
     this.saveFacts();
-    return newFact;
+    return createFactDto.text;
   }
 
   update(id: number, updateFactDto: UpdateFactDto) {
-    const index = this.facts.findIndex(fact => fact.id === id);
-    if (index === -1) return null;
-    this.facts[index] = { ...this.facts[index], ...updateFactDto };
+    this.facts[id] = updateFactDto.text;
     this.saveFacts();
-    return this.facts[index];
+    return this.facts[id];
   }
 
   remove(id: number) {
-    this.facts = this.facts.filter(fact => fact.id !== id);
+    const value = this.facts[id];
+    this.facts = this.facts.filter(val => val != value);
     this.saveFacts();
     return { message: 'Fact deleted successfully' };
   }

@@ -4,6 +4,6 @@ import { FactsController } from './facts.controller';
 
 @Module({
   controllers: [FactsController],
-  providers: [FactsService],
+  providers: [FactsService]
 })
 export class FactsModule {}
