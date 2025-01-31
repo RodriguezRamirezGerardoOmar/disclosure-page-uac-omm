@@ -16,8 +16,6 @@ import InputSelectorComponent from '../dropdowns/InputSelectorComponent'
 import InputSelectorCreateComponent from '../dropdowns/InputSelectorCreateComponent'
 import useAuthStore from '@/store/useStore'
 import TextAreaComponent from '../forms/TextAreaComponent'
-import { time } from 'console'
-import { Label } from '@headlessui/react'
 
 /*
 Input: None
@@ -85,7 +83,7 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
 
         // Si hay un ID, cargar los datos de el ejercicio
         if (props.id) {
-          const exercise = await getExercise(props.id!)
+          const exercise = await getExercise(props.id)
           if (exercise) {
             methods.reset({
               name: exercise.title,

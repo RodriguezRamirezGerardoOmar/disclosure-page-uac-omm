@@ -13,7 +13,6 @@ import useNewsStore from '@/store/useNewsStore'
 import useUtilsStore from '@/store/useUtilsStore'
 import { toast } from 'sonner'
 import useAuthStore from '@/store/useStore'
-import { Content } from 'next/font/google'
 
 /*
 Input: None
@@ -37,6 +36,7 @@ const CreateNewsComponent = (props: CreateNewsComponentProps) => {
     (state: { createImage: (image: File) => Promise<IApiResponse<{}> | TResponseBasicError> }) => state.createImage
   )
   const updateImage = useUtilsStore(state => state.updateImage)
+  const updateNews = useNewsStore(state => state.updateNews)
   const imageInputRef = useRef<{ resetImageInput: (id?: string) => void } | null>(null)
   const [coverImage, setCoverImage] = React.useState('')
 
@@ -66,39 +66,51 @@ const CreateNewsComponent = (props: CreateNewsComponentProps) => {
   }, [props.id, methods, getNewsArticle])
 
   const onSubmit: SubmitHandler<FieldValues> = async formData => {
-    const processResponse = async (uploadedImage: any) => {
+    const processResponse = (uploadedImage: any) => {
       if ('data' in uploadedImage) {
-        const response = await createNews({
-          title: String(formData.title),
-          imageId: uploadedImage.data?.id,
-          body: String(formData.content),
-          userAuthor: String(useAuthStore.getState().user?.userName),
-          role: String(useAuthStore.getState().user?.role)
+        const response = props.id
+          ? updateNews(
+              {
+                title: String(formData.title),
+                imageId: uploadedImage.data?.id,
+                body: String(formData.content),
+                userAuthor: String(useAuthStore.getState().user?.userName),
+                role: String(useAuthStore.getState().user?.role)
+              },
+              props.id
+            )
+          : createNews({
+              title: String(formData.title),
+              imageId: uploadedImage.data?.id,
+              body: String(formData.content),
+              userAuthor: String(useAuthStore.getState().user?.userName),
+              role: String(useAuthStore.getState().user?.role)
+            })
+        response.then(() => {
+          if ('statusCode' in response) {
+            const toastOptions = {
+              duration: 5000,
+              style: {
+                backgroundColor: response.statusCode === 200 ? 'green' : '#ff0000',
+                color: '#ffffff'
+              }
+            }
+
+            if (response.statusCode === 200) {
+              toast.success('Noticia actualizada', toastOptions)
+            } else {
+              toast.error('Parece que hubo un error', toastOptions)
+            }
+          } else if ('message' in response) {
+            toast.error(response.message as string, {
+              duration: 5000,
+              style: {
+                backgroundColor: '#ff0000',
+                color: '#ffffff'
+              }
+            })
+          }
         })
-
-        if ('statusCode' in response) {
-          const toastOptions = {
-            duration: 5000,
-            style: {
-              backgroundColor: response.statusCode === 201 ? 'green' : '#ff0000',
-              color: '#ffffff'
-            }
-          }
-
-          if (response.statusCode === 201) {
-            toast.success(response.message, toastOptions)
-          } else {
-            toast.error(response.message, toastOptions)
-          }
-        } else if ('message' in response) {
-          toast.error(response.message as string, {
-            duration: 5000,
-            style: {
-              backgroundColor: '#ff0000',
-              color: '#ffffff'
-            }
-          })
-        }
       } else if ('message' in uploadedImage) {
         toast.error(uploadedImage.message as string, {
           duration: 5000,
@@ -109,10 +121,12 @@ const CreateNewsComponent = (props: CreateNewsComponentProps) => {
         })
       }
     }
-
-    const uploadedImage = props.id ? await updateImage(formData.file, props.id) : await createImage(formData.file)
-
-    await processResponse(uploadedImage)
+    if (formData.file.includes('http')) {
+      processResponse({ data: { id: (await getNewsArticle(props.id!)).imageId.id } })
+    } else {
+      const uploadedImage = props.id ? await updateImage(formData.file, props.id) : await createImage(formData.file)
+      processResponse(uploadedImage)
+    }
   }
 
   const clearForm = () => {
