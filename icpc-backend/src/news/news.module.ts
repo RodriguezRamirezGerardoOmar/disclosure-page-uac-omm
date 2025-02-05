@@ -8,11 +8,12 @@ import { Ticket } from 'src/ticket/entities/ticket.entity';
 import { Comment } from 'src/comment/entities/comment.entity';
 import { User } from 'src/users/entities/user.entity';
 import { LoggerService } from '../services/logger.service'; // Importa el LoggerService
+import { ImageService } from 'src/image/image.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([News, Image, Ticket, Comment, User])],
   controllers: [NewsController],
-  providers: [NewsService, LoggerService], // Añade LoggerService a los proveedores
+  providers: [NewsService, LoggerService, ImageService], // Añade LoggerService a los proveedores
   exports: [NewsService]
 })
 export class NewsModule {}

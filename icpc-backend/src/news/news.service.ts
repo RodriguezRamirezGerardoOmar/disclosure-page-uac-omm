@@ -12,6 +12,7 @@ import {
 } from 'src/ticket/entities/ticket.entity';
 import { Comment } from 'src/comment/entities/comment.entity';
 import { User } from 'src/users/entities/user.entity';
+import { Image } from 'src/image/entities/image.entity';
 
 @Injectable()
 export class NewsService {
@@ -23,7 +24,9 @@ export class NewsService {
     @InjectRepository(Comment)
     private readonly commentRepository: Repository<Comment>,
     @InjectRepository(User)
-    private readonly userRepository: Repository<User>
+    private readonly userRepository: Repository<User>,
+    @InjectRepository(Image)
+    private readonly imageRepository: Repository<Image>
   ) {}
   async create(createNewsDto: CreateNewsDto) {
     const news = await this.newsRepository.findOneBy({
@@ -32,7 +35,13 @@ export class NewsService {
     if (news !== null) {
       throw new BadRequestException('Una noticia con este título ya existe');
     } else {
-      const news = this.newsRepository.create(createNewsDto);
+      const image = await this.imageRepository.findOneBy({
+        id: createNewsDto.imageId
+      });
+      const news = this.newsRepository.create({
+        ...createNewsDto,
+        imageId: image
+      });
       news.isVisible = true;
       const user = await this.userRepository.findOneBy({
         userName: createNewsDto.userAuthor
@@ -83,7 +92,14 @@ export class NewsService {
 
   async update(id: string, updateNewsDto: UpdateNewsDto) {
     const news = await this.newsRepository.findOneBy({ id: id });
-    return await this.newsRepository.save({ ...news, ...updateNewsDto });
+    const image = await this.imageRepository.findOneBy({
+      id: updateNewsDto.imageId
+    });
+    return await this.newsRepository.save({
+      ...news,
+      ...updateNewsDto,
+      imageId: image
+    });
   }
 
   async remove(id: string, user: string) {
@@ -141,5 +157,12 @@ export class NewsService {
 
   async getCount(): Promise<number> {
     return await this.newsRepository.countBy({ isVisible: true });
+  }
+
+  async swapImage(newsId: string, imageId: string) {
+    const news = await this.newsRepository.findOneBy({ id: newsId });
+    const image = await this.imageRepository.findOneBy({ id: imageId });
+    news.imageId = image;
+    return await this.newsRepository.save(news);
   }
 }

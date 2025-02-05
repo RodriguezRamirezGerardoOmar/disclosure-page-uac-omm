@@ -7,6 +7,7 @@ interface IColorPickerProps {
   register: UseFormRegister<FieldValues>
   fieldName: string
   id: string
+  className?: string
 }
 
 const ColorPickerComponent = ({ register, fieldName, id }: Readonly<IColorPickerProps>) => {

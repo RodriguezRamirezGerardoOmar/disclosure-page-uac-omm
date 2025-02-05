@@ -23,7 +23,7 @@ Author: Gerardo Omar Rodriguez Ramirez
 
 const ImageInputComponent = forwardRef(({ cover, ...props }: IImageInputProps, ref) => {
   const fileElem = useRef<HTMLInputElement>(null)
-  const [image, setImage] = useState<string | null>(cover || null)
+  const [image, setImage] = useState<string | null>(cover ?? null)
   const [selectedFile, setSelectedFile] = useState(!!cover)
   const iconURL = '/icons/image.svg'
 

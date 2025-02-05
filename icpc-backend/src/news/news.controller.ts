@@ -6,7 +6,9 @@ import {
   Patch,
   Param,
   Delete,
-  UseGuards
+  UseGuards,
+  UploadedFile,
+  UseInterceptors
 } from '@nestjs/common';
 import { NewsService } from './news.service';
 import { CreateNewsDto } from './dto/create-news.dto';
@@ -14,6 +16,8 @@ import { UpdateNewsDto } from './dto/update-news.dto';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
   ApiCreatedResponse,
   ApiInternalServerErrorResponse,
   ApiTags,
@@ -21,11 +25,14 @@ import {
 } from '@nestjs/swagger';
 import { AuthGuard } from 'src/auth/guard/auth.guard';
 import { LoggerService } from '../services/logger.service'; // Importa el LoggerService
+import { ImageService } from 'src/image/image.service';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('news')
 @ApiTags('News')
 export class NewsController {
   constructor(
+    private readonly imageService: ImageService,
     private readonly newsService: NewsService,
     private readonly loggerService: LoggerService // Inyecta el LoggerService
   ) {}
@@ -80,6 +87,34 @@ export class NewsController {
     return this.newsService.search(query);
   }
 
+  @UseInterceptors(FileInterceptor('file'))
+  @Patch('image/:id')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @ApiCreatedResponse({
+    description: 'La imagen se ha actualizado exitosamente.'
+  })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    description: 'Archivo a subir',
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary'
+        }
+      }
+    }
+  })
+  async swapImage(
+    @Param('id') id: string,
+    @UploadedFile() file: Express.Multer.File
+  ) {
+    const image = await this.imageService.create(file);
+    return this.newsService.swapImage(id, image.id);
+  }
+
   @Patch(':id')
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
@@ -90,6 +125,7 @@ export class NewsController {
   @ApiBadRequestResponse({ description: 'Bad request' })
   @ApiInternalServerErrorResponse({ description: 'Internal server error' })
   async update(@Param('id') id: string, @Body() updateNewsDto: UpdateNewsDto) {
+    console.log('updateNewsDto', updateNewsDto);
     const updatedNews = await this.newsService.update(id, updateNewsDto);
     this.loggerService.logChange('news', 'update', { id, ...updateNewsDto }); // Log de la operación
     return updatedNews;

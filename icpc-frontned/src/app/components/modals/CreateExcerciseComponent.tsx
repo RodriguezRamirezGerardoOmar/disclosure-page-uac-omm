@@ -16,8 +16,6 @@ import InputSelectorComponent from '../dropdowns/InputSelectorComponent'
 import InputSelectorCreateComponent from '../dropdowns/InputSelectorCreateComponent'
 import useAuthStore from '@/store/useStore'
 import TextAreaComponent from '../forms/TextAreaComponent'
-import { time } from 'console'
-import { Label } from '@headlessui/react'
 
 /*
 Input: None
@@ -85,7 +83,7 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
 
         // Si hay un ID, cargar los datos de el ejercicio
         if (props.id) {
-          const exercise = await getExercise(props.id!)
+          const exercise = await getExercise(props.id)
           if (exercise) {
             methods.reset({
               name: exercise.title,
@@ -273,7 +271,7 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
     <form
       onSubmit={methods.handleSubmit(onSubmit)}
       className={`margin-auto md:mx-auto max-w-7xl md:px-4 w-full h-full lg:px-8 lg:w-11/12 lg:h-auto 
-    min-h-screen place-items-center justify-between py-24`}>
+    min-h-screen place-items-center justify-between py-10`}>
       <BasicPanelComponent backgroundColor='bg-white dark:bg-dark-primary'>
         <div className='flex flex-col items-center'>
           <LogoComponent size={100} />
@@ -422,7 +420,6 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
                   options={tags}
                   selectedTags={field.value}
                   onChange={val => field.onChange(val)}
-                  onClear={() => field.onChange([])} // Reinicia las etiquetas seleccionadas
                 />
               )}
               rules={{ required: true }}
