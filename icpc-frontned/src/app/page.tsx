@@ -8,7 +8,6 @@ import { LastNewsComponent } from './components/ui/LastNewsComponent'
 import useUtilsStore from '@/store/useUtilsStore'
 
 export default async function Home() {
-  //TODO: Agregar descripciones pertinentes a cada item
   const dailyQuote: Quote = await useUtilsStore.getState().getDailyQuote()
 
   const items = [

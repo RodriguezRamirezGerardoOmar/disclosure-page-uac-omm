@@ -9,7 +9,6 @@ interface TagSelectorProps {
   selectedTags: Tags[]
   id: string
   onChange: (val: Tags[]) => void
-  onClear: () => void // Nueva función para limpiar los tags seleccionados
 }
 
 /*
@@ -105,7 +104,7 @@ Date: 22 - 03 - 2024
 Author: Gerardo Omar Rodriguez Ramirez
 */
 
-const TagSelectorComponent = ({ options, selectedTags, id, onChange, onClear }: Readonly<TagSelectorProps>) => {
+const TagSelectorComponent = ({ options, selectedTags, id, onChange }: Readonly<TagSelectorProps>) => {
   const labelClassname = 'place-self-start dark:text-dark-accent'
 
   const handleChange = (selectedOptions: MultiValue<Tags>) => {

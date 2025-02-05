@@ -17,7 +17,7 @@ export class News extends BaseEntity {
 
   @ManyToOne(() => Image, image => image.news)
   @JoinTable()
-  imageId: string;
+  imageId: Image;
 
   @OneToMany(() => Ticket, ticket => ticket.originalNoteId, {
     onDelete: 'CASCADE'

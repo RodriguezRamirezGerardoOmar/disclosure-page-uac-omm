@@ -28,6 +28,7 @@ interface Actions {
   search: (query: string) => Promise<News[]>;
   getCount: () => Promise<number>; // Acción para obtener el conteo
   deleteNews: (id: string) => Promise<IApiResponse | TResponseBasicError>
+  updateNews: (news: ICreateNews, id:string) => Promise<IApiResponse | TResponseBasicError>
 }
 
 const useNewsStore = create<Actions & NewsState>()(
