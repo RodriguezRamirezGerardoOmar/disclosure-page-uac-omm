@@ -2,7 +2,13 @@ import { useState } from 'react';
 import CreateExerciseComponent from '../modals/CreateExcerciseComponent';
 import CreateNoteComponent from '../modals/CreateNoteComponent';
 import CreateNewsComponent from '../modals/CreateNewsComponent';
-import { ButtonComponent } from '../buttons/ButtonComponent'; // Importa tu ButtonComponent
+import { ButtonComponent } from '../buttons/ButtonComponent';
+import CreateCategoryComponent from '../modals/CreateCategoryComponent';
+import CreateDifficultyComponent from '../modals/CreateDifficultyComponent';
+import CreateTimeLimitComponent from '../modals/CreateTimeComponent';
+import CreateMemoryComponent from '../modals/CreateMemoryComponent';
+import CreateTagComponent from '../modals/CreateTagComponent';
+import { useForm, FieldValues } from 'react-hook-form';
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
@@ -34,12 +40,18 @@ export default function TabComponent({
   const [showCreateButton, setShowCreateButton] = useState(false)
   const [modalComponent, setModalComponent] = useState<JSX.Element | null>(null)
   const [activeTab, setActiveTab] = useState(tabs.find(tab => tab.current)?.name)
+  const methods = useForm<FieldValues>()
+  const onCreateDifficulty = (DifficultyName: string) => {
+  }
+  
 
   const handleTabChange = (tabName: string) => {
     setActiveTab(tabName);
     handleChange(tabName);
 
-    if (tabName === 'Apuntes' || tabName === 'Noticias' || tabName === 'Ejercicios') {
+    if (tabName === 'Apuntes' || tabName === 'Noticias' || tabName === 'Ejercicios' || tabName === 'Categoría'
+      || tabName === 'Etiqueta' || tabName === 'Tiempo' || tabName === 'Memoria' || tabName === 'Dificultad'
+    ) {
       setShowCreateButton(true); 
       if (tabName === 'Apuntes') {
         setModalComponent(<CreateNoteComponent />);
@@ -47,7 +59,18 @@ export default function TabComponent({
         setModalComponent(<CreateNewsComponent />);
       } else if (tabName === 'Ejercicios') {
         setModalComponent(<CreateExerciseComponent />);
+      } else if (tabName === 'Categoría') {
+        setModalComponent(<CreateCategoryComponent />);
+      } else if (tabName === 'Etiqueta') {
+        setModalComponent(<CreateTagComponent />);
+      } else if (tabName === 'Tiempo') {
+        setModalComponent(<CreateTimeLimitComponent />);
+      } else if (tabName === 'Memoria') {
+        setModalComponent(<CreateMemoryComponent />);
+      } else if (tabName === 'Dificultad') {
+        setModalComponent(<CreateDifficultyComponent methods={methods} onCreateDifficulty={onCreateDifficulty}/>);
       }
+      
     } else {
       setShowCreateButton(false); 
       setModalComponent(null);
@@ -61,6 +84,16 @@ export default function TabComponent({
       setModalComponent(<CreateNewsComponent />);
     } else if (activeTab === 'Ejercicios') {
       setModalComponent(<CreateExerciseComponent />);
+    } else if (activeTab === 'Categoría') {
+      setModalComponent(<CreateCategoryComponent />);
+    } else if (activeTab === 'Etiqueta') {
+      setModalComponent(<CreateTagComponent />);
+    } else if (activeTab === 'Tiempo') {
+      setModalComponent(<CreateTimeLimitComponent />);
+    } else if (activeTab === 'Memoria') {
+      setModalComponent(<CreateMemoryComponent />);
+    } else if (activeTab === 'Dificultad') {
+      setModalComponent(<CreateDifficultyComponent methods={methods} onCreateDifficulty={onCreateDifficulty}/>);
     }
     setShowModal(true);
   };
@@ -189,7 +222,7 @@ export default function TabComponent({
               text="Crear"
               buttonType="button"
               onClick={handleModalOpen}
-              className="ml-auto" // Agrega margen a la izquierda 
+              className="ml-auto"
             />
             )}
           </div>
