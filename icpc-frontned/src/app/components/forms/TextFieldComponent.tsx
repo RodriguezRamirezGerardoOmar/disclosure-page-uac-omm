@@ -11,7 +11,7 @@ interface ITextFieldProps {
   auto?: 'email' | 'current-password' | 'new-password' | 'username' | 'off' | 'name' | 'last-name'
   id: string
   necessary: boolean
-  type: 'email' | 'password' | 'username' | 'text'
+  type: 'email' | 'password' | 'username' | 'text' | 'number'
   className?: string
   placeholder?: string
 }

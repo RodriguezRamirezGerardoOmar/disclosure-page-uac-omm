@@ -150,8 +150,8 @@ const CreateNewsComponent = (props: CreateNewsComponentProps) => {
   return (
     <form
       onSubmit={methods.handleSubmit(onSubmit)}
-      className='margin-auto md:mx-auto max-w-7xl md:px-4 w-full h-full lg:px-8 lg:w-2/3 lg:h-auto 
-    min-h-screen place-items-center justify-between py-24'>
+      className={`margin-auto md:mx-auto max-w-7xl md:px-4 w-full h-full lg:px-8 lg:w-2/3 lg:h-auto 
+    min-h-screen place-items-center justify-between py-10`}>
       <BasicPanelComponent backgroundColor='bg-white dark:bg-dark-primary'>
         <div className='flex flex-col items-center'>
           <LogoComponent size={100} />
