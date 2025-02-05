@@ -1,5 +1,5 @@
 'use client'
-import React from 'react'
+import React, { useRef } from 'react'
 import { UseFormReturn, FieldValues, SubmitHandler, useForm } from 'react-hook-form'
 import { BasicPanelComponent } from '../panels/BasicPanelComponent'
 import LogoComponent from '../LogoComponent'
@@ -8,14 +8,14 @@ import SubmitComponent from '../forms/SubmitComponent'
 import useUtilsStore from '@/store/useUtilsStore'
 import { toast } from 'sonner'
 
-/*  
-Formulario para creación de categorías
-Fecha: 12 - 11 - 2024  
-*/
-
 const CreateCategoryComponent = () => {
   const methods = useForm<FieldValues>()
   const createCategory = useUtilsStore(state => state.createCategory)
+
+  const clearForm = () => {
+    methods.reset()
+  }
+
   const onSubmit: SubmitHandler<FieldValues> = async data => {
     const response = await createCategory({ name: String(data.categoryName), commentId: String(data.categoryName) })
     if ('statusCode' in response && response.statusCode === 201) {
@@ -52,15 +52,15 @@ const CreateCategoryComponent = () => {
             <SubmitComponent text='Crear' />
           </div>
           <div className='mt-4'>
-          <button
-            type='button'
-            className='inline-flex items-center gap-x-2 rounded-md bg-primary text-complementary px-3.5 py-2.5 
+            <button
+              type='button'
+              onClick={clearForm}
+              className='inline-flex items-center gap-x-2 rounded-md bg-primary text-complementary px-3.5 py-2.5 
               font-medium shadow-sm hover:bg-secondary focus-visible:outline 
-              focus-visible:outline-offset-2 focus-visible:outline-complementary'
-            >
-            {}Borrar formulario
-          </button>
-        </div>
+              focus-visible:outline-offset-2 focus-visible:outline-complementary'>
+              Borrar formulario
+            </button>
+          </div>
         </form>
       </BasicPanelComponent>
     </div>

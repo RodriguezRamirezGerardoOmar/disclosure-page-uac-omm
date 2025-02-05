@@ -11,6 +11,11 @@ import { toast } from 'sonner'
 const CreateTimeLimitComponent = () => {
   const methods = useForm<FieldValues>()
   const createTimeLimit = useUtilsStore(state => state.createTimeLimit)
+
+  const clearForm = () => {
+    methods.reset()
+  }
+
   const onSubmit: SubmitHandler<FieldValues> = async data => {
     const timeLimitValue = parseInt(data.TimeLimitName, 10);
     if (isNaN(timeLimitValue)) {
@@ -48,18 +53,19 @@ const CreateTimeLimitComponent = () => {
                 fieldName="TimeLimitName"
                 id="TimeLimitName"
                 necessary={true}
-                type="number"  // Cambiado a "number"
+                type="number"
             />
             <SubmitComponent text="Crear" />
           </div>
           <div className='mt-4'>
           <button
             type='button'
+            onClick={clearForm}
             className='inline-flex items-center gap-x-2 rounded-md bg-primary text-complementary px-3.5 py-2.5 
               font-medium shadow-sm hover:bg-secondary focus-visible:outline 
               focus-visible:outline-offset-2 focus-visible:outline-complementary'
             >
-            {}Borrar formulario
+            Borrar formulario
           </button>
         </div>
         </form>

@@ -13,12 +13,13 @@ const CreateTagComponent = () => {
   const methods = useForm<FieldValues>()
   const createTag = useUtilsStore(state => state.createTag)
 
-  const onSubmit: SubmitHandler<FieldValues> = async data => {
-    const response = await createTag({ 
-      name: String(data.TagName), 
-      color: data.TagColor // Asegúrate de que esto sea un número o el tipo de dato correcto
-    })
+  const clearForm = () => {
+    methods.reset()
+  }
 
+  const onSubmit: SubmitHandler<FieldValues> = async data => {
+    const color = String(data.color).replace('#', '');
+    const response = await createTag({ name: String(data.name), color })
     if ('statusCode' in response && response.statusCode === 201) {
       toast.success(response.message, {
         duration: 5000,
@@ -47,7 +48,7 @@ const CreateTagComponent = () => {
                 <TextFieldComponent
                   labelText="Nombre de la etiqueta"
                   register={methods.register}
-                  fieldName="TagName"
+                  fieldName="name"
                   id="TagName"
                   necessary={true}
                   type="text"
@@ -56,7 +57,7 @@ const CreateTagComponent = () => {
               <div className='w-1/4'>
                 <ColorPickerComponent
                   register={methods.register}
-                  fieldName="TagColor"
+                  fieldName="color"
                   id="TagColor"
                 />
               </div>
@@ -66,9 +67,10 @@ const CreateTagComponent = () => {
           <div className='mt-4'>
             <button
               type='button'
+              onClick={clearForm}
               className='inline-flex items-center gap-x-2 rounded-md bg-primary text-complementary px-3.5 py-2.5 
-                font-medium shadow-sm hover:bg-secondary focus-visible:outline 
-                focus-visible:outline-offset-2 focus-visible:outline-complementary'
+              font-medium shadow-sm hover:bg-secondary focus-visible:outline 
+              focus-visible:outline-offset-2 focus-visible:outline-complementary'
             >
               Borrar formulario
             </button>

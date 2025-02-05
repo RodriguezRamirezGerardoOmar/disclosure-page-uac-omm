@@ -8,21 +8,20 @@ import SubmitComponent from '../forms/SubmitComponent';
 import useUtilsStore from '@/store/useUtilsStore'
 import { toast } from 'sonner'
 
-/*  
-Formulario para creación de categorías
-Fecha: 12 - 11 - 2024  
-*/
-
 interface CreateDifficultyComponentProps {
   methods: UseFormReturn<FieldValues>
-  // onCancel: () => void
   onCreateDifficulty: (DifficultyName: string) => void
 }
 
 const CreateDifficultyComponent: React.FC<CreateDifficultyComponentProps> = ({ methods, onCreateDifficulty }) => {
   const createDifficulty = useUtilsStore(state => state.createDifficulty)
+
+  const clearForm = () => {
+    methods.reset()
+  }
+
   const onSubmit: SubmitHandler<FieldValues> = async data => {
-    const response = await createDifficulty({ level: Number(data.DifficultyName), name: String(data.DifficultyName) })
+    const response = await createDifficulty({ level: Number(data.Level), name: String(data.DifficultyName) })
     if ('statusCode' in response && response.statusCode === 201) {
       toast.success(response.message, {
         duration: 5000,
@@ -54,16 +53,25 @@ const CreateDifficultyComponent: React.FC<CreateDifficultyComponentProps> = ({ m
                 necessary={true}
                 type="text"
             />
+            <TextFieldComponent
+                labelText="Nivel de la dificultad"
+                register={methods.register}
+                fieldName="Level"
+                id="Level"
+                necessary={true}
+                type="number"
+            />
             <SubmitComponent text="Crear" />
           </div>
           <div className='mt-4'>
           <button
             type='button'
+            onClick={clearForm}
             className='inline-flex items-center gap-x-2 rounded-md bg-primary text-complementary px-3.5 py-2.5 
               font-medium shadow-sm hover:bg-secondary focus-visible:outline 
               focus-visible:outline-offset-2 focus-visible:outline-complementary'
             >
-            {}Borrar formulario
+            Borrar formulario
           </button>
         </div>
         </form>

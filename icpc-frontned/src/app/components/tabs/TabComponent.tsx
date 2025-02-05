@@ -42,7 +42,6 @@ export default function TabComponent({
   const [activeTab, setActiveTab] = useState(tabs.find(tab => tab.current)?.name)
   const methods = useForm<FieldValues>()
   const onCreateDifficulty = (DifficultyName: string) => {
-    // Add your logic here
   }
   
 

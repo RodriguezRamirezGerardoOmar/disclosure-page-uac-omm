@@ -27,6 +27,17 @@ export class DifficultyService {
   ) {}
 
   async create(createDifficultyDto: CreateDifficultyDto) {
+    // Verificar si ya existe un registro con el mismo nombre o nivel de dificultad
+    const existingDifficulty = await this.difficultyRepository.findOne({
+      where: [
+        { name: createDifficultyDto.name },
+        { level: createDifficultyDto.level }
+      ]
+    });
+    if (existingDifficulty) {
+      throw new BadRequestException('A difficulty with that name or level already exists.');
+    }
+
     const savedDifficulty = await this.difficultyRepository.save(
       createDifficultyDto
     );
