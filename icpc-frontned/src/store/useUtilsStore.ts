@@ -304,7 +304,7 @@ const useUtilsStore = create<Actions & UtilsState>()(
         updateImage: async (file: File, id: string): Promise<IApiResponse | TResponseBasicError> => {
           const fd = new FormData()
           fd.append('file', file)
-          return await api.patch(`/api/v1/image/${id}`, fd, {
+          return await api.patch(`/api/v1/news/image/${id}`, fd, {
             headers: {
               Authorization: `Bearer ${useAuthStore.getState().token}`
             }

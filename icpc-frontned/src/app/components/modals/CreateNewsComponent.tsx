@@ -67,12 +67,13 @@ const CreateNewsComponent = (props: CreateNewsComponentProps) => {
 
   const onSubmit: SubmitHandler<FieldValues> = async formData => {
     const processResponse = (uploadedImage: any) => {
+      //console.log(uploadedImage)
       if ('data' in uploadedImage) {
         const response = props.id
           ? updateNews(
               {
                 title: String(formData.title),
-                imageId: uploadedImage.data?.id,
+                imageId: uploadedImage.data?.imageId.id,
                 body: String(formData.content),
                 userAuthor: String(useAuthStore.getState().user?.userName),
                 role: String(useAuthStore.getState().user?.role)
@@ -121,7 +122,8 @@ const CreateNewsComponent = (props: CreateNewsComponentProps) => {
         })
       }
     }
-    if (formData.file.includes('http')) {
+    //console.log(typeof formData.file === 'string')
+    if (typeof formData.file === 'string') {
       processResponse({ data: { id: (await getNewsArticle(props.id!)).imageId.id } })
     } else {
       const uploadedImage = props.id ? await updateImage(formData.file, props.id) : await createImage(formData.file)
