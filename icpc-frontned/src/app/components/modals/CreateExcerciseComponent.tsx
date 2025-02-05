@@ -273,7 +273,7 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
     <form
       onSubmit={methods.handleSubmit(onSubmit)}
       className={`margin-auto md:mx-auto max-w-7xl md:px-4 w-full h-full lg:px-8 lg:w-11/12 lg:h-auto 
-    min-h-screen place-items-center justify-between py-24`}>
+    min-h-screen place-items-center justify-between py-10`}>
       <BasicPanelComponent backgroundColor='bg-white dark:bg-dark-primary'>
         <div className='flex flex-col items-center'>
           <LogoComponent size={100} />
