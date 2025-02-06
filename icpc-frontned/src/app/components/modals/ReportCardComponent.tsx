@@ -10,6 +10,8 @@ import SubmitComponent from '../forms/SubmitComponent'
 
 interface IReportCardProps {
   methods: UseFormReturn<FieldValues>
+  itemType: 'Nota' | 'Ejercicio' | 'Noticias'
+  itemId: string
 }
 
 /*
