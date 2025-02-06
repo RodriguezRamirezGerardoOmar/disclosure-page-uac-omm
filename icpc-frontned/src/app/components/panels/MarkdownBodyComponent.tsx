@@ -10,19 +10,19 @@ const customStyle = {
     ...dark['pre[class*="language-"]'],
     border: 'none', // Remove the border
     boxShadow: 'none', // Remove the box shadow
-    background: 'transparent', // Remove the background color
+    background: 'transparent' // Remove the background color
   },
   'code[class*="language-"]': {
     ...dark['code[class*="language-"]'],
-    background: 'transparent', // Remove the background color
-  },
+    background: 'transparent' // Remove the background color
+  }
 };
 
 interface MarkdownBodyComponentProps {
   body: string
 }
 
-function MarkdownBodyComponent({ body }: MarkdownBodyComponentProps) {
+function MarkdownBodyComponent({ body }: Readonly<MarkdownBodyComponentProps>) {
   return (
     <div
       className={`w-full prose text-accent dark:text-dark-accent
@@ -37,7 +37,7 @@ function MarkdownBodyComponent({ body }: MarkdownBodyComponentProps) {
         frontmatter={{}}
         components={{
           code({ className, children }) {
-            const match = /language-(\w+)/.exec(className || '')
+            const match = /language-(\w+)/.exec(className ?? '')
             return match ? (
               <SyntaxHighlighter
                 style={customStyle}
