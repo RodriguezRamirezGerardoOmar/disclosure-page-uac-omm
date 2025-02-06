@@ -58,16 +58,6 @@ export class ExcercisesController {
     return this.exercisesService.findAll();
   }
 
-  @Get(':id')
-  @ApiCreatedResponse({
-    description: 'El ejercicio se ha obtenido exitosamente.'
-  })
-  @ApiBadRequestResponse({ description: 'Bad request' })
-  @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
-  findOne(@Param('id') id: string) {
-    return this.exercisesService.findOne(id);
-  }
-
   @Get('/count')
   @ApiCreatedResponse({
     description: 'The exercise count has been successfully obtained.'
@@ -76,6 +66,16 @@ export class ExcercisesController {
   @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
   count() {
     return this.exercisesService.getCount();
+  }
+
+  @Get(':id')
+  @ApiCreatedResponse({
+    description: 'El ejercicio se ha obtenido exitosamente.'
+  })
+  @ApiBadRequestResponse({ description: 'Bad request' })
+  @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
+  findOne(@Param('id') id: string) {
+    return this.exercisesService.findOne(id);
   }
 
   @Post('/list')
