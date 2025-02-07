@@ -1,6 +1,7 @@
 'use client'
 import React, { useState } from 'react'
 import ReportCardComponent from '../modals/ReportCardComponent'
+import { useForm } from 'react-hook-form'
 
 interface ReportButtonComponentProps {
   itemType: 'Nota' | 'Ejercicio' | 'Noticias'
@@ -14,11 +15,16 @@ interface ReportData {
 
 const ReportButtonComponent: React.FC<ReportButtonComponentProps> = ({ itemType, itemId }) => {
   const [showReportCard, setShowReportCard] = useState(false)
+  const methods = useForm()
 
   const handleShowReport = () => setShowReportCard(true)
 
-  const handleReportSubmit = (reportData: ReportData) => {
-    console.log('Reporte subido para item:', itemType, itemId, reportData)
+  const handleReportSubmit = (data: ReportData) => {
+    console.log('Reporte subido para item:', itemType, itemId, data)
+    setShowReportCard(false)
+  }
+
+  const handleModalClose = () => {
     setShowReportCard(false)
   }
 
@@ -30,12 +36,17 @@ const ReportButtonComponent: React.FC<ReportButtonComponentProps> = ({ itemType,
         Reportar Error
       </button>
       {showReportCard && (
-        <ReportCardComponent
-          itemType={itemType}
-          itemId={itemId}
-          onSubmit={handleReportSubmit}
-          onCancel={() => setShowReportCard(false)}
-        />
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
+          <div className="rounded-lg p-6 w-full max-h-[90%] overflow-y-auto">
+            <ReportCardComponent
+              itemType={itemType}
+              itemId={itemId}
+              onSubmit={handleReportSubmit}
+              onCancel={handleModalClose}
+              methods={methods}
+            />
+          </div>
+        </div>
       )}
     </div>
   )
