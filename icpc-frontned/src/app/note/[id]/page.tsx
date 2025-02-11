@@ -23,7 +23,7 @@ export default async function Page({ params }: Readonly<{ params: { id: string }
         <div className='flex justify-end w-full px-4'>
           <ReportButtonComponent
             itemId={params.id}
-            itemType='Nota'
+            itemType='note'
           />
         </div>
         <NoteCardComponent

@@ -60,6 +60,17 @@ interface Actions {
   getPendingTickets: () => Promise<Ticket[]>
   getTicket: (id: string) => Promise<Ticket>
   getReports: () => Promise<Report[]>
+  createReport: ({
+    summary,
+    report,
+    itemType,
+    itemId
+  }: {
+    summary: string
+    report: string
+    itemType: string
+    itemId: string
+  }) => Promise<IApiResponse | TResponseBasicError>
 }
 
 const useUtilsStore = create<Actions & UtilsState>()(
@@ -360,6 +371,33 @@ const useUtilsStore = create<Actions & UtilsState>()(
           try {
             const response = await api.get(`/api/v1/ticket/${id}`)
             set(() => ({ ticket: response.data }))
+            return response.data
+          } catch (error: any) {
+            return error.response.data
+          }
+        },
+
+        createReport: async ({
+          summary,
+          report,
+          itemType,
+          itemId
+        }: {
+          summary: string
+          report: string
+          itemType: string
+          itemId: string
+        }): Promise<IApiResponse | TResponseBasicError> => {
+          try {
+            const response = await api.post(
+              '/api/v1/report',
+              { summary, report, itemType, itemId },
+              {
+                headers: {
+                  Authorization: `Bearer ${useAuthStore.getState().token}`
+                }
+              }
+            )
             return response.data
           } catch (error: any) {
             return error.response.data

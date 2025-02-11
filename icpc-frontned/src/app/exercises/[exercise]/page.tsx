@@ -28,7 +28,7 @@ async function ExercisePage({ params }: Readonly<{ params: { exercise: string } 
       <div className='flex justify-end w-full px-4'>
         <ReportButtonComponent
           itemId={params.exercise}
-          itemType='Ejercicio'
+          itemType='exercise'
         />
       </div>
       <ExerciseCardComponent exercise={exerciseBody} />

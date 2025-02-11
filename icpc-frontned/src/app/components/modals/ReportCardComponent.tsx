@@ -33,7 +33,6 @@ const ReportCardComponent = ({ itemType, itemId, onSubmit, onCancel, methods, ..
       return
     }
 
-    console.log('Reporte subido para item:', itemType, itemId, data)
     try {
       const response = await createReport({
         summary: data.description,
@@ -41,7 +40,7 @@ const ReportCardComponent = ({ itemType, itemId, onSubmit, onCancel, methods, ..
         itemType,
         itemId
       })
-      if ('status' in response && response.status === 201) {
+      if ( response ) {
         toast.success('Reporte Enviado', {
           duration: 5000,
           style: {

@@ -7,7 +7,7 @@ import { Column, Entity, JoinTable, ManyToOne } from 'typeorm';
 //TODO: Remove this class and use the one in the tickets entity
 export enum ItemType {
   NOTE = 'note',
-  EXCERCISE = 'excercise',
+  EXCERCISE = 'exercise',
   NEWS = 'news'
 }
 

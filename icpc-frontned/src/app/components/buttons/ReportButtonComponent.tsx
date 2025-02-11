@@ -4,7 +4,7 @@ import ReportCardComponent from '../modals/ReportCardComponent'
 import { useForm } from 'react-hook-form'
 
 interface ReportButtonComponentProps {
-  itemType: 'Nota' | 'Ejercicio' | 'Noticias'
+  itemType: 'note' | 'exercise' | 'news'
   itemId: string
 }
 
@@ -20,7 +20,6 @@ const ReportButtonComponent: React.FC<ReportButtonComponentProps> = ({ itemType,
   const handleShowReport = () => setShowReportCard(true)
 
   const handleReportSubmit = (data: ReportData) => {
-    console.log('Reporte subido para item:', itemType, itemId, data)
     setShowReportCard(false)
   }
 
@@ -36,8 +35,8 @@ const ReportButtonComponent: React.FC<ReportButtonComponentProps> = ({ itemType,
         Reportar Error
       </button>
       {showReportCard && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
-          <div className="rounded-lg p-6 w-full max-h-[90%] overflow-y-auto">
+        <div className='fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50'>
+          <div className='rounded-lg p-6 w-full max-h-[90%] overflow-y-auto'>
             <ReportCardComponent
               itemType={itemType}
               itemId={itemId}
