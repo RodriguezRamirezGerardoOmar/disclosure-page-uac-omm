@@ -113,7 +113,7 @@ const logout = useStore(state => state.logout);
                     <Menu.Item>
                       <Link
                         className={optionStyle}
-                        href='#'
+                        href='/'
                         onClick={() => { logout() }}
                         >
                         <TextComponent

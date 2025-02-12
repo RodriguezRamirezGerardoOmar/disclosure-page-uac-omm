@@ -1,5 +1,5 @@
 'use client'
-import { useForm } from 'react-hook-form'
+import { FieldValues, SubmitHandler, useForm } from 'react-hook-form'
 import { ButtonComponent } from '../components/buttons/ButtonComponent'
 import TextFieldComponent from '../components/forms/TextFieldComponent'
 import TabComponent from '../components/tabs/TabComponent'
@@ -25,6 +25,9 @@ import ProfileTableComponent from '../components/tables/ProfileTableComponent'
 import useExcerciseStore from '@/store/useExcerciseStore'
 import useNoteStore from '@/store/useNoteStore'
 import useUtilsStore from '@/store/useUtilsStore'
+import LogoComponent from '../components/LogoComponent'
+import SubmitComponent from '../components/forms/SubmitComponent'
+import { toast } from 'sonner'
 
 const myTabs = [
   { name: 'Ejercicios', href: '#', icon: ListBulletIcon, current: true },
@@ -51,6 +54,7 @@ function Page() {
   const [tableData, setTableData] = useState<IProfileTableItem[]>([])
   const [mode, setMode] = useState(AllTabs.EXERCISES)
   const [update, setUpdate] = useState<boolean>(false)
+  const [currentUser, setCurrentUser] = useState<IUser>(user!)
   const getNews = useNewsStore.getState().getNews
   const getExercises = useExcerciseStore.getState().getExerciseList
   const getNotes = useNoteStore.getState().getList
@@ -62,6 +66,26 @@ function Page() {
   const getUsers = useAuthStore.getState().getUsers
   const getReports = useUtilsStore.getState().getReports
   const getPendingTickets = useUtilsStore.getState().getPendingTickets
+  const updateUser = useAuthStore(state => state.updateUser)
+
+  const handleSubmitUserInfo: SubmitHandler<FieldValues> = async (data: any) => {
+    try {
+      const result = await updateUser(user!.id, data)
+      setCurrentUser(result)
+      setUpdate(!update)
+      toast.success('¡Información actualizada!', { 
+        duration: 5000,
+        style: {
+          backgroundColor: 'green',
+          color: '#ffffff'
+        }
+      });
+    }
+    catch (error: any) {
+      console.error(error)
+
+    }
+  }
 
   const handleChange = useCallback(
     async (data: string) => {
@@ -176,35 +200,22 @@ function Page() {
                 <p className='mt-1 text-sm leading-6 text-gray-400'>Usa tu correo institucional.</p>
               </div>
 
-              <form className='md:col-span-2'>
+              <form className='md:col-span-2' onSubmit={methods.handleSubmit(handleSubmitUserInfo)}>
                 <div className='grid grid-cols-1 gap-x-6 gap-y-8 sm:max-w-xl sm:grid-cols-6'>
                   <div className='col-span-full flex items-center gap-x-8'>
-                    <img
-                      // eslint-disable-next-line max-len
-                      src='https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
-                      alt=''
-                      className='h-24 w-24 flex-none rounded-lg bg-gray-800 object-cover'
-                    />
-                    <div>
-                      <ButtonComponent
-                        text='Cambiar foto de perfil'
-                        buttonType='button_outline'
-                        icon={false}
-                      />
-                      <p className='mt-2 text-xs leading-5 text-gray-400'>JPG, GIF or PNG. 1MB max.</p>
-                    </div>
+                    <LogoComponent size={96} />
                   </div>
 
                   <div className='sm:col-span-3'>
                     <div className='mt-2'>
                       <TextFieldComponent
-                        id='first-name'
-                        fieldName='first-name'
+                        id='name'
+                        fieldName='name'
                         labelText='Nombre'
                         register={methods.register}
                         necessary={false}
                         type='text'
-                        placeholder={user?.name}
+                        placeholder={currentUser.name}
                       />
                     </div>
                   </div>
@@ -213,12 +224,12 @@ function Page() {
                     <div className='mt-2'>
                       <TextFieldComponent
                         id='last-name'
-                        fieldName='last-name'
+                        fieldName='lastName'
                         labelText='Apellidos'
                         register={methods.register}
                         necessary={false}
                         type='text'
-                        placeholder={user?.lastName}
+                        placeholder={currentUser.lastName}
                       />
                     </div>
                   </div>
@@ -232,7 +243,7 @@ function Page() {
                         register={methods.register}
                         necessary={false}
                         type='email'
-                        placeholder={user?.email}
+                        placeholder={currentUser.email}
                       />
                     </div>
                   </div>
@@ -241,23 +252,19 @@ function Page() {
                     <div className='mt-2'>
                       <TextFieldComponent
                         id='user-name'
-                        fieldName='user-name'
+                        fieldName='userName'
                         labelText='Nombre de usuario'
                         register={methods.register}
                         necessary={false}
                         type='text'
-                        placeholder={user?.userName}
+                        placeholder={currentUser.userName}
                       />
                     </div>
                   </div>
                 </div>
 
                 <div className='mt-8 flex'>
-                  <ButtonComponent
-                    text='Guardar'
-                    buttonType='button'
-                    icon={false}
-                  />
+                  <SubmitComponent text='Guardar' />
                 </div>
               </form>
             </div>

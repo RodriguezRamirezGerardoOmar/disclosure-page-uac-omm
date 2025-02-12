@@ -94,9 +94,20 @@ export class UsersService {
     return await this.userRepository.findOneBy({ id });
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto) {
-    const user = await this.userRepository.findOneBy({ id: String(id) });
-    return await this.userRepository.save({ ...user, ...updateUserDto });
+  async update(id: string, updateUserDto: UpdateUserDto) {
+    const user = await this.userRepository.findOneBy({ id: id });
+    const updatedUser = await this.userRepository.save({
+      ...user,
+      ...updateUserDto
+    });
+    return {
+      // return the user object
+      id: updatedUser.id,
+      name: updatedUser.name,
+      lastName: updatedUser.lastName,
+      userName: updatedUser.userName,
+      email: updatedUser.email
+    };
   }
 
   async remove(id: string) {
