@@ -19,16 +19,11 @@ const SearchBarComponent = () => {
     const fetchOptions = async () => {
       if (inputValue.trim() === '') return;
 
-      console.log('Fetching options for:', inputValue); // Log para depuración
-
       try {
         const [exercisesResponse, newsResponse] = await Promise.all([
           axios.post(`${process.env.NEXT_PUBLIC_API_URL}api/v1/excercises/search/${inputValue}`),
           axios.post(`${process.env.NEXT_PUBLIC_API_URL}api/v1/news/search/${inputValue}`)
         ]);
-
-        console.log('Exercises response data:', exercisesResponse.data); // Log para depuración
-        console.log('News response data:', newsResponse.data); // Log para depuración
 
         const exercisesOptions = exercisesResponse.data.map((option: any) => ({
           value: option.id,
@@ -58,7 +53,6 @@ const SearchBarComponent = () => {
   };
 
   const handleChange = (selectedOption: any) => {
-    console.log('Selected option:', selectedOption);
     router.push(selectedOption.url);
   };
 
@@ -78,7 +72,7 @@ const SearchBarComponent = () => {
         <Select
           id='search'
           name='search'
-          className='w-full rounded-md border-0 py-1.5 pl-10 pr-3 text-black ring-1 ring-inset ring-gray-300 focus:ring-indigo-600'
+          className='w-full rounded-md py-1.5 pl-10 pr-3 text-black'
           placeholder='Buscar'
           options={options}
           onInputChange={handleInputChange}
