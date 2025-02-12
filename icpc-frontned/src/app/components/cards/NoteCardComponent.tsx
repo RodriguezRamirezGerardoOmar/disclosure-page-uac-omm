@@ -5,6 +5,7 @@ import TagListComponent from '../tags/TagListComponent'
 import { ButtonComponent } from '../buttons/ButtonComponent'
 import MarkdownBodyComponent from '../panels/MarkdownBodyComponent'
 import { Tags } from '@/constants/types'
+import ReportButtonComponent from '@/app/components/buttons/ReportButtonComponent'
 
 interface NoteCardProps {
   title: string
@@ -12,6 +13,7 @@ interface NoteCardProps {
   content: string
   showButton: boolean
   tags: Tags[]
+  itemId: string
 }
 
 /*
@@ -25,8 +27,17 @@ Author: Gerardo Omar Rodriguez Ramirez
 */
 
 export default function NoteCardComponent({ ...props }: Readonly<NoteCardProps>) {
+  const isTicketPage = window.location.pathname.includes('ticket')
   return (
     <BasicPanelComponent backgroundColor='bg-white dark:bg-dark-primary w-full md:w-11/12'>
+      {!isTicketPage && (
+        <div className='flex justify-end w-full px-16'>
+          <ReportButtonComponent
+            itemId={props.itemId}
+            itemType='note'
+          />
+        </div>
+      )}
       <TextComponent
         sizeFont='s36'
         className='dark:text-dark-accent'>
