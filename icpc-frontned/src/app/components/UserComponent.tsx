@@ -5,6 +5,7 @@ import { Menu, Transition } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/20/solid'
 import { TextComponent } from '@/app/components/text/TextComponent'
 import { enumTextTags } from '@/constants/types'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import useStore from '@/store/useStore'
 
@@ -28,6 +29,7 @@ Author: Gerardo Omar Rodriguez Ramirez
 */
 
 export default function UserComponent({ options, verified }: Readonly<IUserProps>) {
+  const router = useRouter()
   const optionStyle =
     'hover:text-secondary hover:bg-gray-100 px-4 py-2 dark:text-accent  dark:hover:text-complementary dark:hover:bg-secondary'
 
@@ -37,6 +39,15 @@ export default function UserComponent({ options, verified }: Readonly<IUserProps
 
   // al oprimir el botón de cerrar sesión, se debe ejecutar el hook useStore para eliminar el token de la sesión
   const logout = useStore(state => state.logout)
+
+  const handleLogout = async () => {
+    await logout()
+    if (window.location.pathname === '/profile') {  //Detecta si estas en la pagina de Perfil
+      //window.location.href = '/' // Redirige a la página principal
+      router.push('/')
+    }
+  }
+  
   return verified ? (
     <Menu
       as='div'
@@ -100,9 +111,7 @@ export default function UserComponent({ options, verified }: Readonly<IUserProps
                       <Link
                         className={optionStyle}
                         href='#'
-                        onClick={() => {
-                          logout()
-                        }}>
+                        onClick={handleLogout}>
                         <TextComponent
                           sizeFont='s12'
                           tag={enumTextTags.p}
