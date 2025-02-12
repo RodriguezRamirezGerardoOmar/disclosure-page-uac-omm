@@ -7,7 +7,6 @@ import useExcerciseStore from '@/store/useExcerciseStore'
 import { serialize } from 'next-mdx-remote/serialize'
 import rehypeKatex from 'rehype-katex'
 import remarkMath from 'remark-math'
-import ReportButtonComponent from '@/app/components/buttons/ReportButtonComponent'
 
 async function getMarkdown(body: string) {
   return await serialize(body, {
@@ -25,12 +24,7 @@ async function ExercisePage({ params }: Readonly<{ params: { exercise: string } 
 
   return (
     <main className='grid min-h-screen grid-cols-1 place-items-center justify-between py-24'>
-      <div className='flex justify-end w-full px-4'>
-        <ReportButtonComponent
-          itemId={params.exercise}
-          itemType='exercise'
-        />
-      </div>
+      <div className='flex justify-end w-full px-4'></div>
       <ExerciseCardComponent exercise={exerciseBody} />
       <div className='mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 lg:px-8 text-accent dark:text-dark-accent'>
         <TextComponent tag={enumTextTags.h1}>Descripción del problema:</TextComponent>

@@ -7,9 +7,11 @@ import useNewsStore from '@/store/useNewsStore'
 import { serialize } from 'next-mdx-remote/serialize'
 import rehypeKatex from 'rehype-katex'
 import remarkMath from 'remark-math'
+import ReportButtonComponent from '../buttons/ReportButtonComponent'
 
 interface NewsCardComponentProps {
   id: string
+  itemId: string
 }
 
 /*
@@ -27,6 +29,7 @@ async function getNewsArticle(id: string): Promise<News> {
 }
 
 async function NewsCardComponent({ ...props }: Readonly<NewsCardComponentProps>) {
+  const isTicketPage = window.location.pathname.includes('ticket')
   const news = await getNewsArticle(props.id)
   const body = await serialize(news.body, {
     mdxOptions: {
@@ -37,6 +40,14 @@ async function NewsCardComponent({ ...props }: Readonly<NewsCardComponentProps>)
   //const image = await getCover(news.imageId.id)
   return (
     <BasicPanelComponent backgroundColor='bg-white dark:bg-dark-primary lg:w-11/12'>
+      {!isTicketPage && (
+        <div className='flex justify-end w-full px-16'>
+          <ReportButtonComponent
+            itemId={props.itemId}
+            itemType='note'
+          />
+        </div>
+      )}
       <TextComponent
         sizeFont='s36'
         className='dark:text-dark-accent my-4'

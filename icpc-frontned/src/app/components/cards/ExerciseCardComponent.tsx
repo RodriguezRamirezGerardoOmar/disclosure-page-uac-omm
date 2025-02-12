@@ -19,9 +19,11 @@ import useExerciseStore from '@/store/useExcerciseStore'
 import { enumTextTags, Exercise } from '@/constants/types'
 import TagListComponent from '../tags/TagListComponent'
 import { TextComponent } from '../text/TextComponent'
+import ReportButtonComponent from '../buttons/ReportButtonComponent'
 
 interface ExerciseCardComponentProps {
   exercise: Exercise
+  itemId: string
 }
 
 function classNames(...classes: string[]) {
@@ -29,6 +31,14 @@ function classNames(...classes: string[]) {
 }
 
 const ExerciseCardComponent = ({ ...props }: Readonly<ExerciseCardComponentProps>) => {
+  const [isTicketPage, setIsTicketPage] = useState(false)
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setIsTicketPage(window.location.pathname.includes('ticket'))
+    }
+  }, [])
+
   const invoice = {
     subTotal: '$8,800.00',
     tax: '$1,760.00',
@@ -103,6 +113,7 @@ const ExerciseCardComponent = ({ ...props }: Readonly<ExerciseCardComponentProps
   return (
     <main>
       <header className='relative isolate pt-16'>
+        {/* Fondo y encabezado */}
         <div
           className='absolute inset-0 -z-10 overflow-hidden'
           aria-hidden='true'>
@@ -120,6 +131,7 @@ const ExerciseCardComponent = ({ ...props }: Readonly<ExerciseCardComponentProps
         </div>
 
         <div className='mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8'>
+          {/* Título y botones */}
           <div className='mx-auto flex max-w-2xl items-center justify-between gap-x-8 lg:mx-0 lg:max-w-none'>
             <div className='flex items-center gap-x-6'>
               <img
@@ -135,22 +147,22 @@ const ExerciseCardComponent = ({ ...props }: Readonly<ExerciseCardComponentProps
               </h1>
             </div>
             <div className='flex items-center gap-x-4 sm:gap-x-6'>
-              <button
-                type='button'
-                className='hidden text-sm font-semibold leading-6 text-accent dark:text-dark-accent sm:block'>
-                Copy URL
-              </button>
-              <a
-                href='#'
-                className='hidden text-sm font-semibold leading-6 text-accent dark:text-dark-accent sm:block'>
-                Edit
-              </a>
               <a
                 href='/notelist'
                 className='rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm
                   hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'>
                 Apuntes
               </a>
+              {!isTicketPage && (
+                <div
+                  className='rounded-md px-3 py-2 text-sm font-semibold focus-visible:outline 
+                focus-visible:outline-2 focus-visible:outline-offset-2'>
+                  <ReportButtonComponent
+                    itemId={props.itemId}
+                    itemType='note'
+                  />
+                </div>
+              )}
 
               <Menu
                 as='div'
@@ -204,8 +216,9 @@ const ExerciseCardComponent = ({ ...props }: Readonly<ExerciseCardComponentProps
       </header>
 
       <div className='mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8'>
+        {/* Contenido principal */}
         <div className='mx-auto grid max-w-2xl grid-cols-1 grid-rows-1 items-start gap-x-8 gap-y-8 lg:mx-0 lg:max-w-none lg:grid-cols-3'>
-          {/* Invoice summary */}
+          {/* Resumen del ejercicio */}
           <div className='lg:col-start-3 lg:row-end-1'>
             <h2 className='sr-only'>Summary</h2>
             <div className='rounded-lg bg-gray-50 shadow-sm ring-1 ring-gray-900/5'>
@@ -263,7 +276,7 @@ const ExerciseCardComponent = ({ ...props }: Readonly<ExerciseCardComponentProps
             </div>
           </div>
 
-          {/* Invoice */}
+          {/* Detalles del ejercicio */}
           <div
             className='-mx-4 px-4 py-8 shadow-sm ring-1 ring-gray-900/5 sm:mx-0 sm:rounded-lg sm:px-8 sm:pb-14 
             lg:col-span-2 lg:row-span-2 lg:row-end-2 xl:px-16 xl:pb-20 xl:pt-16'>

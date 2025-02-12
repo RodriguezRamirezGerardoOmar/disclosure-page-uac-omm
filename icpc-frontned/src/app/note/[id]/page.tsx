@@ -6,7 +6,6 @@ import remarkMath from 'remark-math'
 import rehypeKatex from 'rehype-katex'
 import useNoteStore from '@/store/useNoteStore'
 import { Note } from '@/constants/types'
-import ReportButtonComponent from '@/app/components/buttons/ReportButtonComponent'
 
 export default async function Page({ params }: Readonly<{ params: { id: string } }>) {
   const getNote = useNoteStore.getState().getNote
@@ -20,18 +19,13 @@ export default async function Page({ params }: Readonly<{ params: { id: string }
     })
     return (
       <main className='grid min-h-screen grid-cols-1 place-items-center justify-between py-24'>
-        <div className='flex justify-end w-full px-4'>
-          <ReportButtonComponent
-            itemId={params.id}
-            itemType='note'
-          />
-        </div>
         <NoteCardComponent
           title={note.title}
           description={note.commentId.body}
           content={mdx.compiledSource}
           tags={note.tags}
           showButton={true}
+          itemId={note.id}
         />
       </main>
     )
