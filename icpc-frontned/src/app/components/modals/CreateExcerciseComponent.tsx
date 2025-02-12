@@ -238,7 +238,7 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
             memoryId: { label: exercise.memoryId.memoryLimit, value: exercise.memoryId.id },
             input: exercise.input,
             output: exercise.output,
-            restriction: exercise.constraints,
+            constraints: exercise.constraints,
             clue: exercise.clue,
             tags: exercise.tags,
             author: exercise.author,
