@@ -43,11 +43,13 @@ export const DataCardComponent = ({ ...props }: IInfoCardComponentProps) => {
             {props.info}
           </TextComponent>
         </div>
-        <TextComponent
+        { props.autor ? (
+          <TextComponent
           sizeFont='s14'
           className='text-black mt-4 self-end italic'>
           {props.autor}
         </TextComponent>
+        ): <></>}
       </div>
     </BasicPanelComponent>
   )
