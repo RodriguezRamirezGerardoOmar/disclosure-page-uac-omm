@@ -1,75 +1,106 @@
 'use client';
-import React from 'react';
-import { UseFormReturn, FieldValues, SubmitHandler, useForm } from 'react-hook-form';
+import React, { useState, useEffect } from 'react';
+import { FieldValues, SubmitHandler, UseFormReturn } from 'react-hook-form';
 import { BasicPanelComponent } from '../panels/BasicPanelComponent';
-import LogoComponent from '../LogoComponent'
+import LogoComponent from '../LogoComponent';
 import TextFieldComponent from '../forms/TextFieldComponent';
 import SubmitComponent from '../forms/SubmitComponent';
-import useUtilsStore from '@/store/useUtilsStore'
-import { toast } from 'sonner'
+import useUtilsStore from '@/store/useUtilsStore';
+import { toast } from 'sonner';
 
-const CreateTimeLimitComponent = () => {
-  const methods = useForm<FieldValues>()
-  const createTimeLimit = useUtilsStore(state => state.createTimeLimit)
+interface CreateTimeLimitComponentProps {
+  methods: UseFormReturn<FieldValues>;
+  onCreateTimeLimit: (time: number) => void;
+  timeId?: string;
+  onClose: () => void;
+}
+
+const CreateTimeLimitComponent: React.FC<CreateTimeLimitComponentProps> = ({ methods, onCreateTimeLimit, timeId, onClose }) => {
+  const createTimeLimit = useUtilsStore(state => state.createTimeLimit);
+  const updateTimeLimit = useUtilsStore(state => state.updateTimeLimit);
+  const getTimeLimit = useUtilsStore(state => state.getTimeLimit);
+
+  useEffect(() => {
+    if (timeId) {
+      const loadTimeLimit = async () => {
+        const timeLimits = await getTimeLimit();
+        const timeLimit = timeLimits.find(t => t.id === timeId);
+        if (timeLimit) {
+          methods.setValue('TimeLimit', timeLimit.timeLimit.toString());
+        }
+      };
+      loadTimeLimit();
+    }
+  }, [timeId, getTimeLimit, methods]);
 
   const clearForm = () => {
-    methods.reset()
-  }
+    methods.reset();
+  };
 
   const onSubmit: SubmitHandler<FieldValues> = async data => {
-    const timeLimitValue = parseInt(data.TimeLimitName, 10);
-    if (isNaN(timeLimitValue)) {
-      toast.error('El valor del tiempo debe ser un número válido', { duration: 5000, style: { backgroundColor: 'red', color: '#FFFFFF' } });
-      return;
+    const timeData = {
+      timeLimit: parseInt(data.TimeLimit)
+    };
+
+    let response;
+    if (timeId) {
+      response = await updateTimeLimit(timeId, { timeLimit: timeData.timeLimit });
+    } else {
+      response = await createTimeLimit(timeData.timeLimit);
     }
 
-    const response = await createTimeLimit(timeLimitValue);
-    if ('statusCode' in response && response.statusCode === 201) {
+    if ('statusCode' in response && (response.statusCode === 201 || response.statusCode === 200)) {
       toast.success(response.message, {
         duration: 5000,
         style: {
           backgroundColor: 'green',
           color: '#FFFFFF'
         }
-      })
+      });
+      onCreateTimeLimit(timeData.timeLimit);
+      onClose();
     } else if ('message' in response) {
-      toast.error(response.message, { duration: 5000, style: { backgroundColor: 'red', color: '#FFFFFF' } })
+      toast.error(response.message, { duration: 5000, style: { backgroundColor: 'red', color: '#FFFFFF' } });
     }
-  }
+  };
 
   return (
-    <div className={`margin-auto md:mx-auto max-w-2xl md:px-4 w-full h-full lg:px-8 lg:w-2/3 lg:h-auto 
-    min-h-screen place-items-center justify-between py-24`}>
-      <BasicPanelComponent backgroundColor="bg-white dark:bg-dark-primary">
-        <form onSubmit={methods.handleSubmit(onSubmit)} className="space-y-4">
-        <div className='flex flex-col items-center'>
-            <LogoComponent size={100} />
-            <h2 className="text-center text-lg font-bold dark:text-dark-accent">
-                Crear nuevo limite de tiempo
-            </h2>
-            <TextFieldComponent
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+      <div className="relative bg-white dark:bg-dark-primary p-4 rounded-lg shadow-lg">
+        <button onClick={onClose} className="absolute top-2 right-2 text-gray-500 hover:text-gray-700">
+          &times;
+        </button>
+        <BasicPanelComponent backgroundColor="bg-white dark:bg-dark-primary">
+          <form onSubmit={methods.handleSubmit(onSubmit)} className="space-y-4">
+            <div className='flex flex-col items-center'>
+              <LogoComponent size={100} />
+              <h2 className="text-center text-lg font-bold dark:text-dark-accent">
+                {timeId ? 'Editar límite de tiempo' : 'Crear nuevo límite de tiempo'}
+              </h2>
+              <TextFieldComponent
                 labelText="Valor del tiempo"
                 register={methods.register}
-                fieldName="TimeLimitName"
-                id="TimeLimitName"
+                fieldName="TimeLimit"
+                id="TimeLimit"
                 necessary={true}
-                type="number"
-            />
-            <SubmitComponent text="Crear" />
-          </div>
-          <div className='mt-4'>
-          <button
-            type='button'
-            onClick={clearForm}
-            className='inline-flex items-center gap-x-2 rounded-md bg-primary text-complementary px-3.5 py-2.5 
-              font-medium shadow-sm hover:bg-secondary focus-visible:outline 
-              focus-visible:outline-offset-2 focus-visible:outline-complementary'
-            >
-            Borrar formulario
-          </button>
-        </div>
-        </form>
-      </BasicPanelComponent>
+                type="text"
+              />
+              <SubmitComponent text={timeId ? 'Actualizar' : 'Crear'} />
+            </div>
+            <div className='mt-4'>
+              <button
+                type='button'
+                onClick={clearForm}
+                className='inline-flex items-center gap-x-2 rounded-md bg-primary text-complementary px-3.5 py-2.5 
+                font-medium shadow-sm hover:bg-secondary focus-visible:outline 
+                focus-visible:outline-offset-2 focus-visible:outline-complementary'
+              >
+                Borrar formulario
+              </button>
+            </div>
+          </form>
+        </BasicPanelComponent>
+      </div>
     </div>
   );
 };

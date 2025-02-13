@@ -38,19 +38,25 @@ interface UtilsState {
 interface Actions {
   getTags: () => Promise<Tags[]>
   createTag: ({ name, color }: { name: string; color: string }) => Promise<IApiResponse | TResponseBasicError>
+  updateTag: (id: string, data: { name: string; color: string }) => Promise<IApiResponse | TResponseBasicError>;
   deleteTag: (id: string) => Promise<IApiResponse | TResponseBasicError>
   getCategories: () => Promise<Categories[]>
   getCategory: (id: string) => Promise<Categories>
   createCategory: ({ name, commentId }: { name: string; commentId: string }) => Promise<IApiResponse | TResponseBasicError>
   deleteCategory: (id: string) => Promise<IApiResponse | TResponseBasicError>
   getDifficulties: () => Promise<Difficulties[]>
+  getDifficulty: (id: string) => Promise<Difficulties>
   createDifficulty: ({ level, name }: { level: number; name: string }) => Promise<IApiResponse | TResponseBasicError>
+  updateDifficulty: (id: string, data: { level: number; name: string }) => Promise<IApiResponse | TResponseBasicError>
   deleteDifficulty: (id: string) => Promise<IApiResponse | TResponseBasicError>
   getTimeLimit: () => Promise<TimeLimit[]>
   createTimeLimit: (time: number) => Promise<IApiResponse | TResponseBasicError>
+  updateTimeLimit: (id: string, data: { timeLimit: number }) => Promise<IApiResponse | TResponseBasicError> // Añade esta línea
   deleteTimeLimit: (id: string) => Promise<IApiResponse | TResponseBasicError>
   getMemoryLimit: () => Promise<MemoryLimit[]>
-  createMemory: (memory: { value: number; id: string }) => Promise<IApiResponse | TResponseBasicError> // Nueva acción
+  getMemory: (id: string) => Promise<MemoryLimit> // Añade esta línea
+  createMemory: (memory: { value: number; id: string }) => Promise<IApiResponse | TResponseBasicError>
+  updateMemory: (id: string, data: { value: number }) => Promise<IApiResponse | TResponseBasicError> // Añade esta línea
   deleteMemoryLimit: (id: string) => Promise<IApiResponse | TResponseBasicError>
   createImage: (image: File) => Promise<IApiResponse | TResponseBasicError>
   updateImage: (image: File, id: string) => Promise<IApiResponse | TResponseBasicError>
@@ -59,6 +65,7 @@ interface Actions {
   getPendingTickets: () => Promise<Ticket[]>
   getTicket: (id: string) => Promise<Ticket>
   getReports: () => Promise<Report[]>
+  updateCategory: (id: string, data: { name: string }) => Promise<IApiResponse | TResponseBasicError>
 }
 
 const useUtilsStore = create<Actions & UtilsState>()(
@@ -78,6 +85,23 @@ const useUtilsStore = create<Actions & UtilsState>()(
           try {
             const response = await api.get('/api/v1/tags')
             set(() => ({ tags: response.data }))
+            return response.data
+          } catch (error: any) {
+            return error.response.data
+          }
+        },
+
+        updateCategory: async (id: string, data: { name: string }): Promise<IApiResponse | TResponseBasicError> => {
+          try {
+            const response = await api.patch(
+              `/api/v1/categories/${id}`,
+              data,
+              {
+                headers: {
+                  Authorization: `Bearer ${useAuthStore.getState().token}`
+                }
+              }
+            )
             return response.data
           } catch (error: any) {
             return error.response.data
@@ -106,6 +130,23 @@ const useUtilsStore = create<Actions & UtilsState>()(
             return response.data // Devuelve la respuesta completa
           } catch (error: any) {
             return error.response.data
+          }
+        },
+
+        updateTag: async (id: string, data: { name: string; color: string }): Promise<IApiResponse | TResponseBasicError> => {
+          try {
+            const response = await api.patch(
+              `/api/v1/tags/${id}`,
+              data,
+              {
+                headers: {
+                  Authorization: `Bearer ${useAuthStore.getState().token}`
+                }
+              }
+            );
+            return response.data;
+          } catch (error: any) {
+            return error.response.data;
           }
         },
 
@@ -181,11 +222,37 @@ const useUtilsStore = create<Actions & UtilsState>()(
           }
         },
 
+        getDifficulty: async (id: string): Promise<Difficulties> => {
+          try {
+            const response = await api.get(`/api/v1/difficulty/${id}`)
+            return response.data
+          } catch (error: any) {
+            return error.response.data
+          }
+        },
+
         createDifficulty: async ({ level, name }): Promise<IApiResponse | TResponseBasicError> => {
           try {
             const response = await api.post(
               '/api/v1/difficulty',
               { level, name },
+              {
+                headers: {
+                  Authorization: `Bearer ${useAuthStore.getState().token}`
+                }
+              }
+            )
+            return response.data
+          } catch (error: any) {
+            return error.response.data
+          }
+        },
+
+        updateDifficulty: async (id: string, data: { level: number; name: string }): Promise<IApiResponse | TResponseBasicError> => {
+          try {
+            const response = await api.patch(
+              `/api/v1/difficulty/${id}`,
+              data,
               {
                 headers: {
                   Authorization: `Bearer ${useAuthStore.getState().token}`
@@ -238,6 +305,23 @@ const useUtilsStore = create<Actions & UtilsState>()(
           }
         },
 
+        updateTimeLimit: async (id: string, data: { timeLimit: number }): Promise<IApiResponse | TResponseBasicError> => { // Añade esta función
+          try {
+            const response = await api.patch(
+              `/api/v1/time/${id}`,
+              data,
+              {
+                headers: {
+                  Authorization: `Bearer ${useAuthStore.getState().token}`
+                }
+              }
+            )
+            return response.data
+          } catch (error: any) {
+            return error.response.data
+          }
+        },
+
         deleteTimeLimit: async (id: string): Promise<IApiResponse | TResponseBasicError> => {
           try {
             const response = await api.delete(`/api/v1/time/${id}`, {
@@ -261,11 +345,37 @@ const useUtilsStore = create<Actions & UtilsState>()(
           }
         },
 
+        getMemory: async (id: string): Promise<MemoryLimit> => { // Añade esta función
+          try {
+            const response = await api.get(`/api/v1/memory/${id}`)
+            return response.data
+          } catch (error: any) {
+            return error.response.data
+          }
+        },
+
         createMemory: async (memory: { value: number; id: string }): Promise<IApiResponse | TResponseBasicError> => {
           try {
             const response = await api.post(
               '/api/v1/memory',
               { value: memory.value, id: memory.id }, // Envía el objeto con value y id
+              {
+                headers: {
+                  Authorization: `Bearer ${useAuthStore.getState().token}`
+                }
+              }
+            )
+            return response.data
+          } catch (error: any) {
+            return error.response.data
+          }
+        },
+
+        updateMemory: async (id: string, data: { value: number }): Promise<IApiResponse | TResponseBasicError> => { // Añade esta función
+          try {
+            const response = await api.patch(
+              `/api/v1/memory/${id}`,
+              data,
               {
                 headers: {
                   Authorization: `Bearer ${useAuthStore.getState().token}`

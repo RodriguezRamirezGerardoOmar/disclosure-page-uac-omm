@@ -321,9 +321,11 @@ export class ExcercisesService {
     if (!memory) {
       throw new BadRequestException('El límite de memoria elegido no existe');
     }
-    return await this.exerciseRepository.update(id, {
+    return await this.exerciseRepository.save( {
       ...updateData,
-      memoryId: memory
+      memoryId: memory,
+      title: updateData.name,
+      id: id
     });
   }
 
