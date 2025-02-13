@@ -264,6 +264,7 @@ export class TicketService {
   async approve(id: string) {
     const ticket = await this.ticketRepository.findOneBy({ id: id });
     ticket.status = TicketStatus.ACCEPTED;
+    this.ticketRepository.save(ticket);
     let res;
     let item: Excercise | Note | News;
     switch (ticket.operation) {
@@ -271,21 +272,21 @@ export class TicketService {
         switch (ticket.itemType) {
           case TicketType.EXERCISE:
             item = await this.excerciseRepository.findOneBy({
-              id: ticket.originalExerciseId.id
+              ...ticket.originalExerciseId
             });
             item.isVisible = true;
             res = await this.excerciseRepository.save(item);
             break;
           case TicketType.NOTE:
             item = await this.notesRepository.findOneBy({
-              id: ticket.originalNoteId.id
+              ...ticket.originalNoteId
             });
             item.isVisible = true;
             res = await this.notesRepository.save(item);
             break;
           case TicketType.NEWS:
             item = await this.newsRepository.findOneBy({
-              id: ticket.originalNewsId.id
+              ...ticket.originalNewsId
             });
             item.isVisible = true;
             res = await this.newsRepository.save(item);
@@ -298,10 +299,10 @@ export class TicketService {
         switch (ticket.itemType) {
           case TicketType.EXERCISE:
             original = await this.excerciseRepository.findOneBy({
-              id: ticket.originalExerciseId.id
+              ...ticket.originalExerciseId
             });
             modified = await this.excerciseRepository.findOneBy({
-              id: ticket.modifiedExerciseId.id
+              ...ticket.modifiedExerciseId
             });
             original.isVisible = false;
             modified.isVisible = true;
@@ -310,10 +311,10 @@ export class TicketService {
             break;
           case TicketType.NOTE:
             original = await this.notesRepository.findOneBy({
-              id: ticket.originalNoteId.id
+              ...ticket.originalNoteId
             });
             modified = await this.notesRepository.findOneBy({
-              id: ticket.modifiedNoteId.id
+              ...ticket.modifiedNoteId
             });
             original.isVisible = false;
             modified.isVisible = true;
@@ -322,10 +323,10 @@ export class TicketService {
             break;
           case TicketType.NEWS:
             original = await this.newsRepository.findOneBy({
-              id: ticket.originalNewsId.id
+              ...ticket.originalNewsId
             });
             modified = await this.newsRepository.findOneBy({
-              id: ticket.modifiedNewsId.id
+              ...ticket.modifiedNewsId
             });
             original.isVisible = false;
             modified.isVisible = true;
@@ -338,19 +339,19 @@ export class TicketService {
         switch (ticket.itemType) {
           case TicketType.EXERCISE:
             item = await this.excerciseRepository.findOneBy({
-              id: ticket.originalExerciseId.id
+              ...ticket.originalExerciseId
             });
             res = await this.excerciseRepository.remove(item);
             break;
           case TicketType.NOTE:
             item = await this.notesRepository.findOneBy({
-              id: ticket.originalNoteId.id
+              ...ticket.originalNoteId
             });
             res = await this.notesRepository.remove(item);
             break;
           case TicketType.NEWS:
             item = await this.newsRepository.findOneBy({
-              id: ticket.originalNewsId.id
+              ...ticket.originalNewsId
             });
             res = await this.newsRepository.remove(item);
             break;
@@ -363,6 +364,7 @@ export class TicketService {
   async reject(id: string) {
     const ticket = await this.ticketRepository.findOneBy({ id: id });
     ticket.status = TicketStatus.REJECTED;
+    this.ticketRepository.save(ticket);
     let item: Excercise | Note | News;
     let res;
     switch (ticket.operation) {
@@ -370,13 +372,13 @@ export class TicketService {
         switch (ticket.itemType) {
           case TicketType.EXERCISE:
             item = await this.excerciseRepository.findOneBy({
-              id: ticket.originalExerciseId.id
+              ...ticket.originalExerciseId
             });
             res = await this.excerciseRepository.remove(item);
             break;
           case TicketType.NOTE:
             item = await this.notesRepository.findOneBy({
-              id: ticket.originalNoteId.id
+              ...ticket.originalNoteId
             });
             const comment = await this.commentRepository.findOneBy({
               id: item.commentId.id
@@ -388,12 +390,12 @@ export class TicketService {
             break;
           case TicketType.NEWS:
             item = await this.newsRepository.findOneBy({
-              id: ticket.originalNewsId.id
+              ...ticket.originalNewsId
             });
             const image = await this.imageRepository.findOneBy({
               id: item.imageId.id
             });
-            if (image.news.length === 1) {
+            if (image.news) {
               await this.imageRepository.remove(image);
             }
             res = await this.newsRepository.remove(item);
