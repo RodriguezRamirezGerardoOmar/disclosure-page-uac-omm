@@ -3,6 +3,7 @@ import { CreateNewsDto } from './dto/create-news.dto';
 import { UpdateNewsDto } from './dto/update-news.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { News } from './entities/news.entity';
+import { Image } from '../image/entities/image.entity';
 import { Repository, Like } from 'typeorm';
 import {
   Ticket,
@@ -12,7 +13,6 @@ import {
 } from 'src/ticket/entities/ticket.entity';
 import { Comment } from 'src/comment/entities/comment.entity';
 import { User } from 'src/users/entities/user.entity';
-import { Image } from 'src/image/entities/image.entity';
 
 @Injectable()
 export class NewsService {
@@ -56,7 +56,10 @@ export class NewsService {
       const ticket = this.ticketRepository.create({
         itemType: TicketType.NEWS,
         operation: TicketOperation.CREATE,
-        status: TicketStatus.ACCEPTED,
+        status:
+          createNewsDto.role === 'admin'
+            ? TicketStatus.ACCEPTED
+            : TicketStatus.PENDING,
         originalNewsId: news,
         commentId: commentId
       });

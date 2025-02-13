@@ -1,3 +1,4 @@
+'use client'
 import { enumTextTags } from '@/constants/types'
 import { TextComponent } from '../text/TextComponent'
 import { ArrowLongRightIcon } from '@heroicons/react/24/solid'
@@ -6,7 +7,7 @@ interface IButtonComponentProps {
   text: string;
   buttonType?: 'button' | 'submit' | 'button_outline';
   icon?: boolean;
-  onClick?: () => void;
+  onClick: () => void; // Cambiado de "onclick" a "onClick"
   className?: string; // Añadido className
 }
 
@@ -34,7 +35,7 @@ export const ButtonComponent = ({ buttonType = 'button', onClick, className, ...
     <button
       type='button'
       className={`${styles[buttonType as keyof typeof styles] || ''} ${className || ''}`} // Aplicar className
-      onClick={onClick}
+      onClick={onClick} // Usar "onClick"
     >
       <TextComponent
         tag={enumTextTags.span}
