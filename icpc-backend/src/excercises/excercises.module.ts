@@ -12,6 +12,10 @@ import { Ticket } from 'src/ticket/entities/ticket.entity';
 import { User } from 'src/users/entities/user.entity';
 import { Comment } from 'src/comment/entities/comment.entity';
 import { AppModule } from '../app.module';
+import { TicketService } from 'src/ticket/ticket.service';
+import { Note } from 'src/notes/entities/note.entity';
+import { News } from 'src/news/entities/news.entity';
+import { Image } from 'src/image/entities/image.entity';
 
 @Module({
   imports: [
@@ -24,12 +28,15 @@ import { AppModule } from '../app.module';
       Memory,
       Ticket,
       User,
-      Comment
+      Comment, 
+      Note,
+      News, 
+      Image
     ]),
     forwardRef(() => AppModule)
   ],
   controllers: [ExcercisesController],
-  providers: [ExcercisesService],
+  providers: [ExcercisesService, TicketService],
   exports: [ExcercisesService]
 })
 export class ExcercisesModule {}

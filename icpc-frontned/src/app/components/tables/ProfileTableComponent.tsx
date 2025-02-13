@@ -15,6 +15,8 @@ import CreateMemoryComponent from '../modals/CreateMemoryComponent';
 import CreateTimeLimitComponent from '../modals/CreateTimeComponent';
 import CreateTagComponent from '../modals/CreateTagComponent';
 import CreateExcerciseComponent from '../modals/CreateExcerciseComponent';
+import CreateNoteComponent from '../modals/CreateNoteComponent';
+import CreateNewsComponent from '../modals/CreateNewsComponent';
 import { useForm } from 'react-hook-form';
 
 interface IProfileTableComponentProps {
@@ -32,12 +34,16 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
   const [isTimeModalOpen, setIsTimeModalOpen] = useState(false);
   const [isTagModalOpen, setIsTagModalOpen] = useState(false);
   const [isExerciseModalOpen, setIsExerciseModalOpen] = useState(false);
+  const [isNoteModalOpen, setIsNoteModalOpen] = useState(false);
+  const [isNewsModalOpen, setIsNewsModalOpen] = useState(false);
   const [activeCategoryId, setActiveCategoryId] = useState<string | undefined>(undefined);
   const [activeDifficultyId, setActiveDifficultyId] = useState<string | undefined>(undefined);
   const [activeMemoryId, setActiveMemoryId] = useState<string | undefined>(undefined);
   const [activeTimeId, setActiveTimeId] = useState<string | undefined>(undefined);
   const [activeTagId, setActiveTagId] = useState<string | undefined>(undefined);
   const [activeExerciseId, setActiveExerciseId] = useState<string | undefined>(undefined);
+  const [activeNoteId, setActiveNoteId] = useState<string | undefined>(undefined);
+  const [activeNewsId, setActiveNewsId] = useState<string | undefined>(undefined);
   const deleteExercise = useExcerciseStore(state => state.deleteExercise);
   const deleteNote = useNoteStore(state => state.deleteNote);
   const deleteNews = useNewsStore(state => state.deleteNews);
@@ -81,6 +87,12 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
     } else if (itemType === AllTabs.EXERCISES) {
       setActiveExerciseId(id);
       setIsExerciseModalOpen(true);
+    } else if (itemType === AllTabs.NOTES) {
+      setActiveNoteId(id);
+      setIsNoteModalOpen(true);
+    } else if (itemType === AllTabs.NEWS) {
+      setActiveNewsId(id);
+      setIsNewsModalOpen(true);
     }
     toast.success('Le picó en Editar' + id + itemType, { duration: 5000, style: { backgroundColor: 'green', color: 'white' } });
   };
@@ -230,6 +242,26 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
             <CreateExcerciseComponent
               onClose={() => setIsExerciseModalOpen(false)}
               id={activeExerciseId}
+            />
+          </div>
+        </div>
+      )}
+      {isNoteModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
+          <div className="rounded-lg p-6 w-full max-h-[90%] overflow-y-auto">
+            <CreateNoteComponent
+              onClose={() => setIsNoteModalOpen(false)}
+              id={activeNoteId}
+            />
+          </div>
+        </div>
+      )}
+      {isNewsModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
+          <div className="rounded-lg p-6 w-full max-h-[90%] overflow-y-auto">
+            <CreateNewsComponent
+              onClose={() => setIsNewsModalOpen(false)}
+              id={activeNewsId}
             />
           </div>
         </div>

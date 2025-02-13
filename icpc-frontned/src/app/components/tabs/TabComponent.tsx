@@ -63,9 +63,9 @@ export default function TabComponent({
     ) {
       setShowCreateButton(true); 
       if (tabName === 'Apuntes') {
-        setModalComponent(<CreateNoteComponent />);
+        setModalComponent(<CreateNoteComponent onClose={handleModalClose} />);
       } else if (tabName === 'Noticias') {
-        setModalComponent(<CreateNewsComponent />);
+        setModalComponent(<CreateNewsComponent onClose={handleModalClose} />);
       } else if (tabName === 'Ejercicios') {
         setModalComponent(<CreateExerciseComponent onClose={handleModalClose} />);
       } else if (tabName === 'Categoría') {
@@ -88,9 +88,9 @@ export default function TabComponent({
 
   const handleModalOpen = () => {
     if (activeTab === 'Apuntes') {
-      setModalComponent(<CreateNoteComponent />);
+      setModalComponent(<CreateNoteComponent onClose={handleModalClose} />);
     } else if (activeTab === 'Noticias') {
-      setModalComponent(<CreateNewsComponent />);
+      setModalComponent(<CreateNewsComponent onClose={handleModalClose} />);
     } else if (activeTab === 'Ejercicios') {
       setModalComponent(<CreateExerciseComponent onClose={handleModalClose} />);
     } else if (activeTab === 'Categoría') {

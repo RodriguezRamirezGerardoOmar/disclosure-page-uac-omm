@@ -16,18 +16,9 @@ import InputSelectorCreateComponent from '../dropdowns/InputSelectorCreateCompon
 import { toast } from 'sonner'
 import useAuthStore from '@/store/useStore'
 
-/*
-Input: None
-Output: a form to create a note article
-Return value: a modal form component to create a note article
-Function: creates a modal form to write a note article into a database
-Variables: methods, data, tags
-Date: 07 - 05 - 2024
-Author: Gerardo Omar Rodriguez Ramirez
-*/
-
 interface CreateNotesComponentProps {
   id?: string
+  onClose: () => void
 }
 
 const CreateNoteComponent = (props: CreateNotesComponentProps) => {
@@ -116,28 +107,16 @@ const CreateNoteComponent = (props: CreateNotesComponentProps) => {
   const onSubmit: SubmitHandler<FieldValues> = async data => {
     // Función para procesar la respuesta de las operaciones
     const processResponse = async (response: any) => {
-      if ('statusCode' in response) {
-        const toastOptions = {
-          duration: 5000,
-          style: {
-            backgroundColor: response.statusCode === 201 ? 'green' : '#ff0000',
-            color: '#ffffff'
-          }
-        }
-
+      if (response && typeof response === 'object') {
         if (response.statusCode === 201) {
-          toast.success(response.message, toastOptions)
-        } else {
-          toast.error(response.message, toastOptions)
-        }
-      } else if ('message' in response) {
-        toast.error(response.message as string, {
-          duration: 5000,
-          style: {
-            backgroundColor: '#ff0000',
-            color: '#ffffff'
-          }
-        })
+          toast.success(response.message, {
+            duration: 5000,
+            style: {
+              backgroundColor: 'green',
+              color: '#ffffff'
+            }
+          });
+        } 
       }
     }
 
@@ -204,13 +183,18 @@ const CreateNoteComponent = (props: CreateNotesComponentProps) => {
       className={`margin-auto md:mx-auto max-w-7xl md:px-4 w-full h-full lg:px-8 lg:w-2/3 lg:h-auto 
     min-h-screen place-items-center justify-between py-10`}>
       <BasicPanelComponent backgroundColor='bg-white dark:bg-dark-primary'>
+        <div className="relative">
+          <button onClick={props.onClose} className="absolute top-2 right-2 text-gray-500 hover:text-gray-700">
+            &times;
+          </button>
+        </div>
         <div className='flex flex-col items-center'>
           <LogoComponent size={100} />
           <TextComponent
             tag={enumTextTags.h1}
             sizeFont='s16'
             className='dark:text-dark-accent'>
-            Crear apunte
+            {props.id ? 'Editar apunte' : 'Crear apunte'}
           </TextComponent>
           <TextFieldComponent
             labelText='Título del apunte'
@@ -253,7 +237,6 @@ const CreateNoteComponent = (props: CreateNotesComponentProps) => {
                 options={tags}
                 selectedTags={field.value}
                 onChange={val => field.onChange(val)}
-                onClear={() => field.onChange([])} // Reinicia las etiquetas seleccionadas
               />
             )}
             rules={{ required: true }}
@@ -279,7 +262,7 @@ const CreateNoteComponent = (props: CreateNotesComponentProps) => {
               />
             )}
           />
-          <SubmitComponent text='Crear apunte' />
+          <SubmitComponent text={props.id ? 'Actualizar apunte' : 'Crear apunte'} />
         </div>
         <div className='mt-4'>
           <button

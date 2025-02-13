@@ -131,7 +131,7 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
 
   const onSubmit: SubmitHandler<FieldValues> = async data => {
     const processResponse = async (response: any) => {
-      if ('statusCode' in response) {
+      if (response && 'statusCode' in response) {
         const toastOptions = {
           duration: 5000,
           style: {
@@ -139,13 +139,13 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
             color: '#ffffff'
           }
         };
-
+  
         if (response.statusCode === 200) {
           toast.success(response.message, toastOptions);
         } else {
           toast.error(response.message, toastOptions);
         }
-      } else if ('message' in response) {
+      } else if (response && 'message' in response) {
         toast.error(response.message as string, {
           duration: 5000,
           style: {
@@ -155,16 +155,16 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
         });
       }
     };
-
+  
     const exerciseData = {
       name: String(data.name),
       category: { name: data.category.label, id: data.category.value },
-      difficulty: { name: data.difficulty.label, id: data.difficulty.id },
-      time: { value: parseInt(data.time.label), id: data.time.id },
+      difficulty: { name: data.difficulty.label, id: data.difficulty.value },
+      time: { value: parseInt(data.time.label), id: data.time.value },
       memoryId: String(data.memoryId.value),
       input: String(data.input),
       output: String(data.output),
-      constraints: String(data.constraints),
+      constraints: String(data.restriction),
       clue: String(data.clue),
       tags: data.tags,
       author: String(data.author),
@@ -176,7 +176,7 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
       userAuthor: String(useAuthStore.getState().user?.userName),
       role: String(useAuthStore.getState().user?.role)
     };
-
+  
     if (props.id) {
       const response = await updateExcercise(exerciseData, props.id);
       await processResponse(response);
@@ -233,7 +233,7 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
             memoryId: { label: exercise.memoryId.memoryLimit.toString(), value: exercise.memoryId.id },
             input: exercise.input,
             output: exercise.output,
-            constraints: exercise.constraints,
+            restriction: exercise.constraints,
             clue: exercise.clue,
             tags: exercise.tags,
             author: exercise.author,

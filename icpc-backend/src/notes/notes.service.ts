@@ -210,12 +210,56 @@ export class NotesService {
   }
 
   async update(id: string, updateNoteDto: UpdateNoteDto) {
-    const note = await this.noteRepository.findOneBy({ id: String(id) });
-    const updatedNote = await this.noteRepository.save({
-      ...note,
-      ...updateNoteDto
+    const { title, tags, role, ...updateData } = updateNoteDto;
+  
+    // Verificar si la nota existe
+    const existingNote = await this.noteRepository.findOneBy({ id });
+    if (!existingNote) {
+      throw new BadRequestException('La nota no existe');
+    }
+    // Verificar si los tags existen
+    const noteTags = await this.tagRepository
+      .createQueryBuilder('tag')
+      .where('tag.id IN (:...tagIds)', { tagIds: tags.map((tag) => tag.id) })
+      .getMany();
+    if (noteTags.length !== tags.length) {
+      throw new BadRequestException('Uno o más tags no existen');
+    }
+  
+    // Actualizar la nota existente
+    const updatedNote = {
+      ...existingNote,
+      ...updateData,
+      title,
+      tags: noteTags,
+      isVisible: role === 'admin', // Si es admin, la nota será visible
+    };
+  
+    // Guardar la nota actualizada en la base de datos
+    const savedUpdatedNote = await this.noteRepository.save(updatedNote);
+  
+    // Crear una copia de la nota modificada
+    const modifiedNoteCopy = this.noteRepository.create({
+      ...updatedNote,
+      id: undefined, // Evitar conflictos con el ID de la nota original
+      isVisible: false, // Marcar la copia como no visible
     });
-    return updatedNote;
+  
+    // Guardar la copia de la nota modificada en la base de datos
+    const savedModifiedNoteCopy = await this.noteRepository.save(modifiedNoteCopy);
+  
+    // Crear el ticket con la nota original y la copia de la nota modificada
+    const ticket = this.ticketRepository.create({
+      itemType: TicketType.NOTE,
+      operation: TicketOperation.UPDATE,
+      status: role === 'admin' ? TicketStatus.ACCEPTED : TicketStatus.PENDING,
+      originalNoteId: existingNote, // Referencia a la nota original
+      modifiedNoteId: savedModifiedNoteCopy, // Referencia a la copia de la nota modificada
+    });
+  
+    await this.ticketRepository.save(ticket);
+  
+    return savedUpdatedNote;
   }
 
   async remove(id: string, user: string) {

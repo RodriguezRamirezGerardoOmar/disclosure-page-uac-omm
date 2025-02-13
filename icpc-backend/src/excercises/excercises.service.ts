@@ -18,6 +18,7 @@ import {
 } from 'src/ticket/entities/ticket.entity';
 import { User } from 'src/users/entities/user.entity';
 import { Comment } from 'src/comment/entities/comment.entity';
+import { TicketService } from 'src/ticket/ticket.service';
 
 @Injectable()
 export class ExcercisesService {
@@ -39,7 +40,8 @@ export class ExcercisesService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     @InjectRepository(Comment)
-    private readonly commentRepository: Repository<Comment>
+    private readonly commentRepository: Repository<Comment>,
+    private readonly ticketsService: TicketService
   ) {}
 
   async create(createExcerciseDto: CreateExcerciseDto) {
@@ -316,19 +318,47 @@ export class ExcercisesService {
   }
 
   async update(id: string, updateExcerciseDto: UpdateExcerciseDto) {
-    const { memoryId, ...updateData } = updateExcerciseDto;
+    const { memoryId, role, ...updateData } = updateExcerciseDto;
     const memory = await this.memoryRepository.findOneBy({ id: memoryId });
     if (!memory) {
       throw new BadRequestException('El límite de memoria elegido no existe');
     }
-    return await this.exerciseRepository.save( {
+  
+    const existingExercise = await this.exerciseRepository.findOneBy({ id });
+    if (!existingExercise) {
+      throw new BadRequestException('El ejercicio no existe');
+    }
+  
+    const updatedExercise = {
+      ...existingExercise,
       ...updateData,
       memoryId: memory,
       title: updateData.name,
-      id: id
+      isVisible: role === 'admin' // Si es admin, el ejercicio será visible
+    };
+  
+    const savedUpdatedExercise = await this.exerciseRepository.save(updatedExercise);
+  
+    const modifiedExerciseCopy = this.exerciseRepository.create({
+      ...updatedExercise,
+      id: undefined, // Evitar conflictos con el ID del ejercicio original
+      isVisible: false // Marcar la copia como no visible
     });
+  
+    const savedModifiedExerciseCopy = await this.exerciseRepository.save(modifiedExerciseCopy);
+  
+    const ticket = this.ticketRepository.create({
+      itemType: TicketType.EXERCISE,
+      operation: TicketOperation.UPDATE,
+      status: role === 'admin' ? TicketStatus.ACCEPTED : TicketStatus.PENDING,
+      originalExerciseId: existingExercise, // Referencia al ejercicio original
+      modifiedExerciseId: savedModifiedExerciseCopy // Referencia a la copia del ejercicio modificado
+    });
+  
+    await this.ticketRepository.save(ticket);
+  
+    return savedUpdatedExercise;
   }
-
   async remove(id: string, user: string) {
     const excercise = await this.exerciseRepository.findOneBy({ id });
     const userId = await this.userRepository
