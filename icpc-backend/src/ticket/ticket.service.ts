@@ -393,11 +393,7 @@ export class TicketService {
               ...ticket.originalNewsId
             });
             const image = await this.imageRepository.findOneBy({
-<<<<<<< HEAD
-              ...item.imageId
-=======
               id: item.imageId.id
->>>>>>> 62b47c39d4d8e56d3f9848c4cf51fec0d8b3b1e4
             });
             if (image.news) {
               await this.imageRepository.remove(image);

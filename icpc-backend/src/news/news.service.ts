@@ -3,13 +3,8 @@ import { CreateNewsDto } from './dto/create-news.dto';
 import { UpdateNewsDto } from './dto/update-news.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { News } from './entities/news.entity';
-<<<<<<< HEAD
 import { Image } from '../image/entities/image.entity';
-import { Repository } from 'typeorm';
-import { Like } from 'typeorm';
-=======
 import { Repository, Like } from 'typeorm';
->>>>>>> 62b47c39d4d8e56d3f9848c4cf51fec0d8b3b1e4
 import {
   Ticket,
   TicketOperation,
@@ -18,7 +13,6 @@ import {
 } from 'src/ticket/entities/ticket.entity';
 import { Comment } from 'src/comment/entities/comment.entity';
 import { User } from 'src/users/entities/user.entity';
-import { Image } from 'src/image/entities/image.entity';
 
 @Injectable()
 export class NewsService {
@@ -44,19 +38,11 @@ export class NewsService {
       const image = await this.imageRepository.findOneBy({
         id: createNewsDto.imageId
       });
-<<<<<<< HEAD
-      const news = this.newsRepository.create();
-      news.imageId = image;
-      news.body = createNewsDto.body;
-      news.title = createNewsDto.title;
-      news.isVisible = createNewsDto.role === 'admin';
-=======
       const news = this.newsRepository.create({
         ...createNewsDto,
         imageId: image
       });
       news.isVisible = true;
->>>>>>> 62b47c39d4d8e56d3f9848c4cf51fec0d8b3b1e4
       const user = await this.userRepository.findOneBy({
         userName: createNewsDto.userAuthor
       });
@@ -108,24 +94,17 @@ export class NewsService {
   }
 
   async update(id: string, updateNewsDto: UpdateNewsDto) {
-    const image = await this.imageRepository.findBy({
-      id: updateNewsDto.imageId
-    });
-    const news = await this.newsRepository.findOneBy({ id: id });
-<<<<<<< HEAD
-    return await this.newsRepository.save({
-      ...news,
-      ...updateNewsDto,
-      ...image
-=======
     const image = await this.imageRepository.findOneBy({
       id: updateNewsDto.imageId
     });
+    if (!image) {
+      throw new BadRequestException('Image not found');
+    }
+    const news = await this.newsRepository.findOneBy({ id });
     return await this.newsRepository.save({
       ...news,
       ...updateNewsDto,
       imageId: image
->>>>>>> 62b47c39d4d8e56d3f9848c4cf51fec0d8b3b1e4
     });
   }
 
