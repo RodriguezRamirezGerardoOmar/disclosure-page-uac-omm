@@ -18,6 +18,7 @@ import { NewsModule } from './news/news.module';
 import { TicketModule } from './ticket/ticket.module';
 import { ReportModule } from './report/report.module';
 import { LoggerService } from './services/logger.service';
+import { FactsModule } from './facts/facts.module';
 
 @Module({
   imports: [
@@ -50,7 +51,8 @@ import { LoggerService } from './services/logger.service';
     ImageModule,
     NewsModule,
     TicketModule,
-    ReportModule
+    ReportModule,
+    FactsModule
   ],
   providers: [LoggerService],
   exports: [LoggerService]

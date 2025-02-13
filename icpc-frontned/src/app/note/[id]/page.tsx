@@ -25,6 +25,7 @@ export default async function Page({ params }: Readonly<{ params: { id: string }
           content={mdx.compiledSource}
           tags={note.tags}
           showButton={true}
+          itemId={note.id}
         />
       </main>
     )

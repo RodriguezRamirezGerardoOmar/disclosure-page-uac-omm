@@ -85,14 +85,14 @@ const FooterComponent = () => {
               Acerca de nosotros
             </TextComponent>
           </Link>
-          <Link href='https://fi.uacam.mx/'>
+          <Link href='https://uacam.mx/'>
             <TextComponent
               tag={enumTextTags.p}
               className='hover:text-secondary dark:text-dark-accent underline hover:dark:text-dark-complementary'>
               Universidad Autónoma de Campeche
             </TextComponent>
           </Link>
-          <Link href='https://uacam.mx/'>
+          <Link href='https://fi.uacam.mx/'>
             <TextComponent
               tag={enumTextTags.p}
               className='hover:text-secondary dark:text-dark-accent underline hover:dark:text-dark-complementary'>

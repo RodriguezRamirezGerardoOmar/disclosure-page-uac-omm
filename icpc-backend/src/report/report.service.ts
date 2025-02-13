@@ -21,6 +21,7 @@ export class ReportService {
     @InjectRepository(Excercise)
     private readonly excerciseRepository: Repository<Excercise>
   ) {}
+
   async create(createReportDto: CreateReportDto) {
     const itemId = createReportDto.itemId;
     const itemType = createReportDto.itemType;
@@ -28,17 +29,29 @@ export class ReportService {
     let item;
     switch (itemType) {
       case 'news':
-        item = await this.newsRepository.findOneBy({ id: itemId });
+        item = await this.newsRepository
+          .createQueryBuilder('news')
+          .where('news.id = :id', { id: itemId })
+          .leftJoinAndSelect('news.reports', 'reports')
+          .getOne();
         report.itemType = ItemType.NEWS;
         report.news = item;
         break;
       case 'note':
-        item = await this.noteRepository.findOneBy({ id: itemId });
+        item = await this.noteRepository
+          .createQueryBuilder('note')
+          .where('note.id = :id', { id: itemId })
+          .leftJoinAndSelect('note.reports', 'reports')
+          .getOne();
         report.itemType = ItemType.NOTE;
         report.note = item;
         break;
       case 'exercise':
-        item = await this.excerciseRepository.findOneBy({ id: itemId });
+        item = await this.excerciseRepository
+          .createQueryBuilder('excercise')
+          .where('excercise.id = :id', { id: itemId })
+          .leftJoinAndSelect('excercise.reports', 'reports')
+          .getOne();
         report.itemType = ItemType.EXCERCISE;
         report.excercise = item;
         break;
@@ -49,7 +62,12 @@ export class ReportService {
       item.reports.push(report);
       report.summary = createReportDto.summary;
       report.report = createReportDto.report;
-      return await this.reportRepository.save(report);
+      const savedReport = await this.reportRepository.save(report);
+      return {
+        id: savedReport.id,
+        summary: savedReport.summary,
+        report: savedReport.report
+      };
     } else {
       throw new BadRequestException('Item not found');
     }

@@ -5,7 +5,7 @@ export default async function Page({ params }: Readonly<{ params: { id: string }
   if (params.id !== undefined && params.id !== '') {
     return (
       <main className='grid min-h-screen grid-cols-1 place-items-center justify-between py-24'>
-          <NewsCardComponent id={params.id} />
+        <NewsCardComponent id={params.id} />
       </main>
     )
   } else {

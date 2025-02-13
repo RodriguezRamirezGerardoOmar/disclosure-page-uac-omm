@@ -9,6 +9,7 @@ import useUtilsStore from '@/store/useUtilsStore'
 
 export default async function Home() {
   const dailyQuote: Quote = await useUtilsStore.getState().getDailyQuote()
+  const RandomFact: string = await useUtilsStore.getState().getRandomFact()
 
   const items = [
     {
@@ -45,9 +46,10 @@ export default async function Home() {
 
   const dataRamdomCard = {
     title: 'Dato aleatorio',
-    info: `“El objetivo del rigor no es destruir toda intuición, sino que debería usarse para destruir 
-    la mala intuición a la vez que clarificar y elevar la buena intuición.”`,
-    autor: 'TERENCE TAO',
+    //info: `“El objetivo del rigor no es destruir toda intuición, sino que debería usarse para destruir 
+    //la mala intuición a la vez que clarificar y elevar la buena intuición.”`,
+    info: `“${RandomFact}”`,
+    //autor: 'TERENCE TAO',
     image: 'images/dumie-data.png'
   }
 
@@ -102,7 +104,7 @@ ejercicios propuestos de diferentes niveles.`}
       </div>
 
       <div className='flex flex-col md:flex-row-reverse gap-4 h-full'>
-        <div className='flex flex-col gap-4 my-7 px-4 md:px-0 md:pr-4'>
+        <div className='flex flex-col gap-4 my-7 px-4 md:px-0 md:pr-4 w-1/3'>
           <DataCardComponent
             title={dataCard.title}
             info={dataCard.info}
@@ -111,11 +113,11 @@ ejercicios propuestos de diferentes niveles.`}
           <DataCardComponent
             title={dataRamdomCard.title}
             info={dataRamdomCard.info}
-            autor={dataRamdomCard.autor}
-            image={dataRamdomCard.image}
+            //autor={dataRamdomCard.autor}
+            //image={dataRamdomCard.image}
           />
         </div>
-        <div className='px-4 md:px-0 md:pl-4 h-full'>
+        <div className='px-4 md:px-0 md:pl-4 h-full w-full'>
           <LastNewsComponent />
         </div>
       </div>
