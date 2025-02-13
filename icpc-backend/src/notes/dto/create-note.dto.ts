@@ -1,5 +1,11 @@
 import { ApiProperty, IntersectionType } from '@nestjs/swagger';
-import { IsArray, IsBoolean, IsNotEmpty, IsObject, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsBoolean,
+  IsNotEmpty,
+  IsObject,
+  IsString
+} from 'class-validator';
 import { CreateCategoryDto } from 'src/categories/dto/create-category.dto';
 
 export class CreateNoteDto {

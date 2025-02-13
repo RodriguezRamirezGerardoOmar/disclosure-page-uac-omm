@@ -8,7 +8,7 @@ interface TagSelectorProps {
   options: Tags[]
   selectedTags: Tags[]
   id: string
-  onChange: (val: any) => void
+  onChange: (val: Tags[]) => void
 }
 
 /*
@@ -94,7 +94,7 @@ const colourStyles: StylesConfig<Tags, true> = {
 }
 
 /*
-Input: a list of all posible tags with an id, name and color; a list of the selected tags with an id, name and color;
+Input: a list of all possible tags with an id, name and color; a list of the selected tags with an id, name and color;
 the id of the tag selector; a function to handle the change of the selected tags
 Output: a tag selector with the options and the selected tags
 Return value: a tag selector component to display the tags and select the desired tags
@@ -104,18 +104,14 @@ Date: 22 - 03 - 2024
 Author: Gerardo Omar Rodriguez Ramirez
 */
 
-const TagSelectorComponent = ({ ...props }: Readonly<TagSelectorProps>) => {
+const TagSelectorComponent = ({ options, selectedTags, id, onChange }: Readonly<TagSelectorProps>) => {
   const labelClassname = 'place-self-start dark:text-dark-accent'
 
-  let selectedTags: Tags[] = props.selectedTags
-  const options: Tags[] = props.options
-
   const handleChange = (selectedOptions: MultiValue<Tags>) => {
-    // Aquí puedes transformar los datos seleccionados al formato deseado, si es necesario
-    selectedTags = selectedOptions.map(option => {
-      return props.options.find(tag => tag.name === option.name) as Tags
+    const mappedTags = selectedOptions.map(option => {
+      return options.find(tag => tag.name === option.name) as Tags
     })
-    props.onChange(selectedOptions)
+    onChange(mappedTags)
   }
 
   return (
@@ -126,9 +122,9 @@ const TagSelectorComponent = ({ ...props }: Readonly<TagSelectorProps>) => {
         Etiquetas
       </TextComponent>
       <Select
-        instanceId={props.id}
+        instanceId={id}
         options={options}
-        defaultValue={selectedTags}
+        value={selectedTags}
         isSearchable={true}
         isMulti={true}
         onChange={(newValue: MultiValue<Tags>) => handleChange(newValue)}
@@ -139,4 +135,5 @@ const TagSelectorComponent = ({ ...props }: Readonly<TagSelectorProps>) => {
     </div>
   )
 }
+
 export default TagSelectorComponent

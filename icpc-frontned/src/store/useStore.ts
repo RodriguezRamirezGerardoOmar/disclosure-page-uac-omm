@@ -23,6 +23,15 @@ interface ICreateUser {
   isAdmin: boolean
 }
 
+export interface IUpdateUser {
+  name: string
+  lastName: string
+  userName: string
+  email: string
+  role: string
+  editorId: string
+}
+
 interface AuthState {
   token: string | null
   user: IUser | null
@@ -36,6 +45,8 @@ interface Actions {
   createUser: (user: ICreateUser) => Promise<IApiResponse> | TResponseBasicError
   getProfile: () => Promise<IUser>
   getUsers: () => Promise<IUser[]>
+  deleteUser: (id: string) => Promise<IApiResponse | TResponseBasicError>
+  updateUser: (id: string, user: IUpdateUser) => Promise<IUser>
 }
 
 const api = axios.create({
@@ -86,12 +97,41 @@ const useAuthStore = create<AuthState & Actions>()(
         },
 
         getUsers: async (): Promise<IUser[]> => {
-          const response = await api.get('/api/v1/users/users', {
+          const response = await api.get('/api/v1/users', {
             headers: {
               Authorization: `Bearer ${get().token}`
             }
           })
           return response.data
+        },
+
+        deleteUser: async (id: string): Promise<IApiResponse | TResponseBasicError> => {
+          try {
+            const response = await api.delete(`/api/v1/users/${id}`, {
+              headers: {
+                Authorization: `Bearer ${get().token}`
+              }
+            })
+            return response.data
+          } catch (error: any) {
+            return error.response.data
+          }
+        },
+
+        updateUser: async (id: string, user: IUpdateUser): Promise<IUser> => {
+          try {
+            const response = await api.patch(`/api/v1/users/${id}`, user, {
+              headers: {
+                Authorization: `Bearer ${get().token}`
+              }
+            })
+            set(() => ({ user: response.data }))
+            return response.data
+            //console.log( { ...user, editorId: get().user?.id }, id )
+            //return { data: {}, error: false, message: '', statusCode: 200, errors: {} }
+          } catch (error: any) {
+            return error.response.data
+          }
         }
       }),
       {

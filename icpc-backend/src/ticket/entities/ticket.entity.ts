@@ -14,7 +14,9 @@ export enum TicketOperation {
 export enum TicketType {
   EXERCISE = 'exercise',
   NOTE = 'note',
-  NEWS = 'news'
+  NEWS = 'news',
+  UTILS = 'utils',
+  USER = 'user'
 }
 
 export enum TicketStatus {
@@ -37,6 +39,7 @@ export class Ticket extends BaseEntity {
   @JoinTable()
   modifiedExerciseId: Excercise;
 
+<<<<<<< HEAD
   @ManyToOne(() => News, news => news.ticketOriginal, { onDelete: 'SET NULL' })
   @JoinTable()
   originalNewsId: News;
@@ -50,6 +53,29 @@ export class Ticket extends BaseEntity {
   originalNoteId: Note;
 
   @ManyToOne(() => Note, note => note.ticketModified, { onDelete: 'SET NULL' })
+=======
+  @ManyToOne(() => News, news => news.ticketOriginal, {
+    onDelete: 'SET NULL'
+  })
+  @JoinTable()
+  originalNewsId: News;
+
+  @ManyToOne(() => News, news => news.ticketModified, {
+    onDelete: 'SET NULL'
+  })
+  @JoinTable()
+  modifiedNewsId: News;
+
+  @ManyToOne(() => Note, note => note.ticketOriginal, {
+    onDelete: 'SET NULL'
+  })
+  @JoinTable()
+  originalNoteId: Note;
+
+  @ManyToOne(() => Note, note => note.ticketModified, {
+    onDelete: 'SET NULL'
+  })
+>>>>>>> 62b47c39d4d8e56d3f9848c4cf51fec0d8b3b1e4
   @JoinTable()
   modifiedNoteId: Note;
 

@@ -1,13 +1,14 @@
 'use client'
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState, useImperativeHandle, forwardRef, useEffect } from 'react'
 import { FieldValues, UseFormRegister } from 'react-hook-form'
 import { TextComponent } from '../text/TextComponent'
 
 interface IImageInputProps {
   register: UseFormRegister<FieldValues>
-  onChange: (newValue: File) => void
+  onChange: (newValue: File | null) => void
   fieldName: string
-  value: any
+  value: File | null
+  cover?: string
 }
 
 /*
@@ -20,46 +21,81 @@ Date: 21 - 03 - 2024
 Author: Gerardo Omar Rodriguez Ramirez
 */
 
-const ImageInputComponent = ({ ...props }: Readonly<IImageInputProps>) => {
+const ImageInputComponent = forwardRef(({ cover, ...props }: IImageInputProps, ref) => {
   const fileElem = useRef<HTMLInputElement>(null)
-  const [image, setImage] = useState('')
-  const [selectedFile, setSelectedFile] = useState(false)
+  const [image, setImage] = useState<string | null>(cover ?? null)
+  const [selectedFile, setSelectedFile] = useState(!!cover)
   const iconURL = '/icons/image.svg'
+
+  useImperativeHandle(ref, () => ({
+    resetImageInput: (newCover: string | null = null) => {
+      if (newCover) {
+        setImage(`${process.env.NEXT_PUBLIC_API_URL}api/v1/image/${newCover}`)
+        setSelectedFile(true)
+        props.onChange(null) // Opcional, asegura que el valor del input no interfiera
+      } else {
+        setImage(null)
+        setSelectedFile(false)
+        props.onChange(null)
+      }
+      if (fileElem.current) {
+        fileElem.current.value = ''
+      }
+    }
+  }))
+
+  // Detecta cambios en la propiedad `cover` y actualiza la imagen de vista previa
+  useEffect(() => {
+    if (cover) {
+      setImage(`${process.env.NEXT_PUBLIC_API_URL}api/v1/image/${cover}`)
+      setSelectedFile(true)
+    } else {
+      setImage(null)
+      setSelectedFile(false)
+    }
+  }, [cover])
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0] || null
+    if (file) {
+      setImage(URL.createObjectURL(file))
+      props.onChange(file)
+      setSelectedFile(true)
+    } else {
+      setImage(null)
+      props.onChange(null)
+      setSelectedFile(false)
+    }
+  }
 
   return (
     <button
-      type='button'
-      className={`relative block w-full rounded-lg border-2 border-dashed border-gray-300 p-12 text-center
-       hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2`}
-      onClick={() => {
-        fileElem.current?.click()
-      }}>
+      type="button"
+      className="relative block w-full rounded-lg border-2 border-dashed border-gray-300 p-12 text-center
+       hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+      onClick={() => fileElem.current?.click()}>
       <img
         className={selectedFile ? 'mx-auto' : 'mx-auto h-6 w-6'}
-        src={selectedFile ? image : iconURL}
-        alt='ícono'
+        src={selectedFile && image ? image : iconURL}
+        alt="Ícono de subida"
       />
       <TextComponent
-        className='mt-2 block font-semibold text-gray-900 dark:text-dark-accent'
-        sizeFont='s12'>
+        className="mt-2 block font-semibold text-gray-900 dark:text-dark-accent"
+        sizeFont="s12">
         {selectedFile ? 'Imagen seleccionada' : 'Sube una imagen de portada'}
       </TextComponent>
       <input
         {...props.register(props.fieldName)}
-        type='file'
+        type="file"
         ref={fileElem}
-        accept='image/*'
-        className='hidden'
-        onChange={e => {
-          if (e.target.files) {
-            setImage(URL.createObjectURL(e.target.files[0]))
-            props.onChange(e.target.files[0])
-            setSelectedFile(true)
-          }
-        }}
+        accept="image/*"
+        className="hidden"
+        onChange={handleFileChange}
       />
     </button>
   )
-}
+})
+
+ImageInputComponent.displayName = 'ImageInputComponent'
 
 export default ImageInputComponent

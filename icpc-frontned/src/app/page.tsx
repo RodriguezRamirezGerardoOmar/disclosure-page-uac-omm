@@ -8,8 +8,9 @@ import { LastNewsComponent } from './components/ui/LastNewsComponent'
 import useUtilsStore from '@/store/useUtilsStore'
 
 export default async function Home() {
-  //TODO: Agregar descripciones pertinentes a cada item+
   const dailyQuote: Quote = await useUtilsStore.getState().getDailyQuote()
+  const RandomFact: string = await useUtilsStore.getState().getRandomFact()
+
   const items = [
     {
       title: 'Noticias',
@@ -17,7 +18,7 @@ export default async function Home() {
       info: `Mantente al día con los eventos más recientes y las actualizaciones del mundo tecnológico y académico.
        Explora nuestras noticias para estar siempre informado.`,
       href: 'newslist',
-      exercises: 126
+      type: 2
     },
     {
       title: 'Ejercicios',
@@ -25,7 +26,7 @@ export default async function Home() {
       info: `Pon a prueba tus habilidades con nuestra amplia colección de ejercicios diseñados para fortalecer tus conocimientos en programación
        y resolver problemas desafiantes.`,
       href: 'exercises',
-      exercises: 255
+      type: 0
     },
     {
       title: 'Apuntes',
@@ -33,7 +34,7 @@ export default async function Home() {
       info: `Accede a una variedad de apuntes detallados que te ayudarán a consolidar tus conocimientos y
        profundizar en conceptos clave para tu aprendizaje.`,
       href: 'notelist',
-      exercises: 150
+      type: 1
     }
   ]
 
@@ -45,9 +46,10 @@ export default async function Home() {
 
   const dataRamdomCard = {
     title: 'Dato aleatorio',
-    info: `“El objetivo del rigor no es destruir toda intuición, sino que debería usarse para destruir 
-    la mala intuición a la vez que clarificar y elevar la buena intuición.”`,
-    autor: 'TERENCE TAO',
+    //info: `“El objetivo del rigor no es destruir toda intuición, sino que debería usarse para destruir 
+    //la mala intuición a la vez que clarificar y elevar la buena intuición.”`,
+    info: `“${RandomFact}”`,
+    //autor: 'TERENCE TAO',
     image: 'images/dumie-data.png'
   }
 
@@ -95,14 +97,14 @@ ejercicios propuestos de diferentes niveles.`}
               icon={item.icon}
               info={item.info}
               href={item.href}
-              exercises={item.exercises}
+              type={item.type}
             />
           ))}
         </div>
       </div>
 
       <div className='flex flex-col md:flex-row-reverse gap-4 h-full'>
-        <div className='flex flex-col gap-4 my-7 px-4 md:px-0 md:pr-4'>
+        <div className='flex flex-col gap-4 my-7 px-4 md:px-0 md:pr-4 w-1/3'>
           <DataCardComponent
             title={dataCard.title}
             info={dataCard.info}
@@ -111,11 +113,11 @@ ejercicios propuestos de diferentes niveles.`}
           <DataCardComponent
             title={dataRamdomCard.title}
             info={dataRamdomCard.info}
-            autor={dataRamdomCard.autor}
-            image={dataRamdomCard.image}
+            //autor={dataRamdomCard.autor}
+            //image={dataRamdomCard.image}
           />
         </div>
-        <div className='px-4 md:px-0 md:pl-4 h-full'>
+        <div className='px-4 md:px-0 md:pl-4 h-full w-full'>
           <LastNewsComponent />
         </div>
       </div>

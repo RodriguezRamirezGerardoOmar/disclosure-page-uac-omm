@@ -39,22 +39,41 @@ interface UtilsState {
 interface Actions {
   getTags: () => Promise<Tags[]>
   createTag: ({ name, color }: { name: string; color: string }) => Promise<IApiResponse | TResponseBasicError>
+  deleteTag: (id: string) => Promise<IApiResponse | TResponseBasicError>
   getCategories: () => Promise<Categories[]>
   getCategory: (id: string) => Promise<Categories>
   createCategory: ({ name, commentId }: { name: string; commentId: string }) => Promise<IApiResponse | TResponseBasicError>
+  deleteCategory: (id: string) => Promise<IApiResponse | TResponseBasicError>
   getDifficulties: () => Promise<Difficulties[]>
   createDifficulty: ({ level, name }: { level: number; name: string }) => Promise<IApiResponse | TResponseBasicError>
+  deleteDifficulty: (id: string) => Promise<IApiResponse | TResponseBasicError>
   getTimeLimit: () => Promise<TimeLimit[]>
   createTimeLimit: (time: number) => Promise<IApiResponse | TResponseBasicError>
+  deleteTimeLimit: (id: string) => Promise<IApiResponse | TResponseBasicError>
   getMemoryLimit: () => Promise<MemoryLimit[]>
+  createMemory: (memory: { value: number; id: string }) => Promise<IApiResponse | TResponseBasicError> // Nueva acción
+  deleteMemoryLimit: (id: string) => Promise<IApiResponse | TResponseBasicError>
   createImage: (image: File) => Promise<IApiResponse | TResponseBasicError>
+  updateImage: (image: File, id: string) => Promise<IApiResponse | TResponseBasicError>
   getDailyQuote: () => Promise<Quote>
+  getRandomFact: () => Promise<string>
   getTickets: () => Promise<Ticket[]>
   getPendingTickets: () => Promise<Ticket[]>
   getTicket: (id: string) => Promise<Ticket>
   getReports: () => Promise<Report[]>
   approveTicket: (id:string) => Promise<IApiResponse>
   rejectTicket: (id:string) => Promise<IApiResponse>
+  createReport: ({
+    summary,
+    report,
+    itemType,
+    itemId
+  }: {
+    summary: string
+    report: string
+    itemType: string
+    itemId: string
+  }) => Promise<IApiResponse | TResponseBasicError>
 }
 
 const useUtilsStore = create<Actions & UtilsState>()(
@@ -83,7 +102,7 @@ const useUtilsStore = create<Actions & UtilsState>()(
         createTag: async ({ name, color }): Promise<IApiResponse | TResponseBasicError> => {
           try {
             const response = await api.post(
-              '/api/v1/difficulty',
+              '/api/v1/tags',
               { name, color },
               {
                 headers: {
@@ -91,6 +110,27 @@ const useUtilsStore = create<Actions & UtilsState>()(
                 }
               }
             )
+
+            // ✅ Actualiza el estado local con el nuevo tag
+            if (response.data.statusCode === 201) {
+              set(state => ({
+                tags: [...state.tags, response.data.data] // Usa response.data.data
+              }))
+            }
+
+            return response.data // Devuelve la respuesta completa
+          } catch (error: any) {
+            return error.response.data
+          }
+        },
+
+        deleteTag: async (id: string): Promise<IApiResponse | TResponseBasicError> => {
+          try {
+            const response = await api.delete(`/api/v1/tags/${id}`, {
+              headers: {
+                Authorization: `Bearer ${useAuthStore.getState().token}`
+              }
+            })
             return response.data
           } catch (error: any) {
             return error.response.data
@@ -133,6 +173,19 @@ const useUtilsStore = create<Actions & UtilsState>()(
           }
         },
 
+        deleteCategory: async (id: string): Promise<IApiResponse | TResponseBasicError> => {
+          try {
+            const response = await api.delete(`/api/v1/categories/${id}`, {
+              headers: {
+                Authorization: `Bearer ${useAuthStore.getState().token}`
+              }
+            })
+            return response.data
+          } catch (error: any) {
+            return error.response.data
+          }
+        },
+
         getDifficulties: async (): Promise<Difficulties[]> => {
           try {
             const response = await api.get('/api/v1/difficulty')
@@ -154,6 +207,19 @@ const useUtilsStore = create<Actions & UtilsState>()(
                 }
               }
             )
+            return response.data
+          } catch (error: any) {
+            return error.response.data
+          }
+        },
+
+        deleteDifficulty: async (id: string): Promise<IApiResponse | TResponseBasicError> => {
+          try {
+            const response = await api.delete(`/api/v1/difficulty/${id}`, {
+              headers: {
+                Authorization: `Bearer ${useAuthStore.getState().token}`
+              }
+            })
             return response.data
           } catch (error: any) {
             return error.response.data
@@ -186,10 +252,54 @@ const useUtilsStore = create<Actions & UtilsState>()(
             return error.response.data
           }
         },
+
+        deleteTimeLimit: async (id: string): Promise<IApiResponse | TResponseBasicError> => {
+          try {
+            const response = await api.delete(`/api/v1/time/${id}`, {
+              headers: {
+                Authorization: `Bearer ${useAuthStore.getState().token}`
+              }
+            })
+            return response.data
+          } catch (error: any) {
+            return error.response.data
+          }
+        },
+
         getMemoryLimit: async (): Promise<MemoryLimit[]> => {
           try {
             const response = await api.get('/api/v1/memory')
             set(() => ({ memoryLimit: response.data }))
+            return response.data
+          } catch (error: any) {
+            return error.response.data
+          }
+        },
+
+        createMemory: async (memory: { value: number; id: string }): Promise<IApiResponse | TResponseBasicError> => {
+          try {
+            const response = await api.post(
+              '/api/v1/memory',
+              { value: memory.value, id: memory.id }, // Envía el objeto con value y id
+              {
+                headers: {
+                  Authorization: `Bearer ${useAuthStore.getState().token}`
+                }
+              }
+            )
+            return response.data
+          } catch (error: any) {
+            return error.response.data
+          }
+        },
+
+        deleteMemoryLimit: async (id: string): Promise<IApiResponse | TResponseBasicError> => {
+          try {
+            const response = await api.delete(`/api/v1/memory/${id}`, {
+              headers: {
+                Authorization: `Bearer ${useAuthStore.getState().token}`
+              }
+            })
             return response.data
           } catch (error: any) {
             return error.response.data
@@ -206,6 +316,16 @@ const useUtilsStore = create<Actions & UtilsState>()(
           })
         },
 
+        updateImage: async (file: File, id: string): Promise<IApiResponse | TResponseBasicError> => {
+          const fd = new FormData()
+          fd.append('file', file)
+          return await api.patch(`/api/v1/news/image/${id}`, fd, {
+            headers: {
+              Authorization: `Bearer ${useAuthStore.getState().token}`
+            }
+          })
+        },
+
         getDailyQuote: async (): Promise<Quote> => {
           try {
             const response = await quoteApi.get('/')
@@ -216,6 +336,15 @@ const useUtilsStore = create<Actions & UtilsState>()(
               phrase: '',
               author: ''
             }
+          }
+        },
+
+        getRandomFact: async (): Promise<string> => {
+          try {
+            const response = await api.get('/api/v1/facts')
+            return response.data
+          } catch (error: any) {
+            return ''
           }
         },
 
@@ -245,6 +374,33 @@ const useUtilsStore = create<Actions & UtilsState>()(
           try {
             const response = await api.get(`/api/v1/ticket/${id}`)
             set(() => ({ ticket: response.data }))
+            return response.data
+          } catch (error: any) {
+            return error.response.data
+          }
+        },
+
+        createReport: async ({
+          summary,
+          report,
+          itemType,
+          itemId
+        }: {
+          summary: string
+          report: string
+          itemType: string
+          itemId: string
+        }): Promise<IApiResponse | TResponseBasicError> => {
+          try {
+            const response = await api.post(
+              '/api/v1/report',
+              { summary, report, itemType, itemId },
+              {
+                headers: {
+                  Authorization: `Bearer ${useAuthStore.getState().token}`
+                }
+              }
+            )
             return response.data
           } catch (error: any) {
             return error.response.data

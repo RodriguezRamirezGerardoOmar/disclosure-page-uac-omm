@@ -108,7 +108,9 @@ export interface MemoryLimit {
 export enum TicketType {
   EXERCISE = 'exercise',
   NOTE = 'note',
-  NEWS = 'news'
+  NEWS = 'news',
+  UTILS = 'utils',
+  USER = 'user'
 }
 
 export enum TicketStatus {
@@ -141,6 +143,7 @@ export interface Note {
   body: string
   isVisible: boolean
   tags: Tags[]
+  category: Categories
   commentId: {
     id: string
     body: string

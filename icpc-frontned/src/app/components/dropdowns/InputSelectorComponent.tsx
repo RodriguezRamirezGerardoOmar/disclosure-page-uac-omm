@@ -6,11 +6,11 @@ import chroma from 'chroma-js'
 
 interface InputSelectorProps {
   options: Option[]
-  selectedOption: string
+  selectedOption: Option | null
   id: string
   label: string
   clearable?: boolean
-  onChange: (val: any) => void
+  onChange: (val: Option | null) => void
 }
 
 const colourStyles: StylesConfig<Option> = {
@@ -49,30 +49,38 @@ Date: 07 - 05 - 2024
 Author: Gerardo Omar Rodriguez Ramirez
 */
 
-const InputSelectorComponent = ({ ...props }: Readonly<InputSelectorProps>) => {
+const InputSelectorComponent = ({
+  options,
+  selectedOption,
+  id,
+  label,
+  clearable = false,
+  onChange
+}: Readonly<InputSelectorProps>) => {
   const labelClassName = 'place-self-start dark:text-dark-accent'
-  const options = props.options.map(option => ( option ))
-  const selectedOption = options.find(option => option.label === props.selectedOption)
+
   return (
-    <div className='w-full min-h-max'>
+    <div className="w-full min-h-max">
       <TextComponent
         className={labelClassName}
         tag={enumTextTags.p}>
-        {props.label}
+        {label}
       </TextComponent>
       <Select
-        instanceId={props.id}
-        options={props.options}
-        defaultValue={selectedOption}
+        key={JSON.stringify(selectedOption)} // Forzar re-renderización
+        instanceId={id}
+        options={options}
+        value={selectedOption} // Usar valor controlado
         isSearchable={true}
         isMulti={false}
-        onChange={newValue => props.onChange(newValue)}
-        getOptionLabel={option => option.label}
-        getOptionValue={option => option.value}
+        onChange={(newValue) => onChange(newValue)} // Manejar cambios
+        getOptionLabel={(option) => option.label}
+        getOptionValue={(option) => option.value}
         styles={colourStyles}
-        isClearable={(props.clearable === undefined) ? false : props.clearable}
+        isClearable={clearable}
       />
     </div>
   )
 }
+
 export default InputSelectorComponent

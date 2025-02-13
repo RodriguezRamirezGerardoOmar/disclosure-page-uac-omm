@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { BasicPanelComponent } from '../panels/BasicPanelComponent'
 import LogoComponent from '../LogoComponent'
 import { TextComponent } from '../text/TextComponent'
@@ -26,27 +26,75 @@ Date: 07 - 05 - 2024
 Author: Gerardo Omar Rodriguez Ramirez
 */
 
-const CreateNoteComponent = () => {
+interface CreateNotesComponentProps {
+  id?: string
+}
+
+const CreateNoteComponent = (props: CreateNotesComponentProps) => {
   const methods = useForm<FieldValues>()
   const getTags = useUtilsStore(state => state.getTags)
   const tagList = useUtilsStore(state => state.tags)
   const getCategories = useUtilsStore(state => state.getCategories)
   const categoriesList = useUtilsStore(state => state.categories)
   const createNote = useNoteStore(state => state.createNote)
+  const updateNote = useNoteStore(state => state.updateNote)
   const createCategory = useUtilsStore(state => state.createCategory)
 
-  let [tags, setTags] = useState<Tags[]>(tagList)
-  let [categories, setCategories] = useState<Categories[]>(categoriesList)
-  let [update, setUpdate] = useState<boolean>(false)
+  const selectRef = useRef<{ clear: () => void }>(null)
+  const [tags, setTags] = useState<Tags[]>(tagList)
+  const [categories, setCategories] = useState<Categories[]>(categoriesList)
+  const [selectedTags, setSelectedTags] = useState<Tags[]>([]) // Controlar tags seleccionados
+  const [selectedCategory, setSelectedCategory] = useState<Option | null>(null) // Controlar categoría seleccionada
+  const [update, setUpdate] = useState<boolean>(false)
+  const getNotesArticle = useNoteStore(state => state.getNote)
 
   useEffect(() => {
-    getTags().then(response => {
-      setTags(response)
-    })
-    getCategories().then(response => {
-      setCategories(response)
-    })
-  }, [getCategories, getTags, update])
+    const fetchNotes = async () => {
+      try {
+        // Carga datos sin ID
+        getTags().then(response => {
+          setTags(response)
+        })
+        getCategories().then(response => {
+          setCategories(response)
+        })
+
+        // Si hay un ID, cargar los datos de la nota
+        if (props.id) {
+          const note = await getNotesArticle(props.id)
+          if (note) {
+            methods.reset({
+              title: note.title,
+              description: note.body,
+              content: note.body,
+              category: { label: note.category.name, value: note.category.id },
+              tags: note.tags
+            })
+            setSelectedCategory({ label: note.category.name, value: note.category.id })
+            setSelectedTags(note.tags)
+          } else {
+            toast.error('No se encontró la nota con el ID proporcionado.', {
+              duration: 5000,
+              style: {
+                backgroundColor: '#ff0000',
+                color: '#ffffff'
+              }
+            })
+          }
+        }
+      } catch (error) {
+        toast.error('Error al cargar los datos iniciales.', {
+          duration: 5000,
+          style: {
+            backgroundColor: '#ff0000',
+            color: '#ffffff'
+          }
+        })
+      }
+    }
+
+    fetchNotes()
+  }, [props.id, methods, getTags, getCategories, getNotesArticle])
 
   const handleCreateCategory = async (newValue: Option) => {
     const category = newValue.label
@@ -66,28 +114,24 @@ const CreateNoteComponent = () => {
   }
 
   const onSubmit: SubmitHandler<FieldValues> = async data => {
-    const response = await createNote({
-      title: String(data.title),
-      description: String(data.description),
-      body: String(data.content),
-      categoryId: { name: data.category.label, id: data.category.value },
-      tags: data.tags,
-      isVisible: (useAuthStore.getState().user?.role === 'admin' ? true : false),
-      userAuthor: String(useAuthStore.getState().user?.userName),
-      role: String(useAuthStore.getState().user?.role)
-    })
-
-    if ('statusCode' in response && response.statusCode === 201) {
-      toast.success(response.message, {
-        duration: 5000,
-        style: {
-          backgroundColor: 'green',
-          color: '#ffffff'
+    // Función para procesar la respuesta de las operaciones
+    const processResponse = async (response: any) => {
+      if ('statusCode' in response) {
+        const toastOptions = {
+          duration: 5000,
+          style: {
+            backgroundColor: response.statusCode === 201 ? 'green' : '#ff0000',
+            color: '#ffffff'
+          }
         }
-      })
-    } else {
-      if ('message' in response) {
-        toast.error(response.message, {
+
+        if (response.statusCode === 201) {
+          toast.success(response.message, toastOptions)
+        } else {
+          toast.error(response.message, toastOptions)
+        }
+      } else if ('message' in response) {
+        toast.error(response.message as string, {
           duration: 5000,
           style: {
             backgroundColor: '#ff0000',
@@ -96,12 +140,69 @@ const CreateNoteComponent = () => {
         })
       }
     }
+
+    // Objeto base con los datos comunes
+    const noteData = {
+      title: String(data.title),
+      description: String(data.description),
+      body: String(data.content),
+      categoryId: { name: data.category.label, id: data.category.value },
+      tags: data.tags,
+      isVisible: useAuthStore.getState().user?.role === 'admin',
+      userAuthor: String(useAuthStore.getState().user?.userName),
+      role: String(useAuthStore.getState().user?.role)
+    }
+
+    // Si hay un ID, actualizar la nota existente
+    if (props.id) {
+      const response = await updateNote(noteData, props.id)
+      await processResponse(response)
+    }
+    // Si no hay ID, crear una nueva nota
+    else {
+      const response = await createNote(noteData)
+      await processResponse(response)
+    }
   }
+
+  const clearForm = () => {
+    if (props.id) {
+      // Si hay un ID, recarga los datos originales
+      const fetchNote = async () => {
+        const note = await getNotesArticle(props.id!)
+        if (note) {
+          methods.reset({
+            title: note.title,
+            category: { label: note.category.name, value: note.category.id },
+            tags: note.tags,
+            description: note.body,
+            content: note.body
+          })
+          setSelectedCategory({ label: note.category.name, value: note.category.id })
+          setSelectedTags(note.tags)
+        } else {
+          toast.error('No se pudo recargar la nota.', {
+            duration: 5000,
+            style: {
+              backgroundColor: '#ff0000',
+              color: '#ffffff'
+            }
+          })
+        }
+      }
+      fetchNote()
+    } else {
+      // Si no hay ID, limpia completamente el formulario
+      methods.reset()
+      setSelectedCategory(null)
+    }
+  }
+
   return (
     <form
       onSubmit={methods.handleSubmit(onSubmit)}
       className={`margin-auto md:mx-auto max-w-7xl md:px-4 w-full h-full lg:px-8 lg:w-2/3 lg:h-auto 
-    min-h-screen place-items-center justify-between py-24`}>
+    min-h-screen place-items-center justify-between py-10`}>
       <BasicPanelComponent backgroundColor='bg-white dark:bg-dark-primary'>
         <div className='flex flex-col items-center'>
           <LogoComponent size={100} />
@@ -123,12 +224,16 @@ const CreateNoteComponent = () => {
           <Controller
             defaultValue={[]}
             control={methods.control}
-            rules={{required:true}}
+            rules={{ required: true }}
             render={({ field }) => (
               <InputSelectorCreateComponent
                 label='Categoría'
                 id='category'
-                onChange={val => field.onChange(val)}
+                ref={selectRef} // Conectar referencia correctamente
+                onChange={val => {
+                  field.onChange(val)
+                  setSelectedCategory(val) // Actualiza el estado controlado
+                }}
                 options={categories.map(item => {
                   return { label: item.name, value: item.id }
                 })}
@@ -148,22 +253,23 @@ const CreateNoteComponent = () => {
                 options={tags}
                 selectedTags={field.value}
                 onChange={val => field.onChange(val)}
+                onClear={() => field.onChange([])} // Reinicia las etiquetas seleccionadas
               />
             )}
             rules={{ required: true }}
           />
           <TextAreaComponent
-            labelText={'Descripción'}
+            labelText='Descripción'
             register={methods.register}
-            fieldName={'description'}
-            id={'description'}
+            fieldName='description'
+            id='description'
             necessary={true}
           />
           <Controller
             name='content'
             defaultValue=''
             control={methods.control}
-            rules={{required:true}}
+            rules={{ required: true }}
             render={({ field }) => (
               <MarkdownAreaComponent
                 value={field.value}
@@ -178,11 +284,11 @@ const CreateNoteComponent = () => {
         <div className='mt-4'>
           <button
             type='button'
+            onClick={clearForm}
             className='inline-flex items-center gap-x-2 rounded-md bg-primary text-complementary px-3.5 py-2.5 
               font-medium shadow-sm hover:bg-secondary focus-visible:outline 
-              focus-visible:outline-offset-2 focus-visible:outline-complementary'
-            >
-            {}Borrar formulario
+              focus-visible:outline-offset-2 focus-visible:outline-complementary'>
+            Borrar formulario
           </button>
         </div>
       </BasicPanelComponent>

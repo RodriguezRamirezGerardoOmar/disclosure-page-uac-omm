@@ -30,7 +30,7 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @ApiBearerAuth()
-  @Post('user') // Endpoint for a post request to create a user, at "/users/user"
+  @Post('') // Endpoint for a post request to create a user, at "/users/user"
   @UseGuards(AuthGuard)
   @ApiCreatedResponse({
     description: 'The user has been successfully created.'
@@ -41,7 +41,7 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
-  @Get('users')
+  @Get('')
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
   @ApiResponse({
@@ -53,7 +53,7 @@ export class UsersController {
     return await this.usersService.findAll();
   }
 
-  @Get('user/:id')
+  @Get(':id')
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
   @ApiResponse({
@@ -65,7 +65,7 @@ export class UsersController {
     return this.usersService.findOne(id);
   }
 
-  @Patch('user/:id')
+  @Patch(':id')
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
   @ApiResponse({
@@ -73,11 +73,11 @@ export class UsersController {
   })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
-  update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto) {
+  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(id, updateUserDto);
   }
 
-  @Delete('user/:id')
+  @Delete(':id')
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
   @ApiResponse({

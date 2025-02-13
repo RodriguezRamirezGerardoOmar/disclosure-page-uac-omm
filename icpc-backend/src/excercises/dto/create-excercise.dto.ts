@@ -1,15 +1,19 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsBoolean, IsObject, IsOptional, IsString, Matches } from 'class-validator';
+import {
+  IsArray,
+  IsBoolean,
+  IsObject,
+  IsOptional,
+  IsString
+} from 'class-validator';
 
-export class
-CreateExcerciseDto {
+export class CreateExcerciseDto {
   @ApiProperty()
   @IsString()
   name: string;
 
   @ApiProperty()
   @IsObject()
-  @Matches(/[a-zA-Z]/)
   category: { name: string; id: string };
 
   @ApiProperty()
@@ -23,7 +27,7 @@ CreateExcerciseDto {
 
   @ApiProperty()
   @IsString()
-  @IsOptional() 
+  @IsOptional()
   memoryId: string;
 
   @ApiProperty()

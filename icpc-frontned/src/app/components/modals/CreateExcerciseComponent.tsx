@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { Controller, FieldValues, SubmitHandler, useForm } from 'react-hook-form'
 import { BasicPanelComponent } from '../panels/BasicPanelComponent'
 import LogoComponent from '../LogoComponent'
@@ -27,9 +27,14 @@ Date: 21 - 03 - 2024
 Author: Gerardo Omar Rodriguez Ramirez
 */
 
-const CreateExcerciseComponent = () => {
+interface CreateExerciseComponentProps {
+  id?: string
+}
+
+const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
   const methods = useForm<FieldValues>()
   const createExcercise = useExcerciseStore(state => state.createExcercise)
+  const updateExcercise = useExcerciseStore(state => state.updateExcercise)
   const getTags = useUtilsStore(state => state.getTags)
   const tagList = useUtilsStore(state => state.tags)
   const getCategories = useUtilsStore(state => state.getCategories)
@@ -43,6 +48,12 @@ const CreateExcerciseComponent = () => {
   const createTimeLimit = useUtilsStore(state => state.createTimeLimit)
   const createCategory = useUtilsStore(state => state.createCategory)
 
+  const selectRef = useRef<{ clear: () => void }>(null)
+  const [selectedTags, setSelectedTags] = useState<Tags[]>([]) // Controlar tags seleccionados
+  const [selectedCategory, setSelectedCategory] = useState<Option | null>(null) // Controlar categoría seleccionada
+  const [selectedMemory, setSelectedMemory] = useState<Option | null>(null) // Controlar categoría seleccionada
+  const getExercise = useExcerciseStore(state => state.getExercise)
+
   let [tags, setTags] = useState<Tags[]>(tagList)
   let [categories, setCategories] = useState<Categories[]>(categoriesList)
   let [difficulty, setDifficulty] = useState<Difficulties[]>(difficultiesList)
@@ -51,30 +62,107 @@ const CreateExcerciseComponent = () => {
   let [update, setUpdate] = useState<boolean>(false)
 
   useEffect(() => {
-    getTags().then(response => {
-      setTags(response)
-    })
-    getCategories().then(response => {
-      setCategories(response)
-    })
-    getDifficulties().then(response => {
-      setDifficulty(response)
-    })
-    getTimeLimit().then(response => {
-      setTimeLimits(response)
-    })
-    getMemoryLimit().then(response => {
-      setMemoryLimits(response)
-    })
-  }, [getCategories, getDifficulties, getTags, getTimeLimit, getMemoryLimit, update])
+    const fetchExercise = async () => {
+      try {
+        // Carga datos sin ID
+        getTags().then(response => {
+          setTags(response)
+        })
+        getCategories().then(response => {
+          setCategories(response)
+        })
+        getDifficulties().then(response => {
+          setDifficulty(response)
+        })
+        getTimeLimit().then(response => {
+          setTimeLimits(response)
+        })
+        getMemoryLimit().then(response => {
+          setMemoryLimits(response)
+        })
+
+        // Si hay un ID, cargar los datos de el ejercicio
+        if (props.id) {
+          const exercise = await getExercise(props.id)
+          if (exercise) {
+            methods.reset({
+              name: exercise.title,
+              category: { label: exercise.category.name, value: exercise.category.id },
+              difficulty: { label: exercise.difficulty.name, value: exercise.difficulty.id },
+              time: { label: exercise.time.timeLimit, value: exercise.time.id },
+              memoryId: { label: exercise.memoryId.memoryLimit, value: exercise.memoryId.id },
+              input: exercise.input,
+              output: exercise.output,
+              restriction: exercise.constraints,
+              clue: exercise.clue,
+              tags: exercise.tags,
+              author: exercise.author,
+              description: exercise.description,
+              example_input: exercise.example_input,
+              example_output: exercise.example_output,
+              solution: exercise.solution
+            })
+            setSelectedCategory({ label: exercise.category.name, value: exercise.category.id })
+            setSelectedTags(exercise.tags)
+          } else {
+            toast.error('No se encontró el ejercicio con el ID proporcionado.', {
+              duration: 5000,
+              style: {
+                backgroundColor: '#ff0000',
+                color: '#ffffff'
+              }
+            })
+          }
+        }
+      } catch (error) {
+        toast.error('Error al cargar los datos iniciales.', {
+          duration: 5000,
+          style: {
+            backgroundColor: '#ff0000',
+            color: '#ffffff'
+          }
+        })
+      }
+    }
+
+    fetchExercise()
+  }, [props.id, methods, getExercise, getCategories, getDifficulties, getTags, getTimeLimit, getMemoryLimit, update])
 
   const onSubmit: SubmitHandler<FieldValues> = async data => {
-    const response = await createExcercise({
+    // Función para procesar la respuesta de las operaciones
+    const processResponse = async (response: any) => {
+      if ('statusCode' in response) {
+        const toastOptions = {
+          duration: 5000,
+          style: {
+            backgroundColor: response.statusCode === 200 ? 'green' : '#ff0000',
+            color: '#ffffff'
+          }
+        };
+  
+        if (response.statusCode === 200) {
+          toast.success(response.message, toastOptions);
+        } else {
+          toast.error(response.message, toastOptions);
+        }
+      } else if ('message' in response) {
+        toast.error(response.message as string, {
+          duration: 5000,
+          style: {
+            backgroundColor: '#ff0000',
+            color: '#ffffff'
+          }
+        });
+      }
+    };
+  
+    // Objeto base con los datos comunes
+    const exerciseData = {
       name: String(data.name),
-      category: { name: data.category.label, id: data.category.value},
-      difficulty: {name: data.difficulty.label, id: data.difficulty.id},
+      category: { name: data.category.label, id: data.category.value },
+      difficulty: { name: data.difficulty.label, id: data.difficulty.id },
       time: { value: parseInt(data.time.label), id: data.time.id },
-      memoryId: data.memoryId.value,
+      memoryId: String(data.memoryId.value),
       input: String(data.input),
       output: String(data.output),
       constraints: String(data.constraints),
@@ -88,29 +176,20 @@ const CreateExcerciseComponent = () => {
       isVisible: false,
       userAuthor: String(useAuthStore.getState().user?.userName),
       role: String(useAuthStore.getState().user?.role)
-    })
-
-    if ('statusCode' in response && response.statusCode === 201) {
-      toast.success(response.message, {
-        duration: 5000,
-        style: {
-          backgroundColor: 'green',
-          color: '#ffffff'
-        }
-      })
-    } else {
-      if ('message' in response) {
-        toast.error(response.message, {
-          duration: 5000,
-          style: {
-            backgroundColor: '#ff0000',
-            color: '#ffffff'
-          }
-        })
-      }
+    };
+  
+    // Si hay un ID, actualizar el ejercicio existente
+    if (props.id) {
+      const response = await updateExcercise(exerciseData, props.id);
+      await processResponse(response);
+    } 
+    // Si no hay ID, crear un nuevo ejercicio
+    else {
+      const response = await createExcercise(exerciseData);
+      await processResponse(response);
     }
-  }
-
+  };
+  
   const handleCreateCategory = async (newValue: Option) => {
     const category = newValue.label
     const response = await createCategory({ name: category, commentId: category })
@@ -145,11 +224,54 @@ const CreateExcerciseComponent = () => {
     setUpdate(!update)
   }
 
+  const clearForm = () => {
+    if (props.id) {
+      // Si hay un ID, recarga los datos originales
+      const fetchExercise = async () => {
+        const exercise = await getExercise(props.id!)
+        if (exercise) {
+          methods.reset({
+            name: exercise.title,
+            category: { label: exercise.category.name, value: exercise.category.id },
+            difficulty: { label: exercise.difficulty.name, value: exercise.difficulty.id },
+            time: { label: exercise.time.timeLimit, value: exercise.time.id },
+            memoryId: { label: exercise.memoryId.memoryLimit, value: exercise.memoryId.id },
+            input: exercise.input,
+            output: exercise.output,
+            constraints: exercise.constraints,
+            clue: exercise.clue,
+            tags: exercise.tags,
+            author: exercise.author,
+            description: exercise.description,
+            example_input: exercise.example_input,
+            example_output: exercise.example_output,
+            solution: exercise.solution
+          })
+          //
+          //
+        } else {
+          toast.error('No se pudo recargar la nota.', {
+            duration: 5000,
+            style: {
+              backgroundColor: '#ff0000',
+              color: '#ffffff'
+            }
+          })
+        }
+      }
+      fetchExercise()
+    } else {
+      // Si no hay ID, limpia completamente el formulario
+      methods.reset()
+      setSelectedCategory(null)
+      setSelectedMemory(null)
+    }
+  }
   return (
     <form
       onSubmit={methods.handleSubmit(onSubmit)}
       className={`margin-auto md:mx-auto max-w-7xl md:px-4 w-full h-full lg:px-8 lg:w-11/12 lg:h-auto 
-    min-h-screen place-items-center justify-between py-24`}>
+    min-h-screen place-items-center justify-between py-10`}>
       <BasicPanelComponent backgroundColor='bg-white dark:bg-dark-primary'>
         <div className='flex flex-col items-center'>
           <LogoComponent size={100} />
@@ -174,13 +296,16 @@ const CreateExcerciseComponent = () => {
             <Controller
               defaultValue={[]}
               control={methods.control}
-              rules={{required:true}}
+              rules={{ required: true }}
               render={({ field }) => (
                 <InputSelectorCreateComponent
                   label='Categoría'
                   id='category'
+                  ref={selectRef} // Conectar referencia correctamente
                   onChange={val => {
-                    field.onChange(val)}}
+                    field.onChange(val)
+                    setSelectedCategory(val) // Actualiza el estado controlado
+                  }}
                   options={categories.map(item => {
                     return { label: item.name, value: item.id }
                   })}
@@ -193,7 +318,7 @@ const CreateExcerciseComponent = () => {
             <Controller
               defaultValue={[]}
               control={methods.control}
-              rules={{required:true}}
+              rules={{ required: true }}
               render={({ field }) => (
                 <InputSelectorComponent
                   label='Nivel de dificultad'
@@ -232,9 +357,10 @@ const CreateExcerciseComponent = () => {
                   label='Límite de memoria'
                   id='memoryId'
                   onChange={val => {
-                    field.onChange(val)}}
+                    field.onChange(val)
+                  }}
                   options={memoryLimits.map(item => {
-                    const label: number = item.memoryLimit * 64
+                    const label: number = item.memoryLimit
                     return { label: label.toString(), value: item.id }
                   })}
                   selectedOption={field.value}
@@ -264,7 +390,7 @@ const CreateExcerciseComponent = () => {
               name='restriction'
               defaultValue=''
               control={methods.control}
-              rules={{required:true}}
+              rules={{ required: true }}
               render={({ field }) => (
                 <MarkdownAreaComponent
                   value={field.value}
@@ -274,7 +400,7 @@ const CreateExcerciseComponent = () => {
                 />
               )}
             />
-            
+
             <TextFieldComponent
               labelText='Pista'
               register={methods.register}
@@ -290,7 +416,7 @@ const CreateExcerciseComponent = () => {
               control={methods.control}
               render={({ field }) => (
                 <TagSelectorComponent
-                  id='tagSelector'
+                  id='tagSelector2'
                   options={tags}
                   selectedTags={field.value}
                   onChange={val => field.onChange(val)}
@@ -313,7 +439,7 @@ const CreateExcerciseComponent = () => {
               name='description'
               defaultValue=''
               control={methods.control}
-              rules={{required:true}}
+              rules={{ required: true }}
               render={({ field }) => (
                 <MarkdownAreaComponent
                   value={field.value}
@@ -341,7 +467,7 @@ const CreateExcerciseComponent = () => {
               name='solution'
               defaultValue=''
               control={methods.control}
-              rules={{required:true}}
+              rules={{ required: true }}
               render={({ field }) => (
                 <MarkdownAreaComponent
                   value={field.value}
@@ -359,11 +485,11 @@ const CreateExcerciseComponent = () => {
         <div className='mt-4'>
           <button
             type='button'
+            onClick={clearForm}
             className='inline-flex items-center gap-x-2 rounded-md bg-primary text-complementary px-3.5 py-2.5 
-              font-medium shadow-sm hover:bg-secondary focus-visible:outline 
-              focus-visible:outline-offset-2 focus-visible:outline-complementary'
-            >
-            {}Borrar formulario
+    font-medium shadow-sm hover:bg-secondary focus-visible:outline 
+    focus-visible:outline-offset-2 focus-visible:outline-complementary'>
+            Borrar formulario
           </button>
         </div>
       </BasicPanelComponent>
