@@ -37,7 +37,7 @@ export default function TabComponent({
   const accountTab = tabs.find(tab => tab.name === 'Cuentas')
   const filteredAdminTabs = adminTabs.filter(tab => tab.name !== 'Cuentas')
   const [showModal, setShowModal] = useState(false)
-  const [showCreateButton, setShowCreateButton] = useState(false)
+  const [showCreateButton, setShowCreateButton] = useState(true)
   const [modalComponent, setModalComponent] = useState<JSX.Element | null>(null)
   const [activeTab, setActiveTab] = useState(tabs.find(tab => tab.current)?.name)
   const methods = useForm<FieldValues>()

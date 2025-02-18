@@ -15,7 +15,6 @@ import {
   Report
 } from '@/constants/types'
 import useAuthStore from './useStore'
-import { promises } from 'dns'
 
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL
@@ -61,6 +60,7 @@ interface Actions {
   getPendingTickets: () => Promise<Ticket[]>
   getTicket: (id: string) => Promise<Ticket>
   getReports: () => Promise<Report[]>
+  getReport: (id: string) => Promise<Report>
   approveTicket: (id:string) => Promise<IApiResponse>
   rejectTicket: (id:string) => Promise<IApiResponse>
   createReport: ({
@@ -410,6 +410,19 @@ const useUtilsStore = create<Actions & UtilsState>()(
         getReports: async (): Promise<Report[]> => {
           try {
             const response = await api.get('/api/v1/report', {
+              headers: {
+                Authorization: `Bearer ${useAuthStore.getState().token}`
+              }
+            })
+            return response.data
+          } catch (error: any) {
+            return error.response.data
+          }
+        },
+
+        getReport: async (id: string): Promise<Report> => {
+          try {
+            const response = await api.get(`/api/v1/report/${id}`, {
               headers: {
                 Authorization: `Bearer ${useAuthStore.getState().token}`
               }

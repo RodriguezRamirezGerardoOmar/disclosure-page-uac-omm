@@ -1,3 +1,4 @@
+'use client'
 import React, { Dispatch, SetStateAction } from 'react'
 import ThreeDotComponent from '../dropdowns/ThreeDotComponent'
 import { IProfileTableItem, AllTabs } from '@/constants/types'
@@ -9,6 +10,13 @@ import useNewsStore from '@/store/useNewsStore'
 import useUtilsStore from '@/store/useUtilsStore'
 import useStore from '@/store/useStore'
 import { toast } from 'sonner'
+
+interface Option {
+  name: string
+  action: (id: string, itemType: string, href?: string) => void
+  style: string
+  href?: string
+}
 
 interface IProfileTableComponentProps {
   data: IProfileTableItem[]
@@ -27,9 +35,17 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
   const deleteMemoryLimit = useUtilsStore(state => state.deleteMemoryLimit)
   const deleteDifficulty = useUtilsStore(state => state.deleteDifficulty)
   const deleteUser = useStore(state => state.deleteUser)
+  
+  const handleRedirect = (id: string, itemType: string, href?: string) => {
+    window.location.href = `/${href}/${id}`
+  }
+
+  const handleShowReport = async (id: string, itemType: string) => {
+    console.log('pico')
+  }
 
   const handleEdit = (id: string, itemType: string) => {
-    toast.success('Le picó en Editar' + id + itemType, { duration: 5000, style: { backgroundColor: 'green', color: 'white' } })
+    console.log("le picó en editar", id, itemType)
   }
   const handleDelete = async (id: string) => {
     let response;
@@ -91,6 +107,42 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
       }
     props.setUpdate(!props.update)
   }
+
+  const options: Option[] = [
+    {
+      name: 'Ver',
+      action: handleRedirect,
+      style: 'hover:bg-secondary flex',
+      href: 'ticket'
+    },
+    {
+      name: 'Editar',
+      action: handleEdit,
+      style: 'hover:bg-secondary flex'
+    },
+    {
+      name: 'Eliminar',
+      action: handleDelete,
+      style: 'hover:bg-red-600 flex'
+    },
+    {
+      name: 'Ver',
+      action: handleShowReport,
+      style: 'hover:bg-secondary flex'
+    }
+]
+
+const setCurrentOptions = (id: string, itemType: string) => {
+  switch(itemType) {
+    case AllTabs.REPORTS:
+      return [options[3]]
+    case AllTabs.CHANGES:
+      return [options[0]]
+    default:
+      return [options[1], options[2]]
+  }
+}
+
   const tableData =
     props.data.length !== 0 ? (
       props.data.map(item => (
@@ -114,10 +166,9 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
           <td className={`whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium 
             text-gray-900 dark:text-dark-accent sm:pl-6 lg:pl-8 justify-between items-center`}>
             <ThreeDotComponent
-              handleDelete={handleDelete}
-              handleEdit={handleEdit}
               id={item.id}
               itemType={props.itemType}
+              options={setCurrentOptions(item.id, props.itemType)}
             />
           </td>
         </tr>

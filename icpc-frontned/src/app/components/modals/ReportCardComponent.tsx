@@ -38,7 +38,7 @@ const ReportCardComponent = ({ itemType, itemId, onSubmit, onCancel, methods, ..
         summary: data.description,
         report: data.content,
         itemType,
-        itemId
+        itemId: itemId
       })
       if ( response ) {
         toast.success('Reporte Enviado', {
