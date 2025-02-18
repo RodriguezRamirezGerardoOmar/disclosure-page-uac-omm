@@ -56,18 +56,6 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
 
   const methods = useForm();
 
-  const handleCreateMemory = (memoryName: string) => {
-    // Implementa la lógica para manejar la creación de un límite de memoria
-  };
-
-  const handleCreateTimeLimit = (time: number) => {
-    // Implementa la lógica para manejar la creación de un límite de tiempo
-  };
-
-  const handleCreateTag = (tagName: string) => {
-    // Implementa la lógica para manejar la creación de una etiqueta
-  };
-
   const handleEdit = (id: string, itemType: string) => {
     if (itemType === AllTabs.CATEGORIES) {
       setActiveCategoryId(id);
@@ -202,45 +190,70 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
   return (
     <div>
       {isCategoryModalOpen && (
-        <CreateCategoryComponent onClose={() => setIsCategoryModalOpen(false)} categoryId={activeCategoryId} />
+        <CreateCategoryComponent 
+          onClose={() => {
+            setIsCategoryModalOpen(false);
+            props.setUpdate(!props.update);
+          }} 
+          categoryId={activeCategoryId} 
+        />
       )}
       {isDifficultyModalOpen && (
         <CreateDifficultyComponent
-          onClose={() => setIsDifficultyModalOpen(false)}
+          onClose={() => {
+            setIsDifficultyModalOpen(false);
+            props.setUpdate(!props.update);
+          }}
           difficultyId={activeDifficultyId}
           methods={methods}
-          onCreateDifficulty={handleCreateMemory}
+          onCreateDifficulty={(difficultyName: string) => {
+          }}
         />
       )}
       {isMemoryModalOpen && (
         <CreateMemoryComponent
-          onClose={() => setIsMemoryModalOpen(false)}
+          onClose={() => {
+            setIsMemoryModalOpen(false);
+            props.setUpdate(!props.update);
+          }}
           memoryId={activeMemoryId}
           methods={methods}
-          onCreateMemory={handleCreateMemory}
+          onCreateMemory={(memoryName: string) => {
+          }}
         />
       )}
       {isTimeModalOpen && (
         <CreateTimeLimitComponent
-          onClose={() => setIsTimeModalOpen(false)}
+          onClose={() => {
+            setIsTimeModalOpen(false);
+            props.setUpdate(!props.update);
+          }}
           timeId={activeTimeId}
           methods={methods}
-          onCreateTimeLimit={handleCreateTimeLimit}
+          onCreateTimeLimit={(time: number) => {
+          }}
         />
       )}
       {isTagModalOpen && (
         <CreateTagComponent
-          onClose={() => setIsTagModalOpen(false)}
+          onClose={() => {
+            setIsTagModalOpen(false);
+            props.setUpdate(!props.update);
+          }}
           tagId={activeTagId}
           methods={methods}
-          onCreateTag={handleCreateTag}
+          onCreateTag={(tagName: string) => {
+          }}
         />
       )}
       {isExerciseModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
           <div className="rounded-lg p-6 w-full max-h-[90%] overflow-y-auto">
             <CreateExcerciseComponent
-              onClose={() => setIsExerciseModalOpen(false)}
+              onClose={() => {
+                setIsExerciseModalOpen(false);
+                props.setUpdate(!props.update);
+              }}
               id={activeExerciseId}
             />
           </div>
@@ -250,7 +263,10 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
           <div className="rounded-lg p-6 w-full max-h-[90%] overflow-y-auto">
             <CreateNoteComponent
-              onClose={() => setIsNoteModalOpen(false)}
+              onClose={() => {
+                setIsNoteModalOpen(false);
+                props.setUpdate(!props.update);
+              }}
               id={activeNoteId}
             />
           </div>
@@ -260,7 +276,10 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
           <div className="rounded-lg p-6 w-full max-h-[90%] overflow-y-auto">
             <CreateNewsComponent
-              onClose={() => setIsNewsModalOpen(false)}
+              onClose={() => {
+                setIsNewsModalOpen(false);
+                props.setUpdate(!props.update);
+              }}
               id={activeNewsId}
             />
           </div>

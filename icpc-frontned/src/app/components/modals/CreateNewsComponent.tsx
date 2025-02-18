@@ -180,9 +180,9 @@ const CreateNewsComponent = (props: CreateNewsComponentProps) => {
     min-h-screen place-items-center justify-between py-10`}>
       <BasicPanelComponent backgroundColor='bg-white dark:bg-dark-primary'>
         <div className="relative">
-          <button onClick={props.onClose} className="absolute top-2 right-2 text-gray-500 hover:text-gray-700">
-            &times;
-          </button>
+        <button onClick={props.onClose} className="absolute top-2 right-2 text-gray-500 hover:text-red-700 text-4xl">
+          &times;
+        </button>
         </div>
         <div className='flex flex-col items-center'>
           <LogoComponent size={100} />
