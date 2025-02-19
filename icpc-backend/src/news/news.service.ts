@@ -94,18 +94,53 @@ export class NewsService {
   }
 
   async update(id: string, updateNewsDto: UpdateNewsDto) {
-    const image = await this.imageRepository.findOneBy({
-      id: updateNewsDto.imageId
-    });
-    if (!image) {
-      throw new BadRequestException('Image not found');
+    const { imageId, role, ...updateData } = updateNewsDto;
+  
+    // Verificar si la noticia existe
+    const existingNews = await this.newsRepository.findOneBy({ id });
+    if (!existingNews) {
+      throw new BadRequestException('La noticia no existe');
     }
-    const news = await this.newsRepository.findOneBy({ id });
-    return await this.newsRepository.save({
-      ...news,
-      ...updateNewsDto,
-      imageId: image
+  
+    // Verificar si la imagen existe
+    const image = await this.imageRepository.findOneBy({ id: imageId });
+    if (!image) {
+      throw new BadRequestException('La imagen no existe');
+    }
+  
+    // Actualizar la noticia existente
+    const updatedNews = {
+      ...existingNews,
+      ...updateData,
+      imageId: image,
+      isVisible: role === 'admin', // Si es admin, la noticia será visible
+    };
+  
+    // Guardar la noticia actualizada en la base de datos
+    const savedUpdatedNews = await this.newsRepository.save(updatedNews);
+  
+    // Crear una copia de la noticia modificada
+    const modifiedNewsCopy = this.newsRepository.create({
+      ...updatedNews,
+      id: undefined, // Evitar conflictos con el ID de la noticia original
+      isVisible: false, // Marcar la copia como no visible
     });
+  
+    // Guardar la copia de la noticia modificada en la base de datos
+    const savedModifiedNewsCopy = await this.newsRepository.save(modifiedNewsCopy);
+  
+    // Crear el ticket con la noticia original y la copia de la noticia modificada
+    const ticket = this.ticketRepository.create({
+      itemType: TicketType.NEWS,
+      operation: TicketOperation.UPDATE,
+      status: role === 'admin' ? TicketStatus.ACCEPTED : TicketStatus.PENDING,
+      originalNewsId: existingNews, // Referencia a la noticia original
+      modifiedNewsId: savedModifiedNewsCopy, // Referencia a la copia de la noticia modificada
+    });
+  
+    await this.ticketRepository.save(ticket);
+  
+    return savedUpdatedNews;
   }
 
   async remove(id: string, user: string) {

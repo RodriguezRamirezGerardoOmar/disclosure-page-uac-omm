@@ -29,6 +29,7 @@ Author: Gerardo Omar Rodriguez Ramirez
 
 interface CreateExerciseComponentProps {
   id?: string
+  onClose: () => void
 }
 
 const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
@@ -83,14 +84,14 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
 
         // Si hay un ID, cargar los datos de el ejercicio
         if (props.id) {
-          const exercise = await getExercise(props.id)
+          const exercise = await getExercise(props.id!)
           if (exercise) {
             methods.reset({
               name: exercise.title,
               category: { label: exercise.category.name, value: exercise.category.id },
               difficulty: { label: exercise.difficulty.name, value: exercise.difficulty.id },
-              time: { label: exercise.time.timeLimit, value: exercise.time.id },
-              memoryId: { label: exercise.memoryId.memoryLimit, value: exercise.memoryId.id },
+              time: { label: exercise.time.timeLimit.toString(), value: exercise.time.id },
+              memoryId: { label: exercise.memoryId.memoryLimit.toString(), value: exercise.memoryId.id },
               input: exercise.input,
               output: exercise.output,
               restriction: exercise.constraints,
@@ -129,9 +130,8 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
   }, [props.id, methods, getExercise, getCategories, getDifficulties, getTags, getTimeLimit, getMemoryLimit, update])
 
   const onSubmit: SubmitHandler<FieldValues> = async data => {
-    // Función para procesar la respuesta de las operaciones
     const processResponse = async (response: any) => {
-      if ('statusCode' in response) {
+      if (response && 'statusCode' in response) {
         const toastOptions = {
           duration: 5000,
           style: {
@@ -145,7 +145,7 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
         } else {
           toast.error(response.message, toastOptions);
         }
-      } else if ('message' in response) {
+      } else if (response && 'message' in response) {
         toast.error(response.message as string, {
           duration: 5000,
           style: {
@@ -156,16 +156,15 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
       }
     };
   
-    // Objeto base con los datos comunes
     const exerciseData = {
       name: String(data.name),
       category: { name: data.category.label, id: data.category.value },
-      difficulty: { name: data.difficulty.label, id: data.difficulty.id },
-      time: { value: parseInt(data.time.label), id: data.time.id },
+      difficulty: { name: data.difficulty.label, id: data.difficulty.value },
+      time: { value: parseInt(data.time.label), id: data.time.value },
       memoryId: String(data.memoryId.value),
       input: String(data.input),
       output: String(data.output),
-      constraints: String(data.constraints),
+      constraints: String(data.restriction),
       clue: String(data.clue),
       tags: data.tags,
       author: String(data.author),
@@ -178,18 +177,15 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
       role: String(useAuthStore.getState().user?.role)
     };
   
-    // Si hay un ID, actualizar el ejercicio existente
     if (props.id) {
       const response = await updateExcercise(exerciseData, props.id);
       await processResponse(response);
-    } 
-    // Si no hay ID, crear un nuevo ejercicio
-    else {
+    } else {
       const response = await createExcercise(exerciseData);
       await processResponse(response);
     }
   };
-  
+
   const handleCreateCategory = async (newValue: Option) => {
     const category = newValue.label
     const response = await createCategory({ name: category, commentId: category })
@@ -226,7 +222,6 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
 
   const clearForm = () => {
     if (props.id) {
-      // Si hay un ID, recarga los datos originales
       const fetchExercise = async () => {
         const exercise = await getExercise(props.id!)
         if (exercise) {
@@ -234,11 +229,11 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
             name: exercise.title,
             category: { label: exercise.category.name, value: exercise.category.id },
             difficulty: { label: exercise.difficulty.name, value: exercise.difficulty.id },
-            time: { label: exercise.time.timeLimit, value: exercise.time.id },
-            memoryId: { label: exercise.memoryId.memoryLimit, value: exercise.memoryId.id },
+            time: { label: exercise.time.timeLimit.toString(), value: exercise.time.id },
+            memoryId: { label: exercise.memoryId.memoryLimit.toString(), value: exercise.memoryId.id },
             input: exercise.input,
             output: exercise.output,
-            constraints: exercise.constraints,
+            restriction: exercise.constraints,
             clue: exercise.clue,
             tags: exercise.tags,
             author: exercise.author,
@@ -247,8 +242,6 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
             example_output: exercise.example_output,
             solution: exercise.solution
           })
-          //
-          //
         } else {
           toast.error('No se pudo recargar la nota.', {
             duration: 5000,
@@ -261,25 +254,30 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
       }
       fetchExercise()
     } else {
-      // Si no hay ID, limpia completamente el formulario
       methods.reset()
       setSelectedCategory(null)
       setSelectedMemory(null)
     }
   }
+
   return (
     <form
       onSubmit={methods.handleSubmit(onSubmit)}
       className={`margin-auto md:mx-auto max-w-7xl md:px-4 w-full h-full lg:px-8 lg:w-11/12 lg:h-auto 
     min-h-screen place-items-center justify-between py-10`}>
       <BasicPanelComponent backgroundColor='bg-white dark:bg-dark-primary'>
+        <div className="relative">
+          <button onClick={props.onClose} className="absolute top-2 right-2 text-gray-500 hover:text-red-700 text-4xl">
+            &times;
+          </button>
+        </div>
         <div className='flex flex-col items-center'>
           <LogoComponent size={100} />
           <TextComponent
             tag={enumTextTags.h1}
             sizeFont='s16'
             className='dark:text-dark-accent'>
-            Crear ejercicio
+            {props.id ? 'Editar ejercicio' : 'Crear ejercicio'}
           </TextComponent>
         </div>
         <div className='grid grid-cols-1 items-start lg:grid-cols-2 lg:gap-16'>
@@ -480,7 +478,7 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
           </div>
         </div>
         <div className='flex flex-col items-center'>
-          <SubmitComponent text='Crear ejercicio' />
+          <SubmitComponent text={props.id ? 'Actualizar ejercicio' : 'Crear ejercicio'} />
         </div>
         <div className='mt-4'>
           <button
