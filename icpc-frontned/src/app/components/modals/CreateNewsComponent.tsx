@@ -67,7 +67,8 @@ const CreateNewsComponent = (props: CreateNewsComponentProps) => {
   }, [props.id, methods, getNewsArticle])
 
   const onSubmit: SubmitHandler<FieldValues> = async formData => {
-    const processResponse = (uploadedImage: any) => {
+    // Función para procesar la respuesta de las operaciones de creación y actualización
+    const processResponse = async (uploadedImage: any) => {
       if ('data' in uploadedImage) {
         const imageId = uploadedImage.data?.imageId?.id || uploadedImage.data?.id;
         if (!imageId) {
@@ -82,7 +83,7 @@ const CreateNewsComponent = (props: CreateNewsComponentProps) => {
         }
     
         const response = props.id
-          ? updateNews(
+          ? await updateNews(
               {
                 title: String(formData.title),
                 imageId: imageId,
@@ -92,39 +93,35 @@ const CreateNewsComponent = (props: CreateNewsComponentProps) => {
               },
               props.id
             )
-          : createNews({
+          : await createNews({
               title: String(formData.title),
               imageId: imageId,
               body: String(formData.content),
               userAuthor: String(useAuthStore.getState().user?.userName),
               role: String(useAuthStore.getState().user?.role)
-            });
-    
-        response.then(() => {
-          if ('statusCode' in response) {
-            const toastOptions = {
-              duration: 5000,
-              style: {
-                backgroundColor: response.statusCode === 200 ? 'green' : '#ff0000',
-                color: '#ffffff'
-              }
-            };
-    
-            if (response.statusCode === 200) {
-              toast.success('Noticia actualizada', toastOptions);
-            } else {
-              toast.error('Parece que hubo un error', toastOptions);
+            })
+        if (response) {
+          const toastOptions = {
+            duration: 5000,
+            style: {
+              backgroundColor: 'id' in response ? 'green' : '#ff0000',
+              color: '#ffffff'
             }
-          } else if ('message' in response) {
-            toast.error(response.message as string, {
-              duration: 5000,
-              style: {
-                backgroundColor: '#ff0000',
-                color: '#ffffff'
-              }
-            });
           }
-        });
+          if ('id' in response) {
+            toast.success(props.id ? 'Noticia Actualizada' : 'Noticia creada con éxito.', toastOptions)
+          } else if ('message' in response) {
+            toast.error(response.message, toastOptions)
+          }
+        } else {
+          toast.error('Error al crear la noticia.', {
+            duration: 5000,
+            style: {
+              backgroundColor: '#ff0000',
+              color: '#ffffff'
+            }
+          })
+        }
       } else if ('message' in uploadedImage) {
         toast.error(uploadedImage.message as string, {
           duration: 5000,
@@ -134,12 +131,31 @@ const CreateNewsComponent = (props: CreateNewsComponentProps) => {
           }
         });
       }
-    };
+    }
     if (typeof formData.file === 'string') {
       processResponse({ data: { id: (await getNewsArticle(props.id!)).imageId.id } })
     } else {
       const uploadedImage = props.id ? await updateImage(formData.file, props.id) : await createImage(formData.file)
       processResponse(uploadedImage)
+    }
+  }
+
+  const dataValidate = () => {
+    const data = methods.getValues()
+    const missingFields = []
+
+    if (!data.title) missingFields.push('Título')
+    if (!data.content) missingFields.push('Cuerpo de la noticia')
+    if (!data.file) missingFields.push('Archivo de imagen')
+
+    if (missingFields.length > 0) {
+      toast.error(`Favor de llenar los datos de: ${missingFields.join(', ')}`, {
+        duration: 5000,
+        style: {
+          backgroundColor: '#ff0000',
+          color: '#ffffff'
+        }
+      })
     }
   }
 
@@ -159,6 +175,7 @@ const CreateNewsComponent = (props: CreateNewsComponentProps) => {
           toast.error('No se pudo recargar la noticia.', {
             duration: 5000,
             style: {
+              textAlign: 'justify',
               backgroundColor: '#ff0000',
               color: '#ffffff'
             }
@@ -232,7 +249,10 @@ const CreateNewsComponent = (props: CreateNewsComponentProps) => {
               />
             )}
           />
-          <SubmitComponent text={props.id ? 'Actualizar noticia' : 'Crear noticia'} />
+          <SubmitComponent
+            text={props.id ? 'Actualizar noticia' : 'Crear noticia'}
+            action={dataValidate}
+          />
         </div>
         <div className='mt-4'>
           <button

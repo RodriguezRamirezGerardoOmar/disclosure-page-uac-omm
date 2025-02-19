@@ -129,62 +129,58 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
     fetchExercise()
   }, [props.id, methods, getExercise, getCategories, getDifficulties, getTags, getTimeLimit, getMemoryLimit, update])
 
-  const onSubmit: SubmitHandler<FieldValues> = async data => {
+  const onSubmit: SubmitHandler<FieldValues> = async formData => {
+    // Función para procesar la respuesta de las operaciones de creación y actualización
     const processResponse = async (response: any) => {
-      if (response && 'statusCode' in response) {
-        const toastOptions = {
-          duration: 5000,
-          style: {
-            backgroundColor: response.statusCode === 200 ? 'green' : '#ff0000',
-            color: '#ffffff'
-          }
-        };
-  
-        if (response.statusCode === 200) {
-          toast.success(response.message, toastOptions);
-        } else {
-          toast.error(response.message, toastOptions);
+      const toastOptions = {
+        duration: 5000,
+        style: {
+          backgroundColor: 'id' in response ? 'green' : '#ff0000',
+          color: '#ffffff'
         }
-      } else if (response && 'message' in response) {
-        toast.error(response.message as string, {
-          duration: 5000,
-          style: {
-            backgroundColor: '#ff0000',
-            color: '#ffffff'
-          }
-        });
       }
-    };
-  
+      if ('id' in response) {
+        toast.success(props.id ? 'Ejercicio Actualizado' : 'Ejercicio creado con éxito.', toastOptions)
+      } else if ('message' in response) {
+        toast.error(response.message, toastOptions)
+      } else {
+        toast.error('Unexpected response format', toastOptions)
+      }
+    }
+
+    // Objeto base con los datos comunes
     const exerciseData = {
-      name: String(data.name),
-      category: { name: data.category.label, id: data.category.value },
-      difficulty: { name: data.difficulty.label, id: data.difficulty.value },
-      time: { value: parseInt(data.time.label), id: data.time.value },
-      memoryId: String(data.memoryId.value),
-      input: String(data.input),
-      output: String(data.output),
-      constraints: String(data.restriction),
-      clue: String(data.clue),
-      tags: data.tags,
-      author: String(data.author),
-      description: String(data.description),
-      example_input: String(data.example_input),
-      example_output: String(data.example_output),
-      solution: String(data.solution),
+      name: String(formData.name),
+      category: { name: formData.category.label, id: formData.category.value },
+      difficulty: { name: formData.difficulty.label, id: formData.difficulty.id },
+      time: { value: parseInt(formData.time.label), id: formData.time.id },
+      memoryId: formData.memoryId ? String(formData.memoryId.value) : '',
+      input: String(formData.input),
+      output: String(formData.output),
+      constraints: formData.constraints ? String(formData.constraints) : '',
+      clue: formData.clue ? String(formData.clue) : '',
+      tags: formData.tags,
+      author: String(formData.author),
+      description: String(formData.description),
+      example_input: String(formData.example_input),
+      example_output: String(formData.example_output),
+      solution: formData.solution ? String(formData.solution) : '',
       isVisible: false,
       userAuthor: String(useAuthStore.getState().user?.userName),
       role: String(useAuthStore.getState().user?.role)
-    };
-  
-    if (props.id) {
-      const response = await updateExcercise(exerciseData, props.id);
-      await processResponse(response);
-    } else {
-      const response = await createExcercise(exerciseData);
-      await processResponse(response);
     }
-  };
+
+    // Si hay un ID, actualizar el ejercicio existente
+    if (props.id) {
+      const response = await updateExcercise(exerciseData, props.id)
+      await processResponse(response)
+    }
+    // Si no hay ID, crear un nuevo ejercicio
+    else {
+      const response = await createExcercise(exerciseData)
+      await processResponse(response)
+    }
+  }
 
   const handleCreateCategory = async (newValue: Option) => {
     const category = newValue.label
@@ -257,6 +253,32 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
       methods.reset()
       setSelectedCategory(null)
       setSelectedMemory(null)
+    }
+  }
+
+  const dataValidate = () => {
+    const data = methods.getValues()
+    const missingFields = []
+  
+    if (!data.name) missingFields.push('Nombre del ejercicio')
+    if (data.category.length === 0) missingFields.push('Categoría')
+    if (data.difficulty.length === 0) missingFields.push('Nivel de dificultad')
+    if (data.time.length === 0) missingFields.push('Límite de tiempo')
+    if (data.memoryId.length === 0) missingFields.push('Límite de memoria')
+    if (!data.input) missingFields.push('Entrada esperada')
+    if (!data.output) missingFields.push('Salida esperada')
+    if (data.tags.length === 0) missingFields.push('Etiquetas')
+    if (!data.description) missingFields.push('Descripción del problema')
+  
+    if (missingFields.length > 0) {
+      toast.error(`Favor de llenar los datos de: ${missingFields.join(', ')}`, {
+        duration: 5000,
+        style: {
+          textAlign: 'justify',
+          backgroundColor: '#ff0000',
+          color: '#ffffff'
+        }
+      })
     }
   }
 
@@ -388,7 +410,6 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
               name='restriction'
               defaultValue=''
               control={methods.control}
-              rules={{ required: true }}
               render={({ field }) => (
                 <MarkdownAreaComponent
                   value={field.value}
@@ -404,7 +425,7 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
               register={methods.register}
               fieldName='clue'
               id='clue'
-              necessary={true}
+              necessary={false}
               type='text'
               auto='off'
             />
@@ -465,7 +486,6 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
               name='solution'
               defaultValue=''
               control={methods.control}
-              rules={{ required: true }}
               render={({ field }) => (
                 <MarkdownAreaComponent
                   value={field.value}
@@ -478,7 +498,10 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
           </div>
         </div>
         <div className='flex flex-col items-center'>
-          <SubmitComponent text={props.id ? 'Actualizar ejercicio' : 'Crear ejercicio'} />
+          <SubmitComponent
+            text={props.id ? 'Actualizar ejercicio' : 'Crear ejercicio'}
+            action={dataValidate}
+          />
         </div>
         <div className='mt-4'>
           <button

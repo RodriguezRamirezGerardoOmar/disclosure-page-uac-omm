@@ -1,8 +1,7 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber } from 'class-validator';
+import { IsOptional, IsNumber } from 'class-validator';
 
 export class CreateTimeDto {
-  @ApiProperty()
+  @IsOptional()
   @IsNumber()
   timeLimit: number;
 }

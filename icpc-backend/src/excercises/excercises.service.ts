@@ -45,7 +45,16 @@ export class ExcercisesService {
   ) {}
 
   async create(createExcerciseDto: CreateExcerciseDto) {
-    const { name, category, difficulty, time, memoryId } = createExcerciseDto;
+    const {
+      name,
+      category,
+      difficulty,
+      time,
+      memoryId,
+      clue,
+      constraints,
+      solution
+    } = createExcerciseDto;
     const newExcerciseName = await this.exerciseRepository.findOneBy({
       title: name
     });
@@ -67,27 +76,39 @@ export class ExcercisesService {
     if (newExcerciseDifficulty === null) {
       throw new BadRequestException('El nivel de dificultad elegido no existe');
     }
-    const newExcerciseTime = await this.timeRepository.findOneBy({
-      timeLimit: time.value,
-      id: time.id
-    });
-    if (newExcerciseTime === null) {
-      throw new BadRequestException('El límite de tiempo elegido no existe');
+
+    let newExcerciseTime = null;
+    if (time) {
+      newExcerciseTime = await this.timeRepository.findOneBy({
+        timeLimit: time.value,
+        id: time.id
+      });
+      if (newExcerciseTime === null) {
+        throw new BadRequestException('El límite de tiempo elegido no existe');
+      }
     }
-    const newExcerciseMemory = await this.memoryRepository.findOneBy({
-      id: memoryId
-    });
-    if (newExcerciseMemory === null) {
-      throw new BadRequestException('El límite de memoria elegido no existe');
+
+    let newExcerciseMemory = null;
+    if (memoryId) {
+      newExcerciseMemory = await this.memoryRepository.findOneBy({
+        id: memoryId
+      });
+      if (newExcerciseMemory === null) {
+        throw new BadRequestException('El límite de memoria elegido no existe');
+      }
     }
+
     const newExcercise = this.exerciseRepository.create({
       ...createExcerciseDto,
       title: name,
-      memoryId: newExcerciseMemory
+      memoryId: newExcerciseMemory || undefined,
+      time: newExcerciseTime || undefined,
+      clue: clue || undefined,
+      constraints: constraints || undefined,
+      solution: solution || undefined
     });
     newExcercise.category = newExcerciseCategory;
     newExcercise.difficulty = newExcerciseDifficulty;
-    newExcercise.time = newExcerciseTime;
     const user = await this.userRepository.findOneBy({
       userName: createExcerciseDto.userAuthor
     });

@@ -29,11 +29,11 @@ export class TimeService {
   async create(createTimeDto: CreateTimeDto) {
     // Verificar si ya existe un registro con el mismo timeLimit
     const existingTime = await this.timeRepository.findOneBy({
-        timeLimit: createTimeDto.timeLimit
+      timeLimit: createTimeDto.timeLimit
     });
 
     if (existingTime) {
-        throw new BadRequestException('time already exists');
+      throw new BadRequestException('time already exists');
     }
 
     const newVal = await this.timeRepository.save(createTimeDto);

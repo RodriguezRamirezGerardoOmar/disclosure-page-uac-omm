@@ -104,29 +104,45 @@ const CreateNoteComponent = (props: CreateNotesComponentProps) => {
     setUpdate(!update)
   }
 
-  const onSubmit: SubmitHandler<FieldValues> = async data => {
-    // Función para procesar la respuesta de las operaciones
+  const onSubmit: SubmitHandler<FieldValues> = async formData => {
+    // Función para procesar la respuesta de las operaciones de creación y actualización
     const processResponse = async (response: any) => {
-      if (response && typeof response === 'object') {
-        if (response.statusCode === 201) {
-          toast.success(response.message, {
-            duration: 5000,
-            style: {
-              backgroundColor: 'green',
-              color: '#ffffff'
-            }
-          });
-        } 
+      const toastOptions = {
+        duration: 5000,
+        style: {
+          backgroundColor: 'id' in response ? 'green' : '#ff0000',
+          color: '#ffffff'
+        }
       }
+      if ('id' in response) {
+        toast.success(props.id ? 'Nota Actualizada' : 'Nota creada con éxito.', toastOptions)
+      } else if ('message' in response) {
+        toast.error(response.message, toastOptions)
+      } else {
+        toast.error('Unexpected response format', toastOptions)
+      }
+    }
+
+    // Verificar si ya existe una nota con el mismo título
+    const existingNote = await getNotesArticle(props.id || '')
+    if (existingNote && existingNote.title === formData.title) {
+      toast.error('Ya existe una nota con el mismo título.', {
+        duration: 5000,
+        style: {
+          backgroundColor: '#ff0000',
+          color: '#ffffff'
+        }
+      })
+      return
     }
 
     // Objeto base con los datos comunes
     const noteData = {
-      title: String(data.title),
-      description: String(data.description),
-      body: String(data.content),
-      categoryId: { name: data.category.label, id: data.category.value },
-      tags: data.tags,
+      title: String(formData.title),
+      description: String(formData.description),
+      body: String(formData.content),
+      categoryId: { name: formData.category.label, id: formData.category.value },
+      tags: formData.tags,
       isVisible: useAuthStore.getState().user?.role === 'admin',
       userAuthor: String(useAuthStore.getState().user?.userName),
       role: String(useAuthStore.getState().user?.role)
@@ -174,6 +190,28 @@ const CreateNoteComponent = (props: CreateNotesComponentProps) => {
       // Si no hay ID, limpia completamente el formulario
       methods.reset()
       setSelectedCategory(null)
+    }
+  }
+  
+  const dataValidate = () => {
+    const data = methods.getValues()
+    const missingFields = []
+
+    if (!data.title) missingFields.push('Título del apunte')
+    if (data.category.length === 0) missingFields.push('Categoría')
+    if (data.tags.length === 0) missingFields.push('Etiquetas')
+    if (!data.description) missingFields.push('Descripción')
+    if (!data.content) missingFields.push('Contenido')
+
+    if (missingFields.length > 0) {
+      toast.error(`Favor de llenar los datos de: ${missingFields.join(', ')}`, {
+        duration: 5000,
+        style: {
+          textAlign: 'justify',
+          backgroundColor: '#ff0000',
+          color: '#ffffff'
+        }
+      })
     }
   }
 
@@ -237,6 +275,7 @@ const CreateNoteComponent = (props: CreateNotesComponentProps) => {
                 options={tags}
                 selectedTags={field.value}
                 onChange={val => field.onChange(val)}
+                // Reinicia las etiquetas seleccionadas
               />
             )}
             rules={{ required: true }}
@@ -262,7 +301,10 @@ const CreateNoteComponent = (props: CreateNotesComponentProps) => {
               />
             )}
           />
-          <SubmitComponent text={props.id ? 'Actualizar apunte' : 'Crear apunte'} />
+          <SubmitComponent
+            text={props.id ? 'Actualizar apunte' : 'Crear apunte'}
+            action={dataValidate}
+          />
         </div>
         <div className='mt-4'>
           <button
