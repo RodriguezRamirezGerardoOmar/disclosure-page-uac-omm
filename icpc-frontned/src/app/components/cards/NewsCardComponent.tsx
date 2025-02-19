@@ -11,7 +11,7 @@ import ReportButtonComponent from '../buttons/ReportButtonComponent'
 
 interface NewsCardComponentProps {
   id: string
-  itemId: string
+  itemId?: string
 }
 
 /*
@@ -43,8 +43,8 @@ async function NewsCardComponent({ ...props }: Readonly<NewsCardComponentProps>)
       {/*!isTicketPage*/ true && (
         <div className='flex justify-end w-full px-16'>
           <ReportButtonComponent
-            itemId={props.itemId}
-            itemType='note'
+            itemId={news.id}
+            itemType='news'
           />
         </div>
       )}

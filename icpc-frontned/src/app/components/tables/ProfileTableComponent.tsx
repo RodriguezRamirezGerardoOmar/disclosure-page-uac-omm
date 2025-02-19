@@ -1,3 +1,4 @@
+'use client'
 import React, { useState, Dispatch, SetStateAction } from 'react';
 import ThreeDotComponent from '../dropdowns/ThreeDotComponent';
 import { IProfileTableItem, AllTabs } from '@/constants/types';
@@ -18,6 +19,15 @@ import CreateExcerciseComponent from '../modals/CreateExcerciseComponent';
 import CreateNoteComponent from '../modals/CreateNoteComponent';
 import CreateNewsComponent from '../modals/CreateNewsComponent';
 import { useForm } from 'react-hook-form';
+import DisplayReportComponent from '../cards/DisplayReportComponent';
+
+interface Option {
+  name: string
+  action: (id: string, itemType: string, href?: string) => void
+  style: string
+  href?: string
+}
+
 
 interface IProfileTableComponentProps {
   data: IProfileTableItem[];
@@ -28,6 +38,7 @@ interface IProfileTableComponentProps {
 }
 
 const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => {
+  const methods = useForm();
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
   const [isDifficultyModalOpen, setIsDifficultyModalOpen] = useState(false);
   const [isMemoryModalOpen, setIsMemoryModalOpen] = useState(false);
@@ -44,17 +55,27 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
   const [activeExerciseId, setActiveExerciseId] = useState<string | undefined>(undefined);
   const [activeNoteId, setActiveNoteId] = useState<string | undefined>(undefined);
   const [activeNewsId, setActiveNewsId] = useState<string | undefined>(undefined);
-  const deleteExercise = useExcerciseStore(state => state.deleteExercise);
-  const deleteNote = useNoteStore(state => state.deleteNote);
-  const deleteNews = useNewsStore(state => state.deleteNews);
-  const deleteCategory = useUtilsStore(state => state.deleteCategory);
-  const deleteTag = useUtilsStore(state => state.deleteTag);
-  const deleteTimeLimit = useUtilsStore(state => state.deleteTimeLimit);
-  const deleteMemoryLimit = useUtilsStore(state => state.deleteMemoryLimit);
-  const deleteDifficulty = useUtilsStore(state => state.deleteDifficulty);
-  const deleteUser = useStore(state => state.deleteUser);
+  const deleteExercise = useExcerciseStore(state => state.deleteExercise)
+  const deleteNote = useNoteStore(state => state.deleteNote)
+  const deleteNews = useNewsStore(state => state.deleteNews)
+  const deleteCategory = useUtilsStore(state => state.deleteCategory)
+  const deleteTag = useUtilsStore(state => state.deleteTag)
+  const deleteTimeLimit = useUtilsStore(state => state.deleteTimeLimit)
+  const deleteMemoryLimit = useUtilsStore(state => state.deleteMemoryLimit)
+  const deleteDifficulty = useUtilsStore(state => state.deleteDifficulty)
+  const deleteUser = useStore(state => state.deleteUser)
+  
+  const [selectedReportId, setSelectedReportId] = useState<string | null>(null)
 
-  const methods = useForm();
+  const handleRedirect = (id: string, itemType: string, href?: string) => {
+    window.location.href = `/${href}/${id}`
+  }
+
+  const handleShowReport = (id: string, itemType: string) => {
+    setSelectedReportId(id)
+  }
+
+  
 
   const handleEdit = (id: string, itemType: string) => {
     if (itemType === AllTabs.CATEGORIES) {
@@ -146,6 +167,41 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
     props.setUpdate(!props.update);
   };
 
+  const options: Option[] = [
+    {
+      name: 'Ver',
+      action: handleRedirect,
+      style: 'hover:bg-secondary flex',
+      href: 'ticket'
+    },
+    {
+      name: 'Editar',
+      action: handleEdit,
+      style: 'hover:bg-secondary flex'
+    },
+    {
+      name: 'Eliminar',
+      action: handleDelete,
+      style: 'hover:bg-red-600 flex'
+    },
+    {
+      name: 'Ver',
+      action: handleShowReport,
+      style: 'hover:bg-secondary flex'
+    }
+]
+
+const setCurrentOptions = (id: string, itemType: string) => {
+  switch(itemType) {
+    case AllTabs.REPORTS:
+      return [options[3]]
+    case AllTabs.CHANGES:
+      return [options[0]]
+    default:
+      return [options[1], options[2]]
+  }
+}
+
   const tableData =
     props.data.length !== 0 ? (
       props.data.map(item => (
@@ -169,10 +225,9 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
           <td className={`whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium 
             text-gray-900 dark:text-dark-accent sm:pl-6 lg:pl-8 justify-between items-center`}>
             <ThreeDotComponent
-              handleDelete={handleDelete}
-              handleEdit={handleEdit}
               id={item.id}
               itemType={props.itemType}
+              options={setCurrentOptions(item.id, props.itemType)}
             />
           </td>
         </tr>
@@ -189,6 +244,12 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
 
   return (
     <div>
+      {selectedReportId && (
+        <DisplayReportComponent
+          id={selectedReportId}
+          onClose={() => setSelectedReportId(null)}
+        />
+      )}
       {isCategoryModalOpen && (
         <CreateCategoryComponent 
           onClose={() => {
@@ -291,21 +352,21 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
             <th
               scope='col'
               className='sticky top-0 z-10 border-b border-gray-300 bg-white bg-opacity-75 py-3.5 pl-4 pr-3 
-                    text-left text-sm font-semibold text-gray-500 backdrop-blur 
-                    backdrop-filter sm:pl-6 lg:pl-8'>
+                      text-left text-sm font-semibold text-gray-500 backdrop-blur 
+                      backdrop-filter sm:pl-6 lg:pl-8'>
               TÍTULO
             </th>
             <th
               scope='col'
               className='sticky top-0 z-10 border-b border-gray-300 bg-white bg-opacity-75 py-3.5 pl-4 pr-3 
-                    text-left text-sm font-semibold text-gray-500 backdrop-blur 
-                    backdrop-filter sm:pl-6 lg:pl-8'></th>
+                      text-left text-sm font-semibold text-gray-500 backdrop-blur 
+                      backdrop-filter sm:pl-6 lg:pl-8'></th>
           </tr>
         </thead>
         <tbody>{tableData}</tbody>
       </table>
     </div>
-  );
-};
+  )
+}
 
 export default ProfileTableComponent;

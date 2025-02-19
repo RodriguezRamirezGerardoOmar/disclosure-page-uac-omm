@@ -19,7 +19,7 @@ Author: Gerardo Omar Rodriguez Ramirez
 
 const HintCardComponent = ({ ...props }: Readonly<HintCardComponentProps>) => {
   return (
-    <BasicPanelComponent backgroundColor='bg-white dark:bg-dark-primary'>
+    <BasicPanelComponent backgroundColor='bg-white dark:bg-dark-primary typography'>
       <MDXRemote
         compiledSource={props.body}
         scope={undefined}

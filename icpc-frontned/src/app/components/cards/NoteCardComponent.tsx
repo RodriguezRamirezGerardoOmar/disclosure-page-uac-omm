@@ -6,6 +6,7 @@ import { ButtonComponent } from '../buttons/ButtonComponent'
 import MarkdownBodyComponent from '../panels/MarkdownBodyComponent'
 import { Tags } from '@/constants/types'
 import ReportButtonComponent from '@/app/components/buttons/ReportButtonComponent'
+import { toast } from 'sonner'
 
 interface NoteCardProps {
   title: string
@@ -13,7 +14,7 @@ interface NoteCardProps {
   content: string
   showButton: boolean
   tags: Tags[]
-  itemId: string
+  itemId?: string
 }
 
 /*
@@ -26,6 +27,10 @@ Date: 21 - 03 - 2024
 Author: Gerardo Omar Rodriguez Ramirez
 */
 
+function onclick() {
+  toast.success('Redirigiendo a la página de ejercicios')
+}
+
 export default function NoteCardComponent({ ...props }: Readonly<NoteCardProps>) {
   const isTicketPage = window.location.pathname.includes('ticket')
   return (
@@ -33,7 +38,7 @@ export default function NoteCardComponent({ ...props }: Readonly<NoteCardProps>)
       {!isTicketPage && (
         <div className='flex justify-end w-full px-16'>
           <ReportButtonComponent
-            itemId={props.itemId}
+            itemId={props.itemId!}
             itemType='note'
           />
         </div>
@@ -59,7 +64,7 @@ export default function NoteCardComponent({ ...props }: Readonly<NoteCardProps>)
       {props.showButton ? (
         <div className='grid justify-items-center my-4'>
           <a href='/exercises'>
-            <ButtonComponent text='Problemas del tema' />
+            <ButtonComponent text='Problemas del tema' onClick={onclick}/>
           </a>
         </div>
       ) : (

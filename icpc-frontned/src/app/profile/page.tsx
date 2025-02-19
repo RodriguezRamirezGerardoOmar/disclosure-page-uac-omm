@@ -1,6 +1,5 @@
 'use client'
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form'
-import { ButtonComponent } from '../components/buttons/ButtonComponent'
 import TextFieldComponent from '../components/forms/TextFieldComponent'
 import TabComponent from '../components/tabs/TabComponent'
 import { NewspaperIcon, ArchiveBoxIcon, ListBulletIcon, BookmarkIcon } from '@heroicons/react/20/solid'
