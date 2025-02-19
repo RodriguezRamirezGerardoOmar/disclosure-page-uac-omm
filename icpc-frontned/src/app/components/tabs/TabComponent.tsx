@@ -42,8 +42,17 @@ export default function TabComponent({
   const [activeTab, setActiveTab] = useState(tabs.find(tab => tab.current)?.name)
   const methods = useForm<FieldValues>()
   const onCreateDifficulty = (DifficultyName: string) => {
+    // Implementa la lógica para manejar la creación de una dificultad
   }
-  
+  const onCreateTag = (tagName: string) => {
+    // Implementa la lógica para manejar la creación de una etiqueta
+  }
+  const onCreateTimeLimit = (time: number) => {
+    // Implementa la lógica para manejar la creación de un límite de tiempo
+  }
+  const onCreateMemory = (memoryName: string) => {
+    // Implementa la lógica para manejar la creación de un límite de memoria
+  }
 
   const handleTabChange = (tabName: string) => {
     setActiveTab(tabName);
@@ -54,21 +63,21 @@ export default function TabComponent({
     ) {
       setShowCreateButton(true); 
       if (tabName === 'Apuntes') {
-        setModalComponent(<CreateNoteComponent />);
+        setModalComponent(<CreateNoteComponent onClose={handleModalClose} />);
       } else if (tabName === 'Noticias') {
-        setModalComponent(<CreateNewsComponent />);
+        setModalComponent(<CreateNewsComponent onClose={handleModalClose} />);
       } else if (tabName === 'Ejercicios') {
-        setModalComponent(<CreateExerciseComponent />);
+        setModalComponent(<CreateExerciseComponent onClose={handleModalClose} />);
       } else if (tabName === 'Categoría') {
-        setModalComponent(<CreateCategoryComponent />);
+        setModalComponent(<CreateCategoryComponent onClose={handleModalClose} />);
       } else if (tabName === 'Etiqueta') {
-        setModalComponent(<CreateTagComponent />);
+        setModalComponent(<CreateTagComponent methods={methods} onCreateTag={onCreateTag} onClose={handleModalClose} />);
       } else if (tabName === 'Tiempo') {
-        setModalComponent(<CreateTimeLimitComponent />);
+        setModalComponent(<CreateTimeLimitComponent methods={methods} onCreateTimeLimit={onCreateTimeLimit} onClose={handleModalClose} />);
       } else if (tabName === 'Memoria') {
-        setModalComponent(<CreateMemoryComponent />);
+        setModalComponent(<CreateMemoryComponent methods={methods} onCreateMemory={onCreateMemory} onClose={handleModalClose} />);
       } else if (tabName === 'Dificultad') {
-        setModalComponent(<CreateDifficultyComponent methods={methods} onCreateDifficulty={onCreateDifficulty}/>);
+        setModalComponent(<CreateDifficultyComponent methods={methods} onCreateDifficulty={onCreateDifficulty} onClose={handleModalClose} />);
       }
       
     } else {
@@ -79,21 +88,21 @@ export default function TabComponent({
 
   const handleModalOpen = () => {
     if (activeTab === 'Apuntes') {
-      setModalComponent(<CreateNoteComponent />);
+      setModalComponent(<CreateNoteComponent onClose={handleModalClose} />);
     } else if (activeTab === 'Noticias') {
-      setModalComponent(<CreateNewsComponent />);
+      setModalComponent(<CreateNewsComponent onClose={handleModalClose} />);
     } else if (activeTab === 'Ejercicios') {
-      setModalComponent(<CreateExerciseComponent />);
+      setModalComponent(<CreateExerciseComponent onClose={handleModalClose} />);
     } else if (activeTab === 'Categoría') {
-      setModalComponent(<CreateCategoryComponent />);
+      setModalComponent(<CreateCategoryComponent onClose={handleModalClose} />);
     } else if (activeTab === 'Etiqueta') {
-      setModalComponent(<CreateTagComponent />);
+      setModalComponent(<CreateTagComponent methods={methods} onCreateTag={onCreateTag} onClose={handleModalClose} />);
     } else if (activeTab === 'Tiempo') {
-      setModalComponent(<CreateTimeLimitComponent />);
+      setModalComponent(<CreateTimeLimitComponent methods={methods} onCreateTimeLimit={onCreateTimeLimit} onClose={handleModalClose} />);
     } else if (activeTab === 'Memoria') {
-      setModalComponent(<CreateMemoryComponent />);
+      setModalComponent(<CreateMemoryComponent methods={methods} onCreateMemory={onCreateMemory} onClose={handleModalClose} />);
     } else if (activeTab === 'Dificultad') {
-      setModalComponent(<CreateDifficultyComponent methods={methods} onCreateDifficulty={onCreateDifficulty}/>);
+      setModalComponent(<CreateDifficultyComponent methods={methods} onCreateDifficulty={onCreateDifficulty} onClose={handleModalClose} />);
     }
     setShowModal(true);
   };
@@ -109,14 +118,6 @@ export default function TabComponent({
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
           <div className="rounded-lg p-6 w-full max-h-[90%] overflow-y-auto"> 
             {modalComponent}
-            <div className="flex justify-center">
-              <button
-                className="bg-red-500 text-white px-4 py-2 rounded"
-                onClick={handleModalClose}
-              >
-                Cerrar
-              </button>
-            </div>
           </div>
         </div>
       )}
