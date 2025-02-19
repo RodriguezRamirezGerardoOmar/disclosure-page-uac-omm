@@ -26,6 +26,7 @@ Author: Gerardo Omar Rodriguez Ramirez
 
 interface CreateNewsComponentProps {
   id?: string
+  onClose: () => void
 }
 
 const CreateNewsComponent = (props: CreateNewsComponentProps) => {
@@ -69,11 +70,23 @@ const CreateNewsComponent = (props: CreateNewsComponentProps) => {
     // Función para procesar la respuesta de las operaciones de creación y actualización
     const processResponse = async (uploadedImage: any) => {
       if ('data' in uploadedImage) {
+        const imageId = uploadedImage.data?.imageId?.id || uploadedImage.data?.id;
+        if (!imageId) {
+          toast.error('Error al obtener el ID de la imagen', {
+            duration: 5000,
+            style: {
+              backgroundColor: '#ff0000',
+              color: '#ffffff'
+            }
+          });
+          return;
+        }
+    
         const response = props.id
           ? await updateNews(
               {
                 title: String(formData.title),
-                imageId: uploadedImage.data?.imageId.id,
+                imageId: imageId,
                 body: String(formData.content),
                 userAuthor: String(useAuthStore.getState().user?.userName),
                 role: String(useAuthStore.getState().user?.role)
@@ -82,7 +95,7 @@ const CreateNewsComponent = (props: CreateNewsComponentProps) => {
             )
           : await createNews({
               title: String(formData.title),
-              imageId: uploadedImage.data?.id,
+              imageId: imageId,
               body: String(formData.content),
               userAuthor: String(useAuthStore.getState().user?.userName),
               role: String(useAuthStore.getState().user?.role)
@@ -116,7 +129,7 @@ const CreateNewsComponent = (props: CreateNewsComponentProps) => {
             backgroundColor: '#ff0000',
             color: '#ffffff'
           }
-        })
+        });
       }
     }
     if (typeof formData.file === 'string') {
@@ -148,7 +161,6 @@ const CreateNewsComponent = (props: CreateNewsComponentProps) => {
 
   const clearForm = () => {
     if (props.id) {
-      // Si hay un ID, recargamos los datos originales de la noticia
       const fetchNews = async () => {
         const news = await getNewsArticle(props.id!)
         if (news) {
@@ -158,7 +170,7 @@ const CreateNewsComponent = (props: CreateNewsComponentProps) => {
             content: news.body
           })
           setCoverImage(news.imageId.id)
-          imageInputRef.current?.resetImageInput(news.imageId.id) // Restablece la imagen original
+          imageInputRef.current?.resetImageInput(news.imageId.id)
         } else {
           toast.error('No se pudo recargar la noticia.', {
             duration: 5000,
@@ -172,7 +184,6 @@ const CreateNewsComponent = (props: CreateNewsComponentProps) => {
       }
       fetchNews()
     } else {
-      // Si no hay ID, limpia completamente el formulario
       methods.reset()
       setCoverImage('')
       imageInputRef.current?.resetImageInput()
@@ -185,13 +196,18 @@ const CreateNewsComponent = (props: CreateNewsComponentProps) => {
       className={`margin-auto md:mx-auto max-w-7xl md:px-4 w-full h-full lg:px-8 lg:w-2/3 lg:h-auto 
     min-h-screen place-items-center justify-between py-10`}>
       <BasicPanelComponent backgroundColor='bg-white dark:bg-dark-primary'>
+        <div className="relative">
+        <button onClick={props.onClose} className="absolute top-2 right-2 text-gray-500 hover:text-red-700 text-4xl">
+          &times;
+        </button>
+        </div>
         <div className='flex flex-col items-center'>
           <LogoComponent size={100} />
           <TextComponent
             tag={enumTextTags.h1}
             sizeFont='s16'
             className='dark:text-dark-accent'>
-            Crear noticia
+            {props.id ? 'Editar noticia' : 'Crear noticia'}
           </TextComponent>
 
           <TextFieldComponent
@@ -211,7 +227,7 @@ const CreateNewsComponent = (props: CreateNewsComponentProps) => {
             rules={{ required: true }}
             render={({ field }) => (
               <ImageInputComponent
-                ref={imageInputRef} // Referencia para resetear desde el padre
+                ref={imageInputRef}
                 value={field.value}
                 register={methods.register}
                 onChange={field.onChange}
@@ -234,7 +250,7 @@ const CreateNewsComponent = (props: CreateNewsComponentProps) => {
             )}
           />
           <SubmitComponent
-            text='Crear noticia'
+            text={props.id ? 'Actualizar noticia' : 'Crear noticia'}
             action={dataValidate}
           />
         </div>

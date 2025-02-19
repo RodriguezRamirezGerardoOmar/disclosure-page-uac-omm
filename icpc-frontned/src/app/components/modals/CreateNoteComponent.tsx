@@ -16,18 +16,9 @@ import InputSelectorCreateComponent from '../dropdowns/InputSelectorCreateCompon
 import { toast } from 'sonner'
 import useAuthStore from '@/store/useStore'
 
-/*
-Input: None
-Output: a form to create a note article
-Return value: a modal form component to create a note article
-Function: creates a modal form to write a note article into a database
-Variables: methods, data, tags
-Date: 07 - 05 - 2024
-Author: Gerardo Omar Rodriguez Ramirez
-*/
-
 interface CreateNotesComponentProps {
   id?: string
+  onClose: () => void
 }
 
 const CreateNoteComponent = (props: CreateNotesComponentProps) => {
@@ -230,13 +221,18 @@ const CreateNoteComponent = (props: CreateNotesComponentProps) => {
       className={`margin-auto md:mx-auto max-w-7xl md:px-4 w-full h-full lg:px-8 lg:w-2/3 lg:h-auto 
     min-h-screen place-items-center justify-between py-10`}>
       <BasicPanelComponent backgroundColor='bg-white dark:bg-dark-primary'>
+        <div className="relative">
+          <button onClick={props.onClose} className="absolute top-2 right-2 text-gray-500 hover:text-red-700 text-4xl">
+            &times;
+          </button>
+        </div>
         <div className='flex flex-col items-center'>
           <LogoComponent size={100} />
           <TextComponent
             tag={enumTextTags.h1}
             sizeFont='s16'
             className='dark:text-dark-accent'>
-            Crear apunte
+            {props.id ? 'Editar apunte' : 'Crear apunte'}
           </TextComponent>
           <TextFieldComponent
             labelText='Título del apunte'
@@ -306,7 +302,7 @@ const CreateNoteComponent = (props: CreateNotesComponentProps) => {
             )}
           />
           <SubmitComponent
-            text='Crear apunte'
+            text={props.id ? 'Actualizar apunte' : 'Crear apunte'}
             action={dataValidate}
           />
         </div>
