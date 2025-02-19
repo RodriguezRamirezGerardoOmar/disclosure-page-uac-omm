@@ -1,9 +1,7 @@
 'use client'
-import { Report } from '@/constants/types'
 import { Menu, MenuItem, MenuItems, Transition } from '@headlessui/react'
 import { EllipsisVerticalIcon } from '@heroicons/react/20/solid'
-import React, { Fragment, useEffect, useState } from 'react'
-import useUtilsStore from '@/store/useUtilsStore'
+import React, { Fragment, useState } from 'react'
 import DisplayReportComponent from '../cards/DisplayReportComponent'
 
 interface Option {
@@ -22,11 +20,6 @@ interface IThreeDotComponentProps {
 const ThreeDotComponent = (props: Readonly<IThreeDotComponentProps>) => {
   const [open, setOpen] = useState(false)
   const [openReportModal, setOpenReportModal] = useState(false)
-
-  const handleViewReport = () => {
-    //setOpenReportModal(true)
-    console.log('open')
-  }
 
   return props.options ? (
     <div>
@@ -49,6 +42,7 @@ const ThreeDotComponent = (props: Readonly<IThreeDotComponentProps>) => {
           leaveTo='transform opacity-0 scale-95'
           show={open}>
           <MenuItems
+            onMouseLeave={() => setOpen(false)}
             className={`absolute right-0 mt-2 w-56 origin-top-right rounded-md bg-white 
                   dark:bg-primary shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-10`}>
             <div className='py-1 grid grid-cols-1'>
@@ -60,9 +54,7 @@ const ThreeDotComponent = (props: Readonly<IThreeDotComponentProps>) => {
                   <button
                     onClick={() => {
                       option.action(props.id, props.itemType, option.href)
-                      if (props.itemType === 'Reportes') {
-                        handleViewReport()
-                      }
+                      setOpen(false)
                     }}
                     className='text-left w-full h-full px-4 py-1'>
                     {option.name}

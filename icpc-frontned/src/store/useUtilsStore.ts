@@ -61,6 +61,7 @@ interface Actions {
   getTicket: (id: string) => Promise<Ticket>
   getReports: () => Promise<Report[]>
   getReport: (id: string) => Promise<Report>
+  closeReport: (id: string) => Promise<Report>
   approveTicket: (id:string) => Promise<IApiResponse>
   rejectTicket: (id:string) => Promise<IApiResponse>
   createReport: ({
@@ -423,6 +424,19 @@ const useUtilsStore = create<Actions & UtilsState>()(
         getReport: async (id: string): Promise<Report> => {
           try {
             const response = await api.get(`/api/v1/report/${id}`, {
+              headers: {
+                Authorization: `Bearer ${useAuthStore.getState().token}`
+              }
+            })
+            return response.data
+          } catch (error: any) {
+            return error.response.data
+          }
+        },
+
+        closeReport: async (id: string) => {
+          try {
+            const response = await api.post(`/api/v1/report/${id}`, {
               headers: {
                 Authorization: `Bearer ${useAuthStore.getState().token}`
               }
