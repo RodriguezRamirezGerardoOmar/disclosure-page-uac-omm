@@ -44,7 +44,7 @@ async function NewsCardComponent({ ...props }: Readonly<NewsCardComponentProps>)
         <div className='flex justify-end w-full px-16'>
           <ReportButtonComponent
             itemId={props.itemId}
-            itemType='note'
+            itemType='news'
           />
         </div>
       )}

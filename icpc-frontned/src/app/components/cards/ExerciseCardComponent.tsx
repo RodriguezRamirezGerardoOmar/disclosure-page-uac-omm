@@ -159,7 +159,7 @@ const ExerciseCardComponent = ({ ...props }: Readonly<ExerciseCardComponentProps
                 focus-visible:outline-2 focus-visible:outline-offset-2'>
                   <ReportButtonComponent
                     itemId={props.itemId}
-                    itemType='note'
+                    itemType='exercise'
                   />
                 </div>
               )}
