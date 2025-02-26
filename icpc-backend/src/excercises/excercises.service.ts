@@ -104,8 +104,8 @@ export class ExcercisesService {
       memoryId: newExcerciseMemory || undefined,
       time: newExcerciseTime || undefined,
       clue: clue || undefined,
-      constraints: constraints || undefined,
-      solution: solution || undefined
+      constraints: constraints,
+      solution: solution
     });
     newExcercise.category = newExcerciseCategory;
     newExcercise.difficulty = newExcerciseDifficulty;

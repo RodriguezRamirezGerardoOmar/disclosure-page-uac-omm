@@ -263,7 +263,7 @@ function Page() {
                 </div>
 
                 <div className='mt-8 flex'>
-                  <SubmitComponent text='Guardar' />
+                  <SubmitComponent text='Guardar' action={methods.handleSubmit(handleSubmitUserInfo)} />
                 </div>
               </form>
             </div>
@@ -281,6 +281,7 @@ function Page() {
                 itemType={mode}
                 update={update}
                 setUpdate={setUpdate}
+                onClose={() => {}}
               />
             </div>
           </div>

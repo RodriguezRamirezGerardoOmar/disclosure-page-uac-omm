@@ -80,7 +80,8 @@ export default function Home() {
             register={methods.register}
             fieldName='rememberMe'
           />
-          <SubmitComponent text='Iniciar sesión' />
+          <SubmitComponent text='Iniciar sesión' action={function (): void {
+          } } />
           <a href='/forgot'>
           <TextComponent className='dark:text-dark-accent hover:text-dark-accent hover:dark:text-complementary underline'>
               Olvidé mi contraseña

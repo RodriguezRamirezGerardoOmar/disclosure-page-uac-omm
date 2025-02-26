@@ -40,11 +40,7 @@ const DisplayReportComponent = ({ id, onClose }: Readonly<DisplayReportComponent
           </TextComponent>
           <TextComponent>{reportBody}</TextComponent>
         </BasicPanelComponent>
-        <div><button
-          className='bg-red-500 text-white px-4 py-2 rounded mt-4'
-          onClick={closeReport(id)}>
-          Cerrar
-        </button>
+        <div>
         <button
           className='bg-red-500 text-white px-4 py-2 rounded mt-4'
           onClick={onClose}>

@@ -6,7 +6,7 @@ import { InfoCardComponent } from './components/cards/InfoCardComponent'
 import { DataCardComponent } from './components/cards/DataCardComponent'
 import { LastNewsComponent } from './components/ui/LastNewsComponent'
 import useUtilsStore from '@/store/useUtilsStore'
-
+export const dynamic = 'force-dynamic';
 export default async function Home() {
   const dailyQuote: Quote = await useUtilsStore.getState().getDailyQuote()
   const RandomFact: string = await useUtilsStore.getState().getRandomFact()
