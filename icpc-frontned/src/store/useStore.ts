@@ -39,8 +39,7 @@ interface AuthState {
 }
 
 interface Actions {
-  login: (email: string, password: string) => Promise<void>
-  logout: () => void
+  login: (credentials: { username?: string; email?: string; password: string }) => Promise<void> // Cambiar firma  logout: () => void
   setError: (error: string | null) => void
   createUser: (user: ICreateUser) => Promise<IApiResponse> | TResponseBasicError
   getProfile: () => Promise<IUser>
@@ -60,8 +59,8 @@ const useAuthStore = create<AuthState & Actions>()(
         token: null,
         user: null,
 
-        login: async (email, password) => {
-          const response = await api.post('/api/v1/auth/login', { email, password })
+        login: async (credentials) => {
+          const response = await api.post('/api/v1/auth/login', credentials)
           set(() => ({ token: response.data.token }))
           if (get().token !== null) {
             set(() => ({ isLogged: true, user: response.data.user }))
@@ -124,13 +123,11 @@ const useAuthStore = create<AuthState & Actions>()(
               headers: {
                 Authorization: `Bearer ${get().token}`
               }
-            })
-            set(() => ({ user: response.data }))
-            return response.data
-            //console.log( { ...user, editorId: get().user?.id }, id )
-            //return { data: {}, error: false, message: '', statusCode: 200, errors: {} }
+            });
+            set(() => ({ user: response.data }));
+            return response.data;
           } catch (error: any) {
-            return error.response.data
+            throw error.response.data; // Lanzar error para capturar en el componente
           }
         }
       }),

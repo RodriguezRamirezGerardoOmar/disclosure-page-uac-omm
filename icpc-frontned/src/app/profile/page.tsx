@@ -69,22 +69,20 @@ function Page() {
 
   const handleSubmitUserInfo: SubmitHandler<FieldValues> = async (data: any) => {
     try {
-      const result = await updateUser(user!.id, data)
-      setCurrentUser(result)
-      setUpdate(!update)
-      toast.success('¡Información actualizada!', { 
+      const result = await updateUser(user!.id, data);
+      setCurrentUser(result);
+      setUpdate(!update);
+      toast.success('¡Información actualizada!', {
         duration: 5000,
-        style: {
-          backgroundColor: 'green',
-          color: '#ffffff'
-        }
+        style: { backgroundColor: 'green', color: '#ffffff' }
+      });
+    } catch (error: any) {
+      toast.error(error.message || 'Error al actualizar', {
+        duration: 5000,
+        style: { backgroundColor: 'red', color: '#ffffff' }
       });
     }
-    catch (error: any) {
-      console.error(error)
-
-    }
-  }
+  };
 
   const handleChange = useCallback(
     async (data: string) => {

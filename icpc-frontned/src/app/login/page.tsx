@@ -19,7 +19,13 @@ export default function Home() {
 
   const onSubmit: SubmitHandler<{ username: string; password: string }> = async (data) => {
     try {
-      await login(data.username, data.password);
+      const { username, password } = data;
+      // Determinar si el input es email o username
+      const credentials = username.includes('@')
+        ? { email: username, password }
+        : { username: username, password };
+      
+      await login(credentials); // Envía el objeto correcto al store
       router.push('/');
       toast.success('Inicio de sesión exitoso', { 
         duration: 5000,
