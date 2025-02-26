@@ -72,17 +72,15 @@ function Page() {
       const result = await updateUser(user!.id, data)
       setCurrentUser(result)
       setUpdate(!update)
-      toast.success('¡Información actualizada!', { 
+      toast.success('¡Información actualizada!', {
         duration: 5000,
         style: {
           backgroundColor: 'green',
           color: '#ffffff'
         }
-      });
-    }
-    catch (error: any) {
+      })
+    } catch (error: any) {
       console.error(error)
-
     }
   }
 
@@ -199,7 +197,9 @@ function Page() {
                 <p className='mt-1 text-sm leading-6 text-gray-400'>Usa tu correo institucional.</p>
               </div>
 
-              <form className='md:col-span-2' onSubmit={methods.handleSubmit(handleSubmitUserInfo)}>
+              <form
+                className='md:col-span-2'
+                onSubmit={methods.handleSubmit(handleSubmitUserInfo)}>
                 <div className='grid grid-cols-1 gap-x-6 gap-y-8 sm:max-w-xl sm:grid-cols-6'>
                   <div className='col-span-full flex items-center gap-x-8'>
                     <LogoComponent size={96} />
