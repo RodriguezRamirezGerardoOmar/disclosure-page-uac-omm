@@ -95,52 +95,86 @@ export class NewsService {
 
   async update(id: string, updateNewsDto: UpdateNewsDto) {
     const { imageId, role, ...updateData } = updateNewsDto;
-  
+
     // Verificar si la noticia existe
     const existingNews = await this.newsRepository.findOneBy({ id });
     if (!existingNews) {
       throw new BadRequestException('La noticia no existe');
     }
-  
+
     // Verificar si la imagen existe
     const image = await this.imageRepository.findOneBy({ id: imageId });
     if (!image) {
       throw new BadRequestException('La imagen no existe');
     }
-  
-    // Actualizar la noticia existente
-    const updatedNews = {
-      ...existingNews,
-      ...updateData,
-      imageId: image,
-      isVisible: role === 'admin', // Si es admin, la noticia será visible
-    };
-  
-    // Guardar la noticia actualizada en la base de datos
-    const savedUpdatedNews = await this.newsRepository.save(updatedNews);
-  
-    // Crear una copia de la noticia modificada
-    const modifiedNewsCopy = this.newsRepository.create({
-      ...updatedNews,
-      id: undefined, // Evitar conflictos con el ID de la noticia original
-      isVisible: false, // Marcar la copia como no visible
-    });
-  
-    // Guardar la copia de la noticia modificada en la base de datos
-    const savedModifiedNewsCopy = await this.newsRepository.save(modifiedNewsCopy);
-  
-    // Crear el ticket con la noticia original y la copia de la noticia modificada
-    const ticket = this.ticketRepository.create({
-      itemType: TicketType.NEWS,
-      operation: TicketOperation.UPDATE,
-      status: role === 'admin' ? TicketStatus.ACCEPTED : TicketStatus.PENDING,
-      originalNewsId: existingNews, // Referencia a la noticia original
-      modifiedNewsId: savedModifiedNewsCopy, // Referencia a la copia de la noticia modificada
-    });
-  
-    await this.ticketRepository.save(ticket);
-  
-    return savedUpdatedNews;
+
+    if (role === 'admin') {
+      existingNews.isVisible = false;
+      await this.newsRepository.save(existingNews);
+
+      // Actualizar la noticia existente
+      // Crear una copia de la noticia modificada
+      const modifiedNewsCopy = this.newsRepository.create({
+        ...updateData,
+        imageId: image,
+        id: undefined, // Evitar conflictos con el ID de la noticia original
+        isVisible: true // Marcar la copia como visible
+      });
+
+      // Guardar la noticia actualizada en la base de datos
+      const savedUpdatedNews = await this.newsRepository.save(modifiedNewsCopy);
+
+      if (savedUpdatedNews) {
+        const commentBody = `${updateData.userAuthor} ha actualizado la noticia con el título ${existingNews.title}`;
+        const comment = this.commentRepository.create({
+          body: commentBody
+        });
+        const commentId = await this.commentRepository.save(comment);
+        const ticket = this.ticketRepository.create({
+          itemType: TicketType.NEWS,
+          operation: TicketOperation.UPDATE,
+          status: TicketStatus.ACCEPTED,
+          originalNewsId: existingNews,
+          modifiedNewsId: savedUpdatedNews,
+          commentId: commentId
+        });
+        const savedTicket = await this.ticketRepository.save(ticket);
+        if (savedTicket) {
+          return savedUpdatedNews;
+        } else {
+          throw new BadRequestException('Error al actualizar la noticia');
+        }
+      }
+    } else {
+      // Crear una copia de la noticia modificada
+      const modifiedNewsCopy = this.newsRepository.create({
+        ...updateData,
+        imageId: image,
+        isVisible: false
+      });
+      const savedUpdatedNews = await this.newsRepository.save(modifiedNewsCopy);
+      if (savedUpdatedNews) {
+        const commentBody = `${updateData.userAuthor} ha actualizado la noticia con el título ${existingNews.title}`;
+        const comment = this.commentRepository.create({
+          body: commentBody
+        });
+        const commentId = await this.commentRepository.save(comment);
+        const ticket = this.ticketRepository.create({
+          itemType: TicketType.NEWS,
+          operation: TicketOperation.UPDATE,
+          status: TicketStatus.PENDING,
+          originalNewsId: existingNews,
+          modifiedNewsId: savedUpdatedNews,
+          commentId: commentId
+        });
+        const savedTicket = await this.ticketRepository.save(ticket);
+        if (savedTicket) {
+          return savedUpdatedNews;
+        } else {
+          throw new BadRequestException('Error al actualizar la noticia');
+        }
+      }
+    }
   }
 
   async remove(id: string, user: string) {

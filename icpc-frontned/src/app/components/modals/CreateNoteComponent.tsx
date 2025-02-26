@@ -123,19 +123,6 @@ const CreateNoteComponent = (props: CreateNotesComponentProps) => {
       }
     }
 
-    // Verificar si ya existe una nota con el mismo título
-    const existingNote = await getNotesArticle(props.id || '')
-    if (existingNote && existingNote.title === formData.title) {
-      toast.error('Ya existe una nota con el mismo título.', {
-        duration: 5000,
-        style: {
-          backgroundColor: '#ff0000',
-          color: '#ffffff'
-        }
-      })
-      return
-    }
-
     // Objeto base con los datos comunes
     const noteData = {
       title: String(formData.title),

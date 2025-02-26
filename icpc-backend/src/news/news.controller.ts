@@ -125,7 +125,7 @@ export class NewsController {
   @ApiBadRequestResponse({ description: 'Bad request' })
   @ApiInternalServerErrorResponse({ description: 'Internal server error' })
   async update(@Param('id') id: string, @Body() updateNewsDto: UpdateNewsDto) {
-    console.log('updateNewsDto', updateNewsDto);
+    //console.log('updateNewsDto', updateNewsDto);  //TODO Delete this <---
     const updatedNews = await this.newsService.update(id, updateNewsDto);
     this.loggerService.logChange('news', 'update', { id, ...updateNewsDto }); // Log de la operación
     return updatedNews;

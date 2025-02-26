@@ -84,14 +84,14 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
 
         // Si hay un ID, cargar los datos de el ejercicio
         if (props.id) {
-          const exercise = await getExercise(props.id!)
+          const exercise = await getExercise(props.id)
           if (exercise) {
             methods.reset({
               name: exercise.title,
               category: { label: exercise.category.name, value: exercise.category.id },
               difficulty: { label: exercise.difficulty.name, value: exercise.difficulty.id },
-              time: { label: exercise.time.timeLimit.toString(), value: exercise.time.id },
-              memoryId: { label: exercise.memoryId.memoryLimit.toString(), value: exercise.memoryId.id },
+              time: exercise.time,
+              memoryId: exercise.memoryId,
               input: exercise.input,
               output: exercise.output,
               restriction: exercise.constraints,
@@ -135,7 +135,7 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
       const toastOptions = {
         duration: 5000,
         style: {
-          backgroundColor: 'id' in response ? 'green' : '#ff0000',
+          backgroundColor: response.id ? 'green' : '#ff0000',
           color: '#ffffff'
         }
       }
@@ -152,8 +152,8 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
     const exerciseData = {
       name: String(formData.name),
       category: { name: formData.category.label, id: formData.category.value },
-      difficulty: { name: formData.difficulty.label, id: formData.difficulty.id },
-      time: { value: parseInt(formData.time.label), id: formData.time.id },
+      difficulty: { name: formData.difficulty.label, id: formData.difficulty.value },
+      time: { ...formData.time },
       memoryId: formData.memoryId ? String(formData.memoryId.value) : '',
       input: String(formData.input),
       output: String(formData.output),
@@ -263,10 +263,10 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
     if (!data.name) missingFields.push('Nombre del ejercicio')
     if (data.category.length === 0) missingFields.push('Categoría')
     if (data.difficulty.length === 0) missingFields.push('Nivel de dificultad')
-    if (data.time.length === 0) missingFields.push('Límite de tiempo')
-    if (data.memoryId.length === 0) missingFields.push('Límite de memoria')
     if (!data.input) missingFields.push('Entrada esperada')
     if (!data.output) missingFields.push('Salida esperada')
+    if (!data.example_input) missingFields.push('Ejemplo de entrada')
+    if (!data.example_output) missingFields.push('Ejemplo de salida')
     if (data.tags.length === 0) missingFields.push('Etiquetas')
     if (!data.description) missingFields.push('Descripción del problema')
   

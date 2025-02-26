@@ -78,7 +78,7 @@ export class ExcercisesService {
     }
 
     let newExcerciseTime = null;
-    if (time) {
+    if (time.value !== null) {
       newExcerciseTime = await this.timeRepository.findOneBy({
         timeLimit: time.value,
         id: time.id
@@ -89,7 +89,7 @@ export class ExcercisesService {
     }
 
     let newExcerciseMemory = null;
-    if (memoryId) {
+    if (memoryId !== 'undefined') {
       newExcerciseMemory = await this.memoryRepository.findOneBy({
         id: memoryId
       });
@@ -103,9 +103,9 @@ export class ExcercisesService {
       title: name,
       memoryId: newExcerciseMemory || undefined,
       time: newExcerciseTime || undefined,
-      clue: clue || undefined,
-      constraints: constraints || undefined,
-      solution: solution || undefined
+      clue: clue,
+      constraints: constraints,
+      solution: solution
     });
     newExcercise.category = newExcerciseCategory;
     newExcercise.difficulty = newExcerciseDifficulty;
@@ -340,45 +340,84 @@ export class ExcercisesService {
 
   async update(id: string, updateExcerciseDto: UpdateExcerciseDto) {
     const { memoryId, role, ...updateData } = updateExcerciseDto;
-    const memory = await this.memoryRepository.findOneBy({ id: memoryId });
-    if (!memory) {
-      throw new BadRequestException('El límite de memoria elegido no existe');
-    }
-  
+    const memory = memoryId
+      ? await this.memoryRepository.findOneBy({ id: memoryId })
+      : null;
+
     const existingExercise = await this.exerciseRepository.findOneBy({ id });
     if (!existingExercise) {
       throw new BadRequestException('El ejercicio no existe');
     }
-  
-    const updatedExercise = {
-      ...existingExercise,
-      ...updateData,
-      memoryId: memory,
-      title: updateData.name,
-      isVisible: role === 'admin' // Si es admin, el ejercicio será visible
-    };
-  
-    const savedUpdatedExercise = await this.exerciseRepository.save(updatedExercise);
-  
-    const modifiedExerciseCopy = this.exerciseRepository.create({
-      ...updatedExercise,
-      id: undefined, // Evitar conflictos con el ID del ejercicio original
-      isVisible: false // Marcar la copia como no visible
-    });
-  
-    const savedModifiedExerciseCopy = await this.exerciseRepository.save(modifiedExerciseCopy);
-  
-    const ticket = this.ticketRepository.create({
-      itemType: TicketType.EXERCISE,
-      operation: TicketOperation.UPDATE,
-      status: role === 'admin' ? TicketStatus.ACCEPTED : TicketStatus.PENDING,
-      originalExerciseId: existingExercise, // Referencia al ejercicio original
-      modifiedExerciseId: savedModifiedExerciseCopy // Referencia a la copia del ejercicio modificado
-    });
-  
-    await this.ticketRepository.save(ticket);
-  
-    return savedUpdatedExercise;
+
+    if (role === 'admin') {
+      existingExercise.isVisible = false;
+      await this.exerciseRepository.save(existingExercise);
+
+      const modifiedExerciseCopy = this.exerciseRepository.create({
+        ...updateData,
+        title: updateData.name,
+        memoryId: memory
+      });
+
+      const savedUpdatedExercise = await this.exerciseRepository.save(
+        modifiedExerciseCopy
+      );
+
+      if (savedUpdatedExercise) {
+        const commentBody = `${updateData.userAuthor} ha actualizado el ejercicio con el nombre ${existingExercise.title}`;
+        const comment = this.commentRepository.create({
+          body: commentBody
+        });
+        const commentId = await this.commentRepository.save(comment);
+        const ticket = this.ticketRepository.create({
+          itemType: TicketType.EXERCISE,
+          operation: TicketOperation.UPDATE,
+          status: TicketStatus.ACCEPTED,
+          originalExerciseId: existingExercise,
+          modifiedExerciseId: savedUpdatedExercise,
+          commentId: commentId
+        });
+        const savedTicket = await this.ticketRepository.save(ticket);
+        if (savedTicket) {
+          return savedUpdatedExercise;
+        } else {
+          throw new BadRequestException('Error al actualizar el ejercicio');
+        }
+      }
+    } else {
+      const modifiedExerciseCopy = this.exerciseRepository.create({
+        ...updateData,
+        title: updateData.name,
+        memoryId: memory,
+        isVisible: false
+      });
+
+      const savedUpdatedExercise = await this.exerciseRepository.save(
+        modifiedExerciseCopy
+      );
+
+      if (savedUpdatedExercise) {
+        const commentBody = `${updateData.userAuthor} ha actualizado el ejercicio con el nombre ${existingExercise.title}`;
+        const comment = this.commentRepository.create({
+          body: commentBody
+        });
+        const commentId = await this.commentRepository.save(comment);
+        const ticket = this.ticketRepository.create({
+          itemType: TicketType.EXERCISE,
+          operation: TicketOperation.UPDATE,
+          status: TicketStatus.PENDING,
+          originalExerciseId: existingExercise,
+          modifiedExerciseId: savedUpdatedExercise,
+          commentId: commentId
+        });
+        const savedTicket = await this.ticketRepository.save(ticket);
+        if (savedTicket) {
+          return savedUpdatedExercise;
+        } else {
+          throw new BadRequestException('Error al actualizar el ejercicio');
+        }
+      }
+    }
   }
   async remove(id: string, user: string) {
     const excercise = await this.exerciseRepository.findOneBy({ id });

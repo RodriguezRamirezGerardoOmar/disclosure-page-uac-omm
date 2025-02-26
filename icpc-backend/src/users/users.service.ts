@@ -61,12 +61,6 @@ export class UsersService {
         }
       };
     } else {
-      console.log(createUserDto.password, createUserDto.passwordVerify);
-      console.log(createUserDto.password === createUserDto.passwordVerify);
-      console.log(
-        typeof createUserDto.password,
-        typeof createUserDto.passwordVerify
-      );
       throw new BadRequestException('Las contraseñas no coinciden');
     }
   }
