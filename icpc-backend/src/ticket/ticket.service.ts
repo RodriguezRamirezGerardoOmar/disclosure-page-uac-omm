@@ -127,30 +127,45 @@ export class TicketService {
     const ticket = await this.ticketRepository.findOneBy({ id: id });
     switch (ticket.itemType) {
       case TicketType.EXERCISE:
-        return ticket.operation == TicketOperation.UPDATE
-          ? await this.ticketRepository
+        switch (ticket.operation) {
+          case TicketOperation.UPDATE:
+            const res = await this.ticketRepository
               .createQueryBuilder('ticket')
               .where('ticket.id = :id', { id: id })
               .leftJoinAndSelect(
                 'ticket.originalExerciseId',
                 'originalExerciseId'
               )
-              .leftJoinAndSelect('originalExerciseId.category', 'category')
-              .leftJoinAndSelect('originalExerciseId.tags', 'tags')
-              .leftJoinAndSelect('originalExerciseId.memoryId', 'memory')
-              .leftJoinAndSelect('originalExerciseId.difficulty', 'difficulty')
-              .leftJoinAndSelect('originalExerciseId.time', 'time')
               .leftJoinAndSelect(
                 'ticket.modifiedExerciseId',
                 'modifiedExerciseId'
               )
-              .leftJoinAndSelect('modifiedExerciseId.category', 'category')
-              .leftJoinAndSelect('modifiedExerciseId.tags', 'tags')
-              .leftJoinAndSelect('modifiedExerciseId.memoryId', 'memory')
-              .leftJoinAndSelect('modifiedExerciseId.difficulty', 'difficulty')
-              .leftJoinAndSelect('modifiedExerciseId.time', 'time')
-              .getOne()
-          : await this.ticketRepository
+              .getOne();
+            const originalItem = await this.excerciseRepository
+              .createQueryBuilder('excercise')
+              .where('excercise.id = :id', { id: res.originalExerciseId.id })
+              .leftJoinAndSelect('excercise.category', 'category')
+              .leftJoinAndSelect('excercise.time', 'time')
+              .leftJoinAndSelect('excercise.memoryId', 'memory')
+              .leftJoinAndSelect('excercise.difficulty', 'difficulty')
+              .leftJoinAndSelect('excercise.tags', 'tags')
+              .getOne();
+            const modifiedItem = await this.excerciseRepository
+              .createQueryBuilder('excercise')
+              .where('excercise.id = :id', { id: res.modifiedExerciseId.id })
+              .leftJoinAndSelect('excercise.category', 'category')
+              .leftJoinAndSelect('excercise.time', 'time')
+              .leftJoinAndSelect('excercise.memoryId', 'memory')
+              .leftJoinAndSelect('excercise.tags', 'tags')
+              .leftJoinAndSelect('excercise.difficulty', 'difficulty')
+              .getOne();
+            return {
+              ...res,
+              originalExerciseId: originalItem,
+              modifiedExerciseId: modifiedItem
+            };
+          default:
+            return await this.ticketRepository
               .createQueryBuilder('ticket')
               .where('ticket.id = :id', { id: id })
               .leftJoinAndSelect(
@@ -158,26 +173,42 @@ export class TicketService {
                 'originalExerciseId'
               )
               .leftJoinAndSelect('originalExerciseId.category', 'category')
-              .leftJoinAndSelect('originalExerciseId.tags', 'tags')
-              .leftJoinAndSelect('originalExerciseId.difficulty', 'difficulty')
               .leftJoinAndSelect('originalExerciseId.time', 'time')
               .leftJoinAndSelect('originalExerciseId.memoryId', 'memory')
+              .leftJoinAndSelect('originalExerciseId.tags', 'tags')
+              .leftJoinAndSelect('originalExerciseId.difficulty', 'difficulty')
               .getOne();
+        }
       case TicketType.NOTE:
-        return ticket.operation == TicketOperation.UPDATE
-          ? await this.ticketRepository
+        switch (ticket.operation) {
+          case TicketOperation.UPDATE:
+            const res = await this.ticketRepository
               .createQueryBuilder('ticket')
               .where('ticket.id = :id', { id: id })
               .leftJoinAndSelect('ticket.originalNoteId', 'originalNoteId')
-              .leftJoinAndSelect('originalNoteId.commentId', 'comment')
-              .leftJoinAndSelect('originalNoteId.category', 'category')
-              .leftJoinAndSelect('originalNoteId.tags', 'tags')
               .leftJoinAndSelect('ticket.modifiedNoteId', 'modifiedNoteId')
-              .leftJoinAndSelect('modifiedNoteId.commentId', 'comment')
-              .leftJoinAndSelect('modifiedNoteId.category', 'category')
-              .leftJoinAndSelect('originalNoteId.tags', 'tags')
-              .getOne()
-          : await this.ticketRepository
+              .getOne();
+            const originalNote = await this.notesRepository
+              .createQueryBuilder('note')
+              .where('note.id = :id', { id: res.originalNoteId.id })
+              .leftJoinAndSelect('note.commentId', 'comment')
+              .leftJoinAndSelect('note.category', 'category')
+              .leftJoinAndSelect('note.tags', 'tags')
+              .getOne();
+            const modifiedNote = await this.notesRepository
+              .createQueryBuilder('note')
+              .where('note.id = :id', { id: res.modifiedNoteId.id })
+              .leftJoinAndSelect('note.commentId', 'comment')
+              .leftJoinAndSelect('note.category', 'category')
+              .leftJoinAndSelect('note.tags', 'tags')
+              .getOne();
+            return {
+              ...res,
+              originalNoteId: originalNote,
+              modifiedNoteId: modifiedNote
+            };
+          default:
+            await this.ticketRepository
               .createQueryBuilder('ticket')
               .where('ticket.id = :id', { id: id })
               .leftJoinAndSelect('ticket.originalNoteId', 'originalNoteId')
@@ -185,6 +216,7 @@ export class TicketService {
               .leftJoinAndSelect('originalNoteId.category', 'category')
               .leftJoinAndSelect('originalNoteId.tags', 'tags')
               .getOne();
+        }
       case TicketType.NEWS:
         return ticket.operation == TicketOperation.UPDATE
           ? await this.ticketRepository
@@ -262,7 +294,16 @@ export class TicketService {
   }
 
   async approve(id: string) {
-    const ticket = await this.ticketRepository.findOneBy({ id: id });
+    const ticket = await this.ticketRepository
+      .createQueryBuilder('ticket')
+      .where('ticket.id = :id', { id })
+      .leftJoinAndSelect('ticket.originalExerciseId', 'originalExerciseId')
+      .leftJoinAndSelect('ticket.modifiedExerciseId', 'modifiedExerciseId')
+      .leftJoinAndSelect('ticket.originalNoteId', 'originalNoteId')
+      .leftJoinAndSelect('ticket.modifiedNoteId', 'modifiedNoteId')
+      .leftJoinAndSelect('ticket.originalNewsId', 'originalNewsId')
+      .leftJoinAndSelect('ticket.modifiedNewsId', 'modifiedNewsId')
+      .getOne();
     ticket.status = TicketStatus.ACCEPTED;
     this.ticketRepository.save(ticket);
     let res;
@@ -272,21 +313,21 @@ export class TicketService {
         switch (ticket.itemType) {
           case TicketType.EXERCISE:
             item = await this.excerciseRepository.findOneBy({
-              ...ticket.originalExerciseId
+              id: ticket.originalExerciseId.id
             });
             item.isVisible = true;
             res = await this.excerciseRepository.save(item);
             break;
           case TicketType.NOTE:
             item = await this.notesRepository.findOneBy({
-              ...ticket.originalNoteId
+              id: ticket.originalNoteId.id
             });
             item.isVisible = true;
             res = await this.notesRepository.save(item);
             break;
           case TicketType.NEWS:
             item = await this.newsRepository.findOneBy({
-              ...ticket.originalNewsId
+              id: ticket.originalNewsId.id
             });
             item.isVisible = true;
             res = await this.newsRepository.save(item);
@@ -299,10 +340,10 @@ export class TicketService {
         switch (ticket.itemType) {
           case TicketType.EXERCISE:
             original = await this.excerciseRepository.findOneBy({
-              ...ticket.originalExerciseId
+              id: ticket.originalExerciseId.id
             });
             modified = await this.excerciseRepository.findOneBy({
-              ...ticket.modifiedExerciseId
+              id: ticket.modifiedExerciseId.id
             });
             original.isVisible = false;
             modified.isVisible = true;
@@ -311,10 +352,10 @@ export class TicketService {
             break;
           case TicketType.NOTE:
             original = await this.notesRepository.findOneBy({
-              ...ticket.originalNoteId
+              id: ticket.originalNoteId.id
             });
             modified = await this.notesRepository.findOneBy({
-              ...ticket.modifiedNoteId
+              id: ticket.modifiedNoteId.id
             });
             original.isVisible = false;
             modified.isVisible = true;
@@ -323,10 +364,10 @@ export class TicketService {
             break;
           case TicketType.NEWS:
             original = await this.newsRepository.findOneBy({
-              ...ticket.originalNewsId
+              id: ticket.originalNewsId.id
             });
             modified = await this.newsRepository.findOneBy({
-              ...ticket.modifiedNewsId
+              id: ticket.modifiedNewsId.id
             });
             original.isVisible = false;
             modified.isVisible = true;
@@ -339,19 +380,19 @@ export class TicketService {
         switch (ticket.itemType) {
           case TicketType.EXERCISE:
             item = await this.excerciseRepository.findOneBy({
-              ...ticket.originalExerciseId
+              id: ticket.originalExerciseId.id
             });
             res = await this.excerciseRepository.remove(item);
             break;
           case TicketType.NOTE:
             item = await this.notesRepository.findOneBy({
-              ...ticket.originalNoteId
+              id: ticket.originalNoteId.id
             });
             res = await this.notesRepository.remove(item);
             break;
           case TicketType.NEWS:
             item = await this.newsRepository.findOneBy({
-              ...ticket.originalNewsId
+              id: ticket.originalNewsId.id
             });
             res = await this.newsRepository.remove(item);
             break;
@@ -362,43 +403,60 @@ export class TicketService {
   }
 
   async reject(id: string) {
-    const ticket = await this.ticketRepository.findOneBy({ id: id });
+    const ticket = await this.ticketRepository
+      .createQueryBuilder('ticket')
+      .where('ticket.id = :id', { id })
+      .leftJoinAndSelect('ticket.originalExerciseId', 'originalExerciseId')
+      .leftJoinAndSelect('ticket.modifiedExerciseId', 'modifiedExerciseId')
+      .leftJoinAndSelect('ticket.originalNoteId', 'originalNoteId')
+      .leftJoinAndSelect('ticket.modifiedNoteId', 'modifiedNoteId')
+      .leftJoinAndSelect('ticket.originalNewsId', 'originalNewsId')
+      .leftJoinAndSelect('ticket.modifiedNewsId', 'modifiedNewsId')
+      .getOne();
+
     ticket.status = TicketStatus.REJECTED;
-    this.ticketRepository.save(ticket);
+    const res = await this.ticketRepository.save(ticket);
     let item: Excercise | Note | News;
-    let res;
     switch (ticket.operation) {
       case TicketOperation.CREATE:
         switch (ticket.itemType) {
           case TicketType.EXERCISE:
             item = await this.excerciseRepository.findOneBy({
-              ...ticket.originalExerciseId
+              id: ticket.originalExerciseId.id
             });
-            res = await this.excerciseRepository.remove(item);
+            await this.excerciseRepository.remove(item);
             break;
           case TicketType.NOTE:
-            item = await this.notesRepository.findOneBy({
-              ...ticket.originalNoteId
-            });
-            const comment = await this.commentRepository.findOneBy({
-              id: item.commentId.id
-            });
+            item = await this.notesRepository
+              .createQueryBuilder('note')
+              .leftJoinAndSelect('note.commentId', 'commentId')
+              .where('note.id = :id', { id: ticket.originalNoteId.id })
+              .getOne();
+            const comment = await this.commentRepository
+              .createQueryBuilder('comment')
+              .leftJoinAndSelect('comment.notes', 'notes')
+              .where('comment.id = :id', { id: item.commentId.id })
+              .getOne();
             if (comment.notes.length === 1) {
+              item.commentId = null;
+              await this.notesRepository.save(item);
               await this.commentRepository.remove(comment);
             }
-            res = await this.notesRepository.remove(item);
+            await this.notesRepository.remove(item);
             break;
           case TicketType.NEWS:
-            item = await this.newsRepository.findOneBy({
-              ...ticket.originalNewsId
-            });
+            item = await this.newsRepository
+              .createQueryBuilder('news')
+              .where('news.id = :id', { id: ticket.originalNewsId.id })
+              .leftJoinAndSelect('news.imageId', 'imageId')
+              .getOne();
             const image = await this.imageRepository.findOneBy({
               id: item.imageId.id
             });
             if (image.news) {
               await this.imageRepository.remove(image);
             }
-            res = await this.newsRepository.remove(item);
+            await this.newsRepository.remove(item);
             break;
         }
         break;
@@ -408,19 +466,19 @@ export class TicketService {
             item = await this.excerciseRepository.findOneBy({
               id: ticket.modifiedExerciseId.id
             });
-            res = await this.excerciseRepository.remove(item);
+            await this.excerciseRepository.remove(item);
             break;
           case TicketType.NOTE:
             item = await this.notesRepository.findOneBy({
               id: ticket.modifiedNoteId.id
             });
-            res = await this.notesRepository.remove(item);
+            await this.notesRepository.remove(item);
             break;
           case TicketType.NEWS:
             item = await this.newsRepository.findOneBy({
               id: ticket.modifiedNewsId.id
             });
-            res = await this.newsRepository.remove(item);
+            await this.newsRepository.remove(item);
             break;
         }
         break;

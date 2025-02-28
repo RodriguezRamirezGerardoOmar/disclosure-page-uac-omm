@@ -3,6 +3,7 @@
 import React from 'react';
 import { ButtonComponent } from '@/app/components/buttons/ButtonComponent';
 import useUtilsStore from '@/store/useUtilsStore';
+import { toast } from 'sonner';
 
 interface TicketActionsProps {
   ticketId: string;
@@ -13,15 +14,24 @@ export const TicketActions: React.FC<TicketActionsProps> = ({ ticketId }) => {
   const acceptTicket = async () => {
     try {
       const response = await approveTicket(ticketId);
-      if ('statusCode' in response && response.statusCode == 201) {
-        alert('El ticket ha sido aprobado con éxito.');
-      } else {
-        console.error('Error al aprobar el ticket');
-        alert('Ocurrió un error al aprobar el ticket.');
+      if (response) {
+        const toastOptions = {
+          duration: 5000,
+          style: {
+            backgroundColor: 'id' in response ? 'green' : '#ff0000',
+            color: '#ffffff'
+          }
+        }
+        if ('id' in response) {
+          toast.success('Ticket aprobado con éxito.', toastOptions);
+          window.location.href = '/profile'
+        } else {
+          toast.error('Ocurrió un error al aprobar el ticket.', toastOptions);
+        }
       }
+      
     } catch (error) {
-      console.error('Error de red:', error);
-      alert('Error de conexión al intentar aprobar el ticket.');
+      toast.error('Ocurrió un error al aprobar el ticket.', { duration: 5000, style: { backgroundColor: '#ff0000', color: '#ffffff' } });
     }
   };
 
@@ -29,15 +39,24 @@ export const TicketActions: React.FC<TicketActionsProps> = ({ ticketId }) => {
   const denyTicket = async () => {
     try {
       const response = await rejectTicket(ticketId);
-      if ('statusCode' in response && response.statusCode == 201) {
-        alert('El ticket ha sido rechazado con éxito.');
-      } else {
-        console.error('Error al rechazar el ticket');
-        alert('Ocurrió un error al rechazar el ticket.');
+      if (response) {
+        const toastOptions = {
+          duration: 5000,
+          style: {
+            backgroundColor: 'id' in response ? 'green' : '#ff0000',
+            color: '#ffffff'
+          }
+        }
+        if ('id' in response) {
+          toast.success('Ticket rechazado con éxito.', toastOptions);
+          window.location.href = '/profile'
+        } else {
+          toast.error('Ocurrió un error al rechazar el ticket.', toastOptions);
+        }
       }
+      
     } catch (error) {
-      console.error('Error de red:', error);
-      alert('Error de conexión al intentar rechazar el ticket.');
+      toast.error('Ocurrió un error al rechazar el ticket.', { duration: 5000, style: { backgroundColor: '#ff0000', color: '#ffffff' } });
     }
   };
 

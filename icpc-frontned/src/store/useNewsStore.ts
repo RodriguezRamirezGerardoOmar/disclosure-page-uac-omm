@@ -58,7 +58,7 @@ const useNewsStore = create<Actions & NewsState>()(
                 Authorization: `Bearer ${useAuthStore.getState().token}` // Usa el token de autorización
               }
             });
-            if (response.status === 201) {
+            if (response.status === 200) {
               return response.data;
             }
           } catch (error: any) {
