@@ -344,12 +344,12 @@ export class ExcercisesService {
     if (!memory) {
       throw new BadRequestException('El límite de memoria elegido no existe');
     }
-  
+
     const existingExercise = await this.exerciseRepository.findOneBy({ id });
     if (!existingExercise) {
       throw new BadRequestException('El ejercicio no existe');
     }
-  
+
     const updatedExercise = {
       ...existingExercise,
       ...updateData,
@@ -357,17 +357,21 @@ export class ExcercisesService {
       title: updateData.name,
       isVisible: role === 'admin' // Si es admin, el ejercicio será visible
     };
-  
-    const savedUpdatedExercise = await this.exerciseRepository.save(updatedExercise);
-  
+
+    const savedUpdatedExercise = await this.exerciseRepository.save(
+      updatedExercise
+    );
+
     const modifiedExerciseCopy = this.exerciseRepository.create({
       ...updatedExercise,
       id: undefined, // Evitar conflictos con el ID del ejercicio original
       isVisible: false // Marcar la copia como no visible
     });
-  
-    const savedModifiedExerciseCopy = await this.exerciseRepository.save(modifiedExerciseCopy);
-  
+
+    const savedModifiedExerciseCopy = await this.exerciseRepository.save(
+      modifiedExerciseCopy
+    );
+
     const ticket = this.ticketRepository.create({
       itemType: TicketType.EXERCISE,
       operation: TicketOperation.UPDATE,
@@ -375,9 +379,9 @@ export class ExcercisesService {
       originalExerciseId: existingExercise, // Referencia al ejercicio original
       modifiedExerciseId: savedModifiedExerciseCopy // Referencia a la copia del ejercicio modificado
     });
-  
+
     await this.ticketRepository.save(ticket);
-  
+
     return savedUpdatedExercise;
   }
   async remove(id: string, user: string) {

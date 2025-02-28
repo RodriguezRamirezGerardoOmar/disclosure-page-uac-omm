@@ -37,8 +37,9 @@ interface UtilsState {
 
 interface Actions {
   getTags: () => Promise<Tags[]>
+  hasPendingTicket: (itemId: string, itemType: string) => Promise<boolean>
   createTag: ({ name, color }: { name: string; color: string }) => Promise<IApiResponse | TResponseBasicError>
-  updateTag: (id: string, data: { name: string; color: string }) => Promise<IApiResponse | TResponseBasicError>;
+  updateTag: (id: string, data: { name: string; color: string }) => Promise<IApiResponse | TResponseBasicError>
   deleteTag: (id: string) => Promise<IApiResponse | TResponseBasicError>
   getCategories: () => Promise<Categories[]>
   getCategory: (id: string) => Promise<Categories>
@@ -69,8 +70,8 @@ interface Actions {
   getReport: (id: string) => Promise<Report>
   closeReport: (id: string) => Promise<Report>
   updateCategory: (id: string, data: { name: string }) => Promise<IApiResponse | TResponseBasicError>
-  approveTicket: (id:string) => Promise<IApiResponse>
-  rejectTicket: (id:string) => Promise<IApiResponse>
+  approveTicket: (id: string) => Promise<IApiResponse>
+  rejectTicket: (id: string) => Promise<IApiResponse>
   createReport: ({
     summary,
     report,
@@ -107,17 +108,22 @@ const useUtilsStore = create<Actions & UtilsState>()(
           }
         },
 
+        hasPendingTicket: async (itemId: string, itemType: string): Promise<boolean> => {
+          try {
+            const response = await api.get(`/api/v1/ticket/hasPending/${itemId}/${itemType}`)
+            return response.data.hasPendingTicket
+          } catch (error: any) {
+            return false
+          }
+        },
+
         updateCategory: async (id: string, data: { name: string }): Promise<IApiResponse | TResponseBasicError> => {
           try {
-            const response = await api.patch(
-              `/api/v1/categories/${id}`,
-              data,
-              {
-                headers: {
-                  Authorization: `Bearer ${useAuthStore.getState().token}`
-                }
+            const response = await api.patch(`/api/v1/categories/${id}`, data, {
+              headers: {
+                Authorization: `Bearer ${useAuthStore.getState().token}`
               }
-            )
+            })
             return response.data
           } catch (error: any) {
             return error.response.data
@@ -151,18 +157,14 @@ const useUtilsStore = create<Actions & UtilsState>()(
 
         updateTag: async (id: string, data: { name: string; color: string }): Promise<IApiResponse | TResponseBasicError> => {
           try {
-            const response = await api.patch(
-              `/api/v1/tags/${id}`,
-              data,
-              {
-                headers: {
-                  Authorization: `Bearer ${useAuthStore.getState().token}`
-                }
+            const response = await api.patch(`/api/v1/tags/${id}`, data, {
+              headers: {
+                Authorization: `Bearer ${useAuthStore.getState().token}`
               }
-            );
-            return response.data;
+            })
+            return response.data
           } catch (error: any) {
-            return error.response.data;
+            return error.response.data
           }
         },
 
@@ -266,15 +268,11 @@ const useUtilsStore = create<Actions & UtilsState>()(
 
         updateDifficulty: async (id: string, data: { level: number; name: string }): Promise<IApiResponse | TResponseBasicError> => {
           try {
-            const response = await api.patch(
-              `/api/v1/difficulty/${id}`,
-              data,
-              {
-                headers: {
-                  Authorization: `Bearer ${useAuthStore.getState().token}`
-                }
+            const response = await api.patch(`/api/v1/difficulty/${id}`, data, {
+              headers: {
+                Authorization: `Bearer ${useAuthStore.getState().token}`
               }
-            )
+            })
             return response.data
           } catch (error: any) {
             return error.response.data
@@ -321,17 +319,14 @@ const useUtilsStore = create<Actions & UtilsState>()(
           }
         },
 
-        updateTimeLimit: async (id: string, data: { timeLimit: number }): Promise<IApiResponse | TResponseBasicError> => { // Añade esta función
+        updateTimeLimit: async (id: string, data: { timeLimit: number }): Promise<IApiResponse | TResponseBasicError> => {
+          // Añade esta función
           try {
-            const response = await api.patch(
-              `/api/v1/time/${id}`,
-              data,
-              {
-                headers: {
-                  Authorization: `Bearer ${useAuthStore.getState().token}`
-                }
+            const response = await api.patch(`/api/v1/time/${id}`, data, {
+              headers: {
+                Authorization: `Bearer ${useAuthStore.getState().token}`
               }
-            )
+            })
             return response.data
           } catch (error: any) {
             return error.response.data
@@ -361,7 +356,8 @@ const useUtilsStore = create<Actions & UtilsState>()(
           }
         },
 
-        getMemory: async (id: string): Promise<MemoryLimit> => { // Añade esta función
+        getMemory: async (id: string): Promise<MemoryLimit> => {
+          // Añade esta función
           try {
             const response = await api.get(`/api/v1/memory/${id}`)
             return response.data
@@ -387,17 +383,14 @@ const useUtilsStore = create<Actions & UtilsState>()(
           }
         },
 
-        updateMemory: async (id: string, data: { value: number }): Promise<IApiResponse | TResponseBasicError> => { // Añade esta función
+        updateMemory: async (id: string, data: { value: number }): Promise<IApiResponse | TResponseBasicError> => {
+          // Añade esta función
           try {
-            const response = await api.patch(
-              `/api/v1/memory/${id}`,
-              data,
-              {
-                headers: {
-                  Authorization: `Bearer ${useAuthStore.getState().token}`
-                }
+            const response = await api.patch(`/api/v1/memory/${id}`, data, {
+              headers: {
+                Authorization: `Bearer ${useAuthStore.getState().token}`
               }
-            )
+            })
             return response.data
           } catch (error: any) {
             return error.response.data
@@ -557,7 +550,7 @@ const useUtilsStore = create<Actions & UtilsState>()(
           }
         },
 
-        approveTicket: async (id:string): Promise<IApiResponse> => {
+        approveTicket: async (id: string): Promise<IApiResponse> => {
           try {
             const response = await api.post(`/api/v1/ticket/approve/${id}`)
             return response.data
@@ -566,7 +559,7 @@ const useUtilsStore = create<Actions & UtilsState>()(
           }
         },
 
-        rejectTicket: async (id:string): Promise<IApiResponse> => {
+        rejectTicket: async (id: string): Promise<IApiResponse> => {
           try {
             const response = await api.post(`/api/v1/ticket/reject/${id}`)
             return response.data

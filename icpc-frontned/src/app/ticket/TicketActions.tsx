@@ -14,7 +14,6 @@ export const TicketActions: React.FC<TicketActionsProps> = ({ ticketId }) => {
     try {
       const response = await approveTicket(ticketId);
       if ('statusCode' in response && response.statusCode == 201) {
-        console.log('Ticket aprobado');
         alert('El ticket ha sido aprobado con éxito.');
       } else {
         console.error('Error al aprobar el ticket');
@@ -31,7 +30,6 @@ export const TicketActions: React.FC<TicketActionsProps> = ({ ticketId }) => {
     try {
       const response = await rejectTicket(ticketId);
       if ('statusCode' in response && response.statusCode == 201) {
-        console.log('Ticket rechazado');
         alert('El ticket ha sido rechazado con éxito.');
       } else {
         console.error('Error al rechazar el ticket');
