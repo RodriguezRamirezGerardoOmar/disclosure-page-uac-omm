@@ -90,12 +90,33 @@ export class UsersService {
 
   async update(id: string, updateUserDto: UpdateUserDto) {
     const user = await this.userRepository.findOneBy({ id: id });
+  
+    // Verificar nombre de usuario
+    if (updateUserDto.userName && updateUserDto.userName !== user.userName) {
+      const existingUser = await this.userRepository.findOneBy({ 
+        userName: updateUserDto.userName 
+      });
+      if (existingUser) {
+        throw new BadRequestException('El nombre de usuario ya existe');
+      }
+    }
+  
+    // Verificar email
+    if (updateUserDto.email && updateUserDto.email !== user.email) {
+      const existingUser = await this.userRepository.findOneBy({ 
+        email: updateUserDto.email 
+      });
+      if (existingUser) {
+        throw new BadRequestException('El email ya existe');
+      }
+    }
+  
     const updatedUser = await this.userRepository.save({
       ...user,
       ...updateUserDto
     });
+  
     return {
-      // return the user object
       id: updatedUser.id,
       name: updatedUser.name,
       lastName: updatedUser.lastName,

@@ -3,11 +3,12 @@ import TagListComponent from '../tags/TagListComponent'
 import { PaginationComponent } from '../paginations/PaginationComponent'
 import InputSelectorComponent from '../dropdowns/InputSelectorComponent'
 import TagSelectorComponent from '../forms/TagSelectorComponent'
-import { Exercise, Tags } from '@/constants/types'
+import { Exercise, Tags, enumTextTags } from '@/constants/types'
 import { Controller, FieldValues, useForm } from 'react-hook-form'
 import { useEffect, useState } from 'react'
 import useUtilsStore from '@/store/useUtilsStore'
 import useExcerciseStore from '@/store/useExcerciseStore'
+import { TextComponent } from '../text/TextComponent'
 
 /*
 Input: a list of strings that define CSS classes
@@ -126,112 +127,118 @@ export default function TableComponent() {
           name='difficulty'
         />
       </form>
-      <div className='mt-8 flow-root'>
-        <div className='-mx-4 -my-2 sm:-mx-6 lg:-mx-8'>
-          <div
-            className={`ring-1 ring-gray-300 sm:mx-0 sm:rounded-lg inline-block 
-          min-w-full align-middle  h-[70vh] overflow-y-scroll scroll-smooth`}>
-            <table className='min-w-full border-separate border-spacing-0'>
-              <thead>
-                <tr>
-                  <th
-                    scope='col'
-                    className='sticky top-0 border-b border-gray-300 bg-white bg-opacity-75 py-3.5 pl-4 pr-3 
-                    text-left text-sm font-semibold text-gray-500 backdrop-blur 
-                    backdrop-filter sm:pl-6 lg:pl-8'>
-                    NOMBRE
-                  </th>
-                  <th
-                    scope='col'
-                    className='sticky top-0 border-b border-gray-300 bg-white bg-opacity-75 px-3 py-3.5 text-left text-sm
-                    font-semibold text-gray-500 backdrop-blur backdrop-filter'>
-                    DIFICULTAD
-                  </th>
-                  <th
-                    scope='col'
-                    className='sticky top-0 hidden border-b border-gray-300 bg-white bg-opacity-75 px-3 py-3.5
-                    text-left text-sm font-semibold text-gray-500 backdrop-blur backdrop-filter lg:table-cell'>
-                    CATEGORIA
-                  </th>
-                  <th
-                    scope='col'
-                    className='sticky top-0 border-b border-gray-300 bg-white bg-opacity-75 px-3 
-                    py-3.5 text-left text-sm font-semibold text-gray-500 backdrop-blur backdrop-filter'>
-                    ETIQUETAS
-                  </th>
-                  <th
-                    scope='col'
-                    className='sticky top-0 border-b border-gray-300 bg-white bg-opacity-75 
-                    py-3.5 pl-3 pr-4 backdrop-blur backdrop-filter sm:pr-6 lg:pr-8'>
-                    <span className='sr-only'>Edit</span>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {exercises.map((exercise, id) => (
-                  <tr
-                    key={exercise.id}
-                    className='cursor-pointer hover:bg-slate-200'>
-                    <td
-                      className={classNames(
-                        id !== Object.keys(exercise).length - 1 ? 'border-b border-gray-200' : '',
-                        'whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 dark:text-dark-accent sm:pl-6 lg:pl-8'
-                      )}>
-                      {exercise.title}
-                    </td>
-                    <td
-                      className={classNames(
-                        id !== Object.keys(exercise).length - 1 ? 'border-b border-gray-200' : '',
-                        'whitespace-nowrap flex gap-1 px-3 py-4 text-sm text-gray-500'
-                      )}>
-                      {
-                        //itera sobre el numero de dificultad y pinta tantas estrellas como sea el numero
-                        Array.from(Array(exercise.difficulty.level), (_, i) => (
+
+      {exercises.length > 0 ? (
+        <div className='mt-8 flow-root'>
+          <div className='-mx-4 -my-2 sm:-mx-6 lg:-mx-8'>
+            <div className={`ring-1 ring-gray-300 sm:mx-0 sm:rounded-lg inline-block 
+            min-w-full align-middle  h-[70vh] overflow-y-scroll scroll-smooth`}>
+              <table className='min-w-full border-separate border-spacing-0'>
+                <thead>
+                  <tr>
+                    <th
+                      scope='col'
+                      className='sticky top-0 border-b border-gray-300 bg-white bg-opacity-75 py-3.5 pl-4 pr-3 
+                      text-left text-sm font-semibold text-gray-500 backdrop-blur 
+                      backdrop-filter sm:pl-6 lg:pl-8'>
+                      NOMBRE
+                    </th>
+                    <th
+                      scope='col'
+                      className='sticky top-0 border-b border-gray-300 bg-white bg-opacity-75 px-3 py-3.5 text-left text-sm
+                      font-semibold text-gray-500 backdrop-blur backdrop-filter'>
+                      DIFICULTAD
+                    </th>
+                    <th
+                      scope='col'
+                      className='sticky top-0 hidden border-b border-gray-300 bg-white bg-opacity-75 px-3 py-3.5
+                      text-left text-sm font-semibold text-gray-500 backdrop-blur backdrop-filter lg:table-cell'>
+                      CATEGORIA
+                    </th>
+                    <th
+                      scope='col'
+                      className='sticky top-0 border-b border-gray-300 bg-white bg-opacity-75 px-3 
+                      py-3.5 text-left text-sm font-semibold text-gray-500 backdrop-blur backdrop-filter'>
+                      ETIQUETAS
+                    </th>
+                    <th
+                      scope='col'
+                      className='sticky top-0 border-b border-gray-300 bg-white bg-opacity-75 
+                      py-3.5 pl-3 pr-4 backdrop-blur backdrop-filter sm:pr-6 lg:pr-8'>
+                      <span className='sr-only'>Edit</span>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {exercises.map((exercise, id) => (
+                    <tr
+                      key={exercise.id}
+                      className='cursor-pointer hover:bg-slate-200'>
+                      <td
+                        className={classNames(
+                          id !== Object.keys(exercise).length - 1 ? 'border-b border-gray-200' : '',
+                          'whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 dark:text-dark-accent sm:pl-6 lg:pl-8'
+                        )}>
+                        {exercise.title}
+                      </td>
+                      <td
+                        className={classNames(
+                          id !== Object.keys(exercise).length - 1 ? 'border-b border-gray-200' : '',
+                          'whitespace-nowrap flex gap-1 px-3 py-4 text-sm text-gray-500'
+                        )}>
+                        {Array.from(Array(exercise.difficulty.level), (_, i) => (
                           <img
                             alt=''
                             src='icons/estrellas.svg'
                             key={i}
                             className='h-5 w-5'
                           />
-                        ))
-                      }
-                    </td>
-                    <td
-                      className={classNames(
-                        id !== Object.keys(exercise).length - 1 ? 'border-b border-gray-200' : '',
-                        'whitespace-nowrap hidden px-3 py-4 text-sm text-gray-500 dark:text-dark-accent lg:table-cell'
-                      )}>
-                      {exercise.category.name}
-                    </td>
-                    <td
-                      className={classNames(
-                        id !== Object.keys(exercise).length - 1 ? 'border-b border-gray-200' : '',
-                        'whitespace-nowrap text-sm text-gray-500'
-                      )}>
-                      <TagListComponent
-                        tags={exercise.tags}
-                        showIcon={false}
-                      />
-                    </td>
-                    <td
-                      className={classNames(
-                        id !== Object.keys(exercise).length - 1 ? 'border-b border-gray-200' : '',
-                        'relative whitespace-nowrap py-4 pr-4 pl-3 text-right text-sm font-medium sm:pr-8 lg:pr-8'
-                      )}>
-                      <a
-                        href={`/exercises/${exercise.id}`}
-                        className='text-indigo-600 hover:text-indigo-900'>
-                        Leer<span className='sr-only'>, {exercise.title}</span>
-                      </a>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                        ))}
+                      </td>
+                      <td
+                        className={classNames(
+                          id !== Object.keys(exercise).length - 1 ? 'border-b border-gray-200' : '',
+                          'whitespace-nowrap hidden px-3 py-4 text-sm text-gray-500 dark:text-dark-accent lg:table-cell'
+                        )}>
+                        {exercise.category.name}
+                      </td>
+                      <td
+                        className={classNames(
+                          id !== Object.keys(exercise).length - 1 ? 'border-b border-gray-200' : '',
+                          'whitespace-nowrap text-sm text-gray-500'
+                        )}>
+                        <TagListComponent
+                          tags={exercise.tags}
+                          showIcon={false}
+                        />
+                      </td>
+                      <td
+                        className={classNames(
+                          id !== Object.keys(exercise).length - 1 ? 'border-b border-gray-200' : '',
+                          'relative whitespace-nowrap py-4 pr-4 pl-3 text-right text-sm font-medium sm:pr-8 lg:pr-8'
+                        )}>
+                        <a
+                          href={`/exercises/${exercise.id}`}
+                          className='text-indigo-600 hover:text-indigo-900'>
+                          Leer<span className='sr-only'>, {exercise.title}</span>
+                        </a>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <PaginationComponent />
           </div>
-          <PaginationComponent />
         </div>
-      </div>
+      ) : (
+        <TextComponent
+          className='text-center w-full mt-8'
+          tag={enumTextTags.h1}
+          sizeFont='s20'>
+          No hay ejercicios
+        </TextComponent>
+      )}
     </div>
   )
 }

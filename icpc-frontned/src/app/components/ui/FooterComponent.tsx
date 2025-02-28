@@ -85,6 +85,13 @@ const FooterComponent = () => {
               Acerca de nosotros
             </TextComponent>
           </Link>
+          <Link href='/privacy'>
+            <TextComponent
+              tag={enumTextTags.p}
+              className='hover:text-secondary dark:text-dark-accent underline hover:dark:text-dark-complementary'>
+              Política de privacidad
+            </TextComponent>
+          </Link>
           <Link href='https://uacam.mx/'>
             <TextComponent
               tag={enumTextTags.p}

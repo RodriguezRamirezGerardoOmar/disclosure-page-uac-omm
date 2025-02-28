@@ -69,22 +69,20 @@ function Page() {
 
   const handleSubmitUserInfo: SubmitHandler<FieldValues> = async (data: any) => {
     try {
-      const result = await updateUser(user!.id, data)
-      setCurrentUser(result)
-      setUpdate(!update)
-      toast.success('¡Información actualizada!', { 
+      const result = await updateUser(user!.id, data);
+      setCurrentUser(result);
+      setUpdate(!update);
+      toast.success('¡Información actualizada!', {
         duration: 5000,
-        style: {
-          backgroundColor: 'green',
-          color: '#ffffff'
-        }
+        style: { backgroundColor: 'green', color: '#ffffff' }
+      });
+    } catch (error: any) {
+      toast.error(error.message || 'Error al actualizar', {
+        duration: 5000,
+        style: { backgroundColor: 'red', color: '#ffffff' }
       });
     }
-    catch (error: any) {
-      console.error(error)
-
-    }
-  }
+  };
 
   const handleChange = useCallback(
     async (data: string) => {
@@ -199,7 +197,9 @@ function Page() {
                 <p className='mt-1 text-sm leading-6 text-gray-400'>Usa tu correo institucional.</p>
               </div>
 
-              <form className='md:col-span-2' onSubmit={methods.handleSubmit(handleSubmitUserInfo)}>
+              <form
+                className='md:col-span-2'
+                onSubmit={methods.handleSubmit(handleSubmitUserInfo)}>
                 <div className='grid grid-cols-1 gap-x-6 gap-y-8 sm:max-w-xl sm:grid-cols-6'>
                   <div className='col-span-full flex items-center gap-x-8'>
                     <LogoComponent size={96} />
@@ -263,7 +263,7 @@ function Page() {
                 </div>
 
                 <div className='mt-8 flex'>
-                  <SubmitComponent text='Guardar' />
+                  <SubmitComponent text='Guardar' action={methods.handleSubmit(handleSubmitUserInfo)} />
                 </div>
               </form>
             </div>
@@ -281,6 +281,7 @@ function Page() {
                 itemType={mode}
                 update={update}
                 setUpdate={setUpdate}
+                onClose={() => {}}
               />
             </div>
           </div>

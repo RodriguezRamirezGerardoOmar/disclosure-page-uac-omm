@@ -1,6 +1,23 @@
 'use client'
-import { UserCircleIcon, CalendarDaysIcon, CreditCardIcon } from '@heroicons/react/20/solid'
-import React from 'react'
+import { Menu, Transition, Listbox } from '@headlessui/react'
+import {
+  EllipsisVerticalIcon,
+  UserCircleIcon,
+  CalendarDaysIcon,
+  CreditCardIcon,
+  CheckCircleIcon,
+  PaperClipIcon,
+  FaceSmileIcon,
+  FaceFrownIcon,
+  FireIcon,
+  HandThumbUpIcon,
+  HeartIcon,
+  XMarkIcon,
+  CpuChipIcon,
+  ClockIcon
+} from '@heroicons/react/20/solid'
+import React, { Fragment, useEffect, useState } from 'react'
+import useExerciseStore from '@/store/useExcerciseStore'
 import { enumTextTags, Exercise } from '@/constants/types'
 import TagListComponent from '../tags/TagListComponent'
 import { TextComponent } from '../text/TextComponent'
@@ -47,7 +64,8 @@ const ExerciseCardComponent = ({ ...props }: Readonly<ExerciseCardComponentProps
                 </div>
                 <div className='mt-4 flex w-full flex-none gap-x-4 px-6'>
                   <dt className='flex-none'>
-                    <CalendarDaysIcon
+                    <span className='sr-only'>Due date</span>
+                    <ClockIcon
                       className='h-6 w-5 text-gray-400'
                       aria-hidden='true'
                     />
@@ -61,7 +79,7 @@ const ExerciseCardComponent = ({ ...props }: Readonly<ExerciseCardComponentProps
                 <div className='mt-4 flex w-full flex-none gap-x-4 px-6'>
                   <dt className='flex-none'>
                     <span className='sr-only'>Límite de memoria</span>
-                    <CreditCardIcon
+                    <CpuChipIcon
                       className='h-6 w-5 text-gray-400'
                       aria-hidden='true'
                     />
