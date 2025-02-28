@@ -12,7 +12,9 @@ import {
   FireIcon,
   HandThumbUpIcon,
   HeartIcon,
-  XMarkIcon
+  XMarkIcon,
+  CpuChipIcon,
+  ClockIcon
 } from '@heroicons/react/20/solid'
 import React, { Fragment, useEffect, useState } from 'react'
 import useExerciseStore from '@/store/useExcerciseStore'
@@ -229,9 +231,6 @@ const ExerciseCardComponent = ({ ...props }: Readonly<ExerciseCardComponentProps
                 </div>
                 <div className='flex-none self-end px-6 pt-4'>
                   <dt className='sr-only'>Status</dt>
-                  <dd className='rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-600 ring-1 ring-inset ring-green-600/20'>
-                    Paid
-                  </dd>
                 </div>
                 <div className='mt-6 flex w-full flex-none gap-x-4 border-t border-gray-900/5 px-6 pt-6'>
                   <dt className='flex-none'>
@@ -246,7 +245,7 @@ const ExerciseCardComponent = ({ ...props }: Readonly<ExerciseCardComponentProps
                 <div className='mt-4 flex w-full flex-none gap-x-4 px-6'>
                   <dt className='flex-none'>
                     <span className='sr-only'>Due date</span>
-                    <CalendarDaysIcon
+                    <ClockIcon
                       className='h-6 w-5 text-gray-400'
                       aria-hidden='true'
                     />
@@ -258,7 +257,7 @@ const ExerciseCardComponent = ({ ...props }: Readonly<ExerciseCardComponentProps
                 <div className='mt-4 flex w-full flex-none gap-x-4 px-6'>
                   <dt className='flex-none'>
                     <span className='sr-only'>Límite de memoria</span>
-                    <CreditCardIcon
+                    <CpuChipIcon
                       className='h-6 w-5 text-gray-400'
                       aria-hidden='true'
                     />
@@ -270,7 +269,7 @@ const ExerciseCardComponent = ({ ...props }: Readonly<ExerciseCardComponentProps
                 <a
                   href='#'
                   className='text-sm font-semibold leading-6 text-gray-900'>
-                  Download receipt <span aria-hidden='true'>&rarr;</span>
+                  Detalles del ejercicio <span aria-hidden='true'></span>
                 </a>
               </div>
             </div>

@@ -18,35 +18,49 @@ export class AuthService {
 
   async login({ username, email, password }: LoginDto) {
     let user = await this.usersService.findOneByEmail(email);
+    
     if (user === null) {
-      user = await this.usersService.findOneByUsername(username);
+      // Verificar si el username es un email
+      const isUsernameEmail = username && /\S+@\S+\.\S+/.test(username);
+      
+      if (isUsernameEmail) {
+        // Buscar por email usando el valor de username
+        user = await this.usersService.findOneByEmail(username);
+      } else {
+        // Buscar por username normalmente
+        user = await this.usersService.findOneByUsername(username);
+      }
+      
       if (user === null) {
-        throw new BadRequestException('Invalid username or email');
+        throw new BadRequestException('Usuario o correo inválido');
       }
     }
-
+  
     const isPasswordMatch = await bcrypt.compare(password, user.password);
     if (!isPasswordMatch) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new UnauthorizedException('Credenciales inválidas');
     }
+  
     const payload = {
       userName: user.userName,
       email: user.email,
-      role: user.role.role
+      role: user.role.role,
+      name: user.name,
+      lastName: user.lastName,
     };
-
-    if (isPasswordMatch && user !== null) {
-      const token = this.jwtService.sign(payload);
-
-      return {
-        user: {
-          userName: user.userName,
-          email: user.email,
-          role: user.role.role
-        },
-        token
-      };
-    }
+  
+    const token = this.jwtService.sign(payload);
+  
+    return {
+      user: {
+        userName: user.userName,
+        email: user.email,
+        role: user.role.role,
+        name: user.name,
+        lastName: user.lastName
+      },
+      token
+    };
   }
 
   async register(registerDto: RegisterDto) {

@@ -13,16 +13,7 @@ import useNewsStore from '@/store/useNewsStore'
 import useUtilsStore from '@/store/useUtilsStore'
 import { toast } from 'sonner'
 import useAuthStore from '@/store/useStore'
-
-/*
-Input: None
-Output: a form to create a news article
-Return value: a modal form component to create a news article
-Function: creates a form to create a news article
-Variables: methods
-Date: 07 - 05 - 2024
-Author: Gerardo Omar Rodriguez Ramirez
-*/
+import { ArrowUturnLeftIcon, XMarkIcon } from '@heroicons/react/20/solid'
 
 interface CreateNewsComponentProps {
   id?: string
@@ -67,7 +58,6 @@ const CreateNewsComponent = (props: CreateNewsComponentProps) => {
   }, [props.id, methods, getNewsArticle])
 
   const onSubmit: SubmitHandler<FieldValues> = async formData => {
-    // Función para procesar la respuesta de las operaciones de creación y actualización
     const processResponse = async (uploadedImage: any) => {
       if ('data' in uploadedImage) {
         const imageId = uploadedImage.data?.imageId?.id || uploadedImage.data?.id;
@@ -196,11 +186,33 @@ const CreateNewsComponent = (props: CreateNewsComponentProps) => {
       className={`margin-auto md:mx-auto max-w-7xl md:px-4 w-full h-full lg:px-8 lg:w-2/3 lg:h-auto 
     min-h-screen place-items-center justify-between py-10`}>
       <BasicPanelComponent backgroundColor='bg-white dark:bg-dark-primary'>
-        <div className="relative">
-        <button onClick={props.onClose} className="absolute top-2 right-2 text-gray-500 hover:text-red-700 text-4xl">
-          &times;
-        </button>
+      <div className="relative">
+        <div className="absolute top-0 right-0 flex gap-1 p-2">
+          <div
+            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200 rounded"
+            title="Restablecer formulario"
+          >
+            <button
+              type="button"
+              onClick={clearForm}
+              className="text-inherit" // Color heredado del padre
+            >
+              <ArrowUturnLeftIcon className="h-6 w-6" />
+            </button>
+          </div>
+          <div
+            className="p-2 hover:bg-gray-100 dark:hover:bg-red-700 transition-colors duration-200 rounded"
+            title="Cerrar formulario"
+          >
+            <button
+              onClick={props.onClose}
+              className="text-inherit" // Color heredado del padre
+            >
+              <XMarkIcon className="h-6 w-6" />
+            </button>
+          </div>
         </div>
+      </div>
         <div className='flex flex-col items-center'>
           <LogoComponent size={100} />
           <TextComponent
@@ -253,16 +265,6 @@ const CreateNewsComponent = (props: CreateNewsComponentProps) => {
             text={props.id ? 'Actualizar noticia' : 'Crear noticia'}
             action={dataValidate}
           />
-        </div>
-        <div className='mt-4'>
-          <button
-            type='button'
-            onClick={clearForm}
-            className='inline-flex items-center gap-x-2 rounded-md bg-primary text-complementary px-3.5 py-2.5 
-              font-medium shadow-sm hover:bg-secondary focus-visible:outline 
-              focus-visible:outline-offset-2 focus-visible:outline-complementary'>
-            Borrar formulario
-          </button>
         </div>
       </BasicPanelComponent>
     </form>

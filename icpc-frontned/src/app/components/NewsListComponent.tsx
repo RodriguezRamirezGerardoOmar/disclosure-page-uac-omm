@@ -27,11 +27,13 @@ const NewsListComponent = ({ ...props }: Readonly<INewsListComponentProps>) => {
   const newsList = useNewsStore(state => state.news)
   const [news, setNews] = useState<News[]>(newsList)
   const getNews = useNewsStore(state => state.getNews)
+  
   useEffect(() => {
     getNews().then(response => {
       setNews(response)
     })
   }, [getNews])
+
   return (
     <>
       <div className={style}>
@@ -43,14 +45,23 @@ const NewsListComponent = ({ ...props }: Readonly<INewsListComponentProps>) => {
         </TextComponent>
       </div>
       <div className={style} ref={ref}>
-        {news.map((newsItem: News) => (
-          <Suspense key={newsItem.index}>
-            <LazyNewsItemComponent
-              item={newsItem}
-              className=''
-            />
-          </Suspense>
-        ))}
+        {news.length > 0 ? (
+          news.map((newsItem: News) => (
+            <Suspense key={newsItem.index}>
+              <LazyNewsItemComponent
+                item={newsItem}
+                className=''
+              />
+            </Suspense>
+          ))
+        ) : (
+          <TextComponent
+            className='text-center w-full' // Agregado w-full para ocupar todo el ancho
+            tag={enumTextTags.h1}
+            sizeFont='s20'>
+            No hay noticias
+          </TextComponent>
+        )}
       </div>
     </>
   )

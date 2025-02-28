@@ -22,15 +22,24 @@ export class Report extends BaseEntity {
   @Column('enum', { nullable: false, enum: ItemType })
   itemType: ItemType;
 
-  @ManyToOne(() => Note, note => note.reports)
+  @Column({ type: 'boolean', default: false })
+  isOpen: boolean;
+
+  @ManyToOne(() => Note, note => note.reports, {
+    onDelete: 'CASCADE'
+  })
   @JoinTable()
   note: Note;
 
-  @ManyToOne(() => Excercise, excercise => excercise.reports)
+  @ManyToOne(() => Excercise, excercise => excercise.reports, {
+    onDelete: 'CASCADE'
+  })
   @JoinTable()
   excercise: Excercise;
 
-  @ManyToOne(() => News, news => news.reports)
+  @ManyToOne(() => News, news => news.reports, {
+    onDelete: 'CASCADE'
+  })
   @JoinTable()
   news: News;
 }
