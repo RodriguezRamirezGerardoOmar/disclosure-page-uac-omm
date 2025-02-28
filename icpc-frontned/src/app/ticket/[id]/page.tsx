@@ -75,19 +75,19 @@ const TicketPage = async ({ params }: Readonly<{ params: { id: string } }>) => {
       case TicketType.NEWS:
         pageContent = (
           <div className='grid place-items-center grid-cols-1 gap-16'>
-            <div>
+            <div className='mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 text-accent dark:text-dark-accent'>
               <TextComponent
                 tag={enumTextTags.h1}
-                sizeFont='s20'
+                sizeFont='s36'
                 className='font-bold text-gray-800 dark:text-dark-accent'>
                 Noticia original
               </TextComponent>
               <NewsCardComponent id={ticket.originalNewsId.id} />
             </div>
-            <div>
+            <div className='mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 text-accent dark:text-dark-accent'>
               <TextComponent
                 tag={enumTextTags.h1}
-                sizeFont='s20'
+                sizeFont='s36'
                 className='font-bold text-gray-800 dark:text-dark-accent'>
                 Noticia modificada
               </TextComponent>
@@ -100,10 +100,10 @@ const TicketPage = async ({ params }: Readonly<{ params: { id: string } }>) => {
       case TicketType.NOTE:
         pageContent = (
           <div className='grid place-items-center grid-cols-1 gap-16'>
-            <div>
+            <div className='mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 text-accent dark:text-dark-accent'>
               <TextComponent
                 tag={enumTextTags.h1}
-                sizeFont='s20'
+                sizeFont='s36'
                 className='font-bold text-gray-800 dark:text-dark-accent'>
                 Nota original
               </TextComponent>
@@ -115,10 +115,10 @@ const TicketPage = async ({ params }: Readonly<{ params: { id: string } }>) => {
                 showButton={false}
               />
             </div>
-            <div>
+            <div className='mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 text-accent dark:text-dark-accent'>
               <TextComponent
                 tag={enumTextTags.h1}
-                sizeFont='s20'
+                sizeFont='s36'
                 className='font-bold text-gray-800 dark:text-dark-accent'>
                 Nota modificada
               </TextComponent>

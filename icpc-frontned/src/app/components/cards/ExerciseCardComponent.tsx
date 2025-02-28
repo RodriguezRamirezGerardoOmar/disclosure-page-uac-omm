@@ -1,3 +1,4 @@
+'use client'
 import { UserCircleIcon, CalendarDaysIcon, CreditCardIcon } from '@heroicons/react/20/solid'
 import React from 'react'
 import { enumTextTags, Exercise } from '@/constants/types'
@@ -5,6 +6,7 @@ import TagListComponent from '../tags/TagListComponent'
 import { TextComponent } from '../text/TextComponent'
 import ExerciseHeaderComponent from '../ui/ExerciseHeaderComponent'
 import MarkdownBodyComponent from '../panels/MarkdownBodyComponent'
+import ExerciseMarkdownComponent from '../ui/ExerciseMarkdownComponent'
 
 interface ExerciseCardComponentProps {
   exercise: Exercise
@@ -33,8 +35,7 @@ const ExerciseCardComponent = ({ ...props }: Readonly<ExerciseCardComponentProps
                   <dt className='text-sm font-semibold leading-6 text-accent'>Dificultad</dt>
                   <dd className='mt-1 text-base font-semibold leading-6 text-gray-900'>{props.exercise.difficulty.name}</dd>
                 </div>
-                <div className='flex-none self-end px-6 pt-4'>
-                </div>
+                <div className='flex-none self-end px-6 pt-4'></div>
                 <div className='mt-6 flex w-full flex-none gap-x-4 border-t border-gray-900/5 px-6 pt-6'>
                   <dt className='flex-none'>
                     <UserCircleIcon
@@ -126,20 +127,11 @@ const ExerciseCardComponent = ({ ...props }: Readonly<ExerciseCardComponentProps
           </div>
         </div>
       </div>
-      <div className='mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 text-accent dark:text-dark-accent'>
-      <div
-            className='-mx-4 px-4 py-8 shadow-sm ring-1 ring-gray-900/5 sm:mx-0 sm:rounded-lg sm:px-8 sm:pb-14 
-            lg:col-span-2 lg:row-span-2 lg:row-end-2 xl:px-16 xl:pb-20 xl:pt-16'>
-      <TextComponent tag={enumTextTags.h1}>Descripción del problema:</TextComponent>
-      <MarkdownBodyComponent body={props.description} />
-      <br />
-      <TextComponent tag={enumTextTags.h1}>Restricciones:</TextComponent>
-      <TextComponent>{props.exercise.constraints}</TextComponent>
-      <br />
-      <TextComponent tag={enumTextTags.h1}>Solución del problema:</TextComponent>
-      <MarkdownBodyComponent body={props.solution ? props.solution : ''} />
-    </div>
-    </div>
+      <ExerciseMarkdownComponent
+        description={props.description}
+        constraints={props.exercise.constraints}
+        solution={props.solution}
+      />
     </main>
   )
 }

@@ -1,3 +1,4 @@
+'use client'
 import { enumTextTags, IReactNode } from '@/constants/types'
 import cn from 'classnames'
 import { ReactNode } from 'react'

@@ -139,7 +139,7 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
           color: '#ffffff'
         }
       }
-      if ('id' in response) {
+      if (response.id) {
         toast.success(props.id ? 'Ejercicio Actualizado' : 'Ejercicio creado con éxito.', toastOptions)
       } else if ('message' in response) {
         toast.error(response.message, toastOptions)

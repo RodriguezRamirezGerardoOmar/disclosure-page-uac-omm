@@ -180,20 +180,35 @@ export class TicketService {
               .getOne();
         }
       case TicketType.NOTE:
-        return ticket.operation == TicketOperation.UPDATE
-          ? await this.ticketRepository
+        switch (ticket.operation) {
+          case TicketOperation.UPDATE:
+            const res = await this.ticketRepository
               .createQueryBuilder('ticket')
               .where('ticket.id = :id', { id: id })
               .leftJoinAndSelect('ticket.originalNoteId', 'originalNoteId')
-              .leftJoinAndSelect('originalNoteId.commentId', 'comment')
-              .leftJoinAndSelect('originalNoteId.category', 'category')
-              .leftJoinAndSelect('originalNoteId.tags', 'tags')
               .leftJoinAndSelect('ticket.modifiedNoteId', 'modifiedNoteId')
-              .leftJoinAndSelect('modifiedNoteId.commentId', 'comment')
-              .leftJoinAndSelect('modifiedNoteId.category', 'category')
-              .leftJoinAndSelect('originalNoteId.tags', 'tags')
-              .getOne()
-          : await this.ticketRepository
+              .getOne();
+            const originalNote = await this.notesRepository
+              .createQueryBuilder('note')
+              .where('note.id = :id', { id: res.originalNoteId.id })
+              .leftJoinAndSelect('note.commentId', 'comment')
+              .leftJoinAndSelect('note.category', 'category')
+              .leftJoinAndSelect('note.tags', 'tags')
+              .getOne();
+            const modifiedNote = await this.notesRepository
+              .createQueryBuilder('note')
+              .where('note.id = :id', { id: res.modifiedNoteId.id })
+              .leftJoinAndSelect('note.commentId', 'comment')
+              .leftJoinAndSelect('note.category', 'category')
+              .leftJoinAndSelect('note.tags', 'tags')
+              .getOne();
+            return {
+              ...res,
+              originalNoteId: originalNote,
+              modifiedNoteId: modifiedNote
+            };
+          default:
+            await this.ticketRepository
               .createQueryBuilder('ticket')
               .where('ticket.id = :id', { id: id })
               .leftJoinAndSelect('ticket.originalNoteId', 'originalNoteId')
@@ -201,6 +216,7 @@ export class TicketService {
               .leftJoinAndSelect('originalNoteId.category', 'category')
               .leftJoinAndSelect('originalNoteId.tags', 'tags')
               .getOne();
+        }
       case TicketType.NEWS:
         return ticket.operation == TicketOperation.UPDATE
           ? await this.ticketRepository
