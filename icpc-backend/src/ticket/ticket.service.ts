@@ -427,4 +427,24 @@ export class TicketService {
     }
     return res;
   }
+
+  async hasPendingTicket(
+    itemId: string,
+    itemType: TicketType
+  ): Promise<boolean> {
+    const pendingTicket = await this.ticketRepository.findOne({
+      where: {
+        itemType,
+        status: TicketStatus.PENDING,
+        originalExerciseId:
+          itemType === TicketType.EXERCISE ? { id: itemId } : undefined,
+        originalNoteId:
+          itemType === TicketType.NOTE ? { id: itemId } : undefined,
+        originalNewsId:
+          itemType === TicketType.NEWS ? { id: itemId } : undefined
+      }
+    });
+
+    return !!pendingTicket;
+  }
 }

@@ -197,7 +197,9 @@ function Page() {
                 <p className='mt-1 text-sm leading-6 text-gray-400'>Usa tu correo institucional.</p>
               </div>
 
-              <form className='md:col-span-2' onSubmit={methods.handleSubmit(handleSubmitUserInfo)}>
+              <form
+                className='md:col-span-2'
+                onSubmit={methods.handleSubmit(handleSubmitUserInfo)}>
                 <div className='grid grid-cols-1 gap-x-6 gap-y-8 sm:max-w-xl sm:grid-cols-6'>
                   <div className='col-span-full flex items-center gap-x-8'>
                     <LogoComponent size={96} />
