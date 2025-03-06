@@ -16,9 +16,9 @@ export class LoggerService {
     }
   }
 
-  logChange(module: string, action: string, details: any) {
+  logChange(module: string, action: string, userName: string, itemId: string) {
     const timestamp = new Date().toISOString();
-    const logEntry = `${timestamp} - ${module} - ${action}`;
+    const logEntry = `${timestamp} - ${module} - ${action} - User: ${userName} - Item ID: ${itemId}`;
 
     try {
       console.log(`Attempting to write to log file: ${this.logFilePath}`);

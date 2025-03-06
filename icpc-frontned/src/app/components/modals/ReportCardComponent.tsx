@@ -9,6 +9,7 @@ import MarkdownAreaComponent from '../forms/MarkdownAreaComponent'
 import SubmitComponent from '../forms/SubmitComponent'
 import { toast } from 'sonner'
 import useUtilsStore from '@/store/useUtilsStore'
+import { ArrowUturnLeftIcon, XMarkIcon } from '@heroicons/react/20/solid'
 
 interface IReportCardProps {
   methods: UseFormReturn<FieldValues>
@@ -40,7 +41,7 @@ const ReportCardComponent = ({ itemType, itemId, onSubmit, onCancel, methods, ..
         itemType,
         itemId: itemId
       })
-      if ( response ) {
+      if (response) {
         toast.success('Reporte Enviado', {
           duration: 5000,
           style: {
@@ -60,11 +61,42 @@ const ReportCardComponent = ({ itemType, itemId, onSubmit, onCancel, methods, ..
     }
   }
 
+  const clearForm = () => {
+    methods.reset()
+  }
+
   return (
     <div
       className={`margin-auto md:mx-auto max-w-7xl md:px-4 w-full h-full lg:px-8 lg:w-2/3 lg:h-auto 
   min-h-screen place-items-center justify-between py-24`}>
       <BasicPanelComponent backgroundColor='bg-white dark:bg-dark-primary'>
+        <div className="relative">
+          <div className="absolute top-0 right-0 flex gap-1 p-2">
+            <div
+              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200 rounded"
+              title="Borrar formulario"
+            >
+              <button
+                type="button"
+                onClick={clearForm}
+                className="text-inherit"
+              >
+                <ArrowUturnLeftIcon className="h-6 w-6" />
+              </button>
+            </div>
+            <div
+              className="p-2 hover:bg-gray-100 dark:hover:bg-red-700 transition-colors duration-200 rounded"
+              title="Cerrar formulario"
+            >
+              <button
+                onClick={onCancel}
+                className="text-inherit"
+              >
+                <XMarkIcon className="h-6 w-6" />
+              </button>
+            </div>
+          </div>
+        </div>
         <div className='flex flex-col items-center'>
           <LogoComponent size={100} />
           <TextComponent
@@ -96,13 +128,10 @@ const ReportCardComponent = ({ itemType, itemId, onSubmit, onCancel, methods, ..
                 />
               )}
             />
-            <SubmitComponent text='Reportar' />
+            <div className="flex justify-center">
+              <SubmitComponent text='Reportar' />
+            </div>
           </form>
-          <button
-            className='mt-4 text-red-500'
-            onClick={onCancel}>
-            Cancelar
-          </button>
         </div>
       </BasicPanelComponent>
     </div>

@@ -8,7 +8,8 @@ import {
   Delete,
   UseGuards,
   UploadedFile,
-  UseInterceptors
+  UseInterceptors,
+  Req
 } from '@nestjs/common';
 import { NewsService } from './news.service';
 import { CreateNewsDto } from './dto/create-news.dto';
@@ -46,9 +47,14 @@ export class NewsController {
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiBadRequestResponse({ description: 'Bad request' })
   @ApiInternalServerErrorResponse({ description: 'Internal server error' })
-  async create(@Body() createNewsDto: CreateNewsDto) {
+  async create(@Body() createNewsDto: CreateNewsDto, @Req() req: any) {
     const createdNews = await this.newsService.create(createNewsDto);
-    this.loggerService.logChange('news', 'create', createdNews); // Log de la operación
+    this.loggerService.logChange(
+      'news',
+      'create',
+      req.user.name, // Nombre del usuario que hizo la operación
+      createdNews.id // ID de la noticia creada
+    ); // Log de la operación
     return createdNews;
   }
 
@@ -124,10 +130,14 @@ export class NewsController {
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiBadRequestResponse({ description: 'Bad request' })
   @ApiInternalServerErrorResponse({ description: 'Internal server error' })
-  async update(@Param('id') id: string, @Body() updateNewsDto: UpdateNewsDto) {
-    //console.log('updateNewsDto', updateNewsDto);  //TODO Delete this <---
+  async update(@Param('id') id: string, @Body() updateNewsDto: UpdateNewsDto, @Req() req: any) {
     const updatedNews = await this.newsService.update(id, updateNewsDto);
-    this.loggerService.logChange('news', 'update', { id, ...updateNewsDto }); // Log de la operación
+    this.loggerService.logChange(
+      'news',
+      'update',
+      req.user.name, // Nombre del usuario que hizo la operación
+      id // ID de la noticia actualizada
+    ); // Log de la operación
     return updatedNews;
   }
 
@@ -140,9 +150,14 @@ export class NewsController {
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiBadRequestResponse({ description: 'Bad request' })
   @ApiInternalServerErrorResponse({ description: 'Internal server error' })
-  async remove(@Param('id') id: string, @Param('user') user: string) {
+  async remove(@Param('id') id: string, @Param('user') user: string, @Req() req: any) {
     const deletedNews = await this.newsService.remove(id, user);
-    this.loggerService.logChange('news', 'delete', { id }); // Log de la operación
+    this.loggerService.logChange(
+      'news',
+      'delete',
+      req.user.name, // Nombre del usuario que hizo la operación
+      id // ID de la noticia eliminada
+    ); // Log de la operación
     return deletedNews;
   }
 }
