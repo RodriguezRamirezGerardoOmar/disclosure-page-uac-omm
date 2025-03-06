@@ -142,61 +142,73 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
     }
   }
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id: string, itemType: string) => {
+    if (itemType === 'Noticias' || itemType === 'Ejercicios' || itemType === 'Apuntes') {
+      const response = await hasPendingTicket(id, itemType)
+
+      if (response === true) {
+        toast.error('Ya existe una modificación en espera para este ítem.', {
+          duration: 5000,
+          style: { backgroundColor: 'red', color: 'white' }
+        })
+        return
+      }
+    }
+    
     let response
     switch (props.itemType) {
       case AllTabs.EXERCISES:
         response = await deleteExercise(id)
-        if ('statusCode' in response && response.statusCode === 200) {
-          toast.success(response.message, { duration: 5000, style: { backgroundColor: 'green', color: 'white' } })
+        if ('id' in response) {
+          toast.success('Operación exitosa', { duration: 5000, style: { backgroundColor: 'green', color: 'white' } })
         }
         break
       case AllTabs.NOTES:
         response = await deleteNote(id)
-        if ('statusCode' in response && response.statusCode === 200) {
-          toast.success(response.message, { duration: 5000, style: { backgroundColor: 'green', color: 'white' } })
+        if ('id' in response) {
+          toast.success('Operación exitosa', { duration: 5000, style: { backgroundColor: 'green', color: 'white' } })
         }
         break
       case AllTabs.NEWS:
         response = await deleteNews(id)
-        if ('statusCode' in response && response.statusCode === 200) {
-          toast.success(response.message, { duration: 5000, style: { backgroundColor: 'green', color: 'white' } })
+        if ('id' in response) {
+          toast.success('Operación exitosa', { duration: 5000, style: { backgroundColor: 'green', color: 'white' } })
         }
         break
       case AllTabs.CATEGORIES:
         response = await deleteCategory(id)
-        if ('statusCode' in response && response.statusCode === 200) {
-          toast.success(response.message, { duration: 5000, style: { backgroundColor: 'green', color: 'white' } })
+        if ('id' in response) {
+          toast.success('Operación exitosa', { duration: 5000, style: { backgroundColor: 'green', color: 'white' } })
         }
         break
       case AllTabs.TAGS:
         response = await deleteTag(id)
-        if ('statusCode' in response && response.statusCode === 200) {
-          toast.success(response.message, { duration: 5000, style: { backgroundColor: 'green', color: 'white' } })
+        if ('id' in response) {
+          toast.success('Operación exitosa', { duration: 5000, style: { backgroundColor: 'green', color: 'white' } })
         }
         break
       case AllTabs.TIME:
         response = await deleteTimeLimit(id)
-        if ('statusCode' in response && response.statusCode === 200) {
-          toast.success(response.message, { duration: 5000, style: { backgroundColor: 'green', color: 'white' } })
+        if ('id' in response) {
+          toast.success('Operación exitosa', { duration: 5000, style: { backgroundColor: 'green', color: 'white' } })
         }
         break
       case AllTabs.MEMORY:
         response = await deleteMemoryLimit(id)
-        if ('statusCode' in response && response.statusCode === 200) {
-          toast.success(response.message, { duration: 5000, style: { backgroundColor: 'green', color: 'white' } })
+        if ('id' in response) {
+          toast.success('Operación exitosa', { duration: 5000, style: { backgroundColor: 'green', color: 'white' } })
         }
         break
       case AllTabs.DIFFICULTY:
         response = await deleteDifficulty(id)
-        if ('statusCode' in response && response.statusCode === 200) {
-          toast.success(response.message, { duration: 5000, style: { backgroundColor: 'green', color: 'white' } })
+        if ('id' in response) {
+          toast.success('Operación exitosa', { duration: 5000, style: { backgroundColor: 'green', color: 'white' } })
         }
         break
       case AllTabs.ACCOUNT:
         response = await deleteUser(id)
-        if ('statusCode' in response && response.statusCode === 200) {
-          toast.success(response.message, { duration: 5000, style: { backgroundColor: 'green', color: 'white' } })
+        if ('id' in response) {
+          toast.success('Operación exitosa', { duration: 5000, style: { backgroundColor: 'green', color: 'white' } })
         }
         break
     }

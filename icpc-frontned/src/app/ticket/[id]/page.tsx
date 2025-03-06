@@ -142,27 +142,53 @@ const TicketPage = async ({ params }: Readonly<{ params: { id: string } }>) => {
           ? (await serializeNote(ticket.originalExerciseId.solution)).compiledSource
           : ''
         pageContent = (
-          <ExerciseCardComponent
-            exercise={ticket.originalExerciseId}
-            description={originalDescription.compiledSource}
-            solution={originalSolution}
-          />
+          <>
+            <TextComponent
+              tag={enumTextTags.h1}
+              sizeFont='s24'
+              className='text-accent dark:text-dark-accent m-4'>
+              {ticket.commentId.body}
+            </TextComponent>
+            <ExerciseCardComponent
+              exercise={ticket.originalExerciseId}
+              description={originalDescription.compiledSource}
+              solution={originalSolution}
+            />
+          </>
         )
         break
 
       case TicketType.NEWS:
-        pageContent = <NewsCardComponent id={ticket.originalNewsId.id} />
+        pageContent = (
+          <>
+            <TextComponent
+              tag={enumTextTags.h1}
+              sizeFont='s24'
+              className='text-accent dark:text-dark-accent m-4'>
+              {ticket.commentId.body}
+            </TextComponent>
+            <NewsCardComponent id={ticket.originalNewsId.id} />
+          </>
+        )
         break
 
       case TicketType.NOTE:
         pageContent = (
-          <NoteCardComponent
-            title={ticket.originalNoteId.title}
-            description={ticket.originalNoteId.commentId.body}
-            content={(await serializeNote(ticket.originalNoteId.body)).compiledSource}
-            tags={ticket.originalNoteId.tags}
-            showButton={false}
-          />
+          <>
+            <TextComponent
+              tag={enumTextTags.h1}
+              sizeFont='s24'
+              className='text-accent dark:text-dark-accent m-4'>
+              {ticket.commentId.body}
+            </TextComponent>
+            <NoteCardComponent
+              title={ticket.originalNoteId.title}
+              description={ticket.originalNoteId.commentId.body}
+              content={(await serializeNote(ticket.originalNoteId.body)).compiledSource}
+              tags={ticket.originalNoteId.tags}
+              showButton={false}
+            />
+          </>
         )
         break
     }
