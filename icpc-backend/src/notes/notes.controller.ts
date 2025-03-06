@@ -6,7 +6,8 @@ import {
   Param,
   Patch,
   Post,
-  UseGuards
+  UseGuards,
+  Req
 } from '@nestjs/common';
 import { NotesService } from './notes.service';
 import { CommentService } from 'src/comment/comment.service';
@@ -40,9 +41,14 @@ export class NotesController {
   })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
-  async create(@Body() createNoteDto: CreateNoteDto) {
+  async create(@Body() createNoteDto: CreateNoteDto, @Req() req: any) {
     const createdNote = await this.notesService.create(createNoteDto);
-    this.loggerService.logChange('notes', 'create', createdNote); // Log de la operación
+    this.loggerService.logChange(
+      'notes',
+      'create',
+      req.user.name, // Nombre del usuario que hizo la operación
+      createdNote.id // ID del apunte creado
+    ); // Log de la operación
     return createdNote;
   }
 
@@ -99,9 +105,14 @@ export class NotesController {
   })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
-  async update(@Param('id') id: string, @Body() updateNoteDto: UpdateNoteDto) {
+  async update(@Param('id') id: string, @Body() updateNoteDto: UpdateNoteDto, @Req() req: any) {
     const updatedNote = await this.notesService.update(id, updateNoteDto);
-    this.loggerService.logChange('notes', 'update', { id, ...updateNoteDto }); // Log de la operación
+    this.loggerService.logChange(
+      'notes',
+      'update',
+      req.user.name, // Nombre del usuario que hizo la operación
+      id // ID del apunte actualizado
+    ); // Log de la operación
     return updatedNote;
   }
 
@@ -113,9 +124,14 @@ export class NotesController {
   })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
-  async remove(@Param('id') id: string, @Param('user') user: string) {
+  async remove(@Param('id') id: string, @Param('user') user: string, @Req() req: any) {
     const deletedNote = await this.notesService.remove(id, user);
-    this.loggerService.logChange('notes', 'delete', { id }); // Log de la operación
+    this.loggerService.logChange(
+      'notes',
+      'delete',
+      req.user.name, // Nombre del usuario que hizo la operación
+      id // ID del apunte eliminado
+    ); // Log de la operación
     return deletedNote;
   }
 }
