@@ -10,7 +10,7 @@ export default function Page() {
         <TextComponent
           sizeFont='s28'
           tag={enumTextTags.h1}
-          className=''>
+          className='dark:text-dark-accent'>
           Términos de privacidad
         </TextComponent>
         <Politica />
