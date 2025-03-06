@@ -405,7 +405,7 @@ export class TicketService {
         }
         break;
     }
-    return item;
+    return res;
   }
 
   async reject(id: string) {
