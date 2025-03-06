@@ -8,6 +8,7 @@ import CreateDifficultyComponent from '../modals/CreateDifficultyComponent';
 import CreateTimeLimitComponent from '../modals/CreateTimeComponent';
 import CreateMemoryComponent from '../modals/CreateMemoryComponent';
 import CreateTagComponent from '../modals/CreateTagComponent';
+import CreateUserComponent from '../modals/CreateUserComponent';
 import { useForm, FieldValues } from 'react-hook-form';
 
 function classNames(...classes: string[]) {
@@ -59,7 +60,7 @@ export default function TabComponent({
     handleChange(tabName);
 
     if (tabName === 'Apuntes' || tabName === 'Noticias' || tabName === 'Ejercicios' || tabName === 'Categoría'
-      || tabName === 'Etiqueta' || tabName === 'Tiempo' || tabName === 'Memoria' || tabName === 'Dificultad'
+      || tabName === 'Etiqueta' || tabName === 'Tiempo' || tabName === 'Memoria' || tabName === 'Dificultad' || tabName === 'Cuentas'
     ) {
       setShowCreateButton(true); 
       if (tabName === 'Apuntes') {
@@ -78,6 +79,8 @@ export default function TabComponent({
         setModalComponent(<CreateMemoryComponent methods={methods} onCreateMemory={onCreateMemory} onClose={handleModalClose} />);
       } else if (tabName === 'Dificultad') {
         setModalComponent(<CreateDifficultyComponent methods={methods} onCreateDifficulty={onCreateDifficulty} onClose={handleModalClose} />);
+      } else if (tabName === 'Cuentas') {
+        setModalComponent(<CreateUserComponent methods={methods} onClose={handleModalClose} />);
       }
       
     } else {
@@ -103,6 +106,8 @@ export default function TabComponent({
       setModalComponent(<CreateMemoryComponent methods={methods} onCreateMemory={onCreateMemory} onClose={handleModalClose} />);
     } else if (activeTab === 'Dificultad') {
       setModalComponent(<CreateDifficultyComponent methods={methods} onCreateDifficulty={onCreateDifficulty} onClose={handleModalClose} />);
+    } else if (activeTab === 'Cuentas') {
+      setModalComponent(<CreateUserComponent methods={methods} onClose={handleModalClose} />);
     }
     setShowModal(true);
   };

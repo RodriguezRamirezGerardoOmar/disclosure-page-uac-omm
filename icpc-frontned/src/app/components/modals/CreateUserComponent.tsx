@@ -1,5 +1,5 @@
 'use client'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { UseFormReturn, FieldValues, SubmitHandler } from 'react-hook-form'
 import { BasicPanelComponent } from '../panels/BasicPanelComponent'
 import { enumTextTags } from '@/constants/types'
@@ -10,8 +10,11 @@ import CheckboxComponent from '../forms/CheckboxComponent'
 import SubmitComponent from '../forms/SubmitComponent'
 import useStore from '@/store/useStore'
 import { toast } from 'sonner'
+
 interface ICreateUserProps {
   methods: UseFormReturn<FieldValues>
+  onClose: () => void
+  id?: string
 }
 
 /*
@@ -24,30 +27,77 @@ Date: 22 - 03 - 2024
 Author: Gerardo Omar Rodriguez Ramirez
 */
 
-const CreateUserComponent = ({ ...props }: Readonly<ICreateUserProps>) => {
+const CreateUserComponent = ({ methods, onClose, id }: Readonly<ICreateUserProps>) => {
   const createUser = useStore(state => state.createUser)
+  const updateUser = useStore(state => state.updateUser)
+  const getUser = useStore(state => state.getUser)
+
+  useEffect(() => {
+    if (id) {
+      const fetchUser = async () => {
+        try {
+          const user = await getUser(id)
+          if (user) {
+            methods.reset({
+              name: user.name,
+              lastName: user.lastName,
+              userName: user.userName,
+              email: user.email,
+              isAdmin: user.isAdmin
+            })
+          } else {
+            toast.error('No se encontró el usuario con el ID proporcionado.', {
+              duration: 5000,
+              style: {
+                backgroundColor: '#ff0000',
+                color: '#ffffff'
+              }
+            })
+          }
+        } catch (error) {
+          toast.error('Error al cargar los datos del usuario.', {
+            duration: 5000,
+            style: {
+              backgroundColor: '#ff0000',
+              color: '#ffffff'
+            }
+          })
+        }
+      }
+
+      fetchUser()
+    }
+  }, [id, methods, getUser])
 
   const onSubmit: SubmitHandler<FieldValues> = async data => {
-    const response = await createUser({
-      name: String(data.name),
-      lastName: String(data.lastName),
-      userName: String(data.userName),
-      email: String(data.email),
-      password: String(data.password),
-      passwordVerify: String(data.passwordVerify),
-      isAdmin: data.isAdmin
-    })
+    try {
+      const userData = {
+        name: String(data.name),
+        lastName: String(data.lastName),
+        userName: String(data.userName),
+        email: String(data.email),
+        password: String(data.password),
+        passwordVerify: String(data.passwordVerify),
+        isAdmin: data.isAdmin
+      }
 
-    if ('statusCode' in response && response.statusCode === 201) {
-      toast.success(response.message, {
-        duration: 5000,
-        style: {
-          backgroundColor: 'green',
-          color: '#ffffff'
-        }
-      })
-    } else {
-      if ('message' in response) {
+      let response
+      if (id) {
+        response = await updateUser(userData, id)
+      } else {
+        response = await createUser(userData)
+      }
+
+      if ('id' in response) {
+        toast.success(id ? 'Usuario actualizado con éxito' : 'Creación de usuario exitosa', {
+          duration: 5000,
+          style: {
+            backgroundColor: 'green',
+            color: '#ffffff'
+          }
+        })
+        onClose()
+      } else if ('message' in response) {
         toast.error(response.message, {
           duration: 5000,
           style: {
@@ -55,26 +105,43 @@ const CreateUserComponent = ({ ...props }: Readonly<ICreateUserProps>) => {
             color: '#ffffff'
           }
         })
+      } else {
+        toast.error('Error inesperado al crear/actualizar el usuario', {
+          duration: 5000,
+          style: {
+            backgroundColor: '#ff0000',
+            color: '#ffffff'
+          }
+        })
       }
+    } catch (error) {
+      toast.error('Error al crear/actualizar el usuario', {
+        duration: 5000,
+        style: {
+          backgroundColor: '#ff0000',
+          color: '#ffffff'
+        }
+      })
     }
   }
+
   return (
     <div
       className={`margin-auto md:mx-auto max-w-7xl md:px-4 w-full h-full lg:px-8 lg:w-2/3 lg:h-auto 
     min-h-screen place-items-center justify-between py-24`}>
       <BasicPanelComponent backgroundColor='bg-white dark:bg-dark-primary'>
-        <form onSubmit={props.methods.handleSubmit(onSubmit)}>
+        <form onSubmit={methods.handleSubmit(onSubmit)}>
           <div className='flex flex-col items-center'>
             <LogoComponent size={100} />
             <TextComponent
               tag={enumTextTags.h1}
               sizeFont='s16'
               className='dark:text-dark-accent'>
-              Crear cuenta de usuario
+              {id ? 'Editar usuario' : 'Crear cuenta de usuario'}
             </TextComponent>
             <TextFieldComponent
               labelText='Nombre'
-              register={props.methods.register}
+              register={methods.register}
               fieldName='name'
               id='name'
               necessary={true}
@@ -82,7 +149,7 @@ const CreateUserComponent = ({ ...props }: Readonly<ICreateUserProps>) => {
               auto='name'></TextFieldComponent>
             <TextFieldComponent
               labelText='Apellido'
-              register={props.methods.register}
+              register={methods.register}
               fieldName='lastName'
               id='lastName'
               necessary={true}
@@ -91,7 +158,7 @@ const CreateUserComponent = ({ ...props }: Readonly<ICreateUserProps>) => {
 
             <TextFieldComponent
               labelText='Nombre de usuario'
-              register={props.methods.register}
+              register={methods.register}
               fieldName='userName'
               id='userName'
               necessary={true}
@@ -100,35 +167,46 @@ const CreateUserComponent = ({ ...props }: Readonly<ICreateUserProps>) => {
 
             <TextFieldComponent
               labelText='Correo electrónico'
-              register={props.methods.register}
+              register={methods.register}
               fieldName='email'
               id='email'
               necessary={true}
               type='email'
               auto='email'></TextFieldComponent>
 
-            <TextFieldComponent
-              labelText={'Contraseña'}
-              register={props.methods.register}
-              fieldName={'password'}
-              id={'password'}
-              necessary={true}
-              type={'password'}></TextFieldComponent>
+            {!id && (
+              <>
+                <TextFieldComponent
+                  labelText={'Contraseña'}
+                  register={methods.register}
+                  fieldName={'password'}
+                  id={'password'}
+                  necessary={true}
+                  type={'password'}></TextFieldComponent>
 
-            <TextFieldComponent
-              labelText='Verifique su contraseña'
-              register={props.methods.register}
-              fieldName='passwordVerify'
-              id='passwordVerify'
-              necessary={true}
-              type='password'></TextFieldComponent>
+                <TextFieldComponent
+                  labelText='Verifique su contraseña'
+                  register={methods.register}
+                  fieldName='passwordVerify'
+                  id='passwordVerify'
+                  necessary={true}
+                  type='password'></TextFieldComponent>
+              </>
+            )}
 
             <CheckboxComponent
               labelText='Permisos de administrador'
               fieldName='isAdmin'
-              register={props.methods.register}></CheckboxComponent>
+              register={methods.register}></CheckboxComponent>
 
-            <SubmitComponent text='Crear cuenta' />
+            <SubmitComponent text={id ? 'Actualizar usuario' : 'Crear cuenta'} />
+            <button
+              type="button"
+              onClick={onClose}
+              className="mt-4 px-4 py-2 bg-red-500 text-white rounded-md"
+            >
+              Cerrar
+            </button>
           </div>
         </form>
       </BasicPanelComponent>
