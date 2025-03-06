@@ -18,11 +18,11 @@ export const TicketActions: React.FC<TicketActionsProps> = ({ ticketId }) => {
         const toastOptions = {
           duration: 5000,
           style: {
-            backgroundColor: 'id' in response ? 'green' : '#ff0000',
+            backgroundColor: response ? 'green' : '#ff0000',
             color: '#ffffff'
           }
         }
-        if ('id' in response) {
+        if (response) {
           toast.success('Ticket aprobado con éxito.', toastOptions);
           window.location.href = '/profile'
         } else {

@@ -357,7 +357,7 @@ export class NotesService {
       });
       const savedTicket = await this.ticketRepository.save(ticket);
       if (savedTicket) {
-        return await this.noteRepository.remove(note);
+        return note;
       } else {
         throw new BadRequestException('Error al eliminar el apunte');
       }
