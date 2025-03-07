@@ -14,15 +14,15 @@ export const TicketActions: React.FC<TicketActionsProps> = ({ ticketId }) => {
   const acceptTicket = async () => {
     try {
       const response = await approveTicket(ticketId);
-      if (response) {
+      if ('created_at' in response) {
         const toastOptions = {
           duration: 5000,
           style: {
-            backgroundColor: 'id' in response ? 'green' : '#ff0000',
+            backgroundColor: 'created_at' in response ? 'green' : '#ff0000',
             color: '#ffffff'
           }
         }
-        if ('id' in response) {
+        if ('created_at' in response) {
           toast.success('Ticket aprobado con éxito.', toastOptions);
           window.location.href = '/profile'
         } else {

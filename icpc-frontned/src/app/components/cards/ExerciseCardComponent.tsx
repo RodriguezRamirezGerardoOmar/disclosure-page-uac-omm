@@ -3,26 +3,14 @@ import { Menu, Transition, Listbox } from '@headlessui/react'
 import {
   EllipsisVerticalIcon,
   UserCircleIcon,
-  CalendarDaysIcon,
-  CreditCardIcon,
-  CheckCircleIcon,
-  PaperClipIcon,
-  FaceSmileIcon,
-  FaceFrownIcon,
-  FireIcon,
-  HandThumbUpIcon,
-  HeartIcon,
-  XMarkIcon,
-  CpuChipIcon,
-  ClockIcon
+  ClockIcon,
+  CpuChipIcon
 } from '@heroicons/react/20/solid'
-import React, { Fragment, useEffect, useState } from 'react'
-import useExerciseStore from '@/store/useExcerciseStore'
+import React, { Fragment } from 'react'
 import { enumTextTags, Exercise } from '@/constants/types'
 import TagListComponent from '../tags/TagListComponent'
 import { TextComponent } from '../text/TextComponent'
 import ExerciseHeaderComponent from '../ui/ExerciseHeaderComponent'
-import MarkdownBodyComponent from '../panels/MarkdownBodyComponent'
 import ExerciseMarkdownComponent from '../ui/ExerciseMarkdownComponent'
 
 interface ExerciseCardComponentProps {
@@ -34,7 +22,7 @@ interface ExerciseCardComponentProps {
 
 const ExerciseCardComponent = ({ ...props }: Readonly<ExerciseCardComponentProps>) => {
   return (
-    <main>
+    <main className='w-full'>
       <ExerciseHeaderComponent
         category={props.exercise.category.name}
         title={props.exercise.title}
@@ -43,7 +31,7 @@ const ExerciseCardComponent = ({ ...props }: Readonly<ExerciseCardComponentProps
 
       <div className='mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8'>
         {/* Contenido principal */}
-        <div className='mx-auto grid max-w-2xl grid-cols-1 grid-rows-1 items-start gap-x-8 gap-y-8 lg:mx-0 lg:max-w-none lg:grid-cols-3'>
+        <div className='mx-auto grid max-w-full grid-cols-1 grid-rows-1 items-start gap-x-8 gap-y-8 lg:grid-cols-3'>
           {/* Resumen del ejercicio */}
           <div className='lg:col-start-3 lg:row-end-1'>
             <div className='rounded-lg bg-gray-50 shadow-sm ring-1 ring-gray-900/5'>

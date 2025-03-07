@@ -132,6 +132,7 @@ export class TicketService {
             const res = await this.ticketRepository
               .createQueryBuilder('ticket')
               .where('ticket.id = :id', { id: id })
+              .leftJoinAndSelect('ticket.commentId', 'commentId')
               .leftJoinAndSelect(
                 'ticket.originalExerciseId',
                 'originalExerciseId'
@@ -168,6 +169,7 @@ export class TicketService {
             return await this.ticketRepository
               .createQueryBuilder('ticket')
               .where('ticket.id = :id', { id: id })
+              .leftJoinAndSelect('ticket.commentId', 'commentId')
               .leftJoinAndSelect(
                 'ticket.originalExerciseId',
                 'originalExerciseId'
@@ -185,6 +187,7 @@ export class TicketService {
             const res = await this.ticketRepository
               .createQueryBuilder('ticket')
               .where('ticket.id = :id', { id: id })
+              .leftJoinAndSelect('ticket.commentId', 'commentId')
               .leftJoinAndSelect('ticket.originalNoteId', 'originalNoteId')
               .leftJoinAndSelect('ticket.modifiedNoteId', 'modifiedNoteId')
               .getOne();
@@ -208,9 +211,10 @@ export class TicketService {
               modifiedNoteId: modifiedNote
             };
           default:
-            await this.ticketRepository
+            return await this.ticketRepository
               .createQueryBuilder('ticket')
               .where('ticket.id = :id', { id: id })
+              .leftJoinAndSelect('ticket.commentId', 'commentId')
               .leftJoinAndSelect('ticket.originalNoteId', 'originalNoteId')
               .leftJoinAndSelect('originalNoteId.commentId', 'comment')
               .leftJoinAndSelect('originalNoteId.category', 'category')
@@ -222,12 +226,14 @@ export class TicketService {
           ? await this.ticketRepository
               .createQueryBuilder('ticket')
               .where('ticket.id = :id', { id: id })
+              .leftJoinAndSelect('ticket.commentId', 'commentId')
               .leftJoinAndSelect('ticket.originalNewsId', 'originalNewsId')
               .leftJoinAndSelect('ticket.modifiedNewsId', 'modifiedNewsId')
               .getOne()
           : await this.ticketRepository
               .createQueryBuilder('ticket')
               .where('ticket.id = :id', { id: id })
+              .leftJoinAndSelect('ticket.commentId', 'commentId')
               .leftJoinAndSelect('ticket.originalNewsId', 'originalNewsId')
               .getOne();
     }

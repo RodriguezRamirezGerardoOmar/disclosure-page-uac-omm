@@ -3,6 +3,7 @@ import { Menu, MenuButton, Transition, MenuItems, MenuItem } from '@headlessui/r
 import { EllipsisVerticalIcon } from '@heroicons/react/20/solid'
 import React, { Fragment, useEffect, useState } from 'react'
 import ReportButtonComponent from '../buttons/ReportButtonComponent'
+import LogoComponent from '../LogoComponent' // Importa el LogoComponent
 
 interface ExerciseHeaderComponentProps {
     category: string,
@@ -46,16 +47,11 @@ const ExerciseHeaderComponent = ({...props}: Readonly<ExerciseHeaderComponentPro
         {/* Título y botones */}
         <div className='mx-auto flex max-w-2xl items-center justify-between gap-x-8 lg:mx-0 lg:max-w-none'>
           <div className='flex items-center gap-x-6'>
-            <img
-              src='https://tailwindui.com/img/logos/48x48/tuple.svg'
-              alt=''
-              className='h-16 w-16 flex-none rounded-full ring-1 ring-gray-900/10'
-            />
             <h1>
               <div className='text-sm leading-6 text-gray-500'>
-                <span className='text-accent dark:text-dark-accent'>{props.category}</span>
+              <span className='text-accent dark:text-dark-accent'>{props.category}</span>
               </div>
-              <div className='mt-1 text-base font-semibold leading-6 text-accent dark:text-dark-accent'>{props.title}</div>
+              <div className='mt-1 text-2xl font-semibold leading-6 text-accent dark:text-dark-accent'>{props.title}</div>
             </h1>
           </div>
           <div className='flex items-center gap-x-4 sm:gap-x-6'>
