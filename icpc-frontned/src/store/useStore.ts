@@ -46,6 +46,7 @@ interface Actions {
   getUsers: () => Promise<IUser[]>
   deleteUser: (id: string) => Promise<IApiResponse | TResponseBasicError>
   updateUser: (id: string, user: IUpdateUser) => Promise<IUser>
+  getUser: (id: string) => Promise<IUser> 
 }
 
 const api = axios.create({
@@ -129,6 +130,15 @@ const useAuthStore = create<AuthState & Actions>()(
           } catch (error: any) {
             throw error.response.data; // Lanzar error para capturar en el componente
           }
+        },
+
+        getUser: async (id: string): Promise<IUser> => {
+          const response = await api.get(`/api/v1/users/${id}`, {
+            headers: {
+              Authorization: `Bearer ${get().token}`
+            }
+          });
+          return response.data;
         }
       }),
       {

@@ -22,6 +22,7 @@ import {
 import { AuthGuard } from '../auth/guard/auth.guard';
 import { Auth } from '../common/decorators/auth.decorator';
 import { RoleEnum } from '../common/enums/role.enum';
+import { User } from './entities/user.entity';
 
 @Controller('users') // This is the path that will be used for all the endpoints in this controller.
 @Auth(RoleEnum.ADMIN) // This is the role that will be used for all the endpoints in this controller.
@@ -63,6 +64,11 @@ export class UsersController {
   @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(id);
+  }
+
+  @Get(':id')
+  async getUserById(@Param('id') id: string): Promise<User> {
+    return this.usersService.findOneById(id);
   }
 
   @Patch(':id')

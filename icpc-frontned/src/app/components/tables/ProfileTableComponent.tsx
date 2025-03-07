@@ -18,6 +18,7 @@ import CreateTagComponent from '../modals/CreateTagComponent'
 import CreateExcerciseComponent from '../modals/CreateExcerciseComponent'
 import CreateNoteComponent from '../modals/CreateNoteComponent'
 import CreateNewsComponent from '../modals/CreateNewsComponent'
+import CreateUserComponent from '../modals/CreateUserComponent'
 import { useForm } from 'react-hook-form'
 import DisplayReportComponent from '../cards/DisplayReportComponent'
 
@@ -46,6 +47,7 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
   const [isExerciseModalOpen, setIsExerciseModalOpen] = useState(false)
   const [isNoteModalOpen, setIsNoteModalOpen] = useState(false)
   const [isNewsModalOpen, setIsNewsModalOpen] = useState(false)
+  const [isUserModalOpen, setIsUserModalOpen] = useState(false)
   const [activeCategoryId, setActiveCategoryId] = useState<string | undefined>(undefined)
   const [activeDifficultyId, setActiveDifficultyId] = useState<string | undefined>(undefined)
   const [activeMemoryId, setActiveMemoryId] = useState<string | undefined>(undefined)
@@ -54,6 +56,7 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
   const [activeExerciseId, setActiveExerciseId] = useState<string | undefined>(undefined)
   const [activeNoteId, setActiveNoteId] = useState<string | undefined>(undefined)
   const [activeNewsId, setActiveNewsId] = useState<string | undefined>(undefined)
+  const [activeUserId, setActiveUserId] = useState<string | undefined>(undefined)
   const deleteExercise = useExcerciseStore(state => state.deleteExercise)
   const deleteNote = useNoteStore(state => state.deleteNote)
   const deleteNews = useNewsStore(state => state.deleteNews)
@@ -63,6 +66,7 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
   const deleteMemoryLimit = useUtilsStore(state => state.deleteMemoryLimit)
   const deleteDifficulty = useUtilsStore(state => state.deleteDifficulty)
   const deleteUser = useStore(state => state.deleteUser)
+  const getUser = useStore(state => state.getUser)
   const hasPendingTicket = useUtilsStore(state => state.hasPendingTicket)
 
   const [selectedReportId, setSelectedReportId] = useState<string | null>(null)
@@ -91,42 +95,49 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
         }
       }
 
-      // Si no hay ticket pendiente, abre el modal correspondiente
-      switch (itemType) {
-        case AllTabs.EXERCISES:
-          setActiveExerciseId(id)
-          setIsExerciseModalOpen(true)
-          break
-        case AllTabs.NOTES:
-          setActiveNoteId(id)
-          setIsNoteModalOpen(true)
-          break
-        case AllTabs.NEWS:
-          setActiveNewsId(id)
-          setIsNewsModalOpen(true)
-          break
-        case AllTabs.CATEGORIES:
-          setActiveCategoryId(id)
-          setIsCategoryModalOpen(true)
-          break
-        case AllTabs.DIFFICULTY:
-          setActiveDifficultyId(id)
-          setIsDifficultyModalOpen(true)
-          break
-        case AllTabs.MEMORY:
-          setActiveMemoryId(id)
-          setIsMemoryModalOpen(true)
-          break
-        case AllTabs.TIME:
-          setActiveTimeId(id)
-          setIsTimeModalOpen(true)
-          break
-        case AllTabs.TAGS:
-          setActiveTagId(id)
-          setIsTagModalOpen(true)
-          break
-        default:
-          console.error('Tipo de ítem no reconocido:', itemType)
+      if (itemType === AllTabs.ACCOUNT) {
+        const user = await getUser(id);
+        methods.reset(user);
+        setActiveUserId(id);
+        setIsUserModalOpen(true);
+      } else {
+        // Si no hay ticket pendiente, abre el modal correspondiente
+        switch (itemType) {
+          case AllTabs.EXERCISES:
+            setActiveExerciseId(id)
+            setIsExerciseModalOpen(true)
+            break
+          case AllTabs.NOTES:
+            setActiveNoteId(id)
+            setIsNoteModalOpen(true)
+            break
+          case AllTabs.NEWS:
+            setActiveNewsId(id)
+            setIsNewsModalOpen(true)
+            break
+          case AllTabs.CATEGORIES:
+            setActiveCategoryId(id)
+            setIsCategoryModalOpen(true)
+            break
+          case AllTabs.DIFFICULTY:
+            setActiveDifficultyId(id)
+            setIsDifficultyModalOpen(true)
+            break
+          case AllTabs.MEMORY:
+            setActiveMemoryId(id)
+            setIsMemoryModalOpen(true)
+            break
+          case AllTabs.TIME:
+            setActiveTimeId(id)
+            setIsTimeModalOpen(true)
+            break
+          case AllTabs.TAGS:
+            setActiveTagId(id)
+            setIsTagModalOpen(true)
+            break
+          default:
+            console.error('Tipo de ítem no reconocido:', itemType)
+        }
       }
 
       toast.success('Le picó en Editar' + id + itemType, {
@@ -375,6 +386,19 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
                 props.setUpdate(!props.update)
               }}
               id={activeNewsId}
+            />
+          </div>
+        </div>
+      )}
+      {isUserModalOpen && (
+        <div className='fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50'>
+          <div className='rounded-lg p-6 w-full max-h-[90%] overflow-y-auto'>
+            <CreateUserComponent
+              onClose={() => {
+                setIsUserModalOpen(false)
+                props.setUpdate(!props.update)
+              }}
+              methods={methods}
             />
           </div>
         </div>

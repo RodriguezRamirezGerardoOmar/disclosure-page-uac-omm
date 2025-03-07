@@ -14,7 +14,6 @@ import { toast } from 'sonner'
 interface ICreateUserProps {
   methods: UseFormReturn<FieldValues>
   onClose: () => void
-  id?: string
 }
 
 /*
@@ -27,100 +26,35 @@ Date: 22 - 03 - 2024
 Author: Gerardo Omar Rodriguez Ramirez
 */
 
-const CreateUserComponent = ({ methods, onClose, id }: Readonly<ICreateUserProps>) => {
+const CreateUserComponent = ({ methods, onClose }: Readonly<ICreateUserProps>) => {
   const createUser = useStore(state => state.createUser)
   const updateUser = useStore(state => state.updateUser)
-  const getUser = useStore(state => state.getUser)
-
-  useEffect(() => {
-    if (id) {
-      const fetchUser = async () => {
-        try {
-          const user = await getUser(id)
-          if (user) {
-            methods.reset({
-              name: user.name,
-              lastName: user.lastName,
-              userName: user.userName,
-              email: user.email,
-              isAdmin: user.isAdmin
-            })
-          } else {
-            toast.error('No se encontró el usuario con el ID proporcionado.', {
-              duration: 5000,
-              style: {
-                backgroundColor: '#ff0000',
-                color: '#ffffff'
-              }
-            })
-          }
-        } catch (error) {
-          toast.error('Error al cargar los datos del usuario.', {
-            duration: 5000,
-            style: {
-              backgroundColor: '#ff0000',
-              color: '#ffffff'
-            }
-          })
-        }
-      }
-
-      fetchUser()
-    }
-  }, [id, methods, getUser])
 
   const onSubmit: SubmitHandler<FieldValues> = async data => {
     try {
-      const userData = {
-        name: String(data.name),
-        lastName: String(data.lastName),
-        userName: String(data.userName),
-        email: String(data.email),
-        password: String(data.password),
-        passwordVerify: String(data.passwordVerify),
-        isAdmin: data.isAdmin
-      }
-
-      let response
-      if (id) {
-        response = await updateUser(userData, id)
-      } else {
-        response = await createUser(userData)
-      }
+      const response = methods.getValues('id') ? await updateUser(methods.getValues('id'), data) : await createUser(data)
 
       if ('id' in response) {
-        toast.success(id ? 'Usuario actualizado con éxito' : 'Creación de usuario exitosa', {
+        toast.success('Operación exitosa', {
           duration: 5000,
-          style: {
-            backgroundColor: 'green',
-            color: '#ffffff'
-          }
+          style: { backgroundColor: 'green', color: '#ffffff' }
         })
         onClose()
       } else if ('message' in response) {
         toast.error(response.message, {
           duration: 5000,
-          style: {
-            backgroundColor: '#ff0000',
-            color: '#ffffff'
-          }
+          style: { backgroundColor: '#ff0000', color: '#ffffff' }
         })
       } else {
-        toast.error('Error inesperado al crear/actualizar el usuario', {
+        toast.error('Error inesperado', {
           duration: 5000,
-          style: {
-            backgroundColor: '#ff0000',
-            color: '#ffffff'
-          }
+          style: { backgroundColor: '#ff0000', color: '#ffffff' }
         })
       }
     } catch (error) {
-      toast.error('Error al crear/actualizar el usuario', {
+      toast.error('Error al realizar la operación', {
         duration: 5000,
-        style: {
-          backgroundColor: '#ff0000',
-          color: '#ffffff'
-        }
+        style: { backgroundColor: '#ff0000', color: '#ffffff' }
       })
     }
   }
@@ -128,7 +62,7 @@ const CreateUserComponent = ({ methods, onClose, id }: Readonly<ICreateUserProps
   return (
     <div
       className={`margin-auto md:mx-auto max-w-7xl md:px-4 w-full h-full lg:px-8 lg:w-2/3 lg:h-auto 
-    min-h-screen place-items-center justify-between py-24`}>
+      min-h-screen place-items-center justify-between py-24`}>
       <BasicPanelComponent backgroundColor='bg-white dark:bg-dark-primary'>
         <form onSubmit={methods.handleSubmit(onSubmit)}>
           <div className='flex flex-col items-center'>
@@ -137,7 +71,7 @@ const CreateUserComponent = ({ methods, onClose, id }: Readonly<ICreateUserProps
               tag={enumTextTags.h1}
               sizeFont='s16'
               className='dark:text-dark-accent'>
-              {id ? 'Editar usuario' : 'Crear cuenta de usuario'}
+              {methods.getValues('id') ? 'Editar cuenta de usuario' : 'Crear cuenta de usuario'}
             </TextComponent>
             <TextFieldComponent
               labelText='Nombre'
@@ -146,7 +80,8 @@ const CreateUserComponent = ({ methods, onClose, id }: Readonly<ICreateUserProps
               id='name'
               necessary={true}
               type='text'
-              auto='name'></TextFieldComponent>
+              auto='name'
+            />
             <TextFieldComponent
               labelText='Apellido'
               register={methods.register}
@@ -154,8 +89,8 @@ const CreateUserComponent = ({ methods, onClose, id }: Readonly<ICreateUserProps
               id='lastName'
               necessary={true}
               type='text'
-              auto='last-name'></TextFieldComponent>
-
+              auto='last-name'
+            />
             <TextFieldComponent
               labelText='Nombre de usuario'
               register={methods.register}
@@ -163,8 +98,8 @@ const CreateUserComponent = ({ methods, onClose, id }: Readonly<ICreateUserProps
               id='userName'
               necessary={true}
               type='text'
-              auto='username'></TextFieldComponent>
-
+              auto='username'
+            />
             <TextFieldComponent
               labelText='Correo electrónico'
               register={methods.register}
@@ -172,39 +107,34 @@ const CreateUserComponent = ({ methods, onClose, id }: Readonly<ICreateUserProps
               id='email'
               necessary={true}
               type='email'
-              auto='email'></TextFieldComponent>
-
-            {!id && (
-              <>
-                <TextFieldComponent
-                  labelText={'Contraseña'}
-                  register={methods.register}
-                  fieldName={'password'}
-                  id={'password'}
-                  necessary={true}
-                  type={'password'}></TextFieldComponent>
-
-                <TextFieldComponent
-                  labelText='Verifique su contraseña'
-                  register={methods.register}
-                  fieldName='passwordVerify'
-                  id='passwordVerify'
-                  necessary={true}
-                  type='password'></TextFieldComponent>
-              </>
-            )}
-
+              auto='email'
+            />
+            <TextFieldComponent
+              labelText='Contraseña'
+              register={methods.register}
+              fieldName='password'
+              id='password'
+              necessary={true}
+              type='password'
+            />
+            <TextFieldComponent
+              labelText='Verifique su contraseña'
+              register={methods.register}
+              fieldName='passwordVerify'
+              id='passwordVerify'
+              necessary={true}
+              type='password'
+            />
             <CheckboxComponent
               labelText='Permisos de administrador'
               fieldName='isAdmin'
-              register={methods.register}></CheckboxComponent>
-
-            <SubmitComponent text={id ? 'Actualizar usuario' : 'Crear cuenta'} />
+              register={methods.register}
+            />
+            <SubmitComponent text={methods.getValues('id') ? 'Actualizar cuenta' : 'Crear cuenta'} />
             <button
-              type="button"
+              type='button'
               onClick={onClose}
-              className="mt-4 px-4 py-2 bg-red-500 text-white rounded-md"
-            >
+              className='mt-4 px-4 py-2 bg-red-500 text-white rounded-md'>
               Cerrar
             </button>
           </div>
