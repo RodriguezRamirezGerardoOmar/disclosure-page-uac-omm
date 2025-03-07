@@ -21,6 +21,7 @@ import CreateNewsComponent from '../modals/CreateNewsComponent'
 import CreateUserComponent from '../modals/CreateUserComponent'
 import { useForm } from 'react-hook-form'
 import DisplayReportComponent from '../cards/DisplayReportComponent'
+import ConfirmDenyComponent from '../buttons/Confirm&DenyComponent';
 
 interface Option {
   name: string
@@ -48,6 +49,9 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
   const [isNoteModalOpen, setIsNoteModalOpen] = useState(false)
   const [isNewsModalOpen, setIsNewsModalOpen] = useState(false)
   const [isUserModalOpen, setIsUserModalOpen] = useState(false)
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [deleteItemType, setDeleteItemType] = useState<string | null>(null);
   const [activeCategoryId, setActiveCategoryId] = useState<string | undefined>(undefined)
   const [activeDifficultyId, setActiveDifficultyId] = useState<string | undefined>(undefined)
   const [activeMemoryId, setActiveMemoryId] = useState<string | undefined>(undefined)
@@ -154,65 +158,52 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
   }
 
   const handleDelete = async (id: string) => {
-    let response
-    switch (props.itemType) {
+    setDeleteId(id);
+    setDeleteItemType(props.itemType);
+    setConfirmDelete(true);
+  };
+
+  const confirmDeleteAction = async () => {
+    let response;
+    switch (deleteItemType) {
       case AllTabs.EXERCISES:
-        response = await deleteExercise(id)
-        if ('statusCode' in response && response.statusCode === 200) {
-          toast.success(response.message, { duration: 5000, style: { backgroundColor: 'green', color: 'white' } })
-        }
-        break
+        response = await deleteExercise(deleteId!);
+        break;
       case AllTabs.NOTES:
-        response = await deleteNote(id)
-        if ('statusCode' in response && response.statusCode === 200) {
-          toast.success(response.message, { duration: 5000, style: { backgroundColor: 'green', color: 'white' } })
-        }
-        break
+        response = await deleteNote(deleteId!);
+        break;
       case AllTabs.NEWS:
-        response = await deleteNews(id)
-        if ('statusCode' in response && response.statusCode === 200) {
-          toast.success(response.message, { duration: 5000, style: { backgroundColor: 'green', color: 'white' } })
-        }
-        break
+        response = await deleteNews(deleteId!);
+        break;
       case AllTabs.CATEGORIES:
-        response = await deleteCategory(id)
-        if ('statusCode' in response && response.statusCode === 200) {
-          toast.success(response.message, { duration: 5000, style: { backgroundColor: 'green', color: 'white' } })
-        }
-        break
+        response = await deleteCategory(deleteId!);
+        break;
       case AllTabs.TAGS:
-        response = await deleteTag(id)
-        if ('statusCode' in response && response.statusCode === 200) {
-          toast.success(response.message, { duration: 5000, style: { backgroundColor: 'green', color: 'white' } })
-        }
-        break
+        response = await deleteTag(deleteId!);
+        break;
       case AllTabs.TIME:
-        response = await deleteTimeLimit(id)
-        if ('statusCode' in response && response.statusCode === 200) {
-          toast.success(response.message, { duration: 5000, style: { backgroundColor: 'green', color: 'white' } })
-        }
-        break
+        response = await deleteTimeLimit(deleteId!);
+        break;
       case AllTabs.MEMORY:
-        response = await deleteMemoryLimit(id)
-        if ('statusCode' in response && response.statusCode === 200) {
-          toast.success(response.message, { duration: 5000, style: { backgroundColor: 'green', color: 'white' } })
-        }
-        break
+        response = await deleteMemoryLimit(deleteId!);
+        break;
       case AllTabs.DIFFICULTY:
-        response = await deleteDifficulty(id)
-        if ('statusCode' in response && response.statusCode === 200) {
-          toast.success(response.message, { duration: 5000, style: { backgroundColor: 'green', color: 'white' } })
-        }
-        break
+        response = await deleteDifficulty(deleteId!);
+        break;
       case AllTabs.ACCOUNT:
-        response = await deleteUser(id)
-        if ('statusCode' in response && response.statusCode === 200) {
-          toast.success(response.message, { duration: 5000, style: { backgroundColor: 'green', color: 'white' } })
-        }
-        break
+        response = await deleteUser(deleteId!);
+        break;
     }
-    props.setUpdate(!props.update)
-  }
+
+    if (response && 'statusCode' in response && response.statusCode === 200) {
+      toast.success(response.message, { duration: 5000, style: { backgroundColor: 'green', color: 'white' } });
+    }
+
+    setConfirmDelete(false);
+    setDeleteId(null);
+    setDeleteItemType(null);
+    props.setUpdate(!props.update);
+  };
 
   const options: Option[] = [
     {
@@ -296,6 +287,12 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
         <DisplayReportComponent
           id={selectedReportId}
           onClose={() => setSelectedReportId(null)}
+        />
+      )}
+      {confirmDelete && (
+        <ConfirmDenyComponent
+          onConfirm={confirmDeleteAction}
+          onCancel={() => setConfirmDelete(false)}
         />
       )}
       {isCategoryModalOpen && (
