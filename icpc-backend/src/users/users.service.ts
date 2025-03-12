@@ -13,6 +13,8 @@ import {
   TicketOperation,
   TicketStatus
 } from 'src/ticket/entities/ticket.entity';
+import { isAbsolute } from 'path';
+import { where } from 'sequelize';
 
 // This file contains all the logic to perform the database queries.
 
@@ -85,37 +87,61 @@ export class UsersService {
   }
 
   async findOne(id: string) {
-    return await this.userRepository.findOneBy({ id });
+    const user = await this.userRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.role', 'role')
+      .where('user.id = :id', { id })
+      .getOne();
+    return {
+      id: user.id,
+      name: user.name,
+      lastName: user.lastName,
+      userName: user.userName,
+      email: user.email,
+      isAdmin: user.role.role === RoleEnum.ADMIN
+    };
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
     const user = await this.userRepository.findOneBy({ id: id });
-  
+
     // Verificar nombre de usuario
     if (updateUserDto.userName && updateUserDto.userName !== user.userName) {
-      const existingUser = await this.userRepository.findOneBy({ 
-        userName: updateUserDto.userName 
+      const existingUser = await this.userRepository.findOneBy({
+        userName: updateUserDto.userName
       });
       if (existingUser) {
         throw new BadRequestException('El nombre de usuario ya existe');
       }
     }
-  
+
     // Verificar email
     if (updateUserDto.email && updateUserDto.email !== user.email) {
-      const existingUser = await this.userRepository.findOneBy({ 
-        email: updateUserDto.email 
+      const existingUser = await this.userRepository.findOneBy({
+        email: updateUserDto.email
       });
       if (existingUser) {
         throw new BadRequestException('El email ya existe');
       }
     }
-  
-    const updatedUser = await this.userRepository.save({
+
+    const modifyUser = this.userRepository.create({
       ...user,
-      ...updateUserDto
+      name: updateUserDto.name,
+      lastName: updateUserDto.lastName,
+      userName: updateUserDto.userName,
+      email: updateUserDto.email,
+      password: updateUserDto.password
+        ? await bcrypt.hash(updateUserDto.password, 10)
+        : user.password,
+      role: updateUserDto.isAdmin
+        ? await this.roleRepository.findOne({ where: { role: RoleEnum.ADMIN } })
+        : await this.roleRepository.findOne({ where: { role: RoleEnum.USER } })
     });
-  
+    const updatedUser = await this.userRepository.save({
+      ...modifyUser
+    });
+
     return {
       id: updatedUser.id,
       name: updatedUser.name,

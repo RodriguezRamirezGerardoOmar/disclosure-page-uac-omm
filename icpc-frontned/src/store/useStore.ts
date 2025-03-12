@@ -5,6 +5,7 @@ import { IApiResponse, TResponseBasicError } from '@/constants/types'
 
 // Define user and auth response types
 export interface IUser {
+  isAdmin: any
   id: string
   name: string
   lastName: string
@@ -28,6 +29,8 @@ export interface IUpdateUser {
   lastName: string
   userName: string
   email: string
+  password?: string
+  passwordVerify?: string
   role: string
   editorId: string
 }

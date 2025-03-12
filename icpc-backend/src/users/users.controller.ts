@@ -66,11 +66,6 @@ export class UsersController {
     return this.usersService.findOne(id);
   }
 
-  @Get(':id')
-  async getUserById(@Param('id') id: string): Promise<User> {
-    return this.usersService.findOneById(id);
-  }
-
   @Patch(':id')
   @ApiBearerAuth()
   @UseGuards(AuthGuard)

@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect } from 'react'
-import { UseFormReturn, FieldValues, SubmitHandler } from 'react-hook-form'
+import { UseFormReturn, FieldValues, SubmitHandler, useForm } from 'react-hook-form'
 import { BasicPanelComponent } from '../panels/BasicPanelComponent'
 import { enumTextTags } from '@/constants/types'
 import LogoComponent from '../LogoComponent'
@@ -12,8 +12,8 @@ import useStore from '@/store/useStore'
 import { toast } from 'sonner'
 
 interface ICreateUserProps {
-  methods: UseFormReturn<FieldValues>
   onClose: () => void
+  id?: string
 }
 
 /*
@@ -26,36 +26,86 @@ Date: 22 - 03 - 2024
 Author: Gerardo Omar Rodriguez Ramirez
 */
 
-const CreateUserComponent = ({ methods, onClose }: Readonly<ICreateUserProps>) => {
+const CreateUserComponent = (props: ICreateUserProps) => {
+  const methods = useForm<FieldValues>()
   const createUser = useStore(state => state.createUser)
   const updateUser = useStore(state => state.updateUser)
+  const getUser = useStore(state => state.getUser)
+  const user = useStore(state => state.user)
 
-  const onSubmit: SubmitHandler<FieldValues> = async data => {
-    try {
-      const response = methods.getValues('id') ? await updateUser(methods.getValues('id'), data) : await createUser(data)
-
-      if ('id' in response) {
-        toast.success('Operación exitosa', {
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        if (props.id) {
+          const user = await getUser(props.id)
+          if (user) {
+            methods.reset({
+              name: user.name,
+              lastName: user.lastName,
+              userName: user.userName,
+              email: user.email,
+              isAdmin: user.isAdmin
+            })
+          } else {
+            toast.error('No se encontró el usuario con el ID proporcionado.', {
+              duration: 5000,
+              style: {
+                backgroundColor: '#ff0000',
+                color: '#ffffff'
+              }
+            })
+          }
+        }
+      } catch (error) {
+        toast.error('Error al cargar los datos del usuario.', {
           duration: 5000,
-          style: { backgroundColor: 'green', color: '#ffffff' }
-        })
-        onClose()
-      } else if ('message' in response) {
-        toast.error(response.message, {
-          duration: 5000,
-          style: { backgroundColor: '#ff0000', color: '#ffffff' }
-        })
-      } else {
-        toast.error('Error inesperado', {
-          duration: 5000,
-          style: { backgroundColor: '#ff0000', color: '#ffffff' }
+          style: {
+            backgroundColor: '#ff0000',
+            color: '#ffffff'
+          }
         })
       }
-    } catch (error) {
-      toast.error('Error al realizar la operación', {
+    }
+
+    fetchUser()
+  }, [props.id, methods, getUser])
+
+  const onSubmit: SubmitHandler<FieldValues> = async data => {
+    const processResponse = async (response: any) => {
+      const toastOptions = {
         duration: 5000,
-        style: { backgroundColor: '#ff0000', color: '#ffffff' }
+        style: {
+          backgroundColor: response.id ? 'green' : '#ff0000',
+          color: '#ffffff'
+        }
+      }
+      if (response.id) {
+        toast.success(props.id ? 'Usuario actualizado.' : 'Usuario creado correctamente.', toastOptions)
+      } else if ('message' in response) {
+        toast.error(response.message, toastOptions)
+      } else {
+        toast.error('Error al crear el usuario.', toastOptions)
+      }
+    }
+
+    const userData = {
+      name: String(data.name),
+      lastName: String(data.lastName),
+      userName: String(data.userName),
+      email: String(data.email),
+      isAdmin: data.isAdmin
+    }
+
+    if (props.id) {
+      const response = await updateUser(props.id, { ...userData, role: user!.role, editorId: user!.id })
+      processResponse(response)
+    } else {
+      const response = await createUser({
+        ...userData,
+        password: '',
+        passwordVerify: ''
       })
+      processResponse(response)
     }
   }
 
@@ -71,7 +121,7 @@ const CreateUserComponent = ({ methods, onClose }: Readonly<ICreateUserProps>) =
               tag={enumTextTags.h1}
               sizeFont='s16'
               className='dark:text-dark-accent'>
-              {methods.getValues('id') ? 'Editar cuenta de usuario' : 'Crear cuenta de usuario'}
+              {props.id ? 'Editar usuario' : 'Crear cuenta de usuario'}
             </TextComponent>
             <TextFieldComponent
               labelText='Nombre'
@@ -114,7 +164,7 @@ const CreateUserComponent = ({ methods, onClose }: Readonly<ICreateUserProps>) =
               register={methods.register}
               fieldName='password'
               id='password'
-              necessary={true}
+              necessary={false}
               type='password'
             />
             <TextFieldComponent
@@ -122,7 +172,7 @@ const CreateUserComponent = ({ methods, onClose }: Readonly<ICreateUserProps>) =
               register={methods.register}
               fieldName='passwordVerify'
               id='passwordVerify'
-              necessary={true}
+              necessary={false}
               type='password'
             />
             <CheckboxComponent
@@ -130,10 +180,13 @@ const CreateUserComponent = ({ methods, onClose }: Readonly<ICreateUserProps>) =
               fieldName='isAdmin'
               register={methods.register}
             />
-            <SubmitComponent text={methods.getValues('id') ? 'Actualizar cuenta' : 'Crear cuenta'} />
+            <SubmitComponent
+              text={props.id ? 'Actualizar cuenta' : 'Crear cuenta'}
+              action={methods.handleSubmit(onSubmit)}
+            />
             <button
               type='button'
-              onClick={onClose}
+              onClick={props.onClose}
               className='mt-4 px-4 py-2 bg-red-500 text-white rounded-md'>
               Cerrar
             </button>
