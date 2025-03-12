@@ -102,8 +102,8 @@ const CreateUserComponent = (props: ICreateUserProps) => {
     } else {
       const response = await createUser({
         ...userData,
-        password: '',
-        passwordVerify: ''
+        password: String(methods.getValues('password')),
+        passwordVerify: String(methods.getValues('passwordVerify'))
       })
       processResponse(response)
     }

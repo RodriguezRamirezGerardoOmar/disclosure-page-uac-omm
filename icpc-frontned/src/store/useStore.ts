@@ -110,7 +110,7 @@ const useAuthStore = create<AuthState & Actions>()(
 
         deleteUser: async (id: string): Promise<IApiResponse | TResponseBasicError> => {
           try {
-            const response = await api.delete(`/api/v1/users/${id}`, {
+            const response = await api.delete(`/api/v1/users/${id}/${get().user?.id}`, {
               headers: {
                 Authorization: `Bearer ${get().token}`
               }

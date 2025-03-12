@@ -11,7 +11,8 @@ import { Comment } from 'src/comment/entities/comment.entity';
 import {
   Ticket,
   TicketOperation,
-  TicketStatus
+  TicketStatus,
+  TicketType
 } from 'src/ticket/entities/ticket.entity';
 import { isAbsolute } from 'path';
 import { where } from 'sequelize';
@@ -151,22 +152,36 @@ export class UsersService {
     };
   }
 
-  async remove(id: string) {
+  async remove(id: string, userId: string) {
     const user = await this.userRepository.findOneBy({ id });
-    const ticketCommentBody = `El usuario ${user.userName} ha sido eliminado`;
-    const comment = this.commentRepository.create({ body: ticketCommentBody });
+    if (!user) {
+      throw new BadRequestException('El usuario no existe');
+    }
+
+    const requestingUser = await this.userRepository
+      .createQueryBuilder('user')
+      .where('user.id = :userId', { userId })
+      .leftJoinAndSelect('user.role', 'role')
+      .getOne();
+
+    if (!requestingUser) {
+      throw new BadRequestException('Usuario solicitante no encontrado');
+    }
+
+    const commentBody = `${requestingUser.name} ha eliminado al usuario ${user.userName}`;
+    const comment = this.commentRepository.create({ body: commentBody });
     const savedComment = await this.commentRepository.save(comment);
+
     const ticket = this.ticketRepository.create({
       operation: TicketOperation.DELETE,
+      commentId: savedComment,
+      itemType: TicketType.USER,
       status: TicketStatus.ACCEPTED,
-      commentId: savedComment
+      otherId: user.id // Asegúrate de que la relación con el usuario sea correcta en tu entidad Ticket
     });
-    const savedTicket = await this.ticketRepository.save(ticket);
-    if (savedTicket) {
-      return await this.userRepository.remove(user);
-    } else {
-      throw new BadRequestException('Error al eliminar el usuario');
-    }
+
+    await this.ticketRepository.save(ticket);
+    return await this.userRepository.remove(user);
   }
 
   async findOneByUsername(username: string) {
