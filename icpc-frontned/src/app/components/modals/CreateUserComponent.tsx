@@ -93,6 +93,8 @@ const CreateUserComponent = (props: ICreateUserProps) => {
       lastName: String(data.lastName),
       userName: String(data.userName),
       email: String(data.email),
+      password: String(data.password),
+      passwordVerify: String(data.passwordVerify),
       isAdmin: data.isAdmin
     }
 
