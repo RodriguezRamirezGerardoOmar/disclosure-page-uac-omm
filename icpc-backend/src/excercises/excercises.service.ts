@@ -44,99 +44,99 @@ export class ExcercisesService {
     private readonly ticketsService: TicketService
   ) {}
 
-  async create(createExcerciseDto: CreateExcerciseDto) {
-    const {
-      name,
-      category,
-      difficulty,
-      time,
-      memoryId,
-      clue,
-      constraints,
-      solution
-    } = createExcerciseDto;
-    const newExcerciseName = await this.exerciseRepository.findOneBy({
-      title: name
-    });
-    if (newExcerciseName !== null) {
-      throw new BadRequestException(
-        'Un ejercicio con el mismo nombre ya existe'
-      );
-    }
-    const newExcerciseCategory = await this.categoryRepository.findOneBy({
-      name: category.name,
-      id: category.id
-    });
-    if (newExcerciseCategory === null) {
-      throw new BadRequestException('La categoría no existe');
-    }
-    const newExcerciseDifficulty = await this.difficultyRepository.findOneBy({
-      name: difficulty.name
-    });
-    if (newExcerciseDifficulty === null) {
-      throw new BadRequestException('El nivel de dificultad elegido no existe');
-    }
+async create(createExcerciseDto: CreateExcerciseDto) {
+  const {
+    name,
+    category,
+    difficulty,
+    time,
+    memoryId,
+    clue,
+    constraints,
+    solution
+  } = createExcerciseDto;
+  const newExcerciseName = await this.exerciseRepository.findOneBy({
+    title: name
+  });
+  if (newExcerciseName !== null) {
+    throw new BadRequestException(
+      'Un ejercicio con el mismo nombre ya existe'
+    );
+  }
+  const newExcerciseCategory = await this.categoryRepository.findOneBy({
+    name: category.name,
+    id: category.id
+  });
+  if (newExcerciseCategory === null) {
+    throw new BadRequestException('La categoría no existe');
+  }
+  const newExcerciseDifficulty = await this.difficultyRepository.findOneBy({
+    name: difficulty.name
+  });
+  if (newExcerciseDifficulty === null) {
+    throw new BadRequestException('El nivel de dificultad elegido no existe');
+  }
 
-    let newExcerciseTime = null;
-    if (time.value !== null) {
-      newExcerciseTime = await this.timeRepository.findOneBy({
-        timeLimit: time.value,
-        id: time.id
-      });
-      if (newExcerciseTime === null) {
-        throw new BadRequestException('El límite de tiempo elegido no existe');
-      }
-    }
-
-    let newExcerciseMemory = null;
-    if (memoryId !== 'undefined') {
-      newExcerciseMemory = await this.memoryRepository.findOneBy({
-        id: memoryId
-      });
-      if (newExcerciseMemory === null) {
-        throw new BadRequestException('El límite de memoria elegido no existe');
-      }
-    }
-
-    const newExcercise = this.exerciseRepository.create({
-      ...createExcerciseDto,
-      title: name,
-      memoryId: newExcerciseMemory || undefined,
-      time: newExcerciseTime || undefined,
-      clue: clue,
-      constraints: constraints,
-      solution: solution
+  let newExcerciseTime = null;
+  if (time.value !== null) {
+    newExcerciseTime = await this.timeRepository.findOneBy({
+      timeLimit: time.value,
+      id: time.id
     });
-    newExcercise.category = newExcerciseCategory;
-    newExcercise.difficulty = newExcerciseDifficulty;
-    const user = await this.userRepository.findOneBy({
-      userName: createExcerciseDto.userAuthor
-    });
-    newExcercise.created_by = user.name;
-    newExcercise.isVisible = createExcerciseDto.role === 'admin';
-    const savedExcercise = await this.exerciseRepository.save(newExcercise);
-    const commentBody = `${user.name} ha creado un nuevo ejercicio con el nombre ${newExcercise.title}`;
-    const comment = this.commentRepository.create({
-      body: commentBody
-    });
-    const commentId = await this.commentRepository.save(comment);
-    const ticket = this.ticketRepository.create({
-      itemType: TicketType.EXERCISE,
-      operation: TicketOperation.CREATE,
-      status:
-        createExcerciseDto.role === 'admin'
-          ? TicketStatus.ACCEPTED
-          : TicketStatus.PENDING,
-      originalExerciseId: savedExcercise,
-      commentId: commentId
-    });
-    const savedTicket = await this.ticketRepository.save(ticket);
-    if (savedExcercise && savedTicket) {
-      return savedExcercise;
-    } else {
-      throw new BadRequestException('Error al crear el ejercicio');
+    if (newExcerciseTime === null) {
+      throw new BadRequestException('El límite de tiempo elegido no existe');
     }
   }
+
+  let newExcerciseMemory = null;
+  if (memoryId !== '') {
+    newExcerciseMemory = await this.memoryRepository.findOneBy({
+      id: memoryId
+    });
+    if (newExcerciseMemory === null) {
+      throw new BadRequestException('El límite de memoria elegido no existe');
+    }
+  }
+
+  const newExcercise = this.exerciseRepository.create({
+    ...createExcerciseDto,
+    title: name,
+    memoryId: newExcerciseMemory || undefined,
+    time: newExcerciseTime || undefined,
+    clue: clue,
+    constraints: constraints,
+    solution: solution
+  });
+  newExcercise.category = newExcerciseCategory;
+  newExcercise.difficulty = newExcerciseDifficulty;
+  const user = await this.userRepository.findOneBy({
+    userName: createExcerciseDto.userAuthor
+  });
+  newExcercise.created_by = user.name;
+  newExcercise.isVisible = createExcerciseDto.role === 'admin';
+  const savedExcercise = await this.exerciseRepository.save(newExcercise);
+  const commentBody = `${user.name} ha creado un nuevo ejercicio con el nombre ${newExcercise.title}`;
+  const comment = this.commentRepository.create({
+    body: commentBody
+  });
+  const commentId = await this.commentRepository.save(comment);
+  const ticket = this.ticketRepository.create({
+    itemType: TicketType.EXERCISE,
+    operation: TicketOperation.CREATE,
+    status:
+      createExcerciseDto.role === 'admin'
+        ? TicketStatus.ACCEPTED
+        : TicketStatus.PENDING,
+    originalExerciseId: savedExcercise,
+    commentId: commentId
+  });
+  const savedTicket = await this.ticketRepository.save(ticket);
+  if (savedExcercise && savedTicket) {
+    return savedExcercise;
+  } else {
+    throw new BadRequestException('Error al crear el ejercicio');
+  }
+}
 
   async findAll() {
     return await this.exerciseRepository.find();

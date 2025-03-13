@@ -356,19 +356,19 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
           onCreateTag={(tagName: string) => {}}
         />
       )}
-      {isExerciseModalOpen && (
-        <div className='fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50'>
-          <div className='rounded-lg p-6 w-full max-h-[90%] overflow-y-auto'>
-            <CreateExcerciseComponent
-              onClose={() => {
-                setIsExerciseModalOpen(false)
-                props.setUpdate(!props.update)
-              }}
-              id={activeExerciseId}
-            />
-          </div>
-        </div>
-      )}
+{isExerciseModalOpen && (
+  <div className='fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50'>
+    <div className='rounded-lg p-6 w-full max-h-[90%] overflow-y-auto'>
+      <CreateExcerciseComponent
+        onClose={() => {
+          setIsExerciseModalOpen(false)
+          props.setUpdate(!props.update)
+        }}
+        id={activeExerciseId}
+      />
+    </div>
+  </div>
+)}
       {isNoteModalOpen && (
         <div className='fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50'>
           <div className='rounded-lg p-6 w-full max-h-[90%] overflow-y-auto'>
