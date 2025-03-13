@@ -171,7 +171,7 @@ const CreateNoteComponent = (props: CreateNotesComponentProps) => {
       setSelectedCategory(null)
     }
   }
-  
+
   const dataValidate = () => {
     const data = methods.getValues()
     const missingFields = []
@@ -198,31 +198,27 @@ const CreateNoteComponent = (props: CreateNotesComponentProps) => {
     <form
       onSubmit={methods.handleSubmit(onSubmit)}
       className={`margin-auto md:mx-auto max-w-7xl md:px-4 w-full h-full lg:px-8 lg:w-2/3 lg:h-auto 
-    min-h-screen place-items-center justify-between py-10`}>
+      min-h-screen place-items-center justify-between py-10`}>
       <BasicPanelComponent backgroundColor='bg-white dark:bg-dark-primary'>
-        <div className="relative">
-          <div className="absolute top-0 right-0 flex gap-1 p-2">
+        <div className='relative'>
+          <div className='absolute top-0 right-0 flex gap-1 p-2'>
             <div
-              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200 rounded"
-              title="Restablecer formulario"
-            >
+              className='p-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200 rounded'
+              title='Restablecer formulario'>
               <button
-                type="button"
+                type='button'
                 onClick={clearForm}
-                className="text-inherit"
-              >
-                <ArrowUturnLeftIcon className="h-6 w-6" />
+                className='text-inherit'>
+                <ArrowUturnLeftIcon className='h-6 w-6' />
               </button>
             </div>
             <div
-              className="p-2 hover:bg-gray-100 dark:hover:bg-red-700 transition-colors duration-200 rounded"
-              title="Cerrar formulario"
-            >
+              className='p-2 hover:bg-gray-100 dark:hover:bg-red-700 transition-colors duration-200 rounded'
+              title='Cerrar formulario'>
               <button
                 onClick={props.onClose}
-                className="text-inherit"
-              >
-                <XMarkIcon className="h-6 w-6" />
+                className='text-inherit'>
+                <XMarkIcon className='h-6 w-6' />
               </button>
             </div>
           </div>
