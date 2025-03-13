@@ -30,7 +30,6 @@ async function getNewsArticle(id: string): Promise<News> {
 }
 
 async function NewsCardComponent({ isTicketPage = false, ...props  }: Readonly<NewsCardComponentProps>) {
-  //const isTicketPage = window.location.pathname.includes('ticket')
   const news = await getNewsArticle(props.id)
   const body = await serialize(news.body, {
     mdxOptions: {

@@ -3,9 +3,8 @@ import { BasicPanelComponent } from '../panels/BasicPanelComponent'
 import LogoComponent from '../LogoComponent'
 import { enumTextTags } from '@/constants/types'
 import { TextComponent } from '../text/TextComponent'
-import { Controller, FieldValues, RegisterOptions, UseFormRegisterReturn, UseFormReturn } from 'react-hook-form'
+import { FieldValues, UseFormReturn } from 'react-hook-form'
 import TextFieldComponent from '../forms/TextFieldComponent'
-import MarkdownAreaComponent from '../forms/MarkdownAreaComponent'
 import SubmitComponent from '../forms/SubmitComponent'
 import { toast } from 'sonner'
 import useUtilsStore from '@/store/useUtilsStore'
@@ -20,7 +19,7 @@ interface IReportCardProps {
   onCancel: () => void
 }
 
-const ReportCardComponent = ({ itemType, itemId, onSubmit, onCancel, methods, ...props }: Readonly<IReportCardProps>) => {
+const ReportCardComponent = ({ itemType, itemId, onSubmit, onCancel, methods }: Readonly<IReportCardProps>) => {
   const { createReport } = useUtilsStore()
 
   const handleSubmit = async (data: FieldValues) => {
@@ -53,7 +52,8 @@ const ReportCardComponent = ({ itemType, itemId, onSubmit, onCancel, methods, ..
         onSubmit(data)
         onCancel()
       } else {
-        toast.error(`Error al enviar el reporte: ${response.message}`, {
+        const errorMessage = 'message' in response ? response.message : 'Error desconocido';
+        toast.error(`Error al enviar el reporte: ${errorMessage}`, {
           duration: 5000,
           style: {
             backgroundColor: '#ff0000',
@@ -133,7 +133,7 @@ const ReportCardComponent = ({ itemType, itemId, onSubmit, onCancel, methods, ..
             />
 
             <div className='flex justify-center'>
-              <SubmitComponent text='Reportar' />
+              <SubmitComponent text='Reportar' action={() => {}}/>
             </div>
           </form>
         </div>
