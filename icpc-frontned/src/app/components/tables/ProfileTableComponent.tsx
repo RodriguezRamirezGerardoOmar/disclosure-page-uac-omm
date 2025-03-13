@@ -133,6 +133,7 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
         duration: 5000,
         style: { backgroundColor: 'green', color: 'white' }
       })
+      props.setUpdate(!props.update)
     } catch (error) {
       console.error('Error al verificar el estado del ticket:', error)
       toast.error('Error al verificar el estado del ticket.', {
@@ -296,7 +297,10 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
       {selectedReportId && (
         <DisplayReportComponent
           id={selectedReportId}
-          onClose={() => setSelectedReportId(null)}
+          onClose={() => {
+            setSelectedReportId(null)
+            props.setUpdate(!props.update)
+          }}
         />
       )}
       {isCategoryModalOpen && (
