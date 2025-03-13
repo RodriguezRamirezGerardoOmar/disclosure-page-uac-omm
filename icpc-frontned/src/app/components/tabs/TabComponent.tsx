@@ -122,37 +122,46 @@ export default function TabComponent({
         </div>
       )}
 
-      <div className='sm:hidden'>
-        <label htmlFor='tabs' className='sr-only'>Select a tab</label>
+      {/* Select y botón visibles solo en pantallas pequeñas */}
+      <div className="flex w-full justify-between items-center lg:hidden">
+        <label htmlFor="tabs" className="sr-only">Seleccionar una pestaña</label>
+
+        {/* Select para cambiar de pestañas */}
         <select
-          id='tabs'
-          name='tabs'
-          className='block w-full rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500'
+          id="tabs"
+          name="tabs"
+          className="block w-full min-w-[200px] rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
           value={activeTab}
-          onChange={e => handleTabChange(e.target.value)}>
+          onChange={e => handleTabChange(e.target.value)}
+        >
           {isAdmin
             ? tabs.map(tab => (
-                <option
-                  key={tab.name}
-                  value={tab.name}>
+                <option key={tab.name} value={tab.name}>
                   {tab.name}
                 </option>
               ))
             : myTabs.map(tab => (
-                <option
-                  key={tab.name}
-                  value={tab.name}>
+                <option key={tab.name} value={tab.name}>
                   {tab.name}
                 </option>
               ))}
         </select>
+
+        {/* Botón "Crear" alineado a la derecha */}
+        {showCreateButton && (
+          <ButtonComponent
+            text="Crear"
+            buttonType="button"
+            onClick={handleModalOpen}
+            className="ml-10 px-4 py-2 text-sm text-center flex justify-center items-center"
+          />
+        )}
       </div>
+
       <div className='hidden lg:block'>
         <div className='border-b border-gray-200'>
           <div className='flex flex-row gap-8'>
-            <div
-              className=' flex flex-row space-x-2'
-              aria-label='Tabs'>
+            <div className='flex flex-row space-x-2' aria-label='Tabs'>
               {myTabs.map(tab => (
                 <a
                   key={tab.name}
@@ -164,67 +173,70 @@ export default function TabComponent({
                     'group inline-flex items-center border-b-2 py-2 px-1 text-xs font-medium'
                   )}
                   onClick={e => {
-                    e.preventDefault()
-                    handleTabChange(tab.name)
-                    handleChange(tab.name)
+                    e.preventDefault();
+                    handleTabChange(tab.name);
+                    handleChange(tab.name);
                   }}
-                  aria-current={tab.name === activeTab ? 'page' : undefined}>
+                  aria-current={tab.name === activeTab ? 'page' : undefined}
+                >
                   <span>{tab.name}</span>
                 </a>
               ))}
             </div>
-            { isAdmin && <div
-              className='bg-primary rounded-md flex flex-row space-x-2'
-              aria-label='Tabs'>
-              {filteredAdminTabs.map(tab => (
-                <a
-                  key={tab.name}
-                  href={tab.href}
-                  className={classNames(
-                    tab.name === activeTab
-                      ? 'border-indigo-500 text-indigo-600'
-                      : 'border-transparent text-white hover:border-gray-300 hover:text-gray-700',
-                    `group inline-flex items-center border-b-2 py-2 px-1 text-xs font-medium`
-                  )}
-                  onClick={e => {
-                    e.preventDefault()
-                    handleTabChange(tab.name)
-                    handleChange(tab.name)
-                  }}
-                  aria-current={tab.name === activeTab ? 'page' : undefined}>
-                  <span>{tab.name}</span>
-                </a>
-              ))}
-            </div>}
-            {isAdmin && <div
-              className='bg-complementary rounded-md flex flex-row space-x-2'
-              aria-label='Tabs'>
-              {accountTab && (
-                <a
-                  href={accountTab.href}
-                  className={classNames(
-                    accountTab.name === activeTab
-                      ? 'border-indigo-500 text-indigo-600'
-                      : 'border-transparent text-white hover:border-gray-300 hover:text-gray-700',
-                    `group inline-flex items-center border-b-2 py-2 px-1 text-xs font-medium`
-                  )}
-                  onClick={e => {
-                    e.preventDefault()
-                    handleTabChange(accountTab.name)
-                    handleChange(accountTab.name)
-                  }}
-                  aria-current={accountTab.name === activeTab ? 'page' : undefined}>
-                  <span>{accountTab.name}</span>
-                </a>
-              )}
-            </div>}
-            {showCreateButton && ( 
+            {isAdmin && (
+              <div className='bg-primary rounded-md flex flex-row space-x-2' aria-label='Tabs'>
+                {filteredAdminTabs.map(tab => (
+                  <a
+                    key={tab.name}
+                    href={tab.href}
+                    className={classNames(
+                      tab.name === activeTab
+                        ? 'border-indigo-500 text-indigo-600'
+                        : 'border-transparent text-white hover:border-gray-300 hover:text-gray-700',
+                      'group inline-flex items-center border-b-2 py-2 px-1 text-xs font-medium'
+                    )}
+                    onClick={e => {
+                      e.preventDefault();
+                      handleTabChange(tab.name);
+                      handleChange(tab.name);
+                    }}
+                    aria-current={tab.name === activeTab ? 'page' : undefined}
+                  >
+                    <span>{tab.name}</span>
+                  </a>
+                ))}
+              </div>
+            )}
+            {isAdmin && (
+              <div className='bg-complementary rounded-md flex flex-row space-x-2' aria-label='Tabs'>
+                {accountTab && (
+                  <a
+                    href={accountTab.href}
+                    className={classNames(
+                      accountTab.name === activeTab
+                        ? 'border-indigo-500 text-indigo-600'
+                        : 'border-transparent text-white hover:border-gray-300 hover:text-gray-700',
+                      'group inline-flex items-center border-b-2 py-2 px-1 text-xs font-medium'
+                    )}
+                    onClick={e => {
+                      e.preventDefault();
+                      handleTabChange(accountTab.name);
+                      handleChange(accountTab.name);
+                    }}
+                    aria-current={accountTab.name === activeTab ? 'page' : undefined}
+                  >
+                    <span>{accountTab.name}</span>
+                  </a>
+                )}
+              </div>
+            )}
+            {showCreateButton && (
               <ButtonComponent
-              text="Crear"
-              buttonType="button"
-              onClick={handleModalOpen}
-              className="ml-auto"
-            />
+                text="Crear"
+                buttonType="button"
+                onClick={handleModalOpen}
+                className="ml-auto px-2 py-0 text-sm"
+              />
             )}
           </div>
         </div>
