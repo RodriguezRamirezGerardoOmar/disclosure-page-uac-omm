@@ -67,6 +67,7 @@ interface Actions {
   getPendingTickets: () => Promise<Ticket[]>
   getTicket: (id: string) => Promise<Ticket>
   getReports: () => Promise<Report[]>
+  getOpenReports: () => Promise<Report[]>
   getReport: (id: string) => Promise<Report>
   closeReport: (id: string) => Promise<Report>
   updateCategory: (id: string, data: { name: string }) => Promise<IApiResponse | TResponseBasicError>
@@ -524,6 +525,19 @@ const useUtilsStore = create<Actions & UtilsState>()(
           }
         },
 
+        getOpenReports: async (): Promise<Report[]> => {
+          try {
+            const response = await api.get('/api/v1/report/list', {
+              headers: {
+                Authorization: `Bearer ${useAuthStore.getState().token}`
+              }
+            })
+            return response.data
+          } catch (error: any) {
+            return error.response.data
+          }
+        },
+
         getReport: async (id: string): Promise<Report> => {
           try {
             const response = await api.get(`/api/v1/report/${id}`, {
@@ -539,7 +553,7 @@ const useUtilsStore = create<Actions & UtilsState>()(
 
         closeReport: async (id: string) => {
           try {
-            const response = await api.post(`/api/v1/report/${id}`, {
+            const response = await api.post(`/api/v1/report/${id}`, { user: useAuthStore.getState().user?.userName }, {
               headers: {
                 Authorization: `Bearer ${useAuthStore.getState().token}`
               }
