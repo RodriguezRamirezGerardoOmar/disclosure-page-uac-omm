@@ -148,6 +148,7 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
         duration: 5000,
         style: { backgroundColor: 'green', color: 'white' }
       })
+      props.setUpdate(!props.update)
     } catch (error) {
       console.error('Error al verificar el estado del ticket:', error)
       toast.error('Error al verificar el estado del ticket.', {
@@ -286,7 +287,10 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
       {selectedReportId && (
         <DisplayReportComponent
           id={selectedReportId}
-          onClose={() => setSelectedReportId(null)}
+          onClose={() => {
+            setSelectedReportId(null)
+            props.setUpdate(!props.update)
+          }}
         />
       )}
       {confirmDelete && (
@@ -348,19 +352,19 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
           onCreateTag={(tagName: string) => {}}
         />
       )}
-      {isExerciseModalOpen && (
-        <div className='fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50'>
-          <div className='rounded-lg p-6 w-full max-h-[90%] overflow-y-auto'>
-            <CreateExcerciseComponent
-              onClose={() => {
-                setIsExerciseModalOpen(false)
-                props.setUpdate(!props.update)
-              }}
-              id={activeExerciseId}
-            />
-          </div>
-        </div>
-      )}
+{isExerciseModalOpen && (
+  <div className='fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50'>
+    <div className='rounded-lg p-6 w-full max-h-[90%] overflow-y-auto'>
+      <CreateExcerciseComponent
+        onClose={() => {
+          setIsExerciseModalOpen(false)
+          props.setUpdate(!props.update)
+        }}
+        id={activeExerciseId}
+      />
+    </div>
+  </div>
+)}
       {isNoteModalOpen && (
         <div className='fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50'>
           <div className='rounded-lg p-6 w-full max-h-[90%] overflow-y-auto'>

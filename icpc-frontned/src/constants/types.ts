@@ -225,6 +225,6 @@ export interface IProfileTableItem {
     report: string,
     itemType: TicketType,
     note: Note,
-    exercise: Exercise,
+    excercise: Exercise,
     news: News
   }

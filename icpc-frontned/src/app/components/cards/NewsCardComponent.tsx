@@ -12,6 +12,7 @@ import ReportButtonComponent from '../buttons/ReportButtonComponent'
 interface NewsCardComponentProps {
   id: string
   itemId?: string
+  isTicketPage?: boolean
 }
 
 /*
@@ -28,8 +29,7 @@ async function getNewsArticle(id: string): Promise<News> {
   return await useNewsStore.getState().getNewsArticle(id)
 }
 
-async function NewsCardComponent({ ...props }: Readonly<NewsCardComponentProps>) {
-  //const isTicketPage = window.location.pathname.includes('ticket')
+async function NewsCardComponent({ isTicketPage = false, ...props  }: Readonly<NewsCardComponentProps>) {
   const news = await getNewsArticle(props.id)
   const body = await serialize(news.body, {
     mdxOptions: {
@@ -40,7 +40,7 @@ async function NewsCardComponent({ ...props }: Readonly<NewsCardComponentProps>)
   //const image = await getCover(news.imageId.id)
   return (
     <BasicPanelComponent backgroundColor='bg-white dark:bg-dark-primary lg:w-11/12'>
-      {/*!isTicketPage*/ true && (
+      {!isTicketPage && (
         <div className='flex justify-end w-full px-16'>
           <ReportButtonComponent
             itemId={news.id}

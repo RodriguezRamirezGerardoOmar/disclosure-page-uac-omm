@@ -63,7 +63,7 @@ function Page() {
   const getMemory = useUtilsStore.getState().getMemoryLimit
   const getDifficulty = useUtilsStore.getState().getDifficulties
   const getUsers = useAuthStore.getState().getUsers
-  const getReports = useUtilsStore.getState().getReports
+  const getOpenReports = useUtilsStore.getState().getOpenReports
   const getPendingTickets = useUtilsStore.getState().getPendingTickets
   const updateUser = useAuthStore(state => state.updateUser)
 
@@ -113,7 +113,7 @@ function Page() {
           setMode(AllTabs.NEWS)
           break
         case AllTabs.REPORTS:
-          const reports: Report[] = await getReports()
+          const reports: Report[] = await getOpenReports()
           const mappedReports = reports.map((report, index) => {
             return { index, title: report.summary, id: report.id }
           })
@@ -178,7 +178,7 @@ function Page() {
           break
       }
     },
-    [getCategories, getDifficulty, getExercises, getMemory, getNews, getNotes, getTags, getTime, getUsers, getReports, getPendingTickets]
+    [getCategories, getDifficulty, getExercises, getMemory, getNews, getNotes, getTags, getTime, getUsers, getOpenReports, getPendingTickets]
   )
 
   useEffect(() => {

@@ -36,6 +36,7 @@ export class ReportService {
           .getOne();
         report.itemType = ItemType.NEWS;
         report.news = item;
+        report.isOpen = true;
         break;
       case 'note':
         item = await this.noteRepository
@@ -45,6 +46,7 @@ export class ReportService {
           .getOne();
         report.itemType = ItemType.NOTE;
         report.note = item;
+        report.isOpen = true;
         break;
       case 'exercise':
         item = await this.excerciseRepository
@@ -54,6 +56,7 @@ export class ReportService {
           .getOne();
         report.itemType = ItemType.EXCERCISE;
         report.excercise = item;
+        report.isOpen = true;
         break;
       default:
         throw new BadRequestException('Invalid item type');
@@ -77,8 +80,18 @@ export class ReportService {
     return await this.reportRepository.find();
   }
 
+  async list() {
+    return await this.reportRepository.findBy({ isOpen: true });
+  }
+
   async findOne(id: string) {
-    return await this.reportRepository.findOneBy({ id });
+    return await this.reportRepository
+      .createQueryBuilder('report')
+      .where('report.id = :id', { id })
+      .leftJoinAndSelect('report.news', 'news')
+      .leftJoinAndSelect('report.note', 'note')
+      .leftJoinAndSelect('report.excercise', 'excercise')
+      .getOne();
   }
 
   async update(id: string, updateReportDto: UpdateReportDto) {
@@ -111,5 +124,11 @@ export class ReportService {
   async remove(id: string) {
     const report = await this.reportRepository.findOneBy({ id });
     return await this.reportRepository.remove(report);
+  }
+
+  async close(id: string) {
+    const report = await this.reportRepository.findOneBy({ id });
+    report.isOpen = false;
+    return await this.reportRepository.save(report);
   }
 }

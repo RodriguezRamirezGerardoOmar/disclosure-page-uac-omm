@@ -82,7 +82,7 @@ const TicketPage = async ({ params }: Readonly<{ params: { id: string } }>) => {
                 className='font-bold text-gray-800 dark:text-dark-accent'>
                 Noticia original
               </TextComponent>
-              <NewsCardComponent id={ticket.originalNewsId.id} />
+              <NewsCardComponent id={ticket.originalNewsId.id} isTicketPage={true}/>
             </div>
             <div className='mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 text-accent dark:text-dark-accent'>
               <TextComponent
@@ -91,7 +91,7 @@ const TicketPage = async ({ params }: Readonly<{ params: { id: string } }>) => {
                 className='font-bold text-gray-800 dark:text-dark-accent'>
                 Noticia modificada
               </TextComponent>
-              <NewsCardComponent id={ticket.modifiedNewsId.id} />
+              <NewsCardComponent id={ticket.modifiedNewsId.id} isTicketPage={true}/>
             </div>
           </div>
         )
@@ -167,7 +167,7 @@ const TicketPage = async ({ params }: Readonly<{ params: { id: string } }>) => {
               className='text-accent dark:text-dark-accent m-4'>
               {ticket.commentId.body}
             </TextComponent>
-            <NewsCardComponent id={ticket.originalNewsId.id} />
+            <NewsCardComponent id={ticket.originalNewsId.id} isTicketPage={true}/>
           </>
         )
         break
