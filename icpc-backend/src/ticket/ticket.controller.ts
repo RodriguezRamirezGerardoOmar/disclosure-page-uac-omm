@@ -17,7 +17,9 @@ import { TicketType } from './entities/ticket.entity';
 enum ItemType {
   EXERCISE = 'Ejercicios',
   NOTE = 'Apuntes',
-  NEWS = 'Noticias'
+  NEWS = 'Noticias',
+  UTILS = 'Utilidades',
+  USER = 'Usuarios'
 }
 
 @Controller('ticket')
@@ -52,7 +54,9 @@ export class TicketController {
     const itemTypeMapping: { [key in ItemType]: TicketType } = {
       [ItemType.EXERCISE]: TicketType.EXERCISE,
       [ItemType.NOTE]: TicketType.NOTE,
-      [ItemType.NEWS]: TicketType.NEWS
+      [ItemType.NEWS]: TicketType.NEWS,
+      [ItemType.UTILS]: TicketType.UTILS,
+      [ItemType.USER]: TicketType.USER
     };
 
     const hasPending = await this.ticketService.hasPendingTicket(

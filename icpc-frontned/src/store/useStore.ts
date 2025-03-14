@@ -5,6 +5,7 @@ import { IApiResponse, TResponseBasicError } from '@/constants/types'
 
 // Define user and auth response types
 export interface IUser {
+  isAdmin: any
   id: string
   name: string
   lastName: string
@@ -28,6 +29,8 @@ export interface IUpdateUser {
   lastName: string
   userName: string
   email: string
+  password?: string
+  passwordVerify?: string
   role: string
   editorId: string
 }
@@ -46,6 +49,7 @@ interface Actions {
   getUsers: () => Promise<IUser[]>
   deleteUser: (id: string) => Promise<IApiResponse | TResponseBasicError>
   updateUser: (id: string, user: IUpdateUser) => Promise<IUser>
+  getUser: (id: string) => Promise<IUser> 
 }
 
 const api = axios.create({
@@ -106,7 +110,7 @@ const useAuthStore = create<AuthState & Actions>()(
 
         deleteUser: async (id: string): Promise<IApiResponse | TResponseBasicError> => {
           try {
-            const response = await api.delete(`/api/v1/users/${id}`, {
+            const response = await api.delete(`/api/v1/users/${id}/${get().user?.id}`, {
               headers: {
                 Authorization: `Bearer ${get().token}`
               }
@@ -129,6 +133,15 @@ const useAuthStore = create<AuthState & Actions>()(
           } catch (error: any) {
             throw error.response.data; // Lanzar error para capturar en el componente
           }
+        },
+
+        getUser: async (id: string): Promise<IUser> => {
+          const response = await api.get(`/api/v1/users/${id}`, {
+            headers: {
+              Authorization: `Bearer ${get().token}`
+            }
+          });
+          return response.data;
         }
       }),
       {

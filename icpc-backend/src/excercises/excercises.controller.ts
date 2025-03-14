@@ -41,8 +41,13 @@ export class ExcercisesController {
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiBadRequestResponse({ description: 'Bad request' })
   @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
-  async create(@Body() createExcerciseDto: CreateExcerciseDto, @Req() req: any) {
-    const createdExercise = await this.exercisesService.create(createExcerciseDto);
+  async create(
+    @Body() createExcerciseDto: CreateExcerciseDto,
+    @Req() req: any
+  ) {
+    const createdExercise = await this.exercisesService.create(
+      createExcerciseDto
+    );
     this.loggerService.logChange(
       'excercises',
       'create',
@@ -110,7 +115,10 @@ export class ExcercisesController {
     @Body() updateExcerciseDto: UpdateExcerciseDto,
     @Req() req: any
   ) {
-    const updatedExercise = await this.exercisesService.update(id, updateExcerciseDto);
+    const updatedExercise = await this.exercisesService.update(
+      id,
+      updateExcerciseDto
+    );
     this.loggerService.logChange(
       'excercises',
       'update',
@@ -128,7 +136,11 @@ export class ExcercisesController {
   })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
-  async remove(@Param('id') id: string, @Param('user') user: string, @Req() req: any) {
+  async remove(
+    @Param('id') id: string,
+    @Param('user') user: string,
+    @Req() req: any
+  ) {
     const deletedExercise = await this.exercisesService.remove(id, user);
     this.loggerService.logChange(
       'excercises',

@@ -82,4 +82,7 @@ export class Ticket extends BaseEntity {
     default: TicketOperation.CREATE
   })
   operation: TicketOperation;
+
+  @Column({ nullable: true })
+  otherId: string;
 }

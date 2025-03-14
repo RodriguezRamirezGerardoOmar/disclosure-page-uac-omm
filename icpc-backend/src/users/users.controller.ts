@@ -22,6 +22,7 @@ import {
 import { AuthGuard } from '../auth/guard/auth.guard';
 import { Auth } from '../common/decorators/auth.decorator';
 import { RoleEnum } from '../common/enums/role.enum';
+import { User } from './entities/user.entity';
 
 @Controller('users') // This is the path that will be used for all the endpoints in this controller.
 @Auth(RoleEnum.ADMIN) // This is the role that will be used for all the endpoints in this controller.
@@ -77,7 +78,7 @@ export class UsersController {
     return this.usersService.update(id, updateUserDto);
   }
 
-  @Delete(':id')
+  @Delete(':id/:user')
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
   @ApiResponse({
@@ -85,7 +86,7 @@ export class UsersController {
   })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(id);
+  remove(@Param('id') id: string, @Param('user') user: string) {
+    return this.usersService.remove(id, user);
   }
 }

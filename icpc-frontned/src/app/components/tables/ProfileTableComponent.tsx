@@ -18,8 +18,10 @@ import CreateTagComponent from '../modals/CreateTagComponent'
 import CreateExcerciseComponent from '../modals/CreateExcerciseComponent'
 import CreateNoteComponent from '../modals/CreateNoteComponent'
 import CreateNewsComponent from '../modals/CreateNewsComponent'
+import CreateUserComponent from '../modals/CreateUserComponent'
 import { useForm } from 'react-hook-form'
 import DisplayReportComponent from '../cards/DisplayReportComponent'
+import ConfirmDenyComponent from '../buttons/Confirm&DenyComponent';
 
 interface Option {
   name: string
@@ -46,6 +48,10 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
   const [isExerciseModalOpen, setIsExerciseModalOpen] = useState(false)
   const [isNoteModalOpen, setIsNoteModalOpen] = useState(false)
   const [isNewsModalOpen, setIsNewsModalOpen] = useState(false)
+  const [isUserModalOpen, setIsUserModalOpen] = useState(false)
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [deleteItemType, setDeleteItemType] = useState<string | null>(null);
   const [activeCategoryId, setActiveCategoryId] = useState<string | undefined>(undefined)
   const [activeDifficultyId, setActiveDifficultyId] = useState<string | undefined>(undefined)
   const [activeMemoryId, setActiveMemoryId] = useState<string | undefined>(undefined)
@@ -54,6 +60,7 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
   const [activeExerciseId, setActiveExerciseId] = useState<string | undefined>(undefined)
   const [activeNoteId, setActiveNoteId] = useState<string | undefined>(undefined)
   const [activeNewsId, setActiveNewsId] = useState<string | undefined>(undefined)
+  const [activeUserId, setActiveUserId] = useState<string | undefined>(undefined)
   const deleteExercise = useExcerciseStore(state => state.deleteExercise)
   const deleteNote = useNoteStore(state => state.deleteNote)
   const deleteNews = useNewsStore(state => state.deleteNews)
@@ -63,6 +70,7 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
   const deleteMemoryLimit = useUtilsStore(state => state.deleteMemoryLimit)
   const deleteDifficulty = useUtilsStore(state => state.deleteDifficulty)
   const deleteUser = useStore(state => state.deleteUser)
+  const getUser = useStore(state => state.getUser)
   const hasPendingTicket = useUtilsStore(state => state.hasPendingTicket)
 
   const [selectedReportId, setSelectedReportId] = useState<string | null>(null)
@@ -89,44 +97,48 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
           })
           return
         }
-      }
-
-      // Si no hay ticket pendiente, abre el modal correspondiente
-      switch (itemType) {
-        case AllTabs.EXERCISES:
-          setActiveExerciseId(id)
-          setIsExerciseModalOpen(true)
-          break
-        case AllTabs.NOTES:
-          setActiveNoteId(id)
-          setIsNoteModalOpen(true)
-          break
-        case AllTabs.NEWS:
-          setActiveNewsId(id)
-          setIsNewsModalOpen(true)
-          break
-        case AllTabs.CATEGORIES:
-          setActiveCategoryId(id)
-          setIsCategoryModalOpen(true)
-          break
-        case AllTabs.DIFFICULTY:
-          setActiveDifficultyId(id)
-          setIsDifficultyModalOpen(true)
-          break
-        case AllTabs.MEMORY:
-          setActiveMemoryId(id)
-          setIsMemoryModalOpen(true)
-          break
-        case AllTabs.TIME:
-          setActiveTimeId(id)
-          setIsTimeModalOpen(true)
-          break
-        case AllTabs.TAGS:
-          setActiveTagId(id)
-          setIsTagModalOpen(true)
-          break
-        default:
-          console.error('Tipo de ítem no reconocido:', itemType)
+      } else {
+        // Si no hay ticket pendiente, abre el modal correspondiente
+        switch (itemType) {
+          case AllTabs.EXERCISES:
+            setActiveExerciseId(id)
+            setIsExerciseModalOpen(true)
+            break
+          case AllTabs.NOTES:
+            setActiveNoteId(id)
+            setIsNoteModalOpen(true)
+            break
+          case AllTabs.NEWS:
+            setActiveNewsId(id)
+            setIsNewsModalOpen(true)
+            break
+          case AllTabs.CATEGORIES:
+            setActiveCategoryId(id)
+            setIsCategoryModalOpen(true)
+            break
+          case AllTabs.DIFFICULTY:
+            setActiveDifficultyId(id)
+            setIsDifficultyModalOpen(true)
+            break
+          case AllTabs.MEMORY:
+            setActiveMemoryId(id)
+            setIsMemoryModalOpen(true)
+            break
+          case AllTabs.TIME:
+            setActiveTimeId(id)
+            setIsTimeModalOpen(true)
+            break
+          case AllTabs.TAGS:
+            setActiveTagId(id)
+            setIsTagModalOpen(true)
+            break
+          case AllTabs.ACCOUNT:
+            setActiveUserId(id)
+            setIsUserModalOpen(true)
+            break
+          default:
+            console.error('Tipo de ítem no reconocido:', itemType)
+        }
       }
 
       toast.success('Le picó en Editar' + id + itemType, {
@@ -143,78 +155,53 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
     }
   }
 
-  const handleDelete = async (id: string, itemType: string) => {
-    if (itemType === 'Noticias' || itemType === 'Ejercicios' || itemType === 'Apuntes') {
-      const response = await hasPendingTicket(id, itemType)
+  const handleDelete = async (id: string) => {
+    setDeleteId(id);
+    setDeleteItemType(props.itemType);
+    setConfirmDelete(true);
+  };
 
-      if (response === true) {
-        toast.error('Ya existe una modificación en espera para este ítem.', {
-          duration: 5000,
-          style: { backgroundColor: 'red', color: 'white' }
-        })
-        return
-      }
-    }
-    
-    let response
-    switch (props.itemType) {
+  const confirmDeleteAction = async () => {
+    let response;
+    switch (deleteItemType) {
       case AllTabs.EXERCISES:
-        response = await deleteExercise(id)
-        if ('id' in response) {
-          toast.success('Operación exitosa', { duration: 5000, style: { backgroundColor: 'green', color: 'white' } })
-        }
-        break
+        response = await deleteExercise(deleteId!);
+        break;
       case AllTabs.NOTES:
-        response = await deleteNote(id)
-        if ('id' in response) {
-          toast.success('Operación exitosa', { duration: 5000, style: { backgroundColor: 'green', color: 'white' } })
-        }
-        break
+        response = await deleteNote(deleteId!);
+        break;
       case AllTabs.NEWS:
-        response = await deleteNews(id)
-        if ('id' in response) {
-          toast.success('Operación exitosa', { duration: 5000, style: { backgroundColor: 'green', color: 'white' } })
-        }
-        break
+        response = await deleteNews(deleteId!);
+        break;
       case AllTabs.CATEGORIES:
-        response = await deleteCategory(id)
-        if ('id' in response) {
-          toast.success('Operación exitosa', { duration: 5000, style: { backgroundColor: 'green', color: 'white' } })
-        }
-        break
+        response = await deleteCategory(deleteId!);
+        break;
       case AllTabs.TAGS:
-        response = await deleteTag(id)
-        if ('id' in response) {
-          toast.success('Operación exitosa', { duration: 5000, style: { backgroundColor: 'green', color: 'white' } })
-        }
-        break
+        response = await deleteTag(deleteId!);
+        break;
       case AllTabs.TIME:
-        response = await deleteTimeLimit(id)
-        if ('id' in response) {
-          toast.success('Operación exitosa', { duration: 5000, style: { backgroundColor: 'green', color: 'white' } })
-        }
-        break
+        response = await deleteTimeLimit(deleteId!);
+        break;
       case AllTabs.MEMORY:
-        response = await deleteMemoryLimit(id)
-        if ('id' in response) {
-          toast.success('Operación exitosa', { duration: 5000, style: { backgroundColor: 'green', color: 'white' } })
-        }
-        break
+        response = await deleteMemoryLimit(deleteId!);
+        break;
       case AllTabs.DIFFICULTY:
-        response = await deleteDifficulty(id)
-        if ('id' in response) {
-          toast.success('Operación exitosa', { duration: 5000, style: { backgroundColor: 'green', color: 'white' } })
-        }
-        break
+        response = await deleteDifficulty(deleteId!);
+        break;
       case AllTabs.ACCOUNT:
-        response = await deleteUser(id)
-        if ('id' in response) {
-          toast.success('Operación exitosa', { duration: 5000, style: { backgroundColor: 'green', color: 'white' } })
-        }
-        break
+        response = await deleteUser(deleteId!);
+        break;
     }
-    props.setUpdate(!props.update)
-  }
+
+    if (response && 'statusCode' in response && response.statusCode === 200) {
+      toast.success(response.message, { duration: 5000, style: { backgroundColor: 'green', color: 'white' } });
+    }
+
+    setConfirmDelete(false);
+    setDeleteId(null);
+    setDeleteItemType(null);
+    props.setUpdate(!props.update);
+  };
 
   const options: Option[] = [
     {
@@ -301,6 +288,12 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
             setSelectedReportId(null)
             props.setUpdate(!props.update)
           }}
+        />
+      )}
+      {confirmDelete && (
+        <ConfirmDenyComponent
+          onConfirm={confirmDeleteAction}
+          onCancel={() => setConfirmDelete(false)}
         />
       )}
       {isCategoryModalOpen && (
@@ -391,6 +384,19 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
                 props.setUpdate(!props.update)
               }}
               id={activeNewsId}
+            />
+          </div>
+        </div>
+      )}
+      {isUserModalOpen && (
+        <div className='fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50'>
+          <div className='rounded-lg p-6 w-full max-h-[90%] overflow-y-auto'>
+            <CreateUserComponent
+              onClose={() => {
+                setIsUserModalOpen(false)
+                props.setUpdate(!props.update)
+              }}
+              id={activeUserId}
             />
           </div>
         </div>
