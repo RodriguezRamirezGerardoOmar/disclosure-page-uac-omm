@@ -97,13 +97,6 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
           })
           return
         }
-      }
-
-      if (itemType === AllTabs.ACCOUNT) {
-        const user = await getUser(id);
-        methods.reset(user);
-        setActiveUserId(id);
-        setIsUserModalOpen(true);
       } else {
         // Si no hay ticket pendiente, abre el modal correspondiente
         switch (itemType) {
@@ -138,6 +131,10 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
           case AllTabs.TAGS:
             setActiveTagId(id)
             setIsTagModalOpen(true)
+            break
+          case AllTabs.ACCOUNT:
+            setActiveUserId(id)
+            setIsUserModalOpen(true)
             break
           default:
             console.error('Tipo de ítem no reconocido:', itemType)
@@ -399,7 +396,7 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
                 setIsUserModalOpen(false)
                 props.setUpdate(!props.update)
               }}
-              methods={methods}
+              id={activeUserId}
             />
           </div>
         </div>
