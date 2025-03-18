@@ -11,8 +11,10 @@ import {
 import { TicketService } from './ticket.service';
 import { CreateTicketDto } from './dto/create-ticket.dto';
 import { UpdateTicketDto } from './dto/update-ticket.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { TicketType } from './entities/ticket.entity';
+import { Auth } from 'src/common/decorators/auth.decorator';
+import { RoleEnum } from 'src/common/enums/role.enum';
 
 enum ItemType {
   EXERCISE = 'Ejercicios',
@@ -72,21 +74,29 @@ export class TicketController {
     return this.ticketService.findOne(id);
   }
 
+  @ApiBearerAuth()
+  @Auth(RoleEnum.ADMIN)
   @Post('approve/:id')
   approve(@Param('id') id: string) {
     return this.ticketService.approve(id);
   }
 
+  @ApiBearerAuth()
+  @Auth(RoleEnum.ADMIN)
   @Post('reject/:id')
   reject(@Param('id') id: string) {
     return this.ticketService.reject(id);
   }
 
+  @ApiBearerAuth()
+  @Auth(RoleEnum.ADMIN)
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateTicketDto: UpdateTicketDto) {
     return this.ticketService.update(id, updateTicketDto);
   }
 
+  @ApiBearerAuth()
+  @Auth(RoleEnum.ADMIN)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.ticketService.remove(id);

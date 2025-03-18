@@ -79,6 +79,15 @@ export class NotesController {
     return this.notesService.findNoteList(noteListDto);
   }
 
+  @Post('notes/search/:query')
+  @ApiCreatedResponse({
+    description: 'The notes have been successfully retrieved.'
+  })
+  @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
+  search(@Param('query') query: string) {
+    return this.notesService.search(query);
+  }
+
   @Get('notes/category/:categoryId')
   @ApiCreatedResponse({
     description: 'The notes have been successfully retrieved.'
@@ -105,7 +114,11 @@ export class NotesController {
   })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
-  async update(@Param('id') id: string, @Body() updateNoteDto: UpdateNoteDto, @Req() req: any) {
+  async update(
+    @Param('id') id: string,
+    @Body() updateNoteDto: UpdateNoteDto,
+    @Req() req: any
+  ) {
     const updatedNote = await this.notesService.update(id, updateNoteDto);
     this.loggerService.logChange(
       'notes',
@@ -124,7 +137,11 @@ export class NotesController {
   })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
-  async remove(@Param('id') id: string, @Param('user') user: string, @Req() req: any) {
+  async remove(
+    @Param('id') id: string,
+    @Param('user') user: string,
+    @Req() req: any
+  ) {
     const deletedNote = await this.notesService.remove(id, user);
     this.loggerService.logChange(
       'notes',

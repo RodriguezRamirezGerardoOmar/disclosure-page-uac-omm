@@ -28,7 +28,7 @@ Author: Gerardo Omar Rodriguez Ramirez
 
 const TextAreaComponent = ({ labelText, register, fieldName, id, necessary }: Readonly<ITextAreaProps>) => {
   return (
-    <div className='w-full m-2 min-h-max'>
+    <div className='w-full min-h-max'>
       <TextComponent
         htmlFor={id}
         className={labelClassname}

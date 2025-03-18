@@ -130,7 +130,11 @@ export class NewsController {
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiBadRequestResponse({ description: 'Bad request' })
   @ApiInternalServerErrorResponse({ description: 'Internal server error' })
-  async update(@Param('id') id: string, @Body() updateNewsDto: UpdateNewsDto, @Req() req: any) {
+  async update(
+    @Param('id') id: string,
+    @Body() updateNewsDto: UpdateNewsDto,
+    @Req() req: any
+  ) {
     const updatedNews = await this.newsService.update(id, updateNewsDto);
     this.loggerService.logChange(
       'news',
@@ -150,7 +154,11 @@ export class NewsController {
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiBadRequestResponse({ description: 'Bad request' })
   @ApiInternalServerErrorResponse({ description: 'Internal server error' })
-  async remove(@Param('id') id: string, @Param('user') user: string, @Req() req: any) {
+  async remove(
+    @Param('id') id: string,
+    @Param('user') user: string,
+    @Req() req: any
+  ) {
     const deletedNews = await this.newsService.remove(id, user);
     this.loggerService.logChange(
       'news',

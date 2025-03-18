@@ -111,7 +111,11 @@ const useUtilsStore = create<Actions & UtilsState>()(
 
         hasPendingTicket: async (itemId: string, itemType: string): Promise<boolean> => {
           try {
-            const response = await api.get(`/api/v1/ticket/hasPending/${itemId}/${itemType}`)
+            const response = await api.get(`/api/v1/ticket/hasPending/${itemId}/${itemType}`, {
+              headers: {
+                Authorization: `Bearer ${useAuthStore.getState().token}`
+              }
+            })
             return response.data.hasPendingTicket
           } catch (error: any) {
             return false
@@ -455,7 +459,11 @@ const useUtilsStore = create<Actions & UtilsState>()(
 
         getTickets: async (): Promise<Ticket[]> => {
           try {
-            const response = await api.get('/api/v1/ticket')
+            const response = await api.get('/api/v1/ticket', {
+              headers: {
+                Authorization: `Bearer ${useAuthStore.getState().token}`
+              }
+            })
             return response.data
           } catch (error: any) {
             return error.response.data
@@ -566,7 +574,11 @@ const useUtilsStore = create<Actions & UtilsState>()(
 
         approveTicket: async (id: string): Promise<IApiResponse> => {
           try {
-            const response = await api.post(`/api/v1/ticket/approve/${id}`)
+            const response = await api.post(`/api/v1/ticket/approve/${id}`, {
+              headers: {
+                Authorization: `Bearer ${useAuthStore.getState().token}`
+              }
+            })
             return response.data
           } catch (error: any) {
             return error.response.data
@@ -575,7 +587,11 @@ const useUtilsStore = create<Actions & UtilsState>()(
 
         rejectTicket: async (id: string): Promise<IApiResponse> => {
           try {
-            const response = await api.post(`/api/v1/ticket/reject/${id}`)
+            const response = await api.post(`/api/v1/ticket/reject/${id}`, {
+              headers: {
+                Authorization: `Bearer ${useAuthStore.getState().token}`
+              }
+            })
             return response.data
           } catch (error: any) {
             return error.response.data

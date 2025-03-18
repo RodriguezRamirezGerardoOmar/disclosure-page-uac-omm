@@ -4,12 +4,18 @@ import Select from 'react-select';
 import { MagnifyingGlassIcon } from '@heroicons/react/20/solid';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
+import useExcerciseStore from '@/store/useExcerciseStore';
+import useNewsStore from '@/store/useNewsStore';
+import useNoteStore from '@/store/useNoteStore';
 
 const SearchBarComponent = () => {
   const [options, setOptions] = useState<{ value: string; label: string; type: string; url: string }[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isClient, setIsClient] = useState(false);
   const router = useRouter();
+  const exerciseSearch = useExcerciseStore(state => state.search);
+  const newsSearch = useNewsStore(state => state.search);
+  const notesSearch = useNoteStore(state => state.search);
 
   useEffect(() => {
     setIsClient(true);
@@ -20,26 +26,34 @@ const SearchBarComponent = () => {
       if (inputValue.trim() === '') return;
 
       try {
-        const [exercisesResponse, newsResponse] = await Promise.all([
-          axios.post(`${process.env.NEXT_PUBLIC_API_URL}api/v1/excercises/search/${inputValue}`),
-          axios.post(`${process.env.NEXT_PUBLIC_API_URL}api/v1/news/search/${inputValue}`)
+        const [exercisesResponse, newsResponse, notesResponse] = await Promise.all([
+          exerciseSearch(inputValue),
+          newsSearch(inputValue),
+          notesSearch(inputValue)
         ]);
 
-        const exercisesOptions = exercisesResponse.data.map((option: any) => ({
+        const exercisesOptions = exercisesResponse.map((option: any) => ({
           value: option.id,
           label: option.title,
           type: 'exercise',
           url: `/exercises/${option.id}`
         }));
 
-        const newsOptions = newsResponse.data.map((option: any) => ({
+        const newsOptions = newsResponse.map((option: any) => ({
           value: option.id,
           label: option.title,
           type: 'news',
           url: `/news/${option.id}`
         }));
 
-        setOptions([...exercisesOptions, ...newsOptions]);
+        const notesOptions = notesResponse.map((option: any) => ({
+          value: option.id,
+          label: option.title,
+          type: 'note',
+          url: `/note/${option.id}`
+        }));
+
+        setOptions([...exercisesOptions, ...newsOptions, ...notesOptions]);
       } catch (error) {
         console.error('Error fetching options:', error);
       }
