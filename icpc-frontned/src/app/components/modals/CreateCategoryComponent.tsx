@@ -44,8 +44,8 @@ const CreateCategoryComponent: React.FC<CreateCategoryComponentProps> = ({ onClo
       response = await createCategory({ name: String(data.categoryName), commentId: String(data.categoryName) })
     }
 
-    if ('statusCode' in response && (response.statusCode === 201 || response.statusCode === 200)) {
-      toast.success(response.message, {
+    if ('id' in response) {
+      toast.success(`La categoría se ha ${categoryId? 'creado' : 'editado'} con éxito.`, {
         duration: 5000,
         style: {
           backgroundColor: 'green',
@@ -81,7 +81,7 @@ const CreateCategoryComponent: React.FC<CreateCategoryComponentProps> = ({ onClo
                 necessary={true}
                 type='text'
               />
-              <SubmitComponent text={categoryId ? 'Actualizar' : 'Crear'} />
+              <SubmitComponent text={categoryId ? 'Actualizar' : 'Crear'} action={() => {}}/>
             </div>
             <div className='mt-4'>
               <button
