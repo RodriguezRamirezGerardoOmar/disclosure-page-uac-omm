@@ -42,6 +42,8 @@ export class AuthController {
   }
 
   @Post('register')
+  @ApiBearerAuth()
+  @Auth(RoleEnum.ADMIN)
   @ApiCreatedResponse({
     status: HttpStatus.CREATED,
     description: 'El usuario ha sido creado exitosamente',

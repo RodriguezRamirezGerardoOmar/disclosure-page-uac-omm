@@ -431,18 +431,12 @@ return (
             type='text'
             auto='off'
           />
-          <Controller
-            name='constraints'
-            defaultValue=''
-            control={methods.control}
-            render={({ field }) => (
-              <MarkdownAreaComponent
-                value={field.value}
-                onChange={newValue => field.onChange(newValue)}
-                labelText='Restricciones'
-                className='p-2'
-              />
-            )}
+          <TextAreaComponent
+            labelText='Restricciones'
+            register={methods.register}
+            fieldName='constraints'
+            id='constraints'
+            necessary={false}
           />
 
           <TextFieldComponent
