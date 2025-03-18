@@ -1,28 +1,19 @@
 'use client'
-import React from 'react'
-import { MDXRemote } from 'next-mdx-remote'
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
-import { dark } from 'react-syntax-highlighter/dist/esm/styles/prism'
-
-const customStyle = {
-  ...dark,
-  'pre[class*="language-"]': {
-    ...dark['pre[class*="language-"]'],
-    border: 'none', // Remove the border
-    boxShadow: 'none', // Remove the box shadow
-    background: 'transparent' // Remove the background color
-  },
-  'code[class*="language-"]': {
-    ...dark['code[class*="language-"]'],
-    background: 'transparent' // Remove the background color
-  }
-};
+import React, { useEffect } from 'react';
+import { MDXRemote } from 'next-mdx-remote';
+import Prism from 'prismjs';
+import '../css/prism.css'; // Cambia el tema si prefieres otro
 
 interface MarkdownBodyComponentProps {
-  body: string
+  body: string;
 }
 
 function MarkdownBodyComponent({ body }: Readonly<MarkdownBodyComponentProps>) {
+  useEffect(() => {
+    // Resalta el código después de que el componente se renderice
+    Prism.highlightAll();
+  }, [body]);
+
   return (
     <div
       className={`w-full prose text-accent dark:text-dark-accent
@@ -30,32 +21,27 @@ function MarkdownBodyComponent({ body }: Readonly<MarkdownBodyComponentProps>) {
       prose-headings:dark:text-dark-accent
       [&_img]:m-auto
       prose-strong:dark:text-dark-accent
-      prose-blockquote:dark:text-dark-accent max-w-max`}>
+      prose-blockquote:dark:text-dark-accent max-w-max`}
+    >
       <MDXRemote
         compiledSource={body}
         scope={{}}
         frontmatter={{}}
         components={{
           code({ className, children }) {
-            const match = /language-(\w+)/.exec(className ?? '')
-            return match ? (
-              <SyntaxHighlighter
-                style={customStyle}
-                language={match[1]}
-                PreTag="div"
-              >
-                {String(children).replace(/\n$/, '')}
-              </SyntaxHighlighter>
-            ) : (
-              <code className={className}>
-                {children}
-              </code>
-            )
-          }
+            const language = className?.replace('language-', '') || 'plaintext';
+            return (
+              <pre className={`language-${language}`}>
+                <code className={`language-${language}`}>
+                  {String(children).replace(/\n$/, '')}
+                </code>
+              </pre>
+            );
+          },
         }}
       />
     </div>
-  )
+  );
 }
 
-export default MarkdownBodyComponent
+export default MarkdownBodyComponent;
