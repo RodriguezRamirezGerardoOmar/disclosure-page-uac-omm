@@ -49,8 +49,8 @@ const CreateTimeLimitComponent: React.FC<CreateTimeLimitComponentProps> = ({ met
       response = await createTimeLimit(timeData.timeLimit);
     }
 
-    if ('statusCode' in response && (response.statusCode === 201 || response.statusCode === 200)) {
-      toast.success(response.message, {
+    if ('id' in response) {
+      toast.success(`Límite de tiempo ${timeId? 'creado' : 'editado'} con éxito.`, {
         duration: 5000,
         style: {
           backgroundColor: 'green',
@@ -85,7 +85,7 @@ const CreateTimeLimitComponent: React.FC<CreateTimeLimitComponentProps> = ({ met
                 necessary={true}
                 type="text"
               />
-              <SubmitComponent text={timeId ? 'Actualizar' : 'Crear'} />
+              <SubmitComponent text={timeId ? 'Actualizar' : 'Crear'} action={() => {}} />
             </div>
             <div className='mt-4'>
               <button

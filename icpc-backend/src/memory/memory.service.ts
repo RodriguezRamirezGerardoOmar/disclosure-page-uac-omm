@@ -73,10 +73,8 @@ export class MemoryService {
   }
 
   async update(id: string, updateMemoryDto: UpdateMemoryDto) {
-    console.log(updateMemoryDto);
-    console.log(id);
     const memory = await this.memoryRepository.findOneBy({ id });
-    let finalValue = updateMemoryDto.value;
+    let finalValue;
     switch (updateMemoryDto.id) {
       case 'MB':
         finalValue = updateMemoryDto.value * 1024;
