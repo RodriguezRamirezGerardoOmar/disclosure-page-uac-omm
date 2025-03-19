@@ -74,7 +74,22 @@ export class MemoryService {
 
   async update(id: string, updateMemoryDto: UpdateMemoryDto) {
     const memory = await this.memoryRepository.findOneBy({ id });
-    return await this.memoryRepository.save({ ...memory, ...updateMemoryDto });
+    let finalValue;
+    switch (updateMemoryDto.id) {
+      case 'MB':
+        finalValue = updateMemoryDto.value * 1024;
+        break;
+      case 'GB':
+        finalValue = updateMemoryDto.value * 1024 * 1024;
+        break;
+      default:
+        finalValue = updateMemoryDto.value;
+        break;
+    }
+    return await this.memoryRepository.save({
+      ...memory,
+      memoryLimit: finalValue
+    });
   }
 
   async remove(id: string) {

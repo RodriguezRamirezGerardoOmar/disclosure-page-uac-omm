@@ -37,7 +37,7 @@ function MarkdownBodyComponent({ body }: Readonly<MarkdownBodyComponentProps>) {
                 </code>
               </pre>
             );
-          },
+          }
         }}
       />
     </div>

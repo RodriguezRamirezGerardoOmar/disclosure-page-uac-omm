@@ -45,8 +45,8 @@ const CreateDifficultyComponent: React.FC<CreateDifficultyComponentProps> = ({ m
       response = await createDifficulty({ level: Number(data.Level), name: String(data.DifficultyName) });
     }
 
-    if ('statusCode' in response && (response.statusCode === 201 || response.statusCode === 200)) {
-      toast.success(response.message, {
+    if ('id' in response) {
+      toast.success(`La dificultad se ha ${difficultyId? 'creado' : 'editado'} con éxito.`, {
         duration: 5000,
         style: {
           backgroundColor: 'green',
@@ -89,13 +89,15 @@ const CreateDifficultyComponent: React.FC<CreateDifficultyComponentProps> = ({ m
                 necessary={true}
                 type="number"
               />
-              <SubmitComponent text={difficultyId ? 'Actualizar' : 'Crear'} />
+              <SubmitComponent text={difficultyId ? 'Actualizar' : 'Crear'} action={() => {}}/>
             </div>
             <div className='mt-4'>
               <button
                 type='button'
                 onClick={clearForm}
-                className='inline-flex items-center gap-x-2 rounded-md bg-primary text-complementary px-3.5 py-2.5 font-medium shadow-sm hover:bg-secondary focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-complementary'
+                className='inline-flex items-center gap-x-2 rounded-md bg-primary 
+                text-complementary px-3.5 py-2.5 font-medium shadow-sm hover:bg-secondary focus-visible:outline 
+                focus-visible:outline-offset-2 focus-visible:outline-complementary'
               >
                 Borrar formulario
               </button>

@@ -48,8 +48,8 @@ const CreateTagComponent: React.FC<CreateTagComponentProps> = ({ methods, onCrea
       response = await createTag({ name: String(data.name), color });
     }
 
-    if ('statusCode' in response && response.statusCode === 201) {
-      toast.success(response.message, {
+    if ('id' in response) {
+      toast.success(`La etiqueta se ha ${tagId? 'creado' : 'editado'} con éxito.`, {
         duration: 5000,
         style: {
           backgroundColor: 'green',
@@ -95,7 +95,7 @@ const CreateTagComponent: React.FC<CreateTagComponentProps> = ({ methods, onCrea
                   />
                 </div>
               </div>
-              <SubmitComponent text={tagId ? 'Actualizar' : 'Crear'} />
+              <SubmitComponent text={tagId ? 'Actualizar' : 'Crear'} action={() => {}}/>
             </div>
             <div className='mt-4'>
               <button

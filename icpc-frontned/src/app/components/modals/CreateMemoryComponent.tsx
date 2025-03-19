@@ -72,7 +72,7 @@ const CreateMemoryComponent: React.FC<CreateMemoryComponentProps> = ({ methods, 
       value: parseInt(data.MemoryName),
       id: selectedMemoryUnit
     }
-
+    
     if (memoryId) {
       const response = await updateMemory(memoryId, memoryData)
       await processResponse(response)
