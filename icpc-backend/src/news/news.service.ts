@@ -108,6 +108,10 @@ export class NewsService {
       throw new BadRequestException('La imagen no existe');
     }
 
+    const user = await this.userRepository.findOneBy({
+      userName: updateData.userAuthor
+    });
+
     if (role === 'admin') {
       existingNews.isVisible = false;
       await this.newsRepository.save(existingNews);
@@ -116,6 +120,7 @@ export class NewsService {
       // Crear una copia de la noticia modificada
       const modifiedNewsCopy = this.newsRepository.create({
         ...updateData,
+        updated_by: user.id,
         imageId: image,
         id: undefined, // Evitar conflictos con el ID de la noticia original
         isVisible: true // Marcar la copia como visible
@@ -149,6 +154,7 @@ export class NewsService {
       // Crear una copia de la noticia modificada
       const modifiedNewsCopy = this.newsRepository.create({
         ...updateData,
+        updated_by: user.id,
         imageId: image,
         isVisible: false
       });
@@ -191,6 +197,8 @@ export class NewsService {
       });
       const commentId = await this.commentRepository.save(comment);
       const ticket = this.ticketRepository.create({
+        deleted_at: new Date(),
+        deleted_by: userId.id,
         itemType: TicketType.NEWS,
         operation: TicketOperation.DELETE,
         status: TicketStatus.ACCEPTED,
@@ -210,6 +218,8 @@ export class NewsService {
       });
       const commentId = await this.commentRepository.save(comment);
       const ticket = this.ticketRepository.create({
+        deleted_at: new Date(),
+        deleted_by: userId.id,
         itemType: TicketType.NEWS,
         operation: TicketOperation.DELETE,
         status: TicketStatus.PENDING,

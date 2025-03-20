@@ -235,6 +235,9 @@ export class NotesService {
       });
     }
 
+    const user = await this.userRepository.findOneBy({
+      userName: updateData.userAuthor
+    });
     const noteCategory = await this.categoryRepository.findOneBy({
       id: categoryId.id,
       name: categoryId.name
@@ -251,6 +254,8 @@ export class NotesService {
         tags: noteTags,
         category: noteCategory,
         title: title,
+        updated_by: user.name,
+        isVisible: true,
         commentId: noteDescription
       });
 
