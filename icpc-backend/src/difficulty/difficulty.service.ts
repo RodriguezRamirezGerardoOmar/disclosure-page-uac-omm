@@ -35,7 +35,7 @@ export class DifficultyService {
       ]
     });
     if (existingDifficulty) {
-      throw new BadRequestException('A difficulty with that name or level already exists.');
+      throw new BadRequestException('Una dificultad con ese nombre o nivel ya existe.');
     }
 
     const savedDifficulty = await this.difficultyRepository.save(
