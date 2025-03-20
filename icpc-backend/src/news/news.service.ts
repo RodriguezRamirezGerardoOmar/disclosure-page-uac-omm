@@ -197,8 +197,6 @@ export class NewsService {
       });
       const commentId = await this.commentRepository.save(comment);
       const ticket = this.ticketRepository.create({
-        deleted_at: new Date(),
-        deleted_by: userId.id,
         itemType: TicketType.NEWS,
         operation: TicketOperation.DELETE,
         status: TicketStatus.ACCEPTED,
@@ -218,8 +216,6 @@ export class NewsService {
       });
       const commentId = await this.commentRepository.save(comment);
       const ticket = this.ticketRepository.create({
-        deleted_at: new Date(),
-        deleted_by: userId.id,
         itemType: TicketType.NEWS,
         operation: TicketOperation.DELETE,
         status: TicketStatus.PENDING,

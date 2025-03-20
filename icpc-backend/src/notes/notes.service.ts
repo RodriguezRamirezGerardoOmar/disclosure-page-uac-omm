@@ -292,6 +292,7 @@ export class NotesService {
         tags: noteTags,
         category: noteCategory,
         title: title,
+        updated_by: user.name,
         commentId: noteDescription
       });
       const savedModifiedNote = await this.noteRepository.save(

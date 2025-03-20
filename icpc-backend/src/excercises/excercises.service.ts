@@ -350,12 +350,17 @@ export class ExcercisesService {
       throw new BadRequestException('El ejercicio no existe');
     }
 
+    const user = await this.userRepository.findOneBy({
+      userName: updateData.userAuthor
+    });
+
     if (role === 'admin') {
       existingExercise.isVisible = false;
       await this.exerciseRepository.save(existingExercise);
 
       const modifiedExerciseCopy = this.exerciseRepository.create({
         ...updateData,
+        updated_by: user.id,
         title: updateData.name,
         memoryId: memory
       });
@@ -389,6 +394,7 @@ export class ExcercisesService {
       const modifiedExerciseCopy = this.exerciseRepository.create({
         ...updateData,
         title: updateData.name,
+        updated_by: user.id,
         memoryId: memory,
         isVisible: false
       });
