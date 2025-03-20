@@ -1,6 +1,7 @@
 import React from 'react'
 import { TextComponent } from '../text/TextComponent'
 import { XMarkIcon } from '@heroicons/react/20/solid'
+import { readableColor } from 'polished'
 
 interface TagProps {
   color: string
@@ -19,22 +20,24 @@ Author: Gerardo Omar Rodriguez Ramirez
 */
 
 const TagComponent = ({ ...props }: Readonly<TagProps>) => {
+  const backgroundColor = `#${props.color}`
+  const textColor = readableColor(backgroundColor, '#000000', '#FFFFFF') // Negro si es claro, blanco si es oscuro
+
   return (
     <div
       className='rounded-md w-min-content px-3 py-1.5 flex flex-row gap-x-2'
-      style={{ backgroundColor: `#${props.color}` }}>
+      style={{ backgroundColor: backgroundColor }}>
       <TextComponent
         sizeFont='s12'
-        className='text-white font-medium'>
+        className='font-medium'
+        style={{ color: textColor }}>
         {props.tagName}
       </TextComponent>
       {props.showIcon ? (
         <button>
-          <XMarkIcon className='block h-4 w-4' />
+          <XMarkIcon className='block h-4 w-4' style={{ color: textColor }} />
         </button>
-      ) : (
-        <></>
-      )}
+      ) : null}
     </div>
   )
 }
