@@ -65,7 +65,7 @@ const ReportCardComponent = ({ itemType, itemId, onSubmit, onCancel, methods }: 
       toast.error(`Error al enviar el reporte: ${error}`, {
         duration: 5000,
         style: {
-          backgroundColor: 'green',
+          backgroundColor: '#ff0000',
           color: '#ffffff'
         }
       })

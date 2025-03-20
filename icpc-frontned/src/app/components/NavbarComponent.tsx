@@ -18,7 +18,7 @@ const routes = [
   {
     id: 2,
     name: 'Apuntes',
-    href: '/notelist'
+    href: '/note'
   },
   {
     id: 3,
@@ -28,7 +28,7 @@ const routes = [
   {
     id: 4,
     name: 'Noticias',
-    href: '/newslist'
+    href: '/news'
   },
   {
     id: 5,
