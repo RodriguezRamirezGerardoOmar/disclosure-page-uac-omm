@@ -27,8 +27,7 @@ export const CardWithHeaderComponent = ({ className = [], ...props }: CardWithHe
         <TextComponent
           tag={enumTextTags.h2}
           sizeFont='s20'
-          className={'text-accent dark:text-white font-semibold'}
-        >
+          className={'text-accent dark:text-white font-semibold'}>
           {props.title}
         </TextComponent>
       </div>
@@ -36,14 +35,21 @@ export const CardWithHeaderComponent = ({ className = [], ...props }: CardWithHe
         <TextComponent
           sizeFont='s12'
           tag={enumTextTags.p}
-          className='leading-5 text-gray-500'
-        >
+          className='leading-5 text-gray-500'>
           {props.comments}
         </TextComponent>
       </div>
       <div className='px-4 py-5 space-x-4'>
-        <a href="/exercises"><ButtonComponent text='Empieza!' onClick={() => {}}/></a>
-        <a href="/note"><ButtonComponent buttonType='button_outline' text='Aprende más' icon onClick={() => {}}/></a>
+        <a href='/exercises'>
+          <ButtonComponent text='Empieza!' />
+        </a>
+        <a href='/note'>
+          <ButtonComponent
+            buttonType='button_outline'
+            text='Aprende más'
+            icon
+          />
+        </a>
       </div>
     </div>
   )

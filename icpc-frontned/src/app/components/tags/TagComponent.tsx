@@ -1,7 +1,7 @@
 import React from 'react'
 import { TextComponent } from '../text/TextComponent'
 import { XMarkIcon } from '@heroicons/react/20/solid'
-import { readableColor } from 'polished'
+import { readableColor, getLuminance } from 'polished'
 
 interface TagProps {
   color: string
@@ -19,9 +19,23 @@ Date: 12 - 04 - 2024
 Author: Gerardo Omar Rodriguez Ramirez
 */
 
+const determineTextColor = (backgroundColor: string): string => {
+  const luminance = getLuminance(backgroundColor);
+  
+  // Si el color es rojo puro o similar, forzar blanco
+  const forceWhiteFor = ['#FF0000', '#E60026', '#C21807']; // Puedes agregar más tonalidades
+
+  if (forceWhiteFor.includes(backgroundColor.toUpperCase())) {
+    return '#FFFFFF';
+  }
+
+  // Condición personalizada basada en luminancia (puedes ajustar el umbral)
+  return luminance > 0.5 ? '#000000' : '#FFFFFF';
+};
+
 const TagComponent = ({ ...props }: Readonly<TagProps>) => {
   const backgroundColor = `#${props.color}`
-  const textColor = readableColor(backgroundColor, '#000000', '#FFFFFF') // Negro si es claro, blanco si es oscuro
+  const textColor = determineTextColor(backgroundColor);
 
   return (
     <div
