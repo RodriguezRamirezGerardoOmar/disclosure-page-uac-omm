@@ -1,5 +1,5 @@
 'use client'
-import { useForm, SubmitHandler } from 'react-hook-form';
+import { useForm, SubmitHandler } from 'react-hook-form'
 import CheckboxComponent from '../components/forms/CheckboxComponent'
 import TextFieldComponent from '../components/forms/TextFieldComponent'
 import { BasicPanelComponent } from '../components/panels/BasicPanelComponent'
@@ -9,42 +9,38 @@ import SubmitComponent from '../components/forms/SubmitComponent'
 import { TextComponent } from '../components/text/TextComponent'
 import useStore from '@/store/useStore'
 import { useRouter } from 'next/navigation'
-import { toast } from 'sonner';
-
+import { toast } from 'sonner'
 
 export default function Home() {
-  const login = useStore((state) => state.login);
-  const router = useRouter();
-  const methods = useForm();
+  const login = useStore(state => state.login)
+  const router = useRouter()
+  const methods = useForm()
 
-  const onSubmit: SubmitHandler<{ username: string; password: string }> = async (data) => {
+  const onSubmit: SubmitHandler<{ username: string; password: string }> = async data => {
     try {
-      const { username, password } = data;
+      const { username, password } = data
       // Determinar si el input es email o username
-      const credentials = username.includes('@')
-        ? { email: username, password }
-        : { username: username, password };
-      
-      await login(credentials); // Envía el objeto correcto al store
-      router.push('/');
-      toast.success('Inicio de sesión exitoso', { 
+      const credentials = username.includes('@') ? { email: username, password } : { username: username, password }
+
+      await login(credentials) // Envía el objeto correcto al store
+      router.push('/')
+      toast.success('Inicio de sesión exitoso', {
         duration: 5000,
         style: {
           backgroundColor: 'green',
           color: '#ffffff'
         }
-      });
+      })
     } catch (error) {
-      toast.error(
-        'Error al iniciar sesión, verifica tus credenciales',{
+      toast.error('Error al iniciar sesión, verifica tus credenciales', {
         duration: 5000,
         style: {
           backgroundColor: '#ff0000',
           color: '#ffffff'
         }
-      });
+      })
     }
-  };
+  }
 
   return (
     <main
@@ -86,13 +82,16 @@ export default function Home() {
             register={methods.register}
             fieldName='rememberMe'
           />
-          <SubmitComponent text='Iniciar sesión' action={function (): void {
-          } } />
+          <SubmitComponent
+            text='Iniciar sesión'
+            action={function (): void {}}
+          />
+          {/*
           <a href='/forgot'>
           <TextComponent className='dark:text-dark-accent hover:text-dark-accent hover:dark:text-complementary underline'>
               Olvidé mi contraseña
             </TextComponent>
-          </a>
+          </a>*/}
         </form>
       </BasicPanelComponent>
     </main>

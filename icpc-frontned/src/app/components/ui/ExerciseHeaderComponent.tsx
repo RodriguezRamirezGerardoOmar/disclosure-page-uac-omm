@@ -56,7 +56,7 @@ const ExerciseHeaderComponent = ({...props}: Readonly<ExerciseHeaderComponentPro
           </div>
           <div className='flex items-center gap-x-4 sm:gap-x-6'>
             <a
-              href='/notelist'
+              href='/note'
               className='rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm
                   hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'>
               Apuntes
@@ -109,7 +109,7 @@ const ExerciseHeaderComponent = ({...props}: Readonly<ExerciseHeaderComponentPro
                   <MenuItem>
                     {({ focus }) => (
                       <a
-                        href='/notelist'
+                        href='/note'
                         className={classNames(focus ? 'bg-gray-50' : '', 'block px-3 py-1 text-sm leading-6 text-gray-900')}>
                         Edit
                       </a>

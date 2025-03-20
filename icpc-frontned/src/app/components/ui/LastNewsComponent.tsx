@@ -29,7 +29,7 @@ export const LastNewsComponent = () => {
         </TextComponent>
 
         <div className='flex justify-end'>
-          <Link href='/newslist' className='text-primary dark:text-dark-accent'>
+          <Link href='/news' className='text-primary dark:text-dark-accent'>
             Ver más noticias
           </Link>
         </div>
