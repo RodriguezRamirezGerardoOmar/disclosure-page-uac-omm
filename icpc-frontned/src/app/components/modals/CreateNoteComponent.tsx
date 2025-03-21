@@ -55,7 +55,7 @@ const CreateNoteComponent = (props: CreateNotesComponentProps) => {
           if (note) {
             methods.reset({
               title: note.title,
-              description: note.body,
+              description: note.commentId.body,
               content: note.body,
               category: { label: note.category.name, value: note.category.id },
               tags: note.tags
@@ -114,6 +114,7 @@ const CreateNoteComponent = (props: CreateNotesComponentProps) => {
       }
       if ('id' in response) {
         toast.success(props.id ? 'Nota Actualizada' : 'Nota creada con éxito.', toastOptions)
+        props.onClose()
       } else if ('message' in response) {
         toast.error(response.message, toastOptions)
       } else {
@@ -150,7 +151,7 @@ const CreateNoteComponent = (props: CreateNotesComponentProps) => {
             title: note.title,
             category: { label: note.category.name, value: note.category.id },
             tags: note.tags,
-            description: note.body,
+            description: note.commentId.body,
             content: note.body
           })
           setSelectedCategory({ label: note.category.name, value: note.category.id })

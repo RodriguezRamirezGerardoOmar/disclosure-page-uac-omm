@@ -574,7 +574,7 @@ const useUtilsStore = create<Actions & UtilsState>()(
 
         approveTicket: async (id: string): Promise<IApiResponse> => {
           try {
-            const response = await api.post(`/api/v1/ticket/approve/${id}`, {
+            const response = await api.post(`/api/v1/ticket/approve/${id}`, {},{
               headers: {
                 Authorization: `Bearer ${useAuthStore.getState().token}`
               }
@@ -587,7 +587,7 @@ const useUtilsStore = create<Actions & UtilsState>()(
 
         rejectTicket: async (id: string): Promise<IApiResponse> => {
           try {
-            const response = await api.post(`/api/v1/ticket/reject/${id}`, {
+            const response = await api.post(`/api/v1/ticket/reject/${id}`, {},{
               headers: {
                 Authorization: `Bearer ${useAuthStore.getState().token}`
               }
