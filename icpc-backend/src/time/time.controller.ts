@@ -6,7 +6,8 @@ import {
   Patch,
   Param,
   Delete,
-  UseGuards
+  UseGuards,
+  Req
 } from '@nestjs/common';
 import { TimeService } from './time.service';
 import { CreateTimeDto } from './dto/create-time.dto';
@@ -19,11 +20,15 @@ import {
   ApiUnauthorizedResponse
 } from '@nestjs/swagger';
 import { AuthGuard } from 'src/auth/guard/auth.guard';
+import { LoggerService } from 'src/services/logger.service';
 
 @Controller('time')
 @ApiTags('Time')
 export class TimeController {
-  constructor(private readonly timeService: TimeService) {}
+  constructor(
+    private readonly timeService: TimeService,
+    private readonly loggerService: LoggerService
+  ) {}
 
   @ApiBearerAuth()
   @Post()
@@ -33,8 +38,10 @@ export class TimeController {
   })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
-  create(@Body() createTimeDto: CreateTimeDto) {
-    return this.timeService.create(createTimeDto);
+  async create(@Body() createTimeDto: CreateTimeDto, @Req() req: any) {
+    const newTime = await this.timeService.create(createTimeDto);
+    this.loggerService.logChange('time', 'create', req.user.name, newTime.id);
+    return newTime;
   }
 
   @Get()
@@ -65,8 +72,14 @@ export class TimeController {
   })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
-  update(@Param('id') id: string, @Body() updateTimeDto: UpdateTimeDto) {
-    return this.timeService.update(id, updateTimeDto);
+  async update(
+    @Param('id') id: string,
+    @Body() updateTimeDto: UpdateTimeDto,
+    @Req() req: any
+  ) {
+    const modifiedTime = await this.timeService.update(id, updateTimeDto);
+    this.loggerService.logChange('time', 'update', req.user.name, id);
+    return modifiedTime;
   }
 
   @ApiBearerAuth()
@@ -77,7 +90,9 @@ export class TimeController {
   })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
-  remove(@Param('id') id: string) {
-    return this.timeService.remove(id);
+  async remove(@Param('id') id: string, @Req() req: any) {
+    const deletedTime = await this.timeService.remove(id);
+    this.loggerService.logChange('time', 'delete', req.user.name, id);
+    return deletedTime;
   }
 }
