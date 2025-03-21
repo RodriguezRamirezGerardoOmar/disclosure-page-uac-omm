@@ -1,6 +1,6 @@
 'use client';
-import React, { useEffect } from 'react';
-import { UseFormReturn, FieldValues, SubmitHandler, useForm } from 'react-hook-form';
+import React, { useEffect, useState } from 'react';
+import { UseFormReturn, FieldValues, SubmitHandler } from 'react-hook-form';
 import { BasicPanelComponent } from '../panels/BasicPanelComponent';
 import LogoComponent from '../LogoComponent';
 import TextFieldComponent from '../forms/TextFieldComponent';
@@ -8,6 +8,7 @@ import SubmitComponent from '../forms/SubmitComponent';
 import ColorPickerComponent from '@/app/components/forms/ColorPickerComponent';
 import useUtilsStore from '@/store/useUtilsStore';
 import { toast } from 'sonner';
+import { Tags } from '@/constants/types';
 
 interface CreateTagComponentProps {
   methods: UseFormReturn<FieldValues>;
@@ -20,6 +21,7 @@ const CreateTagComponent: React.FC<CreateTagComponentProps> = ({ methods, onCrea
   const createTag = useUtilsStore(state => state.createTag);
   const updateTag = useUtilsStore(state => state.updateTag);
   const getTags = useUtilsStore(state => state.getTags);
+  const [currentTag, setCurrentTag] = useState({} as Tags);
 
   useEffect(() => {
     if (tagId) {
@@ -29,6 +31,7 @@ const CreateTagComponent: React.FC<CreateTagComponentProps> = ({ methods, onCrea
         if (tag) {
           methods.setValue('name', tag.name);
           methods.setValue('color', `#${tag.color}`);
+          setCurrentTag(tag)
         }
       };
       loadTag();
@@ -36,7 +39,13 @@ const CreateTagComponent: React.FC<CreateTagComponentProps> = ({ methods, onCrea
   }, [tagId, getTags, methods]);
 
   const clearForm = () => {
-    methods.reset();
+    if (tagId) {
+      methods.reset({
+        name: currentTag.name,
+        color: `#${currentTag.color}`
+      });
+    }
+    else methods.reset();
   };
 
   const onSubmit: SubmitHandler<FieldValues> = async data => {
@@ -49,7 +58,7 @@ const CreateTagComponent: React.FC<CreateTagComponentProps> = ({ methods, onCrea
     }
 
     if ('id' in response) {
-      toast.success(`La etiqueta se ha ${tagId? 'creado' : 'editado'} con éxito.`, {
+      toast.success(`La etiqueta se ha ${tagId? 'editado' : 'creado'} con éxito.`, {
         duration: 5000,
         style: {
           backgroundColor: 'green',

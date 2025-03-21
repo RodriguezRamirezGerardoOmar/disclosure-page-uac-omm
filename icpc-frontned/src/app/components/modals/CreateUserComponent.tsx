@@ -1,6 +1,6 @@
 'use client'
-import React, { useEffect } from 'react'
-import { UseFormReturn, FieldValues, SubmitHandler, useForm } from 'react-hook-form'
+import React, { useEffect, useState } from 'react'
+import { FieldValues, SubmitHandler, useForm } from 'react-hook-form'
 import { BasicPanelComponent } from '../panels/BasicPanelComponent'
 import { enumTextTags } from '@/constants/types'
 import LogoComponent from '../LogoComponent'
@@ -8,7 +8,7 @@ import { TextComponent } from '../text/TextComponent'
 import TextFieldComponent from '../forms/TextFieldComponent'
 import CheckboxComponent from '../forms/CheckboxComponent'
 import SubmitComponent from '../forms/SubmitComponent'
-import useStore from '@/store/useStore'
+import useStore, { IUser } from '@/store/useStore'
 import { toast } from 'sonner'
 import { ArrowUturnLeftIcon, XMarkIcon } from '@heroicons/react/20/solid'
 
@@ -33,6 +33,7 @@ const CreateUserComponent = (props: ICreateUserProps) => {
   const updateUser = useStore(state => state.updateUser)
   const getUser = useStore(state => state.getUser)
   const user = useStore(state => state.user)
+  const [currentUser, setCurrentUser] = useState<IUser>({} as IUser)
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -47,6 +48,7 @@ const CreateUserComponent = (props: ICreateUserProps) => {
               email: user.email,
               isAdmin: user.isAdmin
             })
+            setCurrentUser(user)
           } else {
             toast.error('No se encontró el usuario con el ID proporcionado.', {
               duration: 5000,
@@ -72,23 +74,6 @@ const CreateUserComponent = (props: ICreateUserProps) => {
   }, [props.id, methods, getUser])
 
   const onSubmit: SubmitHandler<FieldValues> = async data => {
-    const processResponse = async (response: any) => {
-      const toastOptions = {
-        duration: 5000,
-        style: {
-          backgroundColor: response.id ? 'green' : '#ff0000',
-          color: '#ffffff'
-        }
-      }
-      if (response.id) {
-        toast.success(props.id ? 'Usuario actualizado.' : 'Usuario creado correctamente.', toastOptions)
-      } else if ('message' in response) {
-        toast.error(response.message, toastOptions)
-      } else {
-        toast.error('Error al crear el usuario.', toastOptions)
-      }
-    }
-
     const userData = {
       name: String(data.name),
       lastName: String(data.lastName),
@@ -96,45 +81,41 @@ const CreateUserComponent = (props: ICreateUserProps) => {
       email: String(data.email),
       password: String(data.password),
       passwordVerify: String(data.passwordVerify),
-      isAdmin: data.isAdmin
+      isAdmin: Boolean(data.isAdmin)
     }
 
-    if (props.id) {
-      const response = await updateUser(props.id, { ...userData, role: user!.role, editorId: user!.id })
-      processResponse(response)
-    } else {
-      const response = await createUser({
-        ...userData,
-        password: String(methods.getValues('password')),
-        passwordVerify: String(methods.getValues('passwordVerify'))
+    const response = props.id
+      ? await updateUser(props.id, { ...userData, role: user!.role, editorId: user!.id })
+      : await createUser(userData)
+    if ('id' in response) {
+      toast.success(`La cuenta de usuario se ha ${props.id ? 'actualizado' : 'creado'} con éxito.`, {
+        duration: 5000,
+        style: {
+          backgroundColor: 'green',
+          color: '#FFFFFF'
+        }
       })
-      processResponse(response)
+      props.onClose()
+    } else if ('message' in response) {
+      toast.error(response.message, {
+        duration: 5000,
+        style: {
+          backgroundColor: 'red',
+          color: '#FFFFFF'
+        }
+      })
     }
   }
 
   const clearForm = () => {
     if (props.id) {
-      const fetchUser = async () => {
-        const note = await getUser(props.id!)
-        if (note) {
-          methods.reset({
-            name: note.name,
-            lastName: note.lastName,
-            userName: note.userName,
-            email: note.email,
-            isAdmin: note.isAdmin
-          })
-        } else {
-          toast.error('No se pudo recargar el usuario.', {
-            duration: 5000,
-            style: {
-              backgroundColor: '#ff0000',
-              color: '#ffffff'
-            }
-          })
-        }
-      }
-      fetchUser()
+      methods.reset({
+        name: currentUser.name,
+        lastName: currentUser.lastName,
+        userName: currentUser.userName,
+        email: currentUser.email,
+        isAdmin: currentUser.isAdmin
+      })
     } else {
       methods.reset()
     }
@@ -236,7 +217,7 @@ const CreateUserComponent = (props: ICreateUserProps) => {
           />
           <SubmitComponent
             text={props.id ? 'Actualizar cuenta' : 'Crear cuenta'}
-            action={methods.handleSubmit(onSubmit)}
+            action={() => {}}
           />
         </div>
       </BasicPanelComponent>

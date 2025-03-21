@@ -48,7 +48,7 @@ interface Actions {
   getProfile: () => Promise<IUser>
   getUsers: () => Promise<IUser[]>
   deleteUser: (id: string) => Promise<IApiResponse | TResponseBasicError>
-  updateUser: (id: string, user: IUpdateUser) => Promise<IUser>
+  updateUser: (id: string, user: IUpdateUser) => Promise<IUser | TResponseBasicError>
   getUser: (id: string) => Promise<IUser> 
 }
 
@@ -77,9 +77,12 @@ const useAuthStore = create<AuthState & Actions>()(
 
         createUser: async (user: ICreateUser) => {
           try {
-          const response = await api.post('/api/v1/auth/register', user)
+          const response = await api.post('/api/v1/auth/register', user, {
+            headers: {
+              Authorization: `Bearer ${get().token}`
+            }
+          })
           if (response.status === 201) {
-            set(() => ({ user: response.data }))
             return response.data
           }
         } catch (error: any) {
@@ -128,10 +131,9 @@ const useAuthStore = create<AuthState & Actions>()(
                 Authorization: `Bearer ${get().token}`
               }
             });
-            set(() => ({ user: response.data }));
             return response.data;
           } catch (error: any) {
-            throw error.response.data; // Lanzar error para capturar en el componente
+            return error.response.data; // Lanzar error para capturar en el componente
           }
         },
 

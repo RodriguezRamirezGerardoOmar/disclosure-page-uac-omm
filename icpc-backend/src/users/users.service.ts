@@ -51,18 +51,26 @@ export class UsersService {
         user.role = userRole;
       }
       const newUser = await this.userRepository.save(user);
-      return {
-        // return the user object
-        id: newUser.id,
-        name: newUser.name,
-        lastName: newUser.lastName,
-        userName: newUser.userName,
-        email: newUser.email,
-        role: {
-          id: newUser.role.id,
-          name: newUser.role.role
-        }
-      };
+      if (newUser) {
+        const commentBody = `${newUser.name} ha sido creado`;
+        const comment = this.commentRepository.create({ body: commentBody });
+        const savedComment = await this.commentRepository.save(comment);
+        const ticket = this.ticketRepository.create({
+          operation: TicketOperation.CREATE,
+          commentId: savedComment,
+          itemType: TicketType.USER,
+          status: TicketStatus.ACCEPTED,
+          otherId: newUser.id
+        });
+        await this.ticketRepository.save(ticket);
+        return {
+          id: newUser.id,
+          name: newUser.name,
+          lastName: newUser.lastName,
+          userName: newUser.userName,
+          email: newUser.email
+        };
+      }
     } else {
       throw new BadRequestException('Las contraseñas no coinciden');
     }
@@ -126,6 +134,13 @@ export class UsersService {
       }
     }
 
+    if (
+      updateUserDto.password &&
+      updateUserDto.password !== updateUserDto.passwordVerify
+    ) {
+      throw new BadRequestException('Las contraseñas no coinciden');
+    }
+
     const modifyUser = this.userRepository.create({
       ...user,
       name: updateUserDto.name,
@@ -137,19 +152,35 @@ export class UsersService {
         : user.password,
       role: updateUserDto.isAdmin
         ? await this.roleRepository.findOne({ where: { role: RoleEnum.ADMIN } })
-        : await this.roleRepository.findOne({ where: { role: RoleEnum.USER } })
+        : await this.roleRepository.findOne({ where: { role: RoleEnum.USER } }),
+      updated_by: updateUserDto.editorId
     });
     const updatedUser = await this.userRepository.save({
       ...modifyUser
     });
 
-    return {
-      id: updatedUser.id,
-      name: updatedUser.name,
-      lastName: updatedUser.lastName,
-      userName: updatedUser.userName,
-      email: updatedUser.email
-    };
+    if (updatedUser) {
+      const commentBody = `${updatedUser.name} ha sido actualizado`;
+      const comment = this.commentRepository.create({ body: commentBody });
+      const savedComment = await this.commentRepository.save(comment);
+      const ticket = this.ticketRepository.create({
+        operation: TicketOperation.UPDATE,
+        commentId: savedComment,
+        itemType: TicketType.USER,
+        status: TicketStatus.ACCEPTED,
+        otherId: updatedUser.id
+      });
+      const savedTicket = await this.ticketRepository.save(ticket);
+      if (savedComment && savedTicket) {
+        return {
+          id: updatedUser.id,
+          name: updatedUser.name,
+          lastName: updatedUser.lastName,
+          userName: updatedUser.userName,
+          email: updatedUser.email
+        };
+      }
+    }
   }
 
   async remove(id: string, userId: string) {

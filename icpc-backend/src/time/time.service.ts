@@ -27,13 +27,20 @@ export class TimeService {
   ) {}
 
   async create(createTimeDto: CreateTimeDto) {
+    if (!createTimeDto.timeLimit) {
+      throw new BadRequestException('El límite de tiempo debe ser un número');
+    }
+    if (createTimeDto.timeLimit <= 0) {
+      throw new BadRequestException('El límite de tiempo debe ser mayor a 0');
+    }
+
     // Verificar si ya existe un registro con el mismo timeLimit
     const existingTime = await this.timeRepository.findOneBy({
       timeLimit: createTimeDto.timeLimit
     });
 
     if (existingTime) {
-      throw new BadRequestException('time already exists');
+      throw new BadRequestException('Ese límite de tiempo ya existe');
     }
 
     const newVal = await this.timeRepository.save(createTimeDto);
@@ -45,6 +52,7 @@ export class TimeService {
       const savedComment = await this.commentRepository.save(commentId);
       if (savedComment) {
         const ticket = this.ticketRepository.create({
+          otherId: newVal.id,
           operation: TicketOperation.CREATE,
           status: TicketStatus.ACCEPTED,
           itemType: TicketType.UTILS,
@@ -84,8 +92,36 @@ export class TimeService {
   }
 
   async update(id: string, updateTimeDto: UpdateTimeDto) {
+    if (!updateTimeDto.timeLimit) {
+      throw new BadRequestException('El límite de tiempo debe ser un número');
+    }
+    if (updateTimeDto.timeLimit <= 0) {
+      throw new BadRequestException('El límite de tiempo debe ser mayor a 0');
+    }
+
     const time = await this.timeRepository.findOneBy({ id });
-    return await this.timeRepository.save({ ...time, ...updateTimeDto });
+    const savedTime = await this.timeRepository.save({
+      ...time,
+      ...updateTimeDto
+    });
+    if (savedTime) {
+      const ticketCommentBody = `El límite de tiempo ${savedTime.timeLimit.toString()} ha sido actualizado`;
+      const comment = this.commentRepository.create({
+        body: ticketCommentBody
+      });
+      const savedComment = await this.commentRepository.save(comment);
+      const ticket = this.ticketRepository.create({
+        otherId: savedTime.id,
+        operation: TicketOperation.UPDATE,
+        status: TicketStatus.ACCEPTED,
+        itemType: TicketType.UTILS,
+        commentId: savedComment
+      });
+      const savedTicket = await this.ticketRepository.save(ticket);
+      if (savedComment && savedTicket) {
+        return savedTime;
+      }
+    }
   }
 
   async remove(id: string) {
