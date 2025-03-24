@@ -31,7 +31,7 @@ export class CategoriesService {
   async create(createCategoryDto: CreateCategoryDto) {
     const name = await this.findOneByName(createCategoryDto.name); // check if name exists
     if (name !== null) {
-      throw new BadRequestException('Category already exists');
+      throw new BadRequestException('Esa categoría ya existe');
     }
     let comment = await this.commentRepository.findOneBy({
       body: createCategoryDto.commentId
@@ -50,6 +50,7 @@ export class CategoriesService {
     });
     const ticketCommentId = await this.commentRepository.save(ticketComment);
     const ticket = this.ticketRepository.create({
+      otherId: category.id,
       operation: TicketOperation.CREATE,
       status: TicketStatus.ACCEPTED,
       itemType: TicketType.UTILS,
@@ -94,7 +95,29 @@ export class CategoriesService {
   }
 
   async update(id: string, updateCategoryDto: UpdateCategoryDto) {
-    return await this.categoryRepository.update(id, updateCategoryDto);
+    const category = await this.categoryRepository.findOneBy({ id });
+    const savedCategory = await this.categoryRepository.save({
+      ...category,
+      ...updateCategoryDto
+    });
+    if (savedCategory) {
+      const ticketCommentBody = `La categoría ${savedCategory.name} ha sido actualizada`;
+      const comment = this.commentRepository.create({
+        body: ticketCommentBody
+      });
+      const savedComment = await this.commentRepository.save(comment);
+      const ticket = this.ticketRepository.create({
+        otherId: savedCategory.id,
+        operation: TicketOperation.UPDATE,
+        status: TicketStatus.ACCEPTED,
+        itemType: TicketType.UTILS,
+        commentId: savedComment
+      });
+      const savedTicket = await this.ticketRepository.save(ticket);
+      if (savedComment && savedTicket) {
+        return savedCategory;
+      }
+    }
   }
 
   async remove(id: string) {

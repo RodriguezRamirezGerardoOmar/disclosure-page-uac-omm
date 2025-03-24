@@ -141,11 +141,6 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
             console.error('Tipo de ítem no reconocido:', itemType)
         }
       }
-
-      toast.success('Le picó en Editar' + id + itemType, {
-        duration: 5000,
-        style: { backgroundColor: 'green', color: 'white' }
-      })
       props.setUpdate(!props.update)
     } catch (error) {
       console.error('Error al verificar el estado del ticket:', error)

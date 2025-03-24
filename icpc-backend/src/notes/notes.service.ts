@@ -34,6 +34,13 @@ export class NotesService {
   ) {}
 
   async create(createNoteDto: CreateNoteDto) {
+    const MAX_DESCRIPTION_LENGTH = 255;
+  
+    // Validar la longitud de la descripción
+    if (createNoteDto.description && createNoteDto.description.length > MAX_DESCRIPTION_LENGTH) {
+      throw new BadRequestException('La descripción excede el límite');
+    }
+  
     const title = await this.findOneByTitle(createNoteDto.title); // check if title exists
     const description = await this.commentRepository.findOneBy({
       body: createNoteDto.description // check if comment exists

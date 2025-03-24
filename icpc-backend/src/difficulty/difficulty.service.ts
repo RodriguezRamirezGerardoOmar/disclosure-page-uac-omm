@@ -27,6 +27,11 @@ export class DifficultyService {
   ) {}
 
   async create(createDifficultyDto: CreateDifficultyDto) {
+    if (createDifficultyDto.level < 0) {
+      throw new BadRequestException(
+        'El nivel de dificultad debe ser mayor o igual a 0.'
+      );
+    }
     // Verificar si ya existe un registro con el mismo nombre o nivel de dificultad
     const existingDifficulty = await this.difficultyRepository.findOne({
       where: [
@@ -35,7 +40,9 @@ export class DifficultyService {
       ]
     });
     if (existingDifficulty) {
-      throw new BadRequestException('Una dificultad con ese nombre o nivel ya existe.');
+      throw new BadRequestException(
+        'Una dificultad con ese nombre o nivel ya existe.'
+      );
     }
 
     const savedDifficulty = await this.difficultyRepository.save(
@@ -48,6 +55,7 @@ export class DifficultyService {
       });
       const savedComment = await this.commentRepository.save(comment);
       const ticket = this.ticketRepository.create({
+        otherId: savedDifficulty.id,
         operation: TicketOperation.CREATE,
         status: TicketStatus.ACCEPTED,
         itemType: TicketType.UTILS,
@@ -72,11 +80,48 @@ export class DifficultyService {
   }
 
   async update(id: string, updateDifficultyDto: UpdateDifficultyDto) {
+    if (updateDifficultyDto.level < 0) {
+      throw new BadRequestException(
+        'El nivel de dificultad debe ser mayor o igual a 0.'
+      );
+    }
+    // Verificar si ya existe un registro con el mismo nombre o nivel de dificultad
+    const existingDifficulty = await this.difficultyRepository.findOne({
+      where: { level: updateDifficultyDto.level }
+    });
+    if (existingDifficulty && existingDifficulty.id !== id) {
+      throw new BadRequestException('Una dificultad con ese nivel ya existe.');
+    }
+
+    const name = await this.difficultyRepository.findOne({
+      where: { name: updateDifficultyDto.name }
+    });
+    if (name && name.id !== id) {
+      throw new BadRequestException('Una dificultad con ese nombre ya existe.');
+    }
     const difficulty = await this.difficultyRepository.findOneBy({ id });
-    return await this.difficultyRepository.save({
+    const savedDifficulty = await this.difficultyRepository.save({
       ...difficulty,
       ...updateDifficultyDto
     });
+    if (savedDifficulty) {
+      const ticketCommentBody = `La dificultad ${savedDifficulty.name} ha sido actualizada`;
+      const comment = this.commentRepository.create({
+        body: ticketCommentBody
+      });
+      const savedComment = await this.commentRepository.save(comment);
+      const ticket = this.ticketRepository.create({
+        otherId: savedDifficulty.id,
+        operation: TicketOperation.UPDATE,
+        status: TicketStatus.ACCEPTED,
+        itemType: TicketType.UTILS,
+        commentId: savedComment
+      });
+      await this.ticketRepository.save(ticket);
+      return savedDifficulty;
+    } else {
+      throw new BadRequestException('Error al actualizar la dificultad');
+    }
   }
 
   async remove(id: string) {

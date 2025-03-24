@@ -6,11 +6,12 @@ import { Memory } from './entities/memory.entity';
 import { Excercise } from 'src/excercises/entities/excercise.entity';
 import { Comment } from 'src/comment/entities/comment.entity';
 import { Ticket } from 'src/ticket/entities/ticket.entity';
+import { LoggerService } from 'src/services/logger.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Memory, Excercise, Comment, Ticket])],
   controllers: [MemoryController],
-  providers: [MemoryService],
+  providers: [MemoryService, LoggerService],
   exports: [MemoryService]
 })
 export class MemoryModule {}

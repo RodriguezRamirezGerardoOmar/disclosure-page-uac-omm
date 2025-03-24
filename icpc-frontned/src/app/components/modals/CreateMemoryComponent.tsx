@@ -8,6 +8,7 @@ import SubmitComponent from '../forms/SubmitComponent'
 import { SelectComponent } from '@/app/components/dropdowns/SelectComponent'
 import useUtilsStore from '@/store/useUtilsStore'
 import { toast } from 'sonner'
+import { MemoryLimit } from '@/constants/types'
 
 interface CreateMemoryComponentProps {
   methods: UseFormReturn<FieldValues>
@@ -20,6 +21,7 @@ const CreateMemoryComponent: React.FC<CreateMemoryComponentProps> = ({ methods, 
   const createMemory = useUtilsStore(state => state.createMemory)
   const updateMemory = useUtilsStore(state => state.updateMemory)
   const getMemory = useUtilsStore(state => state.getMemory)
+  const [currentMemory, setCurrentMemory] = useState({} as MemoryLimit)
 
   const MemorySelect = [
     { index: 0, id: 'KB', name: 'KB' },
@@ -34,11 +36,21 @@ const CreateMemoryComponent: React.FC<CreateMemoryComponentProps> = ({ methods, 
       const loadMemory = async () => {
         const memory = await getMemory(memoryId)
         if (memory) {
-          methods.setValue('MemoryName', memory.memoryLimit.toString())
-          const memoryUnit = MemorySelect.find(unit => unit.id === memory.id)
-          if (memoryUnit) {
-            setSelectedMemoryUnit(memoryUnit.id)
+          setCurrentMemory(memory)
+          let val = 0
+          if (memory.memoryLimit % (1024 * 1024) === 0) {
+            val = memory.memoryLimit / (1024 * 1024)
+            setSelectedMemoryUnit('GB')
+          } else if (memory.memoryLimit % 1024 === 0) {
+            val = memory.memoryLimit / 1024
+            setSelectedMemoryUnit('MB')
+          } else {
+            val = memory.memoryLimit
+            setSelectedMemoryUnit('KB')
           }
+          methods.reset({
+            MemoryName: val
+          })
         }
       }
       loadMemory()
@@ -46,8 +58,25 @@ const CreateMemoryComponent: React.FC<CreateMemoryComponentProps> = ({ methods, 
   }, [memoryId, getMemory, methods])
 
   const clearForm = () => {
-    methods.reset()
-    setSelectedMemoryUnit(MemorySelect[0].id)
+    if (memoryId) {
+      let val = 0
+      if (currentMemory.memoryLimit % (1024 * 1024) === 0) {
+        val = currentMemory.memoryLimit / (1024 * 1024)
+        setSelectedMemoryUnit('GB')
+      } else if (currentMemory.memoryLimit % 1024 === 0) {
+        val = currentMemory.memoryLimit / 1024
+        setSelectedMemoryUnit('MB')
+      } else {
+        val = currentMemory.memoryLimit
+        setSelectedMemoryUnit('KB')
+      }
+      methods.reset({
+        MemoryName: val
+      })
+    } else {
+      methods.reset()
+      setSelectedMemoryUnit(MemorySelect[0].id)
+    }
   }
 
   const onSubmit: SubmitHandler<FieldValues> = async data => {
@@ -60,7 +89,11 @@ const CreateMemoryComponent: React.FC<CreateMemoryComponentProps> = ({ methods, 
         }
       }
       if (response.id) {
-        toast.success(`Se ha creado el limite de memoria correctamente: ${response.memoryLimit}KB`, toastOptions)
+        toast.success(
+          `Se ha ${memoryId ? 'editado' : 'creado'} el limite de memoria correctamente: ${response.memoryLimit}KB`,
+          toastOptions
+        )
+        onClose();
       } else if ('message' in response) {
         toast.error(response.message, toastOptions)
       } else {
@@ -72,7 +105,7 @@ const CreateMemoryComponent: React.FC<CreateMemoryComponentProps> = ({ methods, 
       value: parseInt(data.MemoryName),
       id: selectedMemoryUnit
     }
-    
+
     if (memoryId) {
       const response = await updateMemory(memoryId, memoryData)
       await processResponse(response)

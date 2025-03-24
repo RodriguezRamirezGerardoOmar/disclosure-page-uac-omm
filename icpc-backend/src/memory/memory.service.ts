@@ -27,6 +27,9 @@ export class MemoryService {
   ) {}
 
   async create(createMemoryDto: CreateMemoryDto) {
+    if (!createMemoryDto.value) {
+      throw new BadRequestException('El límite de memoria debe ser un número');
+    }
     let finalValue = 0;
     switch (createMemoryDto.id) {
       case 'MB':
@@ -43,12 +46,19 @@ export class MemoryService {
       memoryLimit: finalValue
     });
     if (memory) {
-      const ticketCommentBody = `Se ha creado el límite de memoria ${memory.memoryLimit.toString()}`;
+      throw new BadRequestException('Ese límite de memoria ya existe');
+    } else {
+      const newMemoryLimit = this.memoryRepository.create({
+        memoryLimit: finalValue
+      });
+      const savedMemory = await this.memoryRepository.save(newMemoryLimit);
+      const ticketCommentBody = `Se ha creado el límite de memoria ${savedMemory.memoryLimit.toString()}`;
       const comment = this.commentRepository.create({
         body: ticketCommentBody
       });
       const savedComment = await this.commentRepository.save(comment);
       const ticket = this.ticketRepository.create({
+        otherId: savedMemory.id,
         operation: TicketOperation.CREATE,
         status: TicketStatus.ACCEPTED,
         itemType: TicketType.UTILS,
@@ -56,9 +66,9 @@ export class MemoryService {
       });
       const savedTicket = await this.ticketRepository.save(ticket);
       if (savedTicket) {
-        return memory;
+        return savedMemory;
       }
-    } else return await this.memoryRepository.save({ memoryLimit: finalValue });
+    }
   }
 
   async findAll() {
@@ -86,10 +96,28 @@ export class MemoryService {
         finalValue = updateMemoryDto.value;
         break;
     }
-    return await this.memoryRepository.save({
+    const savedMemory = await this.memoryRepository.save({
       ...memory,
       memoryLimit: finalValue
     });
+    if (savedMemory) {
+      const ticketCommentBody = `El límite de memoria ${savedMemory.memoryLimit.toString()} ha sido actualizado`;
+      const comment = this.commentRepository.create({
+        body: ticketCommentBody
+      });
+      const savedComment = await this.commentRepository.save(comment);
+      const ticket = this.ticketRepository.create({
+        otherId: savedMemory.id,
+        operation: TicketOperation.UPDATE,
+        status: TicketStatus.ACCEPTED,
+        itemType: TicketType.UTILS,
+        commentId: savedComment
+      });
+      const savedTicket = await this.ticketRepository.save(ticket);
+      if (savedComment && savedTicket) {
+        return savedMemory;
+      }
+    }
   }
 
   async remove(id: string) {

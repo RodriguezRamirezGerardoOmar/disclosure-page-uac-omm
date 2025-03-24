@@ -6,7 +6,8 @@ import {
   Patch,
   Param,
   Delete,
-  UseGuards
+  UseGuards,
+  Req
 } from '@nestjs/common';
 import { DifficultyService } from './difficulty.service';
 import { CreateDifficultyDto } from './dto/create-difficulty.dto';
@@ -19,11 +20,15 @@ import {
   ApiUnauthorizedResponse
 } from '@nestjs/swagger';
 import { AuthGuard } from 'src/auth/guard/auth.guard';
+import { LoggerService } from 'src/services/logger.service';
 
 @ApiTags('Difficulty')
 @Controller('difficulty')
 export class DifficultyController {
-  constructor(private readonly difficultyService: DifficultyService) {}
+  constructor(
+    private readonly difficultyService: DifficultyService,
+    private readonly loggerService: LoggerService
+  ) {}
 
   @ApiBearerAuth()
   @Post()
@@ -33,8 +38,20 @@ export class DifficultyController {
   })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
-  create(@Body() createDifficultyDto: CreateDifficultyDto) {
-    return this.difficultyService.create(createDifficultyDto);
+  async create(
+    @Body() createDifficultyDto: CreateDifficultyDto,
+    @Req() req: any
+  ) {
+    const newDifficulty = await this.difficultyService.create(
+      createDifficultyDto
+    );
+    this.loggerService.logChange(
+      'difficulty',
+      'create',
+      req.user.name,
+      newDifficulty.id
+    );
+    return newDifficulty;
   }
 
   @Get()
@@ -65,11 +82,22 @@ export class DifficultyController {
   })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
-  update(
+  async update(
     @Param('id') id: string,
-    @Body() updateDifficultyDto: UpdateDifficultyDto
+    @Body() updateDifficultyDto: UpdateDifficultyDto,
+    @Req() req: any
   ) {
-    return this.difficultyService.update(id, updateDifficultyDto);
+    const modifiedDifficulty = await this.difficultyService.update(
+      id,
+      updateDifficultyDto
+    );
+    this.loggerService.logChange(
+      'difficulty',
+      'update',
+      req.user.name,
+      modifiedDifficulty.id
+    );
+    return modifiedDifficulty;
   }
 
   @ApiBearerAuth()
@@ -80,7 +108,9 @@ export class DifficultyController {
   })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
-  remove(@Param('id') id: string) {
-    return this.difficultyService.remove(id);
+  async remove(@Param('id') id: string, @Req() req: any) {
+    const deletedDifficulty = await this.difficultyService.remove(id);
+    this.loggerService.logChange('difficulty', 'delete', req.user.name, id);
+    return deletedDifficulty;
   }
 }

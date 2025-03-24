@@ -51,18 +51,26 @@ export class UsersService {
         user.role = userRole;
       }
       const newUser = await this.userRepository.save(user);
-      return {
-        // return the user object
-        id: newUser.id,
-        name: newUser.name,
-        lastName: newUser.lastName,
-        userName: newUser.userName,
-        email: newUser.email,
-        role: {
-          id: newUser.role.id,
-          name: newUser.role.role
-        }
-      };
+      if (newUser) {
+        const commentBody = `${newUser.name} ha sido creado`;
+        const comment = this.commentRepository.create({ body: commentBody });
+        const savedComment = await this.commentRepository.save(comment);
+        const ticket = this.ticketRepository.create({
+          operation: TicketOperation.CREATE,
+          commentId: savedComment,
+          itemType: TicketType.USER,
+          status: TicketStatus.ACCEPTED,
+          otherId: newUser.id
+        });
+        await this.ticketRepository.save(ticket);
+        return {
+          id: newUser.id,
+          name: newUser.name,
+          lastName: newUser.lastName,
+          userName: newUser.userName,
+          email: newUser.email
+        };
+      }
     } else {
       throw new BadRequestException('Las contraseñas no coinciden');
     }
@@ -106,6 +114,10 @@ export class UsersService {
   async update(id: string, updateUserDto: UpdateUserDto) {
     const user = await this.userRepository.findOneBy({ id: id });
 
+    if (!user) {
+      throw new BadRequestException('El usuario no existe');
+    }
+
     // Verificar nombre de usuario
     if (updateUserDto.userName && updateUserDto.userName !== user.userName) {
       const existingUser = await this.userRepository.findOneBy({
@@ -126,6 +138,25 @@ export class UsersService {
       }
     }
 
+    if (
+      updateUserDto.password &&
+      updateUserDto.password !== updateUserDto.passwordVerify
+    ) {
+      throw new BadRequestException('Las contraseñas no coinciden');
+    }
+
+    // Mantener el rol actual si no se especifica en la solicitud
+    let role = user.role; // Mantener el rol actual por defecto
+    if (updateUserDto.isAdmin !== undefined) {
+      role = await this.roleRepository.findOne({
+        where: { role: updateUserDto.isAdmin ? RoleEnum.ADMIN : RoleEnum.USER }
+      });
+
+      if (!role) {
+        throw new BadRequestException('El rol especificado no existe');
+      }
+    }
+
     const modifyUser = this.userRepository.create({
       ...user,
       name: updateUserDto.name,
@@ -135,23 +166,34 @@ export class UsersService {
       password: updateUserDto.password
         ? await bcrypt.hash(updateUserDto.password, 10)
         : user.password,
-      role: updateUserDto.isAdmin
-        ? await this.roleRepository.findOne({ where: { role: RoleEnum.ADMIN } })
-        : await this.roleRepository.findOne({ where: { role: RoleEnum.USER } })
+      role: role,
+      updated_by: updateUserDto.editorId
     });
-    const updatedUser = await this.userRepository.save({
-      ...modifyUser
+
+    // Guardar el usuario actualizado
+    await this.userRepository.save(modifyUser);
+
+    // Recargar el usuario con la relación del rol
+    const updatedUser = await this.userRepository.findOne({
+      where: { id: modifyUser.id },
+      relations: ['role'] // Asegúrate de cargar la relación del rol
     });
+
+    if (!updatedUser?.role) {
+      throw new BadRequestException(
+        'Error al cargar el rol del usuario actualizado'
+      );
+    }
 
     return {
       id: updatedUser.id,
       name: updatedUser.name,
       lastName: updatedUser.lastName,
       userName: updatedUser.userName,
-      email: updatedUser.email
+      email: updatedUser.email,
+      role: updatedUser.role.role
     };
   }
-
   async remove(id: string, userId: string) {
     const user = await this.userRepository.findOneBy({ id });
     if (!user) {
