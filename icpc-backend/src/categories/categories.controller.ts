@@ -6,7 +6,8 @@ import {
   Patch,
   Param,
   Delete,
-  UseGuards
+  UseGuards,
+  Req
 } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
@@ -19,11 +20,15 @@ import {
   ApiUnauthorizedResponse
 } from '@nestjs/swagger';
 import { AuthGuard } from 'src/auth/guard/auth.guard';
+import { LoggerService } from 'src/services/logger.service';
 
 @Controller('categories')
 @ApiTags('Categories')
 export class CategoriesController {
-  constructor(private readonly categoriesService: CategoriesService) {}
+  constructor(
+    private readonly categoriesService: CategoriesService,
+    private readonly loggerService: LoggerService
+  ) {}
 
   @Post()
   @ApiBearerAuth()
@@ -33,8 +38,15 @@ export class CategoriesController {
   })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
-  create(@Body() createCategoryDto: CreateCategoryDto) {
-    return this.categoriesService.create(createCategoryDto);
+  async create(@Body() createCategoryDto: CreateCategoryDto, @Req() req: any) {
+    const newCategory = await this.categoriesService.create(createCategoryDto);
+    this.loggerService.logChange(
+      'categories',
+      'create',
+      req.user.name,
+      newCategory.id
+    );
+    return newCategory;
   }
 
   @Get()
@@ -55,11 +67,22 @@ export class CategoriesController {
   })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
-  update(
+  async update(
     @Param('id') id: string,
-    @Body() updateCategoryDto: UpdateCategoryDto
+    @Body() updateCategoryDto: UpdateCategoryDto,
+    @Req() req: any
   ) {
-    return this.categoriesService.update(id, updateCategoryDto);
+    const modifiedCategory = await this.categoriesService.update(
+      id,
+      updateCategoryDto
+    );
+    this.loggerService.logChange(
+      'categories',
+      'update',
+      req.user.name,
+      modifiedCategory.id
+    );
+    return modifiedCategory;
   }
 
   @Delete(':id')
@@ -70,7 +93,9 @@ export class CategoriesController {
   })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
-  remove(@Param('id') id: string) {
-    return this.categoriesService.remove(id);
+  async remove(@Param('id') id: string, @Req() req: any) {
+    const deletedCategory = await this.categoriesService.remove(id);
+    this.loggerService.logChange('categories', 'delete', req.user.name, id);
+    return deletedCategory;
   }
 }

@@ -30,11 +30,19 @@ export class TagsService {
   ) {}
 
   async create(createTagDto: CreateTagDto) {
-    const existingTag = await this.tagRepository.findOneBy({ color: createTagDto.color });
+    const existingTag = await this.tagRepository.findOneBy({
+      color: createTagDto.color
+    });
     if (existingTag) {
-      throw new BadRequestException('Ya existe una etiqueta con este color');
+      throw new BadRequestException('Ya existe una etiqueta con este color.');
     }
-  
+    const name = await this.tagRepository.findOneBy({
+      name: createTagDto.name
+    });
+    if (name) {
+      throw new BadRequestException('Ya existe una etiqueta con ese nombre.');
+    }
+
     const savedTag = await this.tagRepository.save(createTagDto);
     if (savedTag) {
       const ticketCommentBody = `La etiqueta ${savedTag.name} ha sido creada`;
@@ -43,6 +51,7 @@ export class TagsService {
       });
       const savedComment = await this.commentRepository.save(comment);
       const ticket = this.ticketRepository.create({
+        otherId: savedTag.id,
         operation: TicketOperation.CREATE,
         status: TicketStatus.ACCEPTED,
         itemType: TicketType.UTILS,
@@ -69,13 +78,35 @@ export class TagsService {
   }
 
   async update(id: string, updateTagDto: UpdateTagDto) {
-    const existingTag = await this.tagRepository.findOneBy({ color: updateTagDto.color });
+    const existingTag = await this.tagRepository.findOneBy({
+      color: updateTagDto.color
+    });
     if (existingTag && existingTag.id !== id) {
       throw new BadRequestException('Ya existe una etiqueta con este color');
     }
-  
+
     const tag = await this.tagRepository.findOneBy({ id });
-    return await this.tagRepository.save({ ...tag, ...updateTagDto });
+    const savedTag = await this.tagRepository.save({ ...tag, ...updateTagDto });
+    if (savedTag) {
+      const ticketCommentBody = `La etiqueta ${savedTag.name} ha sido actualizada`;
+      const comment = this.commentRepository.create({
+        body: ticketCommentBody
+      });
+      const savedComment = await this.commentRepository.save(comment);
+      const ticket = this.ticketRepository.create({
+        otherId: savedTag.id,
+        operation: TicketOperation.UPDATE,
+        status: TicketStatus.ACCEPTED,
+        itemType: TicketType.UTILS,
+        commentId: savedComment
+      });
+      const savedTicket = await this.ticketRepository.save(ticket);
+      if (savedComment && savedTicket) {
+        return savedTag;
+      }
+    } else {
+      throw new BadRequestException('Error al actualizar la etiqueta');
+    }
   }
 
   async remove(id: string) {

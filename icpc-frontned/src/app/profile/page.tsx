@@ -69,22 +69,22 @@ function Page() {
 
   const handleSubmitUserInfo: SubmitHandler<FieldValues> = async (data: any) => {
     try {
-      // Incluye el rol actual del usuario en los datos enviados
-      const updatedData = { ...data, role: user!.role, editorId: user!.id };
-      const result = await updateUser(user!.id, updatedData);
-      setCurrentUser(result);
-      setUpdate(!update);
-      toast.success('¡Información actualizada!', {
-        duration: 5000,
-        style: { backgroundColor: 'green', color: '#ffffff' }
-      });
+      const result = await updateUser(user!.id, { ...data, role: user!.role, editorId: user!.id })
+      if ('id' in result) {
+        setCurrentUser(result)
+        toast.success('¡Información actualizada!', {
+          duration: 5000,
+          style: { backgroundColor: 'green', color: '#ffffff' }
+        })
+      }
+      setUpdate(!update)
     } catch (error: any) {
       toast.error(error.message || 'Error al actualizar', {
         duration: 5000,
         style: { backgroundColor: 'red', color: '#ffffff' }
-      });
+      })
     }
-  };
+  }
 
   const handleChange = useCallback(
     async (data: string) => {
@@ -180,7 +180,19 @@ function Page() {
           break
       }
     },
-    [getCategories, getDifficulty, getExercises, getMemory, getNews, getNotes, getTags, getTime, getUsers, getOpenReports, getPendingTickets]
+    [
+      getCategories,
+      getDifficulty,
+      getExercises,
+      getMemory,
+      getNews,
+      getNotes,
+      getTags,
+      getTime,
+      getUsers,
+      getOpenReports,
+      getPendingTickets
+    ]
   )
 
   useEffect(() => {
@@ -265,7 +277,10 @@ function Page() {
                 </div>
 
                 <div className='mt-8 flex'>
-                  <SubmitComponent text='Guardar' action={methods.handleSubmit(handleSubmitUserInfo)} />
+                  <SubmitComponent
+                    text='Guardar'
+                    action={methods.handleSubmit(handleSubmitUserInfo)}
+                  />
                 </div>
               </form>
             </div>

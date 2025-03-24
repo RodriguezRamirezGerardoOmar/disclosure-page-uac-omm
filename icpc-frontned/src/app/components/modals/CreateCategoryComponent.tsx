@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form'
 import { BasicPanelComponent } from '../panels/BasicPanelComponent'
 import LogoComponent from '../LogoComponent'
@@ -7,6 +7,7 @@ import TextFieldComponent from '../forms/TextFieldComponent'
 import SubmitComponent from '../forms/SubmitComponent'
 import useUtilsStore from '@/store/useUtilsStore'
 import { toast } from 'sonner'
+import { Categories } from '@/constants/types'
 
 interface CreateCategoryComponentProps {
   onClose: () => void
@@ -19,6 +20,7 @@ const CreateCategoryComponent: React.FC<CreateCategoryComponentProps> = ({ onClo
   // Ensure updateCategory is defined in your useUtilsStore
   const updateCategory = useUtilsStore(state => state.updateCategory || (() => Promise.resolve({})))
   const getCategory = useUtilsStore(state => state.getCategory)
+  const [currentCategory, setCurrentCategory] = useState<Categories>({} as Categories)
 
   useEffect(() => {
     if (categoryId) {
@@ -26,6 +28,7 @@ const CreateCategoryComponent: React.FC<CreateCategoryComponentProps> = ({ onClo
         const category = await getCategory(categoryId)
         if (category) {
           methods.setValue('categoryName', category.name)
+          setCurrentCategory(category)
         }
       }
       loadCategory()
@@ -33,7 +36,14 @@ const CreateCategoryComponent: React.FC<CreateCategoryComponentProps> = ({ onClo
   }, [categoryId, getCategory, methods])
 
   const clearForm = () => {
-    methods.reset()
+    if (categoryId) {
+      methods.reset({
+        categoryName: currentCategory.name
+      })
+    }
+    else {
+      methods.reset()
+    }
   }
   
   const onSubmit: SubmitHandler<FieldValues> = async data => {
@@ -45,7 +55,7 @@ const CreateCategoryComponent: React.FC<CreateCategoryComponentProps> = ({ onClo
     }
 
     if ('id' in response) {
-      toast.success(`La categoría se ha ${categoryId? 'creado' : 'editado'} con éxito.`, {
+      toast.success(`La categoría se ha ${categoryId? 'editado' : 'creado'} con éxito.`, {
         duration: 5000,
         style: {
           backgroundColor: 'green',

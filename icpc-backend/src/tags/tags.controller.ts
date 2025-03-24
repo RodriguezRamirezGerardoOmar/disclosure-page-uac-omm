@@ -6,7 +6,8 @@ import {
   Patch,
   Param,
   Delete,
-  UseGuards
+  UseGuards,
+  Req
 } from '@nestjs/common';
 import { TagsService } from './tags.service';
 import { CreateTagDto } from './dto/create-tag.dto';
@@ -19,11 +20,15 @@ import {
   ApiTags
 } from '@nestjs/swagger';
 import { AuthGuard } from 'src/auth/guard/auth.guard';
+import { LoggerService } from 'src/services/logger.service';
 
 @ApiTags('Tags')
 @Controller('tags')
 export class TagsController {
-  constructor(private readonly tagsService: TagsService) {}
+  constructor(
+    private readonly tagsService: TagsService,
+    private readonly loggerService: LoggerService
+  ) {}
 
   @ApiBearerAuth()
   @Post()
@@ -33,8 +38,10 @@ export class TagsController {
   })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
-  create(@Body() createTagDto: CreateTagDto) {
-    return this.tagsService.create(createTagDto);
+  async create(@Body() createTagDto: CreateTagDto, @Req() req: any) {
+    const newTag = await this.tagsService.create(createTagDto);
+    this.loggerService.logChange('tags', 'create', req.user.name, newTag.id);
+    return newTag;
   }
 
   @Get()
@@ -65,8 +72,19 @@ export class TagsController {
   })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
-  update(@Param('id') id: string, @Body() updateTagDto: UpdateTagDto) {
-    return this.tagsService.update(id, updateTagDto);
+  async update(
+    @Param('id') id: string,
+    @Body() updateTagDto: UpdateTagDto,
+    @Req() req: any
+  ) {
+    const modifiedTag = await this.tagsService.update(id, updateTagDto);
+    this.loggerService.logChange(
+      'tags',
+      'update',
+      req.user.name,
+      modifiedTag.id
+    );
+    return modifiedTag;
   }
 
   @ApiBearerAuth()
@@ -77,7 +95,9 @@ export class TagsController {
   })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
-  remove(@Param('id') id: string) {
-    return this.tagsService.remove(id);
+  async remove(@Param('id') id: string, @Req() req: any) {
+    const deletedTag = await this.tagsService.remove(id);
+    this.loggerService.logChange('tags', 'delete', req.user.name, id);
+    return deletedTag;
   }
 }

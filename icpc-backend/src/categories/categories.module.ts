@@ -7,13 +7,14 @@ import { Category } from './entities/category.entity';
 import { Comment } from 'src/comment/entities/comment.entity';
 import { Ticket } from 'src/ticket/entities/ticket.entity';
 import { Note } from 'src/notes/entities/note.entity';
+import { LoggerService } from 'src/services/logger.service';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Category, Excercise, Comment, Ticket, Note])
   ],
   controllers: [CategoriesController],
-  providers: [CategoriesService],
+  providers: [CategoriesService, LoggerService],
   exports: [CategoriesService]
 })
 export class CategoriesModule {}

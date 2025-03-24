@@ -6,11 +6,12 @@ import { User } from './entities/user.entity';
 import { Role } from 'src/roles/entities/role.entity';
 import { Comment } from 'src/comment/entities/comment.entity';
 import { Ticket } from 'src/ticket/entities/ticket.entity';
+import { LoggerService } from 'src/services/logger.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([User, Role, Comment, Ticket])],
   controllers: [UsersController],
-  providers: [UsersService],
+  providers: [UsersService, LoggerService],
   exports: [UsersService]
 })
 export class UsersModule {}

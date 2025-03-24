@@ -120,6 +120,7 @@ export class TicketService {
       .createQueryBuilder('ticket')
       .where('ticket.status = :status', { status: TicketStatus.PENDING })
       .leftJoinAndSelect('ticket.commentId', 'comment')
+      .orderBy('ticket.created_at', 'ASC')
       .getMany();
   }
 

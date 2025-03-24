@@ -1,12 +1,13 @@
 'use client';
-import React, { useEffect } from 'react';
-import { UseFormReturn, FieldValues, SubmitHandler, useForm } from 'react-hook-form';
+import React, { useEffect, useState } from 'react';
+import { UseFormReturn, FieldValues, SubmitHandler } from 'react-hook-form';
 import { BasicPanelComponent } from '../panels/BasicPanelComponent';
 import LogoComponent from '../LogoComponent';
 import TextFieldComponent from '../forms/TextFieldComponent';
 import SubmitComponent from '../forms/SubmitComponent';
 import useUtilsStore from '@/store/useUtilsStore';
 import { toast } from 'sonner';
+import { Difficulties } from '@/constants/types';
 
 interface CreateDifficultyComponentProps {
   methods: UseFormReturn<FieldValues>;
@@ -19,6 +20,7 @@ const CreateDifficultyComponent: React.FC<CreateDifficultyComponentProps> = ({ m
   const createDifficulty = useUtilsStore(state => state.createDifficulty);
   const updateDifficulty = useUtilsStore(state => state.updateDifficulty);
   const getDifficulty = useUtilsStore(state => state.getDifficulty);
+  const [currentDifficulty, setCurrentDifficulty] = useState<Difficulties>({} as Difficulties);
 
   useEffect(() => {
     if (difficultyId) {
@@ -27,6 +29,7 @@ const CreateDifficultyComponent: React.FC<CreateDifficultyComponentProps> = ({ m
         if (difficulty) {
           methods.setValue('DifficultyName', difficulty.name);
           methods.setValue('Level', difficulty.level);
+          setCurrentDifficulty(difficulty)
         }
       };
       loadDifficulty();
@@ -34,7 +37,13 @@ const CreateDifficultyComponent: React.FC<CreateDifficultyComponentProps> = ({ m
   }, [difficultyId, getDifficulty, methods]);
 
   const clearForm = () => {
-    methods.reset();
+    if (difficultyId) {
+      methods.reset({
+        DifficultyName: currentDifficulty.name,
+        Level: currentDifficulty.level
+      });
+    }
+    else methods.reset();
   };
 
   const onSubmit: SubmitHandler<FieldValues> = async data => {
@@ -46,7 +55,7 @@ const CreateDifficultyComponent: React.FC<CreateDifficultyComponentProps> = ({ m
     }
 
     if ('id' in response) {
-      toast.success(`La dificultad se ha ${difficultyId? 'creado' : 'editado'} con éxito.`, {
+      toast.success(`La dificultad se ha ${difficultyId? 'editado' : 'creado'} con éxito.`, {
         duration: 5000,
         style: {
           backgroundColor: 'green',

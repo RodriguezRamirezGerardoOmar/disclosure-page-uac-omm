@@ -7,6 +7,7 @@ import TextFieldComponent from '../forms/TextFieldComponent';
 import SubmitComponent from '../forms/SubmitComponent';
 import useUtilsStore from '@/store/useUtilsStore';
 import { toast } from 'sonner';
+import { TimeLimit } from '@/constants/types';
 
 interface CreateTimeLimitComponentProps {
   methods: UseFormReturn<FieldValues>;
@@ -19,6 +20,7 @@ const CreateTimeLimitComponent: React.FC<CreateTimeLimitComponentProps> = ({ met
   const createTimeLimit = useUtilsStore(state => state.createTimeLimit);
   const updateTimeLimit = useUtilsStore(state => state.updateTimeLimit);
   const getTimeLimit = useUtilsStore(state => state.getTimeLimit);
+  const [currentTimeLimit, setCurrentTimeLimit] = useState<TimeLimit>({} as TimeLimit);
 
   useEffect(() => {
     if (timeId) {
@@ -27,6 +29,7 @@ const CreateTimeLimitComponent: React.FC<CreateTimeLimitComponentProps> = ({ met
         const timeLimit = timeLimits.find(t => t.id === timeId);
         if (timeLimit) {
           methods.setValue('TimeLimit', timeLimit.timeLimit.toString());
+          setCurrentTimeLimit(timeLimit);
         }
       };
       loadTimeLimit();
@@ -34,7 +37,12 @@ const CreateTimeLimitComponent: React.FC<CreateTimeLimitComponentProps> = ({ met
   }, [timeId, getTimeLimit, methods]);
 
   const clearForm = () => {
-    methods.reset();
+    if (timeId) {
+      methods.reset({
+        TimeLimit: currentTimeLimit.timeLimit.toString()
+      });
+    }
+    else methods.reset();
   };
 
   const onSubmit: SubmitHandler<FieldValues> = async data => {
@@ -50,7 +58,7 @@ const CreateTimeLimitComponent: React.FC<CreateTimeLimitComponentProps> = ({ met
     }
 
     if ('id' in response) {
-      toast.success(`Límite de tiempo ${timeId? 'creado' : 'editado'} con éxito.`, {
+      toast.success(`Límite de tiempo ${timeId? 'editado' : 'creado'} con éxito.`, {
         duration: 5000,
         style: {
           backgroundColor: 'green',
