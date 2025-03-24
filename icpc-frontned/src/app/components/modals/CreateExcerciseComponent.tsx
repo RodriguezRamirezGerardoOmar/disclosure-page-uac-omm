@@ -142,6 +142,7 @@ useEffect(() => {
       }
       if (response.id) {
         toast.success(props.id ? 'Ejercicio Actualizado' : 'Ejercicio creado con éxito.', toastOptions)
+        props.onClose()
       } else if ('message' in response) {
         toast.error(response.message, toastOptions)
       } else {

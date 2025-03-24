@@ -21,7 +21,7 @@ import CreateNewsComponent from '../modals/CreateNewsComponent'
 import CreateUserComponent from '../modals/CreateUserComponent'
 import { useForm } from 'react-hook-form'
 import DisplayReportComponent from '../cards/DisplayReportComponent'
-import ConfirmDenyComponent from '../buttons/Confirm&DenyComponent';
+import ConfirmDenyComponent from '../buttons/Confirm&DenyComponent'
 
 interface Option {
   name: string
@@ -49,9 +49,9 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
   const [isNoteModalOpen, setIsNoteModalOpen] = useState(false)
   const [isNewsModalOpen, setIsNewsModalOpen] = useState(false)
   const [isUserModalOpen, setIsUserModalOpen] = useState(false)
-  const [confirmDelete, setConfirmDelete] = useState(false);
-  const [deleteId, setDeleteId] = useState<string | null>(null);
-  const [deleteItemType, setDeleteItemType] = useState<string | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState(false)
+  const [deleteId, setDeleteId] = useState<string | null>(null)
+  const [deleteItemType, setDeleteItemType] = useState<string | null>(null)
   const [activeCategoryId, setActiveCategoryId] = useState<string | undefined>(undefined)
   const [activeDifficultyId, setActiveDifficultyId] = useState<string | undefined>(undefined)
   const [activeMemoryId, setActiveMemoryId] = useState<string | undefined>(undefined)
@@ -85,7 +85,6 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
 
   const handleEdit = async (id: string, itemType: string) => {
     try {
-
       // Realiza la solicitud para verificar si hay un ticket pendiente solo para noticias, ejercicios o notas
       if (itemType === 'Noticias' || itemType === 'Ejercicios' || itemType === 'Apuntes') {
         const response = await hasPendingTicket(id, itemType)
@@ -152,53 +151,64 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
     }
   }
 
-  const handleDelete = async (id: string) => {
-    setDeleteId(id);
-    setDeleteItemType(props.itemType);
-    setConfirmDelete(true);
-  };
+  const handleDelete = async (id: string, itemType: string) => {
+    if (itemType === 'Noticias' || itemType === 'Ejercicios' || itemType === 'Apuntes') {
+      const response = await hasPendingTicket(id, itemType)
+
+      if (response === true) {
+        toast.error('Hay una solicitud de modificación en espera para este ítem.', {
+          duration: 5000,
+          style: { backgroundColor: 'red', color: 'white' }
+        })
+        return
+      }
+    }
+    setDeleteId(id)
+    setDeleteItemType(props.itemType)
+    setConfirmDelete(true)
+  }
 
   const confirmDeleteAction = async () => {
-    let response;
+    let response
     switch (deleteItemType) {
       case AllTabs.EXERCISES:
-        response = await deleteExercise(deleteId!);
-        break;
+        response = await deleteExercise(deleteId!)
+        break
       case AllTabs.NOTES:
-        response = await deleteNote(deleteId!);
-        break;
+        response = await deleteNote(deleteId!)
+        break
       case AllTabs.NEWS:
-        response = await deleteNews(deleteId!);
-        break;
+        response = await deleteNews(deleteId!)
+        break
       case AllTabs.CATEGORIES:
-        response = await deleteCategory(deleteId!);
-        break;
+        response = await deleteCategory(deleteId!)
+        break
       case AllTabs.TAGS:
-        response = await deleteTag(deleteId!);
-        break;
+        response = await deleteTag(deleteId!)
+        break
       case AllTabs.TIME:
-        response = await deleteTimeLimit(deleteId!);
-        break;
+        response = await deleteTimeLimit(deleteId!)
+        break
       case AllTabs.MEMORY:
-        response = await deleteMemoryLimit(deleteId!);
-        break;
+        response = await deleteMemoryLimit(deleteId!)
+        break
       case AllTabs.DIFFICULTY:
-        response = await deleteDifficulty(deleteId!);
-        break;
+        response = await deleteDifficulty(deleteId!)
+        break
       case AllTabs.ACCOUNT:
-        response = await deleteUser(deleteId!);
-        break;
+        response = await deleteUser(deleteId!)
+        break
     }
 
-    if (response && 'statusCode' in response && response.statusCode === 200) {
-      toast.success(response.message, { duration: 5000, style: { backgroundColor: 'green', color: 'white' } });
+    if (response!.id) {
+      toast.success(`Solicitud de eliminación enviada`, { duration: 5000, style: { backgroundColor: 'green', color: 'white' } })
     }
 
-    setConfirmDelete(false);
-    setDeleteId(null);
-    setDeleteItemType(null);
-    props.setUpdate(!props.update);
-  };
+    setConfirmDelete(false)
+    setDeleteId(null)
+    setDeleteItemType(null)
+    props.setUpdate(!props.update)
+  }
 
   const options: Option[] = [
     {
@@ -346,19 +356,19 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
           onCreateTag={(tagName: string) => {}}
         />
       )}
-{isExerciseModalOpen && (
-  <div className='fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50'>
-    <div className='rounded-lg p-6 w-full max-h-[90%] overflow-y-auto'>
-      <CreateExcerciseComponent
-        onClose={() => {
-          setIsExerciseModalOpen(false)
-          props.setUpdate(!props.update)
-        }}
-        id={activeExerciseId}
-      />
-    </div>
-  </div>
-)}
+      {isExerciseModalOpen && (
+        <div className='fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50'>
+          <div className='rounded-lg p-6 w-full max-h-[90%] overflow-y-auto'>
+            <CreateExcerciseComponent
+              onClose={() => {
+                setIsExerciseModalOpen(false)
+                props.setUpdate(!props.update)
+              }}
+              id={activeExerciseId}
+            />
+          </div>
+        </div>
+      )}
       {isNoteModalOpen && (
         <div className='fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50'>
           <div className='rounded-lg p-6 w-full max-h-[90%] overflow-y-auto'>

@@ -100,6 +100,7 @@ const CreateNewsComponent = (props: CreateNewsComponentProps) => {
           }
           if ('id' in response) {
             toast.success(props.id ? 'Noticia Actualizada' : 'Noticia creada con éxito.', toastOptions)
+            props.onClose()
           } else if ('message' in response) {
             toast.error(response.message, toastOptions)
           }
