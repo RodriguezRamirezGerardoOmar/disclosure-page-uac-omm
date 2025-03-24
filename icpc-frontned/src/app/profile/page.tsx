@@ -69,7 +69,9 @@ function Page() {
 
   const handleSubmitUserInfo: SubmitHandler<FieldValues> = async (data: any) => {
     try {
-      const result = await updateUser(user!.id, {...data, role: user!.role, editorId: user!.id});
+      // Incluye el rol actual del usuario en los datos enviados
+      const updatedData = { ...data, role: user!.role, editorId: user!.id };
+      const result = await updateUser(user!.id, updatedData);
       setCurrentUser(result);
       setUpdate(!update);
       toast.success('¡Información actualizada!', {
