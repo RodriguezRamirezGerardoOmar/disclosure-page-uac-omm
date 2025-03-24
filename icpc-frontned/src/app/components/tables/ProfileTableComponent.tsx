@@ -97,8 +97,6 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
           })
           return
         }
-      } else {
-        // Si no hay ticket pendiente, abre el modal correspondiente
         switch (itemType) {
           case AllTabs.EXERCISES:
             setActiveExerciseId(id)
@@ -112,6 +110,10 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
             setActiveNewsId(id)
             setIsNewsModalOpen(true)
             break
+        }
+      } else {
+        // Si no hay ticket pendiente, abre el modal correspondiente
+        switch (itemType) {
           case AllTabs.CATEGORIES:
             setActiveCategoryId(id)
             setIsCategoryModalOpen(true)
