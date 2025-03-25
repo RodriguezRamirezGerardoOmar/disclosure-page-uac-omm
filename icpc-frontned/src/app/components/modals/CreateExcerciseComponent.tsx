@@ -17,7 +17,7 @@ import InputSelectorCreateComponent from '../dropdowns/InputSelectorCreateCompon
 import useAuthStore from '@/store/useStore'
 import TextAreaComponent from '../forms/TextAreaComponent'
 import { ArrowUturnLeftIcon, XMarkIcon } from '@heroicons/react/20/solid'
-
+import ConfirmDenyComponent from '../buttons/Confirm&DenyComponent'
 
 /*
 Input: None
@@ -56,6 +56,7 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
   const [selectedCategory, setSelectedCategory] = useState<Option | null>(null)
   const [selectedMemory, setSelectedMemory] = useState<Option | null>(null)
   const getExercise = useExcerciseStore(state => state.getExercise)
+  const [showConfirm, setShowConfirm] = React.useState(false)
 
   let [tags, setTags] = useState<Tags[]>(tagList)
   let [categories, setCategories] = useState<Categories[]>(categoriesList)
@@ -64,72 +65,71 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
   let [memoryLimits, setMemoryLimits] = useState<MemoryLimit[]>(memoryLimitList)
   let [update, setUpdate] = useState<boolean>(false)
 
+  useEffect(() => {
+    const fetchExercise = async () => {
+      try {
+        getTags().then(response => {
+          setTags(response)
+        })
+        getCategories().then(response => {
+          setCategories(response)
+        })
+        getDifficulties().then(response => {
+          setDifficulty(response)
+        })
+        getTimeLimit().then(response => {
+          setTimeLimits(response)
+        })
+        getMemoryLimit().then(response => {
+          setMemoryLimits(response)
+        })
 
-useEffect(() => {
-  const fetchExercise = async () => {
-    try {
-      getTags().then(response => {
-        setTags(response)
-      })
-      getCategories().then(response => {
-        setCategories(response)
-      })
-      getDifficulties().then(response => {
-        setDifficulty(response)
-      })
-      getTimeLimit().then(response => {
-        setTimeLimits(response)
-      })
-      getMemoryLimit().then(response => {
-        setMemoryLimits(response)
-      })
-
-      if (props.id) {
-        const exercise = await getExercise(props.id)
-        if (exercise) {
-          methods.reset({
-            name: exercise.title,
-            category: { label: exercise.category.name, value: exercise.category.id },
-            difficulty: { label: exercise.difficulty.name, value: exercise.difficulty.id },
-            time: { label: exercise.time.timeLimit.toString(), value: exercise.time.id },
-            memoryId: { label: exercise.memoryId.memoryLimit.toString(), value: exercise.memoryId.id },
-            input: exercise.input,
-            output: exercise.output,
-            constraints: exercise.constraints,
-            clue: exercise.clue,
-            tags: exercise.tags,
-            author: exercise.author,
-            description: exercise.description,
-            example_input: exercise.example_input,
-            example_output: exercise.example_output,
-            solution: exercise.solution
-          })
-          setSelectedCategory({ label: exercise.category.name, value: exercise.category.id })
-          setSelectedTags(exercise.tags)
-          setSelectedMemory({ label: exercise.memoryId.memoryLimit.toString(), value: exercise.memoryId.id })
-        } else {
-          toast.error('No se encontró el ejercicio con el ID proporcionado.', {
-            duration: 5000,
-            style: {
-              backgroundColor: '#ff0000',
-              color: '#ffffff'
-            }
-          })
+        if (props.id) {
+          const exercise = await getExercise(props.id)
+          if (exercise) {
+            methods.reset({
+              name: exercise.title,
+              category: { label: exercise.category.name, value: exercise.category.id },
+              difficulty: { label: exercise.difficulty.name, value: exercise.difficulty.id },
+              time: { label: exercise.time.timeLimit.toString(), value: exercise.time.id },
+              memoryId: { label: exercise.memoryId.memoryLimit.toString(), value: exercise.memoryId.id },
+              input: exercise.input,
+              output: exercise.output,
+              constraints: exercise.constraints,
+              clue: exercise.clue,
+              tags: exercise.tags,
+              author: exercise.author,
+              description: exercise.description,
+              example_input: exercise.example_input,
+              example_output: exercise.example_output,
+              solution: exercise.solution
+            })
+            setSelectedCategory({ label: exercise.category.name, value: exercise.category.id })
+            setSelectedTags(exercise.tags)
+            setSelectedMemory({ label: exercise.memoryId.memoryLimit.toString(), value: exercise.memoryId.id })
+          } else {
+            toast.error('No se encontró el ejercicio con el ID proporcionado.', {
+              duration: 5000,
+              style: {
+                backgroundColor: '#ff0000',
+                color: '#ffffff'
+              }
+            })
+          }
         }
+      } catch (error) {
+        toast.error('Error al cargar los datos iniciales.', {
+          duration: 5000,
+          style: {
+            backgroundColor: '#ff0000',
+            color: '#ffffff'
+          }
+        })
       }
-    } catch (error) {
-      toast.error('Error al cargar los datos iniciales.', {
-        duration: 5000,
-        style: {
-          backgroundColor: '#ff0000',
-          color: '#ffffff'
-        }
-      })
     }
-  }
 
-  fetchExercise()
-}, [props.id, methods, getExercise, getCategories, getDifficulties, getTags, getTimeLimit, getMemoryLimit, update])
+    fetchExercise()
+  }, [props.id, methods, getExercise, getCategories, getDifficulties, getTags, getTimeLimit, getMemoryLimit, update])
 
   const onSubmit: SubmitHandler<FieldValues> = async formData => {
     const processResponse = async (response: any) => {
@@ -149,7 +149,7 @@ useEffect(() => {
         toast.error('Unexpected response format', toastOptions)
       }
     }
-  
+
     const exerciseData = {
       name: String(formData.name),
       category: { name: formData.category.label, id: formData.category.value },
@@ -170,7 +170,7 @@ useEffect(() => {
       userAuthor: String(useAuthStore.getState().user?.userName),
       role: String(useAuthStore.getState().user?.role)
     }
-  
+
     if (props.id) {
       const response = await updateExcercise(exerciseData, props.id)
       await processResponse(response)
@@ -216,52 +216,52 @@ useEffect(() => {
 
   // ...existing code...
 
-const clearForm = () => {
-  if (props.id) {
-    const fetchExercise = async () => {
-      const exercise = await getExercise(props.id!)
-      if (exercise) {
-        methods.reset({
-          name: exercise.title,
-          category: { label: exercise.category.name, value: exercise.category.id },
-          difficulty: { label: exercise.difficulty.name, value: exercise.difficulty.id },
-          time: { label: exercise.time.timeLimit.toString(), value: exercise.time.id },
-          memoryId: { label: exercise.memoryId.memoryLimit.toString(), value: exercise.memoryId.id },
-          input: exercise.input,
-          output: exercise.output,
-          constraints: exercise.constraints,
-          clue: exercise.clue,
-          tags: exercise.tags,
-          author: exercise.author,
-          description: exercise.description,
-          example_input: exercise.example_input,
-          example_output: exercise.example_output,
-          solution: exercise.solution
-        })
-        setSelectedCategory({ label: exercise.category.name, value: exercise.category.id })
-        setSelectedTags(exercise.tags)
-        setSelectedMemory({ label: exercise.memoryId.memoryLimit.toString(), value: exercise.memoryId.id })
-      } else {
-        toast.error('No se pudo recargar la nota.', {
-          duration: 5000,
-          style: {
-            backgroundColor: '#ff0000',
-            color: '#ffffff'
-          }
-        })
+  const clearForm = () => {
+    if (props.id) {
+      const fetchExercise = async () => {
+        const exercise = await getExercise(props.id!)
+        if (exercise) {
+          methods.reset({
+            name: exercise.title,
+            category: { label: exercise.category.name, value: exercise.category.id },
+            difficulty: { label: exercise.difficulty.name, value: exercise.difficulty.id },
+            time: { label: exercise.time.timeLimit.toString(), value: exercise.time.id },
+            memoryId: { label: exercise.memoryId.memoryLimit.toString(), value: exercise.memoryId.id },
+            input: exercise.input,
+            output: exercise.output,
+            constraints: exercise.constraints,
+            clue: exercise.clue,
+            tags: exercise.tags,
+            author: exercise.author,
+            description: exercise.description,
+            example_input: exercise.example_input,
+            example_output: exercise.example_output,
+            solution: exercise.solution
+          })
+          setSelectedCategory({ label: exercise.category.name, value: exercise.category.id })
+          setSelectedTags(exercise.tags)
+          setSelectedMemory({ label: exercise.memoryId.memoryLimit.toString(), value: exercise.memoryId.id })
+        } else {
+          toast.error('No se pudo recargar la nota.', {
+            duration: 5000,
+            style: {
+              backgroundColor: '#ff0000',
+              color: '#ffffff'
+            }
+          })
+        }
       }
+      fetchExercise()
+    } else {
+      methods.reset()
+      setSelectedCategory(null)
+      setSelectedMemory(null)
     }
-    fetchExercise()
-  } else {
-    methods.reset()
-    setSelectedCategory(null)
-    setSelectedMemory(null)
   }
-}
   const dataValidate = () => {
     const data = methods.getValues()
     const missingFields = []
-  
+
     if (!data.name) missingFields.push('Nombre del ejercicio')
     if (data.category.length === 0) missingFields.push('Categoría')
     if (data.difficulty.length === 0) missingFields.push('Nivel de dificultad')
@@ -271,7 +271,7 @@ const clearForm = () => {
     if (!data.example_output) missingFields.push('Ejemplo de salida')
     if (data.tags.length === 0) missingFields.push('Etiquetas')
     if (!data.description) missingFields.push('Descripción del problema')
-  
+
     if (missingFields.length > 0) {
       toast.error(`Favor de llenar los datos de: ${missingFields.join(', ')}`, {
         duration: 5000,
@@ -281,251 +281,261 @@ const clearForm = () => {
           color: '#ffffff'
         }
       })
+      return
     }
+    setShowConfirm(true)
   }
 
-// ...existing code...
-
-return (
-  <form
-    onSubmit={methods.handleSubmit(onSubmit)}
-    className={`margin-auto md:mx-auto max-w-7xl md:px-4 w-full h-full lg:px-8 lg:w-11/12 lg:h-auto 
-    min-h-screen place-items-center justify-between py-10`}>
-    <BasicPanelComponent backgroundColor='bg-white dark:bg-dark-primary'>
-      <div className="relative">
-        <div className="absolute top-0 right-0 flex gap-1 p-2">
-          <div
-            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration:200 rounded"
-            title="Restablecer formulario"
-          >
-            <button
-              type="button"
-              onClick={clearForm}
-              className="text-inherit"
-            >
-              <ArrowUturnLeftIcon className="h-6 w-6" />
-            </button>
-          </div>
-          <div
-            className="p-2 hover:bg-gray-100 dark:hover:bg-red-700 transition-colors duration:200 rounded"
-            title="Cerrar formulario"
-          >
-            <button
-              onClick={props.onClose}
-              className="text-inherit"
-            >
-              <XMarkIcon className="h-6 w-6" />
-            </button>
-          </div>
-        </div>
-      </div>
-      <div className='flex flex-col items-center'>
-        <LogoComponent size={100} />
-        <TextComponent
-          tag={enumTextTags.h1}
-          sizeFont='s16'
-          className='dark:text-dark-accent'>
-          {props.id ? 'Editar ejercicio' : 'Crear ejercicio'}
-        </TextComponent>
-      </div>
-      <div className='grid grid-cols-1 items-start lg:grid-cols-2 lg:gap-16'>
-        <div className='w-full flex flex-col gap-2'>
-          <TextFieldComponent
-            labelText='Nombre del ejercicio'
-            register={methods.register}
-            fieldName='name'
-            id='name'
-            necessary={true}
-            type='text'
-            auto='off'
-          />
-          <Controller
-            defaultValue={[]}
-            control={methods.control}
-            rules={{ required: true }}
-            render={({ field }) => (
-              <InputSelectorCreateComponent
-                label='Categoría'
-                id='category'
-                ref={selectRef}
-                onChange={val => {
-                  field.onChange(val)
-                  setSelectedCategory(val)
-                }}
-                options={categories.map(item => {
-                  return { label: item.name, value: item.id }
-                })}
-                handleCreate={handleCreateCategory}
-                selectedOption={field.value}
-              />
-            )}
-            name='category'
-          />
-          <Controller
-            defaultValue={[]}
-            control={methods.control}
-            rules={{ required: true }}
-            render={({ field }) => (
-              <InputSelectorComponent
-                label='Nivel de dificultad'
-                id='difficulty'
-                onChange={val => field.onChange(val)}
-                options={difficulty.map(item => {
-                  return { label: item.name, value: item.id }
-                })}
-                selectedOption={field.value}
-              />
-            )}
-            name='difficulty'
-          />
-          <Controller
-            defaultValue={[]}
-            control={methods.control}
-            render={({ field }) => (
-              <InputSelectorCreateComponent
-                label='Límite de tiempo'
-                id='time'
-                onChange={val => field.onChange(val)}
-                options={timeLimits.map(item => {
-                  return { label: item.timeLimit.toString(), value: item.id }
-                })}
-                handleCreate={handleCreateTimeLimit}
-                selectedOption={field.value}
-              />
-            )}
-            name='time'
-          />
-          <Controller
-            defaultValue={[]}
-            control={methods.control}
-            render={({ field }) => (
-              <InputSelectorComponent
-                label='Límite de memoria'
-                id='memoryId'
-                onChange={val => {
-                  field.onChange(val)
-                }}
-                options={memoryLimits.map(item => {
-                  const label: number = item.memoryLimit
-                  return { label: label.toString(), value: item.id }
-                })}
-                selectedOption={field.value}
-              />
-            )}
-            name='memoryId'
-          />
-          <TextFieldComponent
-            labelText='Entrada esperada'
-            register={methods.register}
-            fieldName='input'
-            id='input'
-            necessary={true}
-            type='text'
-            auto='off'
-          />
-          <TextFieldComponent
-            labelText='Salida esperada'
-            register={methods.register}
-            fieldName='output'
-            id='output'
-            necessary={true}
-            type='text'
-            auto='off'
-          />
-          <TextAreaComponent
-            labelText='Restricciones'
-            register={methods.register}
-            fieldName='constraints'
-            id='constraints'
-            necessary={false}
-          />
-
-          <TextFieldComponent
-            labelText='Pista'
-            register={methods.register}
-            fieldName='clue'
-            id='clue'
-            necessary={false}
-            type='text'
-            auto='off'
-          />
-          <Controller
-            name='tags'
-            defaultValue={[]}
-            control={methods.control}
-            render={({ field }) => (
-              <TagSelectorComponent
-                id='tagSelector2'
-                options={tags}
-                selectedTags={field.value}
-                onChange={val => field.onChange(val)}
-              />
-            )}
-            rules={{ required: true }}
-          />
-          <TextFieldComponent
-            labelText='Autor'
-            register={methods.register}
-            fieldName='author'
-            id='author'
-            necessary={false}
-            type={'username'}
-            auto='off'
-          />
-        </div>
-        <div className='w-full flex flex-col gap-2'>
-          <Controller
-            name='description'
-            defaultValue=''
-            control={methods.control}
-            rules={{ required: true }}
-            render={({ field }) => (
-              <MarkdownAreaComponent
-                value={field.value}
-                onChange={newValue => field.onChange(newValue)}
-                labelText='Descripción del problema'
-                className='p-2'
-              />
-            )}
-          />
-          <TextAreaComponent
-            labelText='Ejemplo de entrada'
-            register={methods.register}
-            fieldName='example_input'
-            id='example_input'
-            necessary={true}
-          />
-          <TextAreaComponent
-            labelText='Ejemplo de salida'
-            register={methods.register}
-            fieldName='example_output'
-            id='example_output'
-            necessary={true}
-          />
-          <Controller
-            name='solution'
-            defaultValue=''
-            control={methods.control}
-            render={({ field }) => (
-              <MarkdownAreaComponent
-                value={field.value}
-                onChange={newValue => field.onChange(newValue)}
-                labelText='Solución del problema'
-                className='p-2'
-              />
-            )}
-          />
-        </div>
-      </div>
-      <div className='flex flex-col items-center'>
-        <SubmitComponent
-          text={props.id ? 'Actualizar ejercicio' : 'Crear ejercicio'}
-          action={dataValidate}
+  return (
+    <>
+      {showConfirm && (
+        <ConfirmDenyComponent
+          onConfirm={() => {
+            setShowConfirm(false)
+            methods.handleSubmit(onSubmit)()
+          }}
+          onCancel={() => setShowConfirm(false)}
         />
-      </div>
-    </BasicPanelComponent>
-  </form>
-)
-  
+      )}
+      <form
+        onSubmit={e => {
+          e.preventDefault()
+          dataValidate()
+        }}
+        className={`margin-auto md:mx-auto max-w-7xl md:px-4 w-full h-full lg:px-8 lg:w-11/12 lg:h-auto 
+    min-h-screen place-items-center justify-between py-10`}>
+        <BasicPanelComponent backgroundColor='bg-white dark:bg-dark-primary'>
+          <div className='relative'>
+            <div className='absolute top-0 right-0 flex gap-1 p-2'>
+              <div
+                className='p-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration:200 rounded'
+                title='Restablecer formulario'>
+                <button
+                  type='button'
+                  onClick={clearForm}
+                  className='text-inherit'>
+                  <ArrowUturnLeftIcon className='h-6 w-6' />
+                </button>
+              </div>
+              <div
+                className='p-2 hover:bg-gray-100 dark:hover:bg-red-700 transition-colors duration:200 rounded'
+                title='Cerrar formulario'>
+                <button
+                  onClick={props.onClose}
+                  className='text-inherit'>
+                  <XMarkIcon className='h-6 w-6' />
+                </button>
+              </div>
+            </div>
+          </div>
+          <div className='flex flex-col items-center'>
+            <LogoComponent size={100} />
+            <TextComponent
+              tag={enumTextTags.h1}
+              sizeFont='s16'
+              className='dark:text-dark-accent'>
+              {props.id ? 'Editar ejercicio' : 'Crear ejercicio'}
+            </TextComponent>
+          </div>
+          <div className='grid grid-cols-1 items-start lg:grid-cols-2 lg:gap-16'>
+            <div className='w-full flex flex-col gap-2'>
+              <TextFieldComponent
+                labelText='Nombre del ejercicio'
+                register={methods.register}
+                fieldName='name'
+                id='name'
+                necessary={true}
+                type='text'
+                auto='off'
+              />
+              <Controller
+                defaultValue={[]}
+                control={methods.control}
+                rules={{ required: true }}
+                render={({ field }) => (
+                  <InputSelectorCreateComponent
+                    label='Categoría'
+                    id='category'
+                    ref={selectRef}
+                    onChange={val => {
+                      field.onChange(val)
+                      setSelectedCategory(val)
+                    }}
+                    options={categories.map(item => {
+                      return { label: item.name, value: item.id }
+                    })}
+                    handleCreate={handleCreateCategory}
+                    selectedOption={field.value}
+                  />
+                )}
+                name='category'
+              />
+              <Controller
+                defaultValue={[]}
+                control={methods.control}
+                rules={{ required: true }}
+                render={({ field }) => (
+                  <InputSelectorComponent
+                    label='Nivel de dificultad'
+                    id='difficulty'
+                    onChange={val => field.onChange(val)}
+                    options={difficulty.map(item => {
+                      return { label: item.name, value: item.id }
+                    })}
+                    selectedOption={field.value}
+                  />
+                )}
+                name='difficulty'
+              />
+              <Controller
+                defaultValue={[]}
+                control={methods.control}
+                render={({ field }) => (
+                  <InputSelectorCreateComponent
+                    label='Límite de tiempo'
+                    id='time'
+                    onChange={val => field.onChange(val)}
+                    options={timeLimits.map(item => {
+                      return { label: item.timeLimit.toString(), value: item.id }
+                    })}
+                    handleCreate={handleCreateTimeLimit}
+                    selectedOption={field.value}
+                  />
+                )}
+                name='time'
+              />
+              <Controller
+                defaultValue={[]}
+                control={methods.control}
+                render={({ field }) => (
+                  <InputSelectorComponent
+                    label='Límite de memoria'
+                    id='memoryId'
+                    onChange={val => {
+                      field.onChange(val)
+                    }}
+                    options={memoryLimits.map(item => {
+                      const label: number = item.memoryLimit
+                      return { label: label.toString(), value: item.id }
+                    })}
+                    selectedOption={field.value}
+                  />
+                )}
+                name='memoryId'
+              />
+              <TextFieldComponent
+                labelText='Entrada esperada'
+                register={methods.register}
+                fieldName='input'
+                id='input'
+                necessary={true}
+                type='text'
+                auto='off'
+              />
+              <TextFieldComponent
+                labelText='Salida esperada'
+                register={methods.register}
+                fieldName='output'
+                id='output'
+                necessary={true}
+                type='text'
+                auto='off'
+              />
+              <TextAreaComponent
+                labelText='Restricciones'
+                register={methods.register}
+                fieldName='constraints'
+                id='constraints'
+                necessary={false}
+              />
+
+              <TextFieldComponent
+                labelText='Pista'
+                register={methods.register}
+                fieldName='clue'
+                id='clue'
+                necessary={false}
+                type='text'
+                auto='off'
+              />
+              <Controller
+                name='tags'
+                defaultValue={[]}
+                control={methods.control}
+                render={({ field }) => (
+                  <TagSelectorComponent
+                    id='tagSelector2'
+                    options={tags}
+                    selectedTags={field.value}
+                    onChange={val => field.onChange(val)}
+                  />
+                )}
+                rules={{ required: true }}
+              />
+              <TextFieldComponent
+                labelText='Autor'
+                register={methods.register}
+                fieldName='author'
+                id='author'
+                necessary={false}
+                type={'username'}
+                auto='off'
+              />
+            </div>
+            <div className='w-full flex flex-col gap-2'>
+              <Controller
+                name='description'
+                defaultValue=''
+                control={methods.control}
+                rules={{ required: true }}
+                render={({ field }) => (
+                  <MarkdownAreaComponent
+                    value={field.value}
+                    onChange={newValue => field.onChange(newValue)}
+                    labelText='Descripción del problema'
+                    className='p-2'
+                  />
+                )}
+              />
+              <TextAreaComponent
+                labelText='Ejemplo de entrada'
+                register={methods.register}
+                fieldName='example_input'
+                id='example_input'
+                necessary={true}
+              />
+              <TextAreaComponent
+                labelText='Ejemplo de salida'
+                register={methods.register}
+                fieldName='example_output'
+                id='example_output'
+                necessary={true}
+              />
+              <Controller
+                name='solution'
+                defaultValue=''
+                control={methods.control}
+                render={({ field }) => (
+                  <MarkdownAreaComponent
+                    value={field.value}
+                    onChange={newValue => field.onChange(newValue)}
+                    labelText='Solución del problema'
+                    className='p-2'
+                  />
+                )}
+              />
+            </div>
+          </div>
+          <div className='flex flex-col items-center'>
+            <SubmitComponent
+              text={props.id ? 'Actualizar ejercicio' : 'Crear ejercicio'}
+              action={dataValidate}
+            />
+          </div>
+        </BasicPanelComponent>
+      </form>
+    </>
+  )
 }
+
 export default CreateExcerciseComponent
