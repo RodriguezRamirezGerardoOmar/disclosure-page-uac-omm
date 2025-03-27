@@ -38,7 +38,6 @@ export class TimeService {
     const existingTime = await this.timeRepository.findOneBy({
       timeLimit: createTimeDto.timeLimit
     });
-
     if (existingTime) {
       throw new BadRequestException('Ese límite de tiempo ya existe');
     }
@@ -97,6 +96,12 @@ export class TimeService {
     }
     if (updateTimeDto.timeLimit <= 0) {
       throw new BadRequestException('El límite de tiempo debe ser mayor a 0');
+    }
+    const existingTime = await this.timeRepository.findOneBy({
+      timeLimit: updateTimeDto.timeLimit
+    });
+    if (existingTime !== null && existingTime.id !== id) {
+      throw new BadRequestException('Ese límite de tiempo ya existe');
     }
 
     const time = await this.timeRepository.findOneBy({ id });
