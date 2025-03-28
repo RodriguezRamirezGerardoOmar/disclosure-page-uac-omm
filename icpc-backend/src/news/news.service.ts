@@ -112,6 +112,8 @@ export class NewsService {
       userName: updateData.userAuthor
     });
 
+    const original = await this.newsRepository.findOneBy({ id: id });
+
     if (role === 'admin') {
       existingNews.isVisible = false;
       await this.newsRepository.save(existingNews);
@@ -120,6 +122,8 @@ export class NewsService {
       // Crear una copia de la noticia modificada
       const modifiedNewsCopy = this.newsRepository.create({
         ...updateData,
+        created_at: original.created_at,
+        created_by: original.created_by,
         updated_by: user.id,
         imageId: image,
         id: undefined, // Evitar conflictos con el ID de la noticia original
@@ -154,6 +158,8 @@ export class NewsService {
       // Crear una copia de la noticia modificada
       const modifiedNewsCopy = this.newsRepository.create({
         ...updateData,
+        created_at: original.created_at,
+        created_by: original.created_by,
         updated_by: user.id,
         imageId: image,
         isVisible: false
