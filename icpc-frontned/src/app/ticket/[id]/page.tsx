@@ -29,13 +29,9 @@ const TicketPage = async ({ params }: Readonly<{ params: { id: string } }>) => {
     switch (ticket.itemType) {
       case TicketType.EXERCISE:
         const originalDescription = await serializeNote(ticket.originalExerciseId.description)
-        const originalSolution = ticket.originalExerciseId.solution
-          ? (await serializeNote(ticket.originalExerciseId.solution)).compiledSource
-          : ''
+        const originalSolution = await serializeNote(ticket.originalExerciseId.solution)
         const modifiedDescription = await serializeNote(ticket.modifiedExerciseId.description)
-        const modifiedSolution = ticket.modifiedExerciseId.solution
-          ? (await serializeNote(ticket.modifiedExerciseId.solution)).compiledSource
-          : ''
+        const modifiedSolution = await serializeNote(ticket.modifiedExerciseId.solution)
         pageContent = (
           <div className='grid place-items-center grid-cols-1 gap-16'>
             <div>
@@ -50,7 +46,7 @@ const TicketPage = async ({ params }: Readonly<{ params: { id: string } }>) => {
               <ExerciseCardComponent
                 exercise={ticket.originalExerciseId}
                 description={originalDescription.compiledSource}
-                solution={originalSolution}
+                solution={originalSolution.compiledSource}
               />
             </div>
             <div>
@@ -65,7 +61,7 @@ const TicketPage = async ({ params }: Readonly<{ params: { id: string } }>) => {
               <ExerciseCardComponent
                 exercise={ticket.modifiedExerciseId}
                 description={modifiedDescription.compiledSource}
-                solution={modifiedSolution}
+                solution={modifiedSolution.compiledSource}
               />
             </div>
           </div>
@@ -82,7 +78,10 @@ const TicketPage = async ({ params }: Readonly<{ params: { id: string } }>) => {
                 className='font-bold text-gray-800 dark:text-dark-accent'>
                 Noticia original
               </TextComponent>
-              <NewsCardComponent id={ticket.originalNewsId.id} isTicketPage={true}/>
+              <NewsCardComponent
+                id={ticket.originalNewsId.id}
+                isTicketPage={true}
+              />
             </div>
             <div className='mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 text-accent dark:text-dark-accent'>
               <TextComponent
@@ -91,13 +90,18 @@ const TicketPage = async ({ params }: Readonly<{ params: { id: string } }>) => {
                 className='font-bold text-gray-800 dark:text-dark-accent'>
                 Noticia modificada
               </TextComponent>
-              <NewsCardComponent id={ticket.modifiedNewsId.id} isTicketPage={true}/>
+              <NewsCardComponent
+                id={ticket.modifiedNewsId.id}
+                isTicketPage={true}
+              />
             </div>
           </div>
         )
         break
 
       case TicketType.NOTE:
+        const originalContent = await serializeNote(ticket.originalNoteId.body)
+        const modifiedContent = await serializeNote(ticket.modifiedNoteId.body)
         pageContent = (
           <div className='grid place-items-center grid-cols-1 gap-16'>
             <div className='mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 text-accent dark:text-dark-accent'>
@@ -110,7 +114,7 @@ const TicketPage = async ({ params }: Readonly<{ params: { id: string } }>) => {
               <NoteCardComponent
                 title={ticket.originalNoteId.title}
                 description={ticket.originalNoteId.commentId.body}
-                content={(await serializeNote(ticket.originalNoteId.body)).compiledSource}
+                content={originalContent.compiledSource}
                 tags={ticket.originalNoteId.tags}
                 showButton={false}
               />
@@ -125,7 +129,7 @@ const TicketPage = async ({ params }: Readonly<{ params: { id: string } }>) => {
               <NoteCardComponent
                 title={ticket.modifiedNoteId.title}
                 description={ticket.modifiedNoteId.commentId.body}
-                content={(await serializeNote(ticket.modifiedNoteId.body)).compiledSource}
+                content={modifiedContent.compiledSource}
                 tags={ticket.modifiedNoteId.tags}
                 showButton={false}
               />
@@ -137,10 +141,8 @@ const TicketPage = async ({ params }: Readonly<{ params: { id: string } }>) => {
   } else {
     switch (ticket.itemType) {
       case TicketType.EXERCISE:
-        const originalDescription = await serializeNote(ticket.originalExerciseId.description)
-        const originalSolution = ticket.originalExerciseId.solution
-          ? (await serializeNote(ticket.originalExerciseId.solution)).compiledSource
-          : ''
+        const description = await serializeNote(ticket.originalExerciseId.description)
+        const solution = await serializeNote(ticket.originalExerciseId.solution)
         pageContent = (
           <>
             <TextComponent
@@ -151,8 +153,8 @@ const TicketPage = async ({ params }: Readonly<{ params: { id: string } }>) => {
             </TextComponent>
             <ExerciseCardComponent
               exercise={ticket.originalExerciseId}
-              description={originalDescription.compiledSource}
-              solution={originalSolution}
+              description={description.compiledSource}
+              solution={solution.compiledSource}
             />
           </>
         )
@@ -167,12 +169,16 @@ const TicketPage = async ({ params }: Readonly<{ params: { id: string } }>) => {
               className='text-accent dark:text-dark-accent m-4'>
               {ticket.commentId.body}
             </TextComponent>
-            <NewsCardComponent id={ticket.originalNewsId.id} isTicketPage={true}/>
+            <NewsCardComponent
+              id={ticket.originalNewsId.id}
+              isTicketPage={true}
+            />
           </>
         )
         break
 
       case TicketType.NOTE:
+        const body = await serializeNote(ticket.originalNoteId.body)
         pageContent = (
           <>
             <TextComponent
@@ -184,7 +190,7 @@ const TicketPage = async ({ params }: Readonly<{ params: { id: string } }>) => {
             <NoteCardComponent
               title={ticket.originalNoteId.title}
               description={ticket.originalNoteId.commentId.body}
-              content={(await serializeNote(ticket.originalNoteId.body)).compiledSource}
+              content={body.compiledSource}
               tags={ticket.originalNoteId.tags}
               showButton={false}
             />

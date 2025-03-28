@@ -21,6 +21,7 @@ body {
   background: rgb(var(--background-start-rgb));
 }
 
-.katex-html {
+
+.katex .katex-html {
   display: none;
 }
