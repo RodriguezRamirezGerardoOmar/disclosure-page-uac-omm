@@ -8,6 +8,7 @@ import SubmitComponent from '../forms/SubmitComponent'
 import useUtilsStore from '@/store/useUtilsStore'
 import { toast } from 'sonner'
 import { Categories } from '@/constants/types'
+import { ArrowUturnLeftIcon, XMarkIcon } from '@heroicons/react/20/solid'
 
 interface CreateCategoryComponentProps {
   onClose: () => void
@@ -40,12 +41,11 @@ const CreateCategoryComponent: React.FC<CreateCategoryComponentProps> = ({ onClo
       methods.reset({
         categoryName: currentCategory.name
       })
-    }
-    else {
+    } else {
       methods.reset()
     }
   }
-  
+
   const onSubmit: SubmitHandler<FieldValues> = async data => {
     let response
     if (categoryId) {
@@ -55,7 +55,7 @@ const CreateCategoryComponent: React.FC<CreateCategoryComponentProps> = ({ onClo
     }
 
     if ('id' in response) {
-      toast.success(`La categoría se ha ${categoryId? 'editado' : 'creado'} con éxito.`, {
+      toast.success(`La categoría se ha ${categoryId ? 'editado' : 'creado'} con éxito.`, {
         duration: 5000,
         style: {
           backgroundColor: 'green',
@@ -69,11 +69,33 @@ const CreateCategoryComponent: React.FC<CreateCategoryComponentProps> = ({ onClo
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white dark:bg-dark-primary p-4 rounded-lg shadow-lg relative">
-        <button onClick={onClose} className="absolute top-2 right-2 text-gray-500 hover:text-red-700 text-4xl">
-          &times;
-        </button>
+    <div className='fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50'>
+      <div className='bg-white dark:bg-dark-primary p-4 rounded-lg shadow-lg relative w-1/3'>
+        <div className='relative'>
+          <div className='absolute top-0 right-0 flex gap-1 p-2'>
+            <div
+              className='p-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200 rounded'
+              title='Restablecer formulario'>
+              <button
+                type='button'
+                onClick={clearForm}
+                className='text-inherit' // Color heredado del padre
+              >
+                <ArrowUturnLeftIcon className='h-6 w-6' />
+              </button>
+            </div>
+            <div
+              className='p-2 hover:bg-gray-100 dark:hover:bg-red-700 transition-colors duration-200 rounded'
+              title='Cerrar formulario'>
+              <button
+                onClick={onClose}
+                className='text-inherit' // Color heredado del padre
+              >
+                <XMarkIcon className='h-6 w-6' />
+              </button>
+            </div>
+          </div>
+        </div>
         <BasicPanelComponent backgroundColor='bg-white dark:bg-dark-primary'>
           <form
             onSubmit={methods.handleSubmit(onSubmit)}
@@ -91,17 +113,10 @@ const CreateCategoryComponent: React.FC<CreateCategoryComponentProps> = ({ onClo
                 necessary={true}
                 type='text'
               />
-              <SubmitComponent text={categoryId ? 'Actualizar' : 'Crear'} action={() => {}}/>
-            </div>
-            <div className='mt-4'>
-              <button
-                type='button'
-                onClick={clearForm}
-                className='inline-flex items-center gap-x-2 rounded-md bg-primary text-complementary px-3.5 py-2.5 
-                font-medium shadow-sm hover:bg-secondary focus-visible:outline 
-                focus-visible:outline-offset-2 focus-visible:outline-complementary'>
-                Borrar formulario
-              </button>
+              <SubmitComponent
+                text={categoryId ? 'Actualizar' : 'Crear'}
+                action={() => {}}
+              />
             </div>
           </form>
         </BasicPanelComponent>
