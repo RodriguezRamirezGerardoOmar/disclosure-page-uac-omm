@@ -52,7 +52,7 @@ export class MemoryService {
         memoryLimit: finalValue
       });
       const savedMemory = await this.memoryRepository.save(newMemoryLimit);
-      const ticketCommentBody = `Se ha creado el límite de memoria ${savedMemory.memoryLimit.toString()}`;
+      const ticketCommentBody = `Se ha creado el límite de memoria; ${savedMemory.memoryLimit} KB`;
       const comment = this.commentRepository.create({
         body: ticketCommentBody
       });
@@ -84,6 +84,7 @@ export class MemoryService {
 
   async update(id: string, updateMemoryDto: UpdateMemoryDto) {
     const memory = await this.memoryRepository.findOneBy({ id });
+
     let finalValue;
     switch (updateMemoryDto.id) {
       case 'MB':
@@ -96,12 +97,21 @@ export class MemoryService {
         finalValue = updateMemoryDto.value;
         break;
     }
+
+    const existingMemory = await this.memoryRepository.findOneBy({
+      memoryLimit: finalValue
+    });
+    if (existingMemory !== null && existingMemory.id !== id) {
+      throw new BadRequestException('Ese límite de memoria ya existe');
+    }
+
     const savedMemory = await this.memoryRepository.save({
       ...memory,
       memoryLimit: finalValue
     });
+
     if (savedMemory) {
-      const ticketCommentBody = `El límite de memoria ${savedMemory.memoryLimit.toString()} ha sido actualizado`;
+      const ticketCommentBody = `El límite de memoria ha sido actualizado a ${savedMemory.memoryLimit} KB`;
       const comment = this.commentRepository.create({
         body: ticketCommentBody
       });

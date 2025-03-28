@@ -30,17 +30,17 @@ export class TagsService {
   ) {}
 
   async create(createTagDto: CreateTagDto) {
-    const existingTag = await this.tagRepository.findOneBy({
-      color: createTagDto.color
-    });
-    if (existingTag) {
-      throw new BadRequestException('Ya existe una etiqueta con este color.');
-    }
     const name = await this.tagRepository.findOneBy({
       name: createTagDto.name
     });
     if (name) {
       throw new BadRequestException('Ya existe una etiqueta con ese nombre.');
+    }
+    const existingTag = await this.tagRepository.findOneBy({
+      color: createTagDto.color
+    });
+    if (existingTag) {
+      throw new BadRequestException('Ya existe una etiqueta con este color.');
     }
 
     const savedTag = await this.tagRepository.save(createTagDto);
@@ -79,9 +79,15 @@ export class TagsService {
 
   async update(id: string, updateTagDto: UpdateTagDto) {
     const existingTag = await this.tagRepository.findOneBy({
+      name: updateTagDto.name
+    });
+    if (existingTag !== null && existingTag.name !== existingTag.name) {
+      throw new BadRequestException('Ya existe una etiqueta con ese nombre.');
+    }
+    const existingColorTag = await this.tagRepository.findOneBy({
       color: updateTagDto.color
     });
-    if (existingTag && existingTag.id !== id) {
+    if (existingColorTag && existingColorTag.id !== id) {
       throw new BadRequestException('Ya existe una etiqueta con este color');
     }
 
