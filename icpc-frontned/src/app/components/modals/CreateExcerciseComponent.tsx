@@ -378,6 +378,20 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
             name='category'
           />
           <Controller
+            name='tags'
+            defaultValue={[]}
+            control={methods.control}
+            render={({ field }) => (
+              <TagSelectorComponent
+                id='tagSelector2'
+                options={tags}
+                selectedTags={field.value}
+                onChange={val => field.onChange(val)}
+              />
+            )}
+            rules={{ required: true }}
+          />
+          <Controller
             defaultValue={[]}
             control={methods.control}
             rules={{ required: true }}
@@ -463,20 +477,6 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
                 necessary={false}
                 type='text'
                 auto='off'
-              />
-              <Controller
-                name='tags'
-                defaultValue={[]}
-                control={methods.control}
-                render={({ field }) => (
-                  <TagSelectorComponent
-                    id='tagSelector2'
-                    options={tags}
-                    selectedTags={field.value}
-                    onChange={val => field.onChange(val)}
-                  />
-                )}
-                rules={{ required: true }}
               />
               <TextFieldComponent
                 labelText='Autor'
