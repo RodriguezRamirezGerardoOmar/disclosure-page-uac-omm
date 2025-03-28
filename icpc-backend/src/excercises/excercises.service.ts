@@ -362,7 +362,8 @@ export class ExcercisesService {
         ...updateData,
         updated_by: user.id,
         title: updateData.name,
-        memoryId: memory
+        memoryId: memory,
+        isVisible: true
       });
 
       const savedUpdatedExercise = await this.exerciseRepository.save(

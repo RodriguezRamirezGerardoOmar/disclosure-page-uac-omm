@@ -1,7 +1,7 @@
-import React from 'react'
+import React, { useRef, useImperativeHandle, forwardRef } from 'react'
 import { TextComponent } from '../text/TextComponent'
 import { enumTextTags, Option } from '@/constants/types'
-import Select, { StylesConfig } from 'react-select'
+import Select, { StylesConfig, SelectInstance } from 'react-select'
 import chroma from 'chroma-js'
 
 interface InputSelectorProps {
@@ -29,13 +29,12 @@ const colourStyles: StylesConfig<Option> = {
       ...styles,
       backgroundColor,
       color: 'black',
-
       ':active': {
         ...styles[':active'],
         backgroundColor: 'white'
       }
     }
-  }
+  },
 }
 
 /*
@@ -49,38 +48,53 @@ Date: 07 - 05 - 2024
 Author: Gerardo Omar Rodriguez Ramirez
 */
 
-const InputSelectorComponent = ({
-  options,
-  selectedOption,
-  id,
-  label,
-  clearable = false,
-  onChange
-}: Readonly<InputSelectorProps>) => {
-  const labelClassName = 'place-self-start dark:text-dark-accent'
+const InputSelectorComponent = forwardRef(
+  (
+    {
+      options,
+      selectedOption,
+      id,
+      label,
+      clearable = true, // Cambiado a true por defecto
+      onChange
+    }: Readonly<InputSelectorProps>,
+    ref
+  ) => {
+    const inputRef = useRef<SelectInstance<Option>>(null)
+    const labelClassName = 'place-self-start dark:text-dark-accent'
 
-  return (
-    <div className="w-full min-h-max">
-      <TextComponent
-        className={labelClassName}
-        tag={enumTextTags.p}>
-        {label}
-      </TextComponent>
-      <Select
-        key={JSON.stringify(selectedOption)} // Forzar re-renderización
-        instanceId={id}
-        options={options}
-        value={selectedOption} // Usar valor controlado
-        isSearchable={true}
-        isMulti={false}
-        onChange={(newValue) => onChange(newValue)} // Manejar cambios
-        getOptionLabel={(option) => option.label}
-        getOptionValue={(option) => option.value}
-        styles={colourStyles}
-        isClearable={clearable}
-      />
-    </div>
-  )
-}
+    useImperativeHandle(ref, () => ({
+      clear() {
+        inputRef.current?.clearValue()
+        onChange(null)
+      }
+    }))
+
+    return (
+      <div className="w-full min-h-max">
+        <TextComponent
+          className={labelClassName}
+          tag={enumTextTags.p}>
+          {label}
+        </TextComponent>
+        <Select
+          key={JSON.stringify(selectedOption)}
+          instanceId={id}
+          options={options}
+          value={selectedOption}
+          isSearchable={true}
+          isMulti={false}
+          onChange={onChange} // Simplificado
+          getOptionLabel={(option) => option.label}
+          getOptionValue={(option) => option.value}
+          styles={colourStyles}
+          isClearable={clearable}
+          ref={inputRef}
+          classNamePrefix="react-select" // Añadido para estilizado personalizado
+        />
+      </div>
+    )
+  }
+)
 
 export default InputSelectorComponent

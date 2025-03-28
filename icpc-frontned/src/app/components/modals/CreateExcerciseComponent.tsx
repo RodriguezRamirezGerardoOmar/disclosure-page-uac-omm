@@ -382,15 +382,14 @@ return (
             defaultValue={[]}
             control={methods.control}
             render={({ field }) => (
-              <InputSelectorCreateComponent
+              <InputSelectorComponent
                 label='Límite de tiempo'
                 id='time'
                 onChange={val => field.onChange(val)}
                 options={timeLimits.map(item => {
                   return { label: item.timeLimit.toString(), value: item.id }
                 })}
-                handleCreate={handleCreateTimeLimit}
-                selectedOption={field.value}
+                                selectedOption={field.value}
               />
             )}
             name='time'

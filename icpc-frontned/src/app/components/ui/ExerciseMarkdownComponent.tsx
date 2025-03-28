@@ -8,9 +8,10 @@ interface ExerciseMarkdownComponentProps {
   description: string
   constraints: string
   solution?: string
+  clue?: string
 }
 
-const ExerciseMarkdownComponent: React.FC<ExerciseMarkdownComponentProps> = ({ description, constraints, solution }) => {
+const ExerciseMarkdownComponent: React.FC<ExerciseMarkdownComponentProps> = ({ description, constraints, solution, clue }) => {
   return (
     <div className='mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 text-accent dark:text-dark-accent'>
       <div
@@ -21,6 +22,9 @@ const ExerciseMarkdownComponent: React.FC<ExerciseMarkdownComponentProps> = ({ d
         <br />
         <TextComponent tag={enumTextTags.h1}>Restricciones:</TextComponent>
         <TextComponent>{constraints}</TextComponent>
+        <br />
+        <TextComponent tag={enumTextTags.h1}>Pista:</TextComponent>
+        <TextComponent>{clue}</TextComponent>
         <br />
         <TextComponent tag={enumTextTags.h1}>Solución del problema:</TextComponent>
         <MarkdownBodyComponent body={solution ? solution : ''} />
