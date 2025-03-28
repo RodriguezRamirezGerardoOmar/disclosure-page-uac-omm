@@ -41,7 +41,7 @@ export const CardWithHeaderComponent = ({ className = [], ...props }: CardWithHe
       </div>
       <div className='px-4 py-5 space-x-4'>
         <a href='/exercises'>
-          <ButtonComponent text='Empieza!' />
+          <ButtonComponent text='¡Ponte a practicar!' icon/>
         </a>
         <a href='/note'>
           <ButtonComponent

@@ -17,7 +17,7 @@ const ColorPickerComponent = ({ register, fieldName, id }: Readonly<IColorPicker
   return (
     <input
       type='color' {...register(fieldName)} id={id}
-      onChange={(e) => setColor(e.target.value)} className='h-8 rounded-md m-4'></input>
+      onChange={(e) => setColor(e.target.value)} className='h-8 rounded-md mx-4 my-1'></input>
   )
 }
 

@@ -1,4 +1,12 @@
-import { Body, Controller, Get, HttpStatus, Post, Req } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpStatus,
+  Post,
+  Req,
+  UseGuards
+} from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
@@ -14,6 +22,7 @@ import { LoginDto, LoginResponseDto } from './dto/login.dto';
 import { RoleEnum } from '../common/enums/role.enum';
 import { CreateUserResponseDto } from '../users/dto/create-user.dto';
 import { Auth } from 'src/common/decorators/auth.decorator';
+import { AuthGuard } from './guard/auth.guard';
 
 interface RequestWithUser extends Request {
   user: {
@@ -43,6 +52,7 @@ export class AuthController {
 
   @Post('register')
   @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @Auth(RoleEnum.ADMIN)
   @ApiCreatedResponse({
     status: HttpStatus.CREATED,

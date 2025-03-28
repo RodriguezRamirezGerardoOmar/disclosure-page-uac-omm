@@ -91,8 +91,9 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
               name: exercise.title,
               category: { label: exercise.category.name, value: exercise.category.id },
               difficulty: { label: exercise.difficulty.name, value: exercise.difficulty.id },
-              time: { label: exercise.time.timeLimit.toString(), value: exercise.time.id },
-              memoryId: { label: exercise.memoryId.memoryLimit.toString(), value: exercise.memoryId.id },
+              time: exercise.time ? { label: exercise.time.timeLimit.toString(), value: exercise.time.id } : null,
+              memoryId:
+                exercise.memoryId !== null ? { label: exercise.memoryId.memoryLimit.toString(), value: exercise.memoryId.id } : null,
               input: exercise.input,
               output: exercise.output,
               constraints: exercise.constraints,
@@ -106,7 +107,9 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
             })
             setSelectedCategory({ label: exercise.category.name, value: exercise.category.id })
             setSelectedTags(exercise.tags)
-            setSelectedMemory({ label: exercise.memoryId.memoryLimit.toString(), value: exercise.memoryId.id })
+            setSelectedMemory(
+              exercise.memoryId !== null ? { label: exercise.memoryId.memoryLimit.toString(), value: exercise.memoryId.id } : null
+            )
           } else {
             toast.error('No se encontró el ejercicio con el ID proporcionado.', {
               duration: 5000,
@@ -154,8 +157,8 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
       name: String(formData.name),
       category: { name: formData.category.label, id: formData.category.value },
       difficulty: { name: formData.difficulty.label, id: formData.difficulty.value },
-      time: { value: formData.time.label, id: formData.time.value },
-      memoryId: formData.memoryId ? String(formData.memoryId.value) : '',
+      time: formData.time?.value ? { value: formData.time.label, id: formData.time.value } : null,
+      memoryId: formData.memoryId.value ? String(formData.memoryId.value) : '',
       input: String(formData.input),
       output: String(formData.output),
       constraints: formData.constraints ? String(formData.constraints) : '',
@@ -405,7 +408,7 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
                 name='time'
               />
               <Controller
-                defaultValue={[]}
+                defaultValue={{}}
                 control={methods.control}
                 render={({ field }) => (
                   <InputSelectorComponent

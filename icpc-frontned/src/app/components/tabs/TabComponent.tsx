@@ -237,7 +237,7 @@ export default function TabComponent({
                     tab.name === activeTab
                       ? 'border-indigo-500 text-indigo-600'
                       : 'border-transparent dark:text-white hover:border-gray-300 hover:text-gray-700',
-                    'group inline-flex items-center border-b-2 py-2 px-1 text-xs font-medium'
+                    'group inline-flex items-center border-b-2 py-3.5 px-1 text-xs font-medium'
                   )}
                   onClick={e => {
                     e.preventDefault();
