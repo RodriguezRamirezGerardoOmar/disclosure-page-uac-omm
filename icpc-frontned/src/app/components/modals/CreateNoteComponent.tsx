@@ -16,6 +16,7 @@ import InputSelectorCreateComponent from '../dropdowns/InputSelectorCreateCompon
 import { toast } from 'sonner'
 import useAuthStore from '@/store/useStore'
 import { ArrowUturnLeftIcon, XMarkIcon } from '@heroicons/react/20/solid'
+import ConfirmDenyComponent from '../buttons/Confirm&DenyComponent'
 
 interface CreateNotesComponentProps {
   id?: string
@@ -39,6 +40,7 @@ const CreateNoteComponent = (props: CreateNotesComponentProps) => {
   const [selectedCategory, setSelectedCategory] = useState<Option | null>(null)
   const [update, setUpdate] = useState<boolean>(false)
   const getNotesArticle = useNoteStore(state => state.getNote)
+  const [showConfirm, setShowConfirm] = React.useState(false)
 
   useEffect(() => {
     const fetchNotes = async () => {
@@ -192,119 +194,135 @@ const CreateNoteComponent = (props: CreateNotesComponentProps) => {
           color: '#ffffff'
         }
       })
+      return
     }
+    setShowConfirm(true)
   }
 
   return (
-    <form
-      onSubmit={methods.handleSubmit(onSubmit)}
-      className={`margin-auto md:mx-auto max-w-7xl md:px-4 w-full h-full lg:px-8 lg:w-2/3 lg:h-auto 
+    <>
+      {showConfirm && (
+        <ConfirmDenyComponent
+          onConfirm={() => {
+            setShowConfirm(false)
+            methods.handleSubmit(onSubmit)()
+          }}
+          onCancel={() => setShowConfirm(false)}
+        />
+      )}
+      <form
+        onSubmit={e => {
+          e.preventDefault()
+          dataValidate()
+        }}
+        className={`margin-auto md:mx-auto max-w-7xl md:px-4 w-full h-full lg:px-8 lg:w-2/3 lg:h-auto 
       min-h-screen place-items-center justify-between py-10`}>
-      <BasicPanelComponent backgroundColor='bg-white dark:bg-dark-primary'>
-        <div className='relative'>
-          <div className='absolute top-0 right-0 flex gap-1 p-2'>
-            <div
-              className='p-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200 rounded'
-              title='Restablecer formulario'>
-              <button
-                type='button'
-                onClick={clearForm}
-                className='text-inherit'>
-                <ArrowUturnLeftIcon className='h-6 w-6' />
-              </button>
-            </div>
-            <div
-              className='p-2 hover:bg-gray-100 dark:hover:bg-red-700 transition-colors duration-200 rounded'
-              title='Cerrar formulario'>
-              <button
-                onClick={props.onClose}
-                className='text-inherit'>
-                <XMarkIcon className='h-6 w-6' />
-              </button>
+        <BasicPanelComponent backgroundColor='bg-white dark:bg-dark-primary'>
+          <div className='relative'>
+            <div className='absolute top-0 right-0 flex gap-1 p-2'>
+              <div
+                className='p-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200 rounded'
+                title='Restablecer formulario'>
+                <button
+                  type='button'
+                  onClick={clearForm}
+                  className='text-inherit'>
+                  <ArrowUturnLeftIcon className='h-6 w-6' />
+                </button>
+              </div>
+              <div
+                className='p-2 hover:bg-gray-100 dark:hover:bg-red-700 transition-colors duration-200 rounded'
+                title='Cerrar formulario'>
+                <button
+                  onClick={props.onClose}
+                  className='text-inherit'>
+                  <XMarkIcon className='h-6 w-6' />
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-        <div className='flex flex-col items-center'>
-          <LogoComponent size={100} />
-          <TextComponent
-            tag={enumTextTags.h1}
-            sizeFont='s16'
-            className='dark:text-dark-accent'>
-            {props.id ? 'Editar apunte' : 'Crear apunte'}
-          </TextComponent>
-          <TextFieldComponent
-            labelText='Título del apunte'
-            register={methods.register}
-            fieldName='title'
-            auto='off'
-            id='title'
-            necessary={true}
-            type='text'
-          />
-          <Controller
-            defaultValue={[]}
-            control={methods.control}
-            rules={{ required: true }}
-            render={({ field }) => (
-              <InputSelectorCreateComponent
-                label='Categoría'
-                id='category'
-                ref={selectRef}
-                onChange={val => {
-                  field.onChange(val)
-                  setSelectedCategory(val)
-                }}
-                options={categories.map(item => {
-                  return { label: item.name, value: item.id }
-                })}
-                handleCreate={handleCreateCategory}
-                selectedOption={field.value}
-              />
-            )}
-            name='category'
-          />
-          <Controller
-            name='tags'
-            defaultValue={[] as Tags[]}
-            control={methods.control}
-            render={({ field }) => (
-              <TagSelectorComponent
-                id='tagSelector2'
-                options={tags}
-                selectedTags={field.value}
-                onChange={val => field.onChange(val)}
-              />
-            )}
-            rules={{ required: true }}
-          />
-          <TextAreaComponent
-            labelText='Descripción'
-            register={methods.register}
-            fieldName='description'
-            id='description'
-            necessary={true}
-          />
-          <Controller
-            name='content'
-            defaultValue=''
-            control={methods.control}
-            rules={{ required: true }}
-            render={({ field }) => (
-              <MarkdownAreaComponent
-                value={field.value}
-                onChange={newValue => field.onChange(newValue)}
-                labelText='Contenido'
-                className='p-2'
-              />
-            )}
-          />
-          <SubmitComponent
-            text={props.id ? 'Actualizar apunte' : 'Crear apunte'}
-            action={dataValidate}
-          />
-        </div>
-      </BasicPanelComponent>
-    </form>
+          <div className='flex flex-col items-center'>
+            <LogoComponent size={100} />
+            <TextComponent
+              tag={enumTextTags.h1}
+              sizeFont='s16'
+              className='dark:text-dark-accent'>
+              {props.id ? 'Editar apunte' : 'Crear apunte'}
+            </TextComponent>
+            <TextFieldComponent
+              labelText='Título del apunte'
+              register={methods.register}
+              fieldName='title'
+              auto='off'
+              id='title'
+              necessary={true}
+              type='text'
+            />
+            <Controller
+              defaultValue={[]}
+              control={methods.control}
+              rules={{ required: true }}
+              render={({ field }) => (
+                <InputSelectorCreateComponent
+                  label='Categoría'
+                  id='category'
+                  ref={selectRef}
+                  onChange={val => {
+                    field.onChange(val)
+                    setSelectedCategory(val)
+                  }}
+                  options={categories.map(item => {
+                    return { label: item.name, value: item.id }
+                  })}
+                  handleCreate={handleCreateCategory}
+                  selectedOption={field.value}
+                />
+              )}
+              name='category'
+            />
+            <Controller
+              name='tags'
+              defaultValue={[] as Tags[]}
+              control={methods.control}
+              render={({ field }) => (
+                <TagSelectorComponent
+                  id='tagSelector2'
+                  options={tags}
+                  selectedTags={field.value}
+                  onChange={val => field.onChange(val)}
+                />
+              )}
+              rules={{ required: true }}
+            />
+            <TextAreaComponent
+              labelText='Descripción'
+              register={methods.register}
+              fieldName='description'
+              id='description'
+              necessary={true}
+            />
+            <Controller
+              name='content'
+              defaultValue=''
+              control={methods.control}
+              rules={{ required: true }}
+              render={({ field }) => (
+                <MarkdownAreaComponent
+                  value={field.value}
+                  onChange={newValue => field.onChange(newValue)}
+                  labelText='Contenido'
+                  className='p-2'
+                />
+              )}
+            />
+            <SubmitComponent
+              text={props.id ? 'Actualizar apunte' : 'Crear apunte'}
+              action={dataValidate}
+            />
+          </div>
+        </BasicPanelComponent>
+      </form>
+    </>
   )
 }
 
