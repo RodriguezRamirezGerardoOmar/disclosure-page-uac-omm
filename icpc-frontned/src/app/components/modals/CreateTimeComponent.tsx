@@ -42,7 +42,7 @@ const CreateTimeLimitComponent: React.FC<CreateTimeLimitComponentProps> = ({ met
         TimeLimit: currentTimeLimit.timeLimit.toString()
       });
     }
-    else methods.reset();
+    else methods.setValue('TimeLimit','');
   };
 
   const onSubmit: SubmitHandler<FieldValues> = async data => {
