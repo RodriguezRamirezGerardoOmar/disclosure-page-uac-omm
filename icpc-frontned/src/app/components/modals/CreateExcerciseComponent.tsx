@@ -307,150 +307,153 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
         }}
         className={`margin-auto md:mx-auto max-w-7xl md:px-4 w-full h-full lg:px-8 lg:w-11/12 lg:h-auto 
     min-h-screen place-items-center justify-between py-10`}>
-        <BasicPanelComponent backgroundColor='bg-white dark:bg-dark-primary'>
-          <div className='relative'>
-            <div className='absolute top-0 right-0 flex gap-1 p-2'>
-              <div
-                className='p-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration:200 rounded'
-                title='Restablecer formulario'>
-                <button
-                  type='button'
-                  onClick={clearForm}
-                  className='text-inherit'>
-                  <ArrowUturnLeftIcon className='h-6 w-6' />
-                </button>
-              </div>
-              <div
-                className='p-2 hover:bg-gray-100 dark:hover:bg-red-700 transition-colors duration:200 rounded'
-                title='Cerrar formulario'>
-                <button
-                  onClick={props.onClose}
-                  className='text-inherit'>
-                  <XMarkIcon className='h-6 w-6' />
-                </button>
-              </div>
-            </div>
+    <BasicPanelComponent backgroundColor='bg-white dark:bg-dark-primary'>
+      <div className="relative">
+        <div className="absolute top-0 right-0 flex gap-1 p-2">
+          <div
+            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration:200 rounded"
+            title="Restablecer formulario"
+          >
+            <button
+              type="button"
+              onClick={clearForm}
+              className="text-inherit"
+            >
+              <ArrowUturnLeftIcon className="h-6 w-6" />
+            </button>
           </div>
-          <div className='flex flex-col items-center'>
-            <LogoComponent size={100} />
-            <TextComponent
-              tag={enumTextTags.h1}
-              sizeFont='s16'
-              className='dark:text-dark-accent'>
-              {props.id ? 'Editar ejercicio' : 'Crear ejercicio'}
-            </TextComponent>
+          <div
+            className="p-2 hover:bg-gray-100 dark:hover:bg-red-700 transition-colors duration:200 rounded"
+            title="Cerrar formulario"
+          >
+            <button
+              onClick={props.onClose}
+              className="text-inherit"
+            >
+              <XMarkIcon className="h-6 w-6" />
+            </button>
           </div>
-          <div className='grid grid-cols-1 items-start lg:grid-cols-2 lg:gap-16'>
-            <div className='w-full flex flex-col gap-2'>
-              <TextFieldComponent
-                labelText='Nombre del ejercicio'
-                register={methods.register}
-                fieldName='name'
-                id='name'
-                necessary={true}
-                type='text'
-                auto='off'
+        </div>
+      </div>
+      <div className='flex flex-col items-center'>
+        <LogoComponent size={100} />
+        <TextComponent
+          tag={enumTextTags.h1}
+          sizeFont='s16'
+          className='dark:text-dark-accent'>
+          {props.id ? 'Editar ejercicio' : 'Crear ejercicio'}
+        </TextComponent>
+      </div>
+      <div className='grid grid-cols-1 items-start lg:grid-cols-2 lg:gap-16'>
+        <div className='w-full flex flex-col gap-2'>
+          <TextFieldComponent
+            labelText='Nombre del ejercicio'
+            register={methods.register}
+            fieldName='name'
+            id='name'
+            necessary={true}
+            type='text'
+            auto='off'
+          />
+          <Controller
+            defaultValue={[]}
+            control={methods.control}
+            rules={{ required: true }}
+            render={({ field }) => (
+              <InputSelectorCreateComponent
+                label='Categoría'
+                id='category'
+                ref={selectRef}
+                onChange={val => {
+                  field.onChange(val)
+                  setSelectedCategory(val)
+                }}
+                options={categories.map(item => {
+                  return { label: item.name, value: item.id }
+                })}
+                handleCreate={handleCreateCategory}
+                selectedOption={field.value}
               />
-              <Controller
-                defaultValue={[]}
-                control={methods.control}
-                rules={{ required: true }}
-                render={({ field }) => (
-                  <InputSelectorCreateComponent
-                    label='Categoría'
-                    id='category'
-                    ref={selectRef}
-                    onChange={val => {
-                      field.onChange(val)
-                      setSelectedCategory(val)
-                    }}
-                    options={categories.map(item => {
-                      return { label: item.name, value: item.id }
-                    })}
-                    handleCreate={handleCreateCategory}
-                    selectedOption={field.value}
-                  />
-                )}
-                name='category'
+            )}
+            name='category'
+          />
+          <Controller
+            defaultValue={[]}
+            control={methods.control}
+            rules={{ required: true }}
+            render={({ field }) => (
+              <InputSelectorComponent
+                label='Nivel de dificultad'
+                id='difficulty'
+                onChange={val => field.onChange(val)}
+                options={difficulty.map(item => {
+                  return { label: item.name, value: item.id }
+                })}
+                selectedOption={field.value}
               />
-              <Controller
-                defaultValue={[]}
-                control={methods.control}
-                rules={{ required: true }}
-                render={({ field }) => (
-                  <InputSelectorComponent
-                    label='Nivel de dificultad'
-                    id='difficulty'
-                    onChange={val => field.onChange(val)}
-                    options={difficulty.map(item => {
-                      return { label: item.name, value: item.id }
-                    })}
-                    selectedOption={field.value}
-                  />
-                )}
-                name='difficulty'
+            )}
+            name='difficulty'
+          />
+          <Controller
+            defaultValue={[]}
+            control={methods.control}
+            render={({ field }) => (
+              <InputSelectorComponent
+                label='Límite de tiempo'
+                id='time'
+                onChange={val => field.onChange(val)}
+                options={timeLimits.map(item => {
+                  return { label: item.timeLimit.toString(), value: item.id }
+                })}
+                                selectedOption={field.value}
               />
-              <Controller
-                defaultValue={[]}
-                control={methods.control}
-                render={({ field }) => (
-                  <InputSelectorCreateComponent
-                    label='Límite de tiempo'
-                    id='time'
-                    onChange={val => field.onChange(val)}
-                    options={timeLimits.map(item => {
-                      return { label: item.timeLimit.toString(), value: item.id }
-                    })}
-                    handleCreate={handleCreateTimeLimit}
-                    selectedOption={field.value}
-                  />
-                )}
-                name='time'
+            )}
+            name='time'
+          />
+          <Controller
+            defaultValue={{}}
+            control={methods.control}
+            render={({ field }) => (
+              <InputSelectorComponent
+                label='Límite de memoria'
+                id='memoryId'
+                onChange={val => {
+                  field.onChange(val)
+                }}
+                options={memoryLimits.map(item => {
+                  const label: number = item.memoryLimit
+                  return { label: label.toString(), value: item.id }
+                })}
+                selectedOption={field.value}
               />
-              <Controller
-                defaultValue={{}}
-                control={methods.control}
-                render={({ field }) => (
-                  <InputSelectorComponent
-                    label='Límite de memoria'
-                    id='memoryId'
-                    onChange={val => {
-                      field.onChange(val)
-                    }}
-                    options={memoryLimits.map(item => {
-                      const label: number = item.memoryLimit
-                      return { label: label.toString(), value: item.id }
-                    })}
-                    selectedOption={field.value}
-                  />
-                )}
-                name='memoryId'
-              />
-              <TextFieldComponent
-                labelText='Entrada esperada'
-                register={methods.register}
-                fieldName='input'
-                id='input'
-                necessary={true}
-                type='text'
-                auto='off'
-              />
-              <TextFieldComponent
-                labelText='Salida esperada'
-                register={methods.register}
-                fieldName='output'
-                id='output'
-                necessary={true}
-                type='text'
-                auto='off'
-              />
-              <TextAreaComponent
-                labelText='Restricciones'
-                register={methods.register}
-                fieldName='constraints'
-                id='constraints'
-                necessary={false}
-              />
+            )}
+            name='memoryId'
+          />
+          <TextFieldComponent
+            labelText='Entrada esperada'
+            register={methods.register}
+            fieldName='input'
+            id='input'
+            necessary={true}
+            type='text'
+            auto='off'
+          />
+          <TextFieldComponent
+            labelText='Salida esperada'
+            register={methods.register}
+            fieldName='output'
+            id='output'
+            necessary={true}
+            type='text'
+            auto='off'
+          />
+          <TextAreaComponent
+            labelText='Restricciones'
+            register={methods.register}
+            fieldName='constraints'
+            id='constraints'
+            necessary={false}
+          />
 
               <TextFieldComponent
                 labelText='Pista'

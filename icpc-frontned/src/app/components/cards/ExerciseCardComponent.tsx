@@ -18,6 +18,7 @@ interface ExerciseCardComponentProps {
   description: string
   solution?: string
   itemId?: string
+  clue?: string
 }
 
 const ExerciseCardComponent = ({ ...props }: Readonly<ExerciseCardComponentProps>) => {
@@ -135,6 +136,7 @@ const ExerciseCardComponent = ({ ...props }: Readonly<ExerciseCardComponentProps
       </div>
       <ExerciseMarkdownComponent
         description={props.description}
+        clue={props.clue}
         constraints={props.exercise.constraints}
         solution={props.solution}
       />
