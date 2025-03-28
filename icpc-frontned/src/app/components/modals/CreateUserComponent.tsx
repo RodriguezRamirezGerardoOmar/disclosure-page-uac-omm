@@ -11,6 +11,7 @@ import SubmitComponent from '../forms/SubmitComponent'
 import useStore, { IUser } from '@/store/useStore'
 import { toast } from 'sonner'
 import { ArrowUturnLeftIcon, XMarkIcon } from '@heroicons/react/20/solid'
+import ConfirmDenyComponent from '../buttons/Confirm&DenyComponent'
 
 interface ICreateUserProps {
   onClose: () => void
@@ -34,6 +35,7 @@ const CreateUserComponent = (props: ICreateUserProps) => {
   const getUser = useStore(state => state.getUser)
   const user = useStore(state => state.user)
   const [currentUser, setCurrentUser] = useState<IUser>({} as IUser)
+  const [showConfirm, setShowConfirm] = React.useState(false)
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -122,106 +124,120 @@ const CreateUserComponent = (props: ICreateUserProps) => {
   }
 
   return (
-    <form
-      onSubmit={methods.handleSubmit(onSubmit)}
-      className={`margin-auto md:mx-auto max-w-14xl md:px-4 w-full h-full lg:px-10 lg:w-2/3 lg:h-auto 
+    <>
+      {showConfirm && (
+        <ConfirmDenyComponent
+          onConfirm={() => {
+            setShowConfirm(false)
+            methods.handleSubmit(onSubmit)()
+          }}
+          onCancel={() => setShowConfirm(false)}
+        />
+      )}
+      <form
+        onSubmit={e => {
+          e.preventDefault()
+          setShowConfirm(true)
+        }}
+        className={`margin-auto md:mx-auto max-w-14xl md:px-4 w-full h-full lg:px-10 lg:w-2/3 lg:h-auto 
       min-h-screen place-items-center justify-between py-24`}>
-      <BasicPanelComponent backgroundColor='bg-white dark:bg-dark-primary w-full lg:w-2/3'>
-        <div className='relative'>
-          <div className='absolute top-0 right-0 flex gap-1 p-2'>
-            <div
-              className='p-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200 rounded'
-              title='Restablecer formulario'>
-              <button
-                type='button'
-                onClick={clearForm}
-                className='text-inherit'>
-                <ArrowUturnLeftIcon className='h-6 w-6' />
-              </button>
-            </div>
-            <div
-              className='p-2 hover:bg-gray-100 dark:hover:bg-red-700 transition-colors duration-200 rounded'
-              title='Cerrar formulario'>
-              <button
-                onClick={props.onClose}
-                className='text-inherit'>
-                <XMarkIcon className='h-6 w-6' />
-              </button>
+        <BasicPanelComponent backgroundColor='bg-white dark:bg-dark-primary w-full lg:w-2/3'>
+          <div className='relative'>
+            <div className='absolute top-0 right-0 flex gap-1 p-2'>
+              <div
+                className='p-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200 rounded'
+                title='Restablecer formulario'>
+                <button
+                  type='button'
+                  onClick={clearForm}
+                  className='text-inherit'>
+                  <ArrowUturnLeftIcon className='h-6 w-6' />
+                </button>
+              </div>
+              <div
+                className='p-2 hover:bg-gray-100 dark:hover:bg-red-700 transition-colors duration-200 rounded'
+                title='Cerrar formulario'>
+                <button
+                  onClick={props.onClose}
+                  className='text-inherit'>
+                  <XMarkIcon className='h-6 w-6' />
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-        <div className='flex flex-col items-center'>
-          <LogoComponent size={100} />
-          <TextComponent
-            tag={enumTextTags.h1}
-            sizeFont='s16'
-            className='dark:text-dark-accent'>
-            {props.id ? 'Editar usuario' : 'Crear cuenta de usuario'}
-          </TextComponent>
-          <TextFieldComponent
-            labelText='Nombre'
-            register={methods.register}
-            fieldName='name'
-            id='name'
-            necessary={true}
-            type='text'
-            auto='name'
-          />
-          <TextFieldComponent
-            labelText='Apellido'
-            register={methods.register}
-            fieldName='lastName'
-            id='lastName'
-            necessary={true}
-            type='text'
-            auto='last-name'
-          />
-          <TextFieldComponent
-            labelText='Nombre de usuario'
-            register={methods.register}
-            fieldName='userName'
-            id='userName'
-            necessary={true}
-            type='text'
-            auto='username'
-          />
-          <TextFieldComponent
-            labelText='Correo electrónico'
-            register={methods.register}
-            fieldName='email'
-            id='email'
-            necessary={true}
-            type='email'
-            auto='email'
-          />
-          <TextFieldComponent
-            labelText='Contraseña'
-            register={methods.register}
-            fieldName='password'
-            id='password'
-            necessary={false}
-            type='password'
-          />
-          <TextFieldComponent
-            labelText='Verifique su contraseña'
-            register={methods.register}
-            fieldName='passwordVerify'
-            id='passwordVerify'
-            necessary={false}
-            type='password'
-          />
-          <CheckboxComponent
-            labelText='Permisos de administrador'
-            fieldName='isAdmin'
-            register={methods.register}
-          />
-          <SubmitComponent
-            text={props.id ? 'Actualizar cuenta' : 'Crear cuenta'}
-            action={() => {}}
-          />
-        </div>
-      </BasicPanelComponent>
-    </form>
+          <div className='flex flex-col items-center'>
+            <LogoComponent size={100} />
+            <TextComponent
+              tag={enumTextTags.h1}
+              sizeFont='s16'
+              className='dark:text-dark-accent'>
+              {props.id ? 'Editar usuario' : 'Crear cuenta de usuario'}
+            </TextComponent>
+            <TextFieldComponent
+              labelText='Nombre'
+              register={methods.register}
+              fieldName='name'
+              id='name'
+              necessary={true}
+              type='text'
+              auto='name'
+            />
+            <TextFieldComponent
+              labelText='Apellido'
+              register={methods.register}
+              fieldName='lastName'
+              id='lastName'
+              necessary={true}
+              type='text'
+              auto='last-name'
+            />
+            <TextFieldComponent
+              labelText='Nombre de usuario'
+              register={methods.register}
+              fieldName='userName'
+              id='userName'
+              necessary={true}
+              type='text'
+              auto='username'
+            />
+            <TextFieldComponent
+              labelText='Correo electrónico'
+              register={methods.register}
+              fieldName='email'
+              id='email'
+              necessary={true}
+              type='email'
+              auto='email'
+            />
+            <TextFieldComponent
+              labelText='Contraseña'
+              register={methods.register}
+              fieldName='password'
+              id='password'
+              necessary={false}
+              type='password'
+            />
+            <TextFieldComponent
+              labelText='Verifique su contraseña'
+              register={methods.register}
+              fieldName='passwordVerify'
+              id='passwordVerify'
+              necessary={false}
+              type='password'
+            />
+            <CheckboxComponent
+              labelText='Permisos de administrador'
+              fieldName='isAdmin'
+              register={methods.register}
+            />
+            <SubmitComponent
+              text={props.id ? 'Actualizar cuenta' : 'Crear cuenta'}
+              action={() => {}}
+            />
+          </div>
+        </BasicPanelComponent>
+      </form>
+    </>
   )
 }
 

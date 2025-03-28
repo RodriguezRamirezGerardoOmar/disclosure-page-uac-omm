@@ -96,6 +96,10 @@ export class CategoriesService {
 
   async update(id: string, updateCategoryDto: UpdateCategoryDto) {
     const category = await this.categoryRepository.findOneBy({ id });
+    const existingCategory = await this.findOneByName(updateCategoryDto.name);
+    if (existingCategory !== null && existingCategory.id !== id) {
+      throw new BadRequestException('Esa categoría ya existe');
+    }
     const savedCategory = await this.categoryRepository.save({
       ...category,
       ...updateCategoryDto

@@ -70,7 +70,6 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
   const deleteMemoryLimit = useUtilsStore(state => state.deleteMemoryLimit)
   const deleteDifficulty = useUtilsStore(state => state.deleteDifficulty)
   const deleteUser = useStore(state => state.deleteUser)
-  const getUser = useStore(state => state.getUser)
   const hasPendingTicket = useUtilsStore(state => state.hasPendingTicket)
 
   const [selectedReportId, setSelectedReportId] = useState<string | null>(null)
@@ -200,7 +199,7 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
         break
     }
 
-    if (response!.id) {
+    if ('id' in response!) {
       toast.success(`Solicitud de eliminación enviada`, { duration: 5000, style: { backgroundColor: 'green', color: 'white' } })
     }
 

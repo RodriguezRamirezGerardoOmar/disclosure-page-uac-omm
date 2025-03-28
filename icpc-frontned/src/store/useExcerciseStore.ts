@@ -13,7 +13,7 @@ interface ICreateExcercise {
   name: string
   category: { name: string, id: string }
   difficulty: { name: string, id: string }
-  time: { value: number, id: string }
+  time: { value: number, id: string } | null;
   memoryId: string
   input: string
   output: string

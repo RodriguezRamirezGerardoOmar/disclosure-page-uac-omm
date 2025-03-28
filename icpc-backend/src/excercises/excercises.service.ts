@@ -78,7 +78,7 @@ export class ExcercisesService {
     }
 
     let newExcerciseTime = null;
-    if (time.value !== null) {
+    if (time) {
       newExcerciseTime = await this.timeRepository.findOneBy({
         timeLimit: time.value,
         id: time.id
@@ -354,12 +354,16 @@ export class ExcercisesService {
       userName: updateData.userAuthor
     });
 
+    const original = await this.exerciseRepository.findOneBy({ id });
+
     if (role === 'admin') {
       existingExercise.isVisible = false;
       await this.exerciseRepository.save(existingExercise);
 
       const modifiedExerciseCopy = this.exerciseRepository.create({
         ...updateData,
+        created_at: original.created_at,
+        created_by: original.created_by,
         updated_by: user.id,
         title: updateData.name,
         memoryId: memory,
@@ -394,6 +398,8 @@ export class ExcercisesService {
     } else {
       const modifiedExerciseCopy = this.exerciseRepository.create({
         ...updateData,
+        created_at: original.created_at,
+        created_by: original.created_by,
         title: updateData.name,
         updated_by: user.id,
         memoryId: memory,

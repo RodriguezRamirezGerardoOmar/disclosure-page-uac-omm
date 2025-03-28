@@ -32,10 +32,9 @@ function onclick() {
 }
 
 export default function NoteCardComponent({ ...props }: Readonly<NoteCardProps>) {
-  const isTicketPage = window.location.pathname.includes('ticket')
   return (
     <BasicPanelComponent backgroundColor='bg-white dark:bg-dark-primary w-full md:w-11/12'>
-      {!isTicketPage && (
+      {props.showButton && (
         <div className='flex justify-end w-full px-16'>
           <ReportButtonComponent
             itemId={props.itemId!}
