@@ -6,7 +6,8 @@ import {
   Patch,
   Param,
   Delete,
-  BadRequestException
+  BadRequestException,
+  Req
 } from '@nestjs/common';
 import { TicketService } from './ticket.service';
 import { CreateTicketDto } from './dto/create-ticket.dto';
@@ -15,6 +16,7 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { TicketType } from './entities/ticket.entity';
 import { Auth } from 'src/common/decorators/auth.decorator';
 import { RoleEnum } from 'src/common/enums/role.enum';
+import { LoggerService } from 'src/services/logger.service';
 
 enum ItemType {
   EXERCISE = 'Ejercicios',
@@ -27,7 +29,10 @@ enum ItemType {
 @Controller('ticket')
 @ApiTags('Ticket')
 export class TicketController {
-  constructor(private readonly ticketService: TicketService) {}
+  constructor(
+    private readonly ticketService: TicketService,
+    private readonly loggerService: LoggerService
+  ) {}
 
   @Post()
   async create(@Body() createTicketDto: CreateTicketDto) {
@@ -77,14 +82,16 @@ export class TicketController {
   @ApiBearerAuth()
   @Auth(RoleEnum.ADMIN)
   @Post('approve/:id')
-  approve(@Param('id') id: string) {
+  approve(@Param('id') id: string, @Req() req: any) {
+    this.loggerService.logChange('ticket', 'approve', req.user.name, id);
     return this.ticketService.approve(id);
   }
 
   @ApiBearerAuth()
   @Auth(RoleEnum.ADMIN)
   @Post('reject/:id')
-  reject(@Param('id') id: string) {
+  reject(@Param('id') id: string, @Req() req: any) {
+    this.loggerService.logChange('ticket', 'reject', req.user.name, id);
     return this.ticketService.reject(id);
   }
 

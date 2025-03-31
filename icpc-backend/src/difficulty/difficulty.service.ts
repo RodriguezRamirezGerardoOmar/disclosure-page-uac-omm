@@ -27,9 +27,9 @@ export class DifficultyService {
   ) {}
 
   async create(createDifficultyDto: CreateDifficultyDto) {
-    if (createDifficultyDto.level < 0) {
+    if (createDifficultyDto.level <= 0) {
       throw new BadRequestException(
-        'El nivel de dificultad debe ser mayor o igual a 0.'
+        'El nivel de dificultad debe ser mayor a 0.'
       );
     }
     // Verificar si ya existe un registro con el mismo nombre o nivel de dificultad
@@ -80,9 +80,9 @@ export class DifficultyService {
   }
 
   async update(id: string, updateDifficultyDto: UpdateDifficultyDto) {
-    if (updateDifficultyDto.level < 0) {
+    if (updateDifficultyDto.level <= 0) {
       throw new BadRequestException(
-        'El nivel de dificultad debe ser mayor o igual a 0.'
+        'El nivel de dificultad debe ser mayor a 0.'
       );
     }
     // Verificar si ya existe un registro con el mismo nombre o nivel de dificultad
