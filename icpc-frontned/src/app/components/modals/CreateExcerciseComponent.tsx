@@ -424,7 +424,7 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
             name='time'
           />
           <Controller
-            defaultValue={[]}
+            defaultValue={null}
             control={methods.control}
             render={({ field }) => (
               <InputSelectorComponent
