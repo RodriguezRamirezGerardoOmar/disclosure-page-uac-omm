@@ -418,21 +418,19 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
                 options={timeLimits.map(item => {
                   return { label: item.timeLimit.toString(), value: item.id }
                 })}
-                                selectedOption={field.value}
+                selectedOption={field.value}
               />
             )}
             name='time'
           />
           <Controller
-            defaultValue={{}}
+            defaultValue={null}
             control={methods.control}
             render={({ field }) => (
               <InputSelectorComponent
                 label='Límite de memoria'
                 id='memoryId'
-                onChange={val => {
-                  field.onChange(val)
-                }}
+                onChange={val => {field.onChange(val)}}
                 options={memoryLimits.map(item => {
                   const label: number = item.memoryLimit
                   return { label: label.toString(), value: item.id }
