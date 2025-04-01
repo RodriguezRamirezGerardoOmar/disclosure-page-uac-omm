@@ -79,9 +79,9 @@ const colourStyles: StylesConfig<Tags, true> = {
       backgroundColor: color.alpha(0.1).css()
     }
   },
-  multiValueLabel: (styles, { data }) => ({
+  multiValueLabel: (styles) => ({
     ...styles,
-    color: `#${data.color}`
+    color: 'black'
   }),
   multiValueRemove: (styles, { data }) => ({
     ...styles,
