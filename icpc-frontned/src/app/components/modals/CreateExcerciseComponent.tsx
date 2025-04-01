@@ -303,7 +303,6 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
       <form
         onSubmit={e => {
           e.preventDefault()
-          dataValidate()
         }}
         className={`margin-auto md:mx-auto max-w-7xl md:px-4 w-full h-full lg:px-8 lg:w-11/12 lg:h-auto 
     min-h-screen place-items-center justify-between py-10`}>
