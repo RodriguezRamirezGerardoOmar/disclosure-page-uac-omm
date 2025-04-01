@@ -32,7 +32,7 @@ const ImageInputComponent = forwardRef(({ cover, ...props }: IImageInputProps, r
       if (newCover) {
         setImage(`${process.env.NEXT_PUBLIC_API_URL}api/v1/image/${newCover}`)
         setSelectedFile(true)
-        props.onChange(null) // Opcional, asegura que el valor del input no interfiera
+        props.onChange(null)
       } else {
         setImage(null)
         setSelectedFile(false)
@@ -44,7 +44,6 @@ const ImageInputComponent = forwardRef(({ cover, ...props }: IImageInputProps, r
     }
   }))
 
-  // Detecta cambios en la propiedad `cover` y actualiza la imagen de vista previa
   useEffect(() => {
     if (cover) {
       setImage(`${process.env.NEXT_PUBLIC_API_URL}api/v1/image/${cover}`)
@@ -70,26 +69,28 @@ const ImageInputComponent = forwardRef(({ cover, ...props }: IImageInputProps, r
 
   return (
     <button
-      type="button"
-      className="relative block w-full rounded-lg border-2 border-dashed border-gray-300 p-12 text-center
-       hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+      type='button'
+      className='relative block w-full rounded-lg border-2 border-dashed border-gray-300 p-12 text-center
+       hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 overflow-hidden'
       onClick={() => fileElem.current?.click()}>
-      <img
-        className={selectedFile ? 'mx-auto' : 'mx-auto h-6 w-6'}
-        src={selectedFile && image ? image : iconURL}
-        alt="Ícono de subida"
-      />
+      <div className='flex items-center justify-center w-full h-40 max-h-40'>
+        <img
+          className='max-w-96 max-h-full object-contain'
+          src={selectedFile && image ? image : iconURL}
+          alt='Ícono de subida'
+        />
+      </div>
       <TextComponent
-        className="mt-2 block font-semibold text-gray-900 dark:text-dark-accent"
-        sizeFont="s12">
+        className='mt-2 block font-semibold text-gray-900 dark:text-dark-accent'
+        sizeFont='s12'>
         {selectedFile ? 'Imagen seleccionada' : 'Sube una imagen de portada'}
       </TextComponent>
       <input
         {...props.register(props.fieldName)}
-        type="file"
+        type='file'
         ref={fileElem}
-        accept="image/*"
-        className="hidden"
+        accept='image/*'
+        className='hidden'
         onChange={handleFileChange}
       />
     </button>
