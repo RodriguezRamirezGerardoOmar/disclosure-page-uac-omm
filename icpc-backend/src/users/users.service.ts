@@ -40,6 +40,11 @@ export class UsersService {
     } else if (email !== null) {
       throw new BadRequestException('El email ya existe');
     }
+    if (createUserDto.password.length < 8) {
+      throw new BadRequestException(
+        'La contraseña debe tener al menos 8 caracteres'
+      );
+    }
     if (createUserDto.password === createUserDto.passwordVerify) {
       const user = this.userRepository.create(createUserDto);
       const role = createUserDto.isAdmin ? RoleEnum.ADMIN : RoleEnum.USER;
@@ -112,6 +117,11 @@ export class UsersService {
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
+    if (updateUserDto.password.length < 8) {
+      throw new BadRequestException(
+        'La contraseña debe tener al menos 8 caracteres'
+      );
+    }
     const user = await this.userRepository.findOneBy({ id: id });
 
     if (!user) {
