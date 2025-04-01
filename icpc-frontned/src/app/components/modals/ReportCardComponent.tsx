@@ -113,7 +113,6 @@ const ReportCardComponent = ({ itemType, itemId, onSubmit, onCancel, methods }: 
             ¿Encontraste un error?
           </TextComponent>
           <form onSubmit={methods.handleSubmit(handleSubmit)} className='w-full'>
-            <div className='w-full m-2'>
             <TextFieldComponent
               labelText='Descripción del error'
               register={methods.register}
@@ -123,7 +122,6 @@ const ReportCardComponent = ({ itemType, itemId, onSubmit, onCancel, methods }: 
               type='text'
               auto='off'
             />
-            </div>
             <TextAreaComponent
               labelText='Contenido'
               fieldName='content'

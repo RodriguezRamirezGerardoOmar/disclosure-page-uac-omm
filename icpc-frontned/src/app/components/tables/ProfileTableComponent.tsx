@@ -236,11 +236,29 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
   const setCurrentOptions = (id: string, itemType: string) => {
     switch (itemType) {
       case AllTabs.REPORTS:
-        return [options[3]]
+        return [options[3]] // "Ver" para reportes (corroborar cambios)
       case AllTabs.CHANGES:
-        return [options[0]]
+        return [options[0]] // "Ver" para cambios
+      case AllTabs.EXERCISES:
+        return [
+          { ...options[0], href: 'exercises' }, // "Ver" para redirigir al ítem
+          options[1], // "Editar"
+          options[2] // "Eliminar"
+        ]
+      case AllTabs.NOTES:
+        return [
+          { ...options[0], href: 'note' }, // "Ver" para redirigir al ítem
+          options[1], // "Editar"
+          options[2] // "Eliminar"
+        ]
+      case AllTabs.NEWS:
+        return [
+          { ...options[0], href: 'news' }, // "Ver" para redirigir al ítem
+          options[1], // "Editar"
+          options[2] // "Eliminar"
+        ]
       default:
-        return [options[1], options[2]]
+        return [options[1], options[2]] // "Editar", "Eliminar" para otros ítems
     }
   }
 
