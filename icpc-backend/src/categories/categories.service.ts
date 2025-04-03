@@ -28,11 +28,20 @@ export class CategoriesService {
     @InjectRepository(Excercise)
     private readonly excerciseRepository: Repository<Excercise>
   ) {}
+
   async create(createCategoryDto: CreateCategoryDto) {
-    const name = await this.findOneByName(createCategoryDto.name); // check if name exists
+    const trimmedName = createCategoryDto.name.trim();
+    if (trimmedName.length === 0) {
+      throw new BadRequestException(
+        'El nombre de la categoría no puede estar vacío o contener solo espacios.'
+      );
+    }
+
+    const name = await this.findOneByName(trimmedName); // check if name exists
     if (name !== null) {
       throw new BadRequestException('Esa categoría ya existe');
     }
+
     let comment = await this.commentRepository.findOneBy({
       body: createCategoryDto.commentId
     });
@@ -41,7 +50,11 @@ export class CategoriesService {
         body: createCategoryDto.commentId
       });
     }
-    const newCategory = this.categoryRepository.create(createCategoryDto);
+
+    const newCategory = this.categoryRepository.create({
+      ...createCategoryDto,
+      name: trimmedName
+    });
     newCategory.comment = comment;
     const category = await this.categoryRepository.save(newCategory);
     const ticketCommentBody = `La categoría ${category.name} ha sido creada`;
@@ -95,14 +108,23 @@ export class CategoriesService {
   }
 
   async update(id: string, updateCategoryDto: UpdateCategoryDto) {
+    const trimmedName = updateCategoryDto.name.trim();
+    if (trimmedName.length === 0) {
+      throw new BadRequestException(
+        'El nombre de la categoría no puede estar vacío o contener solo espacios.'
+      );
+    }
+
     const category = await this.categoryRepository.findOneBy({ id });
-    const existingCategory = await this.findOneByName(updateCategoryDto.name);
+    const existingCategory = await this.findOneByName(trimmedName);
     if (existingCategory !== null && existingCategory.id !== id) {
       throw new BadRequestException('Esa categoría ya existe');
     }
+
     const savedCategory = await this.categoryRepository.save({
       ...category,
-      ...updateCategoryDto
+      ...updateCategoryDto,
+      name: trimmedName
     });
     if (savedCategory) {
       const ticketCommentBody = `La categoría ${savedCategory.name} ha sido actualizada`;
