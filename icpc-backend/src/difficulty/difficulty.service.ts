@@ -27,15 +27,23 @@ export class DifficultyService {
   ) {}
 
   async create(createDifficultyDto: CreateDifficultyDto) {
-    if (createDifficultyDto.level <= 0) {
+    const trimmedName = createDifficultyDto.name.trim();
+    if (trimmedName.length === 0) {
+      throw new BadRequestException(
+        'El nombre de la dificultad no puede estar vacío o contener solo espacios.'
+      );
+    }
+
+    if (createDifficultyDto.level < 0) {
       throw new BadRequestException(
         'El nivel de dificultad debe ser mayor a 0.'
       );
     }
+
     // Verificar si ya existe un registro con el mismo nombre o nivel de dificultad
     const existingDifficulty = await this.difficultyRepository.findOne({
       where: [
-        { name: createDifficultyDto.name },
+        { name: trimmedName },
         { level: createDifficultyDto.level }
       ]
     });
@@ -45,9 +53,10 @@ export class DifficultyService {
       );
     }
 
-    const savedDifficulty = await this.difficultyRepository.save(
-      createDifficultyDto
-    );
+    const savedDifficulty = await this.difficultyRepository.save({
+      ...createDifficultyDto,
+      name: trimmedName
+    });
     if (savedDifficulty) {
       const ticketCommentBody = `La dificultad ${savedDifficulty.name} ha sido creada`;
       const comment = this.commentRepository.create({
@@ -80,11 +89,19 @@ export class DifficultyService {
   }
 
   async update(id: string, updateDifficultyDto: UpdateDifficultyDto) {
-    if (updateDifficultyDto.level <= 0) {
+    const trimmedName = updateDifficultyDto.name.trim();
+    if (trimmedName.length === 0) {
+      throw new BadRequestException(
+        'El nombre de la dificultad no puede estar vacío o contener solo espacios.'
+      );
+    }
+
+    if (updateDifficultyDto.level < 0) {
       throw new BadRequestException(
         'El nivel de dificultad debe ser mayor a 0.'
       );
     }
+
     // Verificar si ya existe un registro con el mismo nombre o nivel de dificultad
     const existingDifficulty = await this.difficultyRepository.findOne({
       where: { level: updateDifficultyDto.level }
@@ -94,15 +111,17 @@ export class DifficultyService {
     }
 
     const name = await this.difficultyRepository.findOne({
-      where: { name: updateDifficultyDto.name }
+      where: { name: trimmedName }
     });
     if (name && name.id !== id) {
       throw new BadRequestException('Una dificultad con ese nombre ya existe.');
     }
+
     const difficulty = await this.difficultyRepository.findOneBy({ id });
     const savedDifficulty = await this.difficultyRepository.save({
       ...difficulty,
-      ...updateDifficultyDto
+      ...updateDifficultyDto,
+      name: trimmedName
     });
     if (savedDifficulty) {
       const ticketCommentBody = `La dificultad ${savedDifficulty.name} ha sido actualizada`;

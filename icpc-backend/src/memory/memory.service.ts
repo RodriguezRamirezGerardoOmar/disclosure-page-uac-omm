@@ -47,6 +47,13 @@ export class MemoryService {
         finalValue = createMemoryDto.value;
         break;
     }
+      // Validar si el valor excede el máximo permitido
+    if (finalValue > 2147483647) {
+      throw new BadRequestException(
+        `El límite de memoria calculado (${finalValue} KB) excede el máximo permitido (2147483647 KB)`
+      );
+    }
+
     const memory = await this.memoryRepository.findOneBy({
       memoryLimit: finalValue
     });
@@ -95,7 +102,7 @@ export class MemoryService {
       throw new BadRequestException('El límite de memoria debe ser mayor a 0');
     }
     const memory = await this.memoryRepository.findOneBy({ id });
-
+  
     let finalValue;
     switch (updateMemoryDto.id) {
       case 'MB':
@@ -108,19 +115,26 @@ export class MemoryService {
         finalValue = updateMemoryDto.value;
         break;
     }
-
+  
+    // Validar si el valor excede el máximo permitido
+    if (finalValue > 2147483647) {
+      throw new BadRequestException(
+        `El límite de memoria calculado (${finalValue} KB) excede el máximo permitido (2147483647 KB)`
+      );
+    }
+  
     const existingMemory = await this.memoryRepository.findOneBy({
       memoryLimit: finalValue
     });
     if (existingMemory !== null && existingMemory.id !== id) {
       throw new BadRequestException('Ese límite de memoria ya existe');
     }
-
+  
     const savedMemory = await this.memoryRepository.save({
       ...memory,
       memoryLimit: finalValue
     });
-
+  
     if (savedMemory) {
       const ticketCommentBody = `El límite de memoria ha sido actualizado a ${savedMemory.memoryLimit} KB`;
       const comment = this.commentRepository.create({

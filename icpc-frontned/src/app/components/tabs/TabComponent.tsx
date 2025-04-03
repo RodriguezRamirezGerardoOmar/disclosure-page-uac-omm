@@ -220,7 +220,7 @@ export default function TabComponent({
 
       <div className='hidden lg:block lg:w-full'>
         <div className='border-b border-gray-200'>
-          <div className='flex flex-row gap-8 w-full justify-between'>
+          <div className='flex flex-row gap-8'>
             <div className='flex flex-row space-x-2' aria-label='Tabs'>
               {myTabs.map(tab => (
                 <a

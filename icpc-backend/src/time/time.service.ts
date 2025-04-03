@@ -33,6 +33,11 @@ export class TimeService {
     if (createTimeDto.timeLimit <= 0) {
       throw new BadRequestException('El límite de tiempo debe ser mayor a 0');
     }
+    if (createTimeDto.timeLimit > 900) {
+      throw new BadRequestException(
+        'El límite de tiempo no puede ser mayor a 900 segundos'
+      );
+    }
 
     // Verificar si ya existe un registro con el mismo timeLimit
     const existingTime = await this.timeRepository.findOneBy({
@@ -44,7 +49,7 @@ export class TimeService {
 
     const newVal = await this.timeRepository.save(createTimeDto);
     if (newVal) {
-      const ticketBody = `Se ha creado un nuevo límite de tiempo: ${newVal.timeLimit.toString()}`;
+      const ticketBody = `Se ha creado un nuevo límite de tiempo: ${newVal.timeLimit.toString()} segundos`;
       const commentId = this.commentRepository.create({
         body: ticketBody
       });
@@ -97,6 +102,12 @@ export class TimeService {
     if (updateTimeDto.timeLimit <= 0) {
       throw new BadRequestException('El límite de tiempo debe ser mayor a 0');
     }
+    if (updateTimeDto.timeLimit > 900) {
+      throw new BadRequestException(
+        'El límite de tiempo no puede ser mayor a 900 segundos'
+      );
+    }
+
     const existingTime = await this.timeRepository.findOneBy({
       timeLimit: updateTimeDto.timeLimit
     });
@@ -110,7 +121,7 @@ export class TimeService {
       ...updateTimeDto
     });
     if (savedTime) {
-      const ticketCommentBody = `El límite de tiempo ${savedTime.timeLimit.toString()} ha sido actualizado`;
+      const ticketCommentBody = `El límite de tiempo ${savedTime.timeLimit.toString()} segundos ha sido actualizado`;
       const comment = this.commentRepository.create({
         body: ticketCommentBody
       });
