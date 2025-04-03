@@ -43,7 +43,10 @@ const CreateDifficultyComponent: React.FC<CreateDifficultyComponentProps> = ({ m
         DifficultyName: currentDifficulty.name,
         Level: currentDifficulty.level
       })
-    } else methods.reset()
+    } else {
+      methods.setValue('DifficultyName','')
+      methods.setValue('Level',null)
+    }
   }
 
   const onSubmit: SubmitHandler<FieldValues> = async data => {

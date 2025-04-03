@@ -36,7 +36,7 @@ export class DifficultyService {
 
     if (createDifficultyDto.level < 0) {
       throw new BadRequestException(
-        'El nivel de dificultad debe ser mayor o igual a 0.'
+        'El nivel de dificultad debe ser mayor a 0.'
       );
     }
 
@@ -98,7 +98,7 @@ export class DifficultyService {
 
     if (updateDifficultyDto.level < 0) {
       throw new BadRequestException(
-        'El nivel de dificultad debe ser mayor o igual a 0.'
+        'El nivel de dificultad debe ser mayor a 0.'
       );
     }
 

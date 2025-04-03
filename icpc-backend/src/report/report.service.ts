@@ -27,6 +27,12 @@ export class ReportService {
     const itemType = createReportDto.itemType;
     const report = this.reportRepository.create();
     let item;
+
+    // Validar longitud de summary
+    if (createReportDto.summary.length > 128) {
+      throw new BadRequestException('Summary must not exceed 128 characters');
+    }
+
     switch (itemType) {
       case 'news':
         item = await this.newsRepository
@@ -61,6 +67,7 @@ export class ReportService {
       default:
         throw new BadRequestException('Invalid item type');
     }
+
     if (item !== null) {
       item.reports.push(report);
       report.summary = createReportDto.summary;
@@ -69,7 +76,7 @@ export class ReportService {
       return {
         id: savedReport.id,
         summary: savedReport.summary,
-        report: savedReport.report
+        report: savedReport.report,
       };
     } else {
       throw new BadRequestException('Item not found');

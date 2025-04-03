@@ -181,14 +181,14 @@ export default function TabComponent({
   }
 
   return (
-    <div>
+    <div className='flex flex-row justify-between w-full'>
       {showModal && (
         <div className='fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50'>
           <div className='rounded-lg p-6 w-full max-h-[90%] overflow-y-auto'>{modalComponent}</div>
         </div>
       )}
 
-      <div className='sm:hidden'>
+      <div className='lg:hidden w-11/12'>
         <label
           htmlFor='tabs'
           className='sr-only'>
@@ -215,17 +215,10 @@ export default function TabComponent({
         </select>
 
         {/* Botón "Crear" alineado a la derecha */}
-        {showCreateButton && (
-          <ButtonComponent
-            text="Crear"
-            buttonType="button"
-            onClick={handleModalOpen}
-            className="ml-10 px-4 py-2 text-sm text-center flex justify-center items-center"
-          />
-        )}
+        
       </div>
 
-      <div className='hidden lg:block'>
+      <div className='hidden lg:block lg:w-full'>
         <div className='border-b border-gray-200'>
           <div className='flex flex-row gap-8'>
             <div className='flex flex-row space-x-2' aria-label='Tabs'>
@@ -310,6 +303,14 @@ export default function TabComponent({
           </div>
         </div>
       </div>
+      {showCreateButton && (
+          <ButtonComponent
+            text="Crear"
+            buttonType="button"
+            onClick={handleModalOpen}
+            className="ml-10 px-4 py-2 text-sm text-center flex justify-center items-center lg:hidden"
+          />
+        )}
     </div>
   )
 }

@@ -118,6 +118,8 @@ const CreateUserComponent = (props: ICreateUserProps) => {
         email: currentUser.email,
         isAdmin: currentUser.isAdmin
       })
+      methods.setValue('password', '')
+      methods.setValue('passwordVerify', '')
     } else {
       methods.reset()
     }

@@ -30,6 +30,11 @@ export class MemoryService {
     if (!createMemoryDto.value) {
       throw new BadRequestException('El límite de memoria debe ser un número');
     }
+
+    if (createMemoryDto.value <= 0) {
+      throw new BadRequestException('El límite de memoria debe ser mayor a 0');
+    }
+
     let finalValue = 0;
     switch (createMemoryDto.id) {
       case 'MB':
@@ -90,6 +95,12 @@ export class MemoryService {
   }
 
   async update(id: string, updateMemoryDto: UpdateMemoryDto) {
+    if (!updateMemoryDto.value) {
+      throw new BadRequestException('El límite de memoria debe ser un número');
+    }
+    if (updateMemoryDto.value <= 0) {
+      throw new BadRequestException('El límite de memoria debe ser mayor a 0');
+    }
     const memory = await this.memoryRepository.findOneBy({ id });
   
     let finalValue;

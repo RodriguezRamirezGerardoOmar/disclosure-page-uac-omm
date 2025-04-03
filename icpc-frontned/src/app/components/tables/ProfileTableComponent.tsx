@@ -236,54 +236,31 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
   const setCurrentOptions = (id: string, itemType: string) => {
     switch (itemType) {
       case AllTabs.REPORTS:
-        return [options[3]]
+        return [options[3]] // "Ver" para reportes (corroborar cambios)
       case AllTabs.CHANGES:
-        return [options[0]]
+        return [options[0]] // "Ver" para cambios
+      case AllTabs.EXERCISES:
+        return [
+          { ...options[0], href: 'exercises' }, // "Ver" para redirigir al ítem
+          options[1], // "Editar"
+          options[2] // "Eliminar"
+        ]
+      case AllTabs.NOTES:
+        return [
+          { ...options[0], href: 'note' }, // "Ver" para redirigir al ítem
+          options[1], // "Editar"
+          options[2] // "Eliminar"
+        ]
+      case AllTabs.NEWS:
+        return [
+          { ...options[0], href: 'news' }, // "Ver" para redirigir al ítem
+          options[1], // "Editar"
+          options[2] // "Eliminar"
+        ]
       default:
-        return [options[1], options[2]]
+        return [options[1], options[2]] // "Editar", "Eliminar" para otros ítems
     }
   }
-
-  const tableData =
-    props.data.length !== 0 ? (
-      props.data.map(item => (
-        <tr
-          key={item.index}
-          className='cursor-pointer hover:bg-slate-200'>
-          <td
-            className={`whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 
-        dark:text-dark-accent sm:pl-6 lg:pl-8 w-full justify-between items-center`}>
-            <TextComponent>{item.title}</TextComponent>
-            {item.tagName && item.color && (
-              <div className='max-w-min'>
-                <TagComponent
-                  color={item.color}
-                  tagName={item.title}
-                  showIcon={false}
-                />
-              </div>
-            )}
-          </td>
-          <td
-            className={`whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium 
-            text-gray-900 dark:text-dark-accent sm:pl-6 lg:pl-8 justify-between items-center`}>
-            <ThreeDotComponent
-              id={item.id}
-              itemType={props.itemType}
-              options={setCurrentOptions(item.id, props.itemType)}
-            />
-          </td>
-        </tr>
-      ))
-    ) : (
-      <tr>
-        <td
-          className='whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 
-      dark:text-dark-accent sm:pl-6 lg:pl-8 w-full justify-between items-center'>
-          <TextComponent>¡Ups! No hay elementos para mostrar</TextComponent>
-        </td>
-      </tr>
-    )
 
   return (
     <div>
@@ -407,25 +384,68 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
           </div>
         </div>
       )}
-      <table className='min-w-full border-separate border-spacing-0'>
-        <thead>
-          <tr>
-            <th
-              scope='col'
-              className='sticky top-0 z-10 border-b border-gray-300 bg-white bg-opacity-75 py-3.5 pl-4 pr-3 
-                      text-left text-sm font-semibold text-gray-500 backdrop-blur 
-                      backdrop-filter sm:pl-6 lg:pl-8'>
-              TÍTULO
-            </th>
-            <th
-              scope='col'
-              className='sticky top-0 z-10 border-b border-gray-300 bg-white bg-opacity-75 py-3.5 pl-4 pr-3 
-                      text-left text-sm font-semibold text-gray-500 backdrop-blur 
-                      backdrop-filter sm:pl-6 lg:pl-8'></th>
-          </tr>
-        </thead>
-        <tbody>{tableData}</tbody>
-      </table>
+      <div className="max-h-screen overflow-y-auto">
+        <table className="min-w-full table-fixed border-separate border-spacing-0">
+          <thead>
+            <tr>
+              <th
+                scope="col"
+                className="sticky top-0 z-10 border-b border-gray-300 bg-white bg-opacity-75 py-3.5 pl-4 pr-3 
+                text-left text-sm font-semibold text-gray-500 backdrop-blur 
+                backdrop-filter sm:pl-6 lg:pl-8">
+                TÍTULO
+              </th>
+              <th
+                scope="col"
+                className="w-20 sticky top-0 z-10 border-b border-gray-300 bg-white bg-opacity-75 py-3.5 pl-4 pr-3 
+                text-right text-sm font-semibold text-gray-500 backdrop-blur 
+                backdrop-filter sm:pl-6 lg:pl-8">
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {props.data.length !== 0 ? (
+              props.data.map(item => (
+                <tr
+                  key={item.index}
+                  className="cursor-pointer hover:bg-slate-200">
+                  <td
+                    className={`whitespace-nowrap max-w-[200px] overflow-hidden text-ellipsis py-4 pl-4 pr-3 text-sm font-medium text-gray-900 
+                    dark:text-dark-accent sm:pl-6 lg:pl-8`}>
+                    <TextComponent>{item.title}</TextComponent>
+                    {item.tagName && item.color && (
+                      <div className="max-w-min">
+                        <TagComponent
+                          color={item.color}
+                          tagName={item.title}
+                          showIcon={false}
+                        />
+                      </div>
+                    )}
+                  </td>
+                  <td
+                    className={`text-right whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium 
+                    text-gray-900 dark:text-dark-accent sm:pl-6 lg:pl-8`}>
+                    <ThreeDotComponent
+                      id={item.id}
+                      itemType={props.itemType}
+                      options={setCurrentOptions(item.id, props.itemType)}
+                    />
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td
+                  className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 
+                  dark:text-dark-accent sm:pl-6 lg:pl-8 w-full justify-between items-center">
+                  <TextComponent>¡Ups! No hay elementos para mostrar</TextComponent>
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   )
 }
