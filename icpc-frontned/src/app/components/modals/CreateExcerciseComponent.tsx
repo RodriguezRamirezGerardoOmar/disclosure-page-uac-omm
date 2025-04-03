@@ -158,7 +158,7 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
       category: { name: formData.category.label, id: formData.category.value },
       difficulty: { name: formData.difficulty.label, id: formData.difficulty.value },
       time: formData.time?.value ? { value: formData.time.label, id: formData.time.value } : null,
-      memoryId: formData.memoryId.value ? String(formData.memoryId.value) : '',
+      memoryId: formData.memoryId?.value ? String(formData.memoryId.value) : '',
       input: String(formData.input),
       output: String(formData.output),
       constraints: formData.constraints ? String(formData.constraints) : '',
@@ -424,7 +424,7 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
             name='time'
           />
           <Controller
-            defaultValue={null}
+            defaultValue={[]}
             control={methods.control}
             render={({ field }) => (
               <InputSelectorComponent
