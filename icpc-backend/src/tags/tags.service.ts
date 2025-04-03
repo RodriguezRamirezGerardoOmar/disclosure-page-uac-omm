@@ -30,20 +30,26 @@ export class TagsService {
   ) {}
 
   async create(createTagDto: CreateTagDto) {
+    const trimmedName = createTagDto.name.trim();
+    if (trimmedName.length === 0) {
+      throw new BadRequestException('El nombre de la etiqueta no puede estar vacío o contener solo espacios.');
+    }
+  
     const name = await this.tagRepository.findOneBy({
-      name: createTagDto.name
+      name: trimmedName
     });
     if (name) {
       throw new BadRequestException('Ya existe una etiqueta con ese nombre.');
     }
+  
     const existingTag = await this.tagRepository.findOneBy({
       color: createTagDto.color
     });
     if (existingTag) {
       throw new BadRequestException('Ya existe una etiqueta con este color.');
     }
-
-    const savedTag = await this.tagRepository.save(createTagDto);
+  
+    const savedTag = await this.tagRepository.save({ ...createTagDto, name: trimmedName });
     if (savedTag) {
       const ticketCommentBody = `La etiqueta ${savedTag.name} ha sido creada`;
       const comment = this.commentRepository.create({
@@ -78,21 +84,27 @@ export class TagsService {
   }
 
   async update(id: string, updateTagDto: UpdateTagDto) {
+    const trimmedName = updateTagDto.name.trim();
+    if (trimmedName.length === 0) {
+      throw new BadRequestException('El nombre de la etiqueta no puede estar vacío o contener solo espacios.');
+    }
+  
     const existingTag = await this.tagRepository.findOneBy({
-      name: updateTagDto.name
+      name: trimmedName
     });
-    if (existingTag !== null && existingTag.name !== existingTag.name) {
+    if (existingTag !== null && existingTag.id !== id) {
       throw new BadRequestException('Ya existe una etiqueta con ese nombre.');
     }
+  
     const existingColorTag = await this.tagRepository.findOneBy({
       color: updateTagDto.color
     });
     if (existingColorTag && existingColorTag.id !== id) {
       throw new BadRequestException('Ya existe una etiqueta con este color');
     }
-
+  
     const tag = await this.tagRepository.findOneBy({ id });
-    const savedTag = await this.tagRepository.save({ ...tag, ...updateTagDto });
+    const savedTag = await this.tagRepository.save({ ...tag, ...updateTagDto, name: trimmedName });
     if (savedTag) {
       const ticketCommentBody = `La etiqueta ${savedTag.name} ha sido actualizada`;
       const comment = this.commentRepository.create({
