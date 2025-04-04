@@ -116,7 +116,7 @@ export class ExcercisesService {
     newExcercise.user = user;
     newExcercise.isVisible = createExcerciseDto.role === 'admin';
     const savedExcercise = await this.exerciseRepository.save(newExcercise);
-    const commentBody = `${user.name} ha creado un nuevo ejercicio con el nombre ${newExcercise.title}`;
+    const commentBody = `${user.userName} ha creado un nuevo ejercicio con el nombre ${newExcercise.title}`;
     const comment = this.commentRepository.create({
       body: commentBody
     });
@@ -441,7 +441,7 @@ export class ExcercisesService {
       .leftJoinAndSelect('user.role', 'role')
       .getOne();
     if (userId.role.role === 'admin') {
-      const commentBody = `${userId.name} ha eliminado el ejercicio con el nombre ${excercise.title}`;
+      const commentBody = `${userId.userName} ha eliminado el ejercicio con el nombre ${excercise.title}`;
       const comment = this.commentRepository.create({
         body: commentBody
       });
@@ -460,7 +460,7 @@ export class ExcercisesService {
         throw new BadRequestException('Error al eliminar el ejercicio');
       }
     } else {
-      const commentBody = `${userId.name} ha eliminado el ejercicio con el nombre ${excercise.title}`;
+      const commentBody = `${userId.userName} ha eliminado el ejercicio con el nombre ${excercise.title}`;
       const comment = this.commentRepository.create({
         body: commentBody
       });

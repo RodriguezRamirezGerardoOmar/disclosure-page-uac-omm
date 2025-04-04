@@ -220,7 +220,7 @@ export class UsersService {
       throw new BadRequestException('Usuario solicitante no encontrado');
     }
 
-    const commentBody = `${requestingUser.name} ha eliminado al usuario ${user.userName}`;
+    const commentBody = `${requestingUser.userName} ha eliminado al usuario ${user.userName}`;
     const comment = this.commentRepository.create({ body: commentBody });
     const savedComment = await this.commentRepository.save(comment);
 

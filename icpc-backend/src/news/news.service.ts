@@ -48,7 +48,7 @@ export class NewsService {
       });
       news.created_by = user.name;
       const savedNews = await this.newsRepository.save(news);
-      const commentBody = `${user.name} ha creado una nueva noticia con el título ${news.title}`;
+      const commentBody = `${user.userName} ha creado una nueva noticia con el título ${news.title}`;
       const comment = this.commentRepository.create({
         body: commentBody
       });
@@ -197,7 +197,7 @@ export class NewsService {
       .leftJoinAndSelect('user.role', 'role')
       .getOne();
     if (userId.role.role === 'admin') {
-      const commentBody = `${userId.name} ha eliminado la noticia con el título ${news.title}`;
+      const commentBody = `${userId.userName} ha eliminado la noticia con el título ${news.title}`;
       const comment = this.commentRepository.create({
         body: commentBody
       });
@@ -216,7 +216,7 @@ export class NewsService {
         throw new BadRequestException('Error al eliminar la noticia');
       }
     } else {
-      const commentBody = `${userId.name} ha eliminado la noticia con el título ${news.title}`;
+      const commentBody = `${userId.userName} ha eliminado la noticia con el título ${news.title}`;
       const comment = this.commentRepository.create({
         body: commentBody
       });

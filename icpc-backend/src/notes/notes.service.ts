@@ -77,7 +77,7 @@ export class NotesService {
     article.created_by = user.name; // assign the user's name to the note object
     article.isVisible = createNoteDto.role === 'admin'; // if the author is an admin, the note is visible
     const newNote = await this.noteRepository.save(article); // save the note object to the database
-    const commentBody = `${user.name} ha creado un nuevo apunte con el título ${article.title}`;
+    const commentBody = `${user.userName} ha creado un nuevo apunte con el título ${article.title}`;
     const ticketComment = this.commentRepository.create({
       body: commentBody
     });
@@ -279,7 +279,7 @@ export class NotesService {
       );
 
       if (savedModifiedNote) {
-        const commentBody = `${updateData.userAuthor} ha modificado el apunte con el título ${existingNote.title}`;
+        const commentBody = `${updateData.userAuthor} ha actualizado el apunte con el título ${existingNote.title}`;
         const comment = this.commentRepository.create({
           body: commentBody
         });
@@ -316,7 +316,7 @@ export class NotesService {
         modifiedNoteCopy
       );
       if (savedModifiedNote) {
-        const commentBody = `${updateData.userAuthor} ha modificado el apunte con el título ${existingNote.title}`;
+        const commentBody = `${updateData.userAuthor} ha actualizado el apunte con el título ${existingNote.title}`;
         const comment = this.commentRepository.create({
           body: commentBody
         });
@@ -347,7 +347,7 @@ export class NotesService {
       .leftJoinAndSelect('user.role', 'role')
       .getOne();
     if (userId.role.role === 'admin') {
-      const commentBody = `${userId.name} ha eliminado el apunte con el título ${note.title}`;
+      const commentBody = `${userId.userName} ha eliminado el apunte con el título ${note.title}`;
       const comment = this.commentRepository.create({
         body: commentBody
       });
@@ -366,7 +366,7 @@ export class NotesService {
         throw new BadRequestException('Error al eliminar el apunte');
       }
     } else {
-      const commentBody = `${userId.name} ha eliminado el apunte con el título ${note.title}`;
+      const commentBody = `${userId.userName} ha eliminado el apunte con el título ${note.title}`;
       const comment = this.commentRepository.create({
         body: commentBody
       });
