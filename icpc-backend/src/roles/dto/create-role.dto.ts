@@ -4,7 +4,6 @@ import { RoleEnum } from 'src/common/enums/role.enum';
 
 export class CreateRoleDto {
   @ApiProperty({
-    type: 'enum',
     enum: RoleEnum,
     default: RoleEnum.USER
   })
