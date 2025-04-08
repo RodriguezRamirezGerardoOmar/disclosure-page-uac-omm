@@ -69,22 +69,30 @@ function Page() {
 
   const handleSubmitUserInfo: SubmitHandler<FieldValues> = async (data: any) => {
     try {
-      const result = await updateUser(user!.id, { ...data, role: user!.role, editorId: user!.id })
+      const result = await updateUser(user!.id, {
+        ...data,
+        role: user!.role,
+        editorId: user!.id,
+        password: null,
+        passwordVerify: null,
+      });
       if ('id' in result) {
-        setCurrentUser(result)
+        setCurrentUser(result); // Actualiza el estado local
+        useAuthStore.setState({ user: result }); // Actualiza el estado global del usuario
         toast.success('¡Información actualizada!', {
           duration: 5000,
-          style: { backgroundColor: 'green', color: '#ffffff' }
-        })
+          style: { backgroundColor: 'green', color: '#ffffff' },
+        });
       }
-      setUpdate(!update)
+      setUpdate(!update);
     } catch (error: any) {
+      console.error('Error al actualizar:', error); // Muestra el error en la consola
       toast.error(error.message || 'Error al actualizar', {
         duration: 5000,
-        style: { backgroundColor: 'red', color: '#ffffff' }
-      })
+        style: { backgroundColor: 'red', color: '#ffffff' },
+      });
     }
-  }
+  };
 
   const handleChange = useCallback(
     async (data: string) => {

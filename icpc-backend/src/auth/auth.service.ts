@@ -42,15 +42,16 @@ export class AuthService {
     }
   
     const payload = {
-      userName: user.userName,
+      id: user.id, // 👈 Nuevo
+      username: user.userName,
       email: user.email,
       role: user.role.role,
       name: user.name,
       lastName: user.lastName,
     };
-  
+    
     const token = this.jwtService.sign(payload);
-  
+    
     return {
       user: {
         userName: user.userName,
@@ -66,14 +67,10 @@ export class AuthService {
   async register(registerDto: RegisterDto) {
     return await this.usersService.create(registerDto);
   }
-
-  async profile({ username, email }: { username: string; email: string }) {
-    let user = await this.usersService.findOneByEmail(email);
-    if (user === null) {
-      user = await this.usersService.findOneByUsername(username);
-      if (user === null) {
-        throw new BadRequestException('Invalid username or email');
-      }
+  async profile({ id }: { id: string }) {
+    const user = await this.usersService.findOneById(id);
+    if (!user) {
+      throw new BadRequestException('Usuario no encontrado');
     }
     return {
       id: user.id,
@@ -83,8 +80,9 @@ export class AuthService {
       email: user.email,
       role: {
         rolId: user.role.id,
-        role: user.role.role
-      }
+        role: user.role.role,
+      },
     };
   }
+  
 }
