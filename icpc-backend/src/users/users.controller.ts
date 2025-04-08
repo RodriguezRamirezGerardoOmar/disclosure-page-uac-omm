@@ -75,6 +75,7 @@ export class UsersController {
   @Patch(':id')
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
+  @Auth(RoleEnum.USER) // Permitir acceso a usuarios y administradores
   @ApiResponse({
     description: 'The user has been successfully updated.'
   })

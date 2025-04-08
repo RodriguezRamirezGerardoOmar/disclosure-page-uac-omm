@@ -95,11 +95,11 @@ const useAuthStore = create<AuthState & Actions>()(
         getProfile: async (): Promise<IUser> => {
           const response = await api.get('/api/v1/auth/profile', {
             headers: {
-              Authorization: `Bearer ${get().token}`
-            }
-          })
-          set(() => ({ user: response.data }))
-          return response.data
+              Authorization: `Bearer ${get().token}`, // Solo envía el token
+            },
+          });
+          set(() => ({ user: response.data }));
+          return response.data;
         },
 
         getUsers: async (): Promise<IUser[]> => {
@@ -128,12 +128,13 @@ const useAuthStore = create<AuthState & Actions>()(
           try {
             const response = await api.patch(`/api/v1/users/${id}`, user, {
               headers: {
-                Authorization: `Bearer ${get().token}`
-              }
+                Authorization: `Bearer ${get().token}`,
+              },
             });
-            return response.data;
+            return response.data; // Devuelve los datos actualizados
           } catch (error: any) {
-            return error.response.data; // Lanzar error para capturar en el componente
+            // Lanza el error para que sea manejado en el componente
+            throw error.response?.data || new Error('Error al actualizar el usuario');
           }
         },
 

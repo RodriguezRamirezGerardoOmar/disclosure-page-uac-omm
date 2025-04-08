@@ -81,14 +81,15 @@ export class AuthController {
   })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   async profile(@Req() req: RequestWithUser) {
-    const userData = await this.authService.profile(req.user);
+    const userData = await this.authService.profile({ id: (req.user as any).id });
     return {
       id: userData.id,
       name: userData.name,
       lastName: userData.lastName,
       userName: userData.userName,
       email: userData.email,
-      role: userData.role.role
+      role: userData.role.role,
     };
   }
+  
 }

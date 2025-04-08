@@ -14,10 +14,6 @@ import {
   TicketStatus,
   TicketType
 } from 'src/ticket/entities/ticket.entity';
-import { isAbsolute } from 'path';
-import { where } from 'sequelize';
-
-// This file contains all the logic to perform the database queries.
 
 @Injectable()
 export class UsersService {
@@ -87,17 +83,17 @@ export class UsersService {
 
   async findOneByEmail(email: string) {
     if (!email) {
-      return null; // return null if email is not provided
+      return null;
     }
-    const user = await this.userRepository // find the user in the 'user' table by the email
+    const user = await this.userRepository
       .createQueryBuilder('user')
-      .leftJoinAndSelect('user.role', 'role') // join the 'role' table to the 'user' table
-      .where('user.email = :email', { email }) // find the user by the email
+      .leftJoinAndSelect('user.role', 'role')
+      .where('user.email = :email', { email })
       .getMany();
     if (user.length === 0) {
-      return null; // return null if no user is found
+      return null;
     }
-    return user[0]; // return the first user object
+    return user[0];
   }
 
   async findOne(id: string) {
@@ -117,12 +113,13 @@ export class UsersService {
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
-    if (updateUserDto.password.length < 8) {
+    if (updateUserDto.password && updateUserDto.password.length < 8) {
       throw new BadRequestException(
         'La contraseña debe tener al menos 8 caracteres'
       );
     }
-    const user = await this.userRepository.findOneBy({ id: id });
+
+    const user = await this.userRepository.findOneBy({ id });
 
     if (!user) {
       throw new BadRequestException('El usuario no existe');
@@ -148,6 +145,7 @@ export class UsersService {
       }
     }
 
+    // Verificar contraseñas
     if (
       updateUserDto.password &&
       updateUserDto.password !== updateUserDto.passwordVerify
@@ -156,7 +154,7 @@ export class UsersService {
     }
 
     // Mantener el rol actual si no se especifica en la solicitud
-    let role = user.role; // Mantener el rol actual por defecto
+    let role = user.role;
     if (updateUserDto.isAdmin !== undefined) {
       role = await this.roleRepository.findOne({
         where: { role: updateUserDto.isAdmin ? RoleEnum.ADMIN : RoleEnum.USER }
@@ -169,10 +167,10 @@ export class UsersService {
 
     const modifyUser = this.userRepository.create({
       ...user,
-      name: updateUserDto.name,
-      lastName: updateUserDto.lastName,
-      userName: updateUserDto.userName,
-      email: updateUserDto.email,
+      name: updateUserDto.name || user.name,
+      lastName: updateUserDto.lastName || user.lastName,
+      userName: updateUserDto.userName || user.userName,
+      email: updateUserDto.email || user.email,
       password: updateUserDto.password
         ? await bcrypt.hash(updateUserDto.password, 10)
         : user.password,
@@ -180,13 +178,11 @@ export class UsersService {
       updated_by: updateUserDto.editorId
     });
 
-    // Guardar el usuario actualizado
     await this.userRepository.save(modifyUser);
 
-    // Recargar el usuario con la relación del rol
     const updatedUser = await this.userRepository.findOne({
       where: { id: modifyUser.id },
-      relations: ['role'] // Asegúrate de cargar la relación del rol
+      relations: ['role']
     });
 
     if (!updatedUser?.role) {
@@ -204,6 +200,7 @@ export class UsersService {
       role: updatedUser.role.role
     };
   }
+
   async remove(id: string, userId: string) {
     const user = await this.userRepository.findOneBy({ id });
     if (!user) {
@@ -229,7 +226,7 @@ export class UsersService {
       commentId: savedComment,
       itemType: TicketType.USER,
       status: TicketStatus.ACCEPTED,
-      otherId: user.id // Asegúrate de que la relación con el usuario sea correcta en tu entidad Ticket
+      otherId: user.id
     });
 
     await this.ticketRepository.save(ticket);
@@ -238,16 +235,30 @@ export class UsersService {
 
   async findOneByUsername(username: string) {
     if (!username) {
-      return null; // return null if username is not provided
+      return null;
     }
-    const user = await this.userRepository // find the user in the 'user' table by the username
+    const user = await this.userRepository
       .createQueryBuilder('user')
-      .leftJoinAndSelect('user.role', 'role') // join the 'role' table to the 'user' table
-      .where('user.userName = :username', { username }) // find the user by the username
+      .leftJoinAndSelect('user.role', 'role')
+      .where('user.userName = :username', { username })
       .getMany();
     if (user.length === 0) {
-      return null; // return null if no user is found
+      return null;
     }
-    return user[0]; // return the first user object
+    return user[0];
   }
+  async findOneById(id: string): Promise<User | null> {
+    if (!id) {
+      return null;
+    }
+  
+    const user = await this.userRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.role', 'role')
+      .where('user.id = :id', { id })
+      .getOne();
+  
+    return user || null;
+  }
+  
 }
