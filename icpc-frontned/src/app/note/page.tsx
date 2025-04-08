@@ -83,7 +83,6 @@ export default function Home() {
               </TextComponent>
             )}
           </div>
-          <PaginationComponent />
         </div>
       </form>
     </main>

@@ -131,7 +131,8 @@ export default function TableComponent() {
       {exercises.length > 0 ? (
         <div className='mt-8 flow-root'>
           <div className='-mx-4 -my-2 sm:-mx-6 lg:-mx-8'>
-            <div className={`ring-1 ring-gray-300 sm:mx-0 sm:rounded-lg inline-block 
+            <div
+              className={`ring-1 ring-gray-300 sm:mx-0 sm:rounded-lg inline-block 
             min-w-full align-middle  h-[70vh] overflow-y-scroll scroll-smooth`}>
               <table className='min-w-full border-separate border-spacing-0'>
                 <thead>
@@ -181,20 +182,22 @@ export default function TableComponent() {
                         )}>
                         {exercise.title}
                       </td>
-                      <td
+                        <td
                         className={classNames(
                           id !== Object.keys(exercise).length - 1 ? 'border-b border-gray-200' : '',
-                          'whitespace-nowrap flex gap-1 px-3 py-4 text-sm text-gray-500'
+                          'whitespace-nowrap px-3 py-4 text-sm text-gray-500'
                         )}>
-                        {Array.from(Array(exercise.difficulty.level), (_, i) => (
+                        <div className="flex gap-1 h-full items-center">
+                          {Array.from(Array(exercise.difficulty.level), (_, i) => (
                           <img
                             alt=''
                             src='icons/estrellas.svg'
                             key={i}
                             className='h-5 w-5'
                           />
-                        ))}
-                      </td>
+                          ))}
+                        </div>
+                        </td>
                       <td
                         className={classNames(
                           id !== Object.keys(exercise).length - 1 ? 'border-b border-gray-200' : '',
@@ -208,9 +211,12 @@ export default function TableComponent() {
                           'whitespace-nowrap text-sm text-gray-500'
                         )}>
                         <TagListComponent
-                          tags={exercise.tags}
+                          tags={exercise.tags.slice(0, 3)} // Mostrar solo las primeras 4 etiquetas
                           showIcon={false}
                         />
+                        {exercise.tags.length > 3 && (
+                          <span className="ml-1 text-gray-400">...</span> // Mostrar puntos suspensivos si hay más etiquetas
+                        )}
                       </td>
                       <td
                         className={classNames(
@@ -228,7 +234,6 @@ export default function TableComponent() {
                 </tbody>
               </table>
             </div>
-            <PaginationComponent />
           </div>
         </div>
       ) : (

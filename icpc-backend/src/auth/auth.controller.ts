@@ -14,7 +14,8 @@ import {
   ApiInternalServerErrorResponse,
   ApiResponse,
   ApiTags,
-  ApiUnauthorizedResponse
+  ApiUnauthorizedResponse,
+  ApiOkResponse
 } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
@@ -39,7 +40,6 @@ export class AuthController {
 
   @Post('login')
   @ApiCreatedResponse({
-    status: HttpStatus.OK,
     description: 'Login successful',
     type: LoginResponseDto
   })
@@ -55,7 +55,6 @@ export class AuthController {
   @UseGuards(AuthGuard)
   @Auth(RoleEnum.ADMIN)
   @ApiCreatedResponse({
-    status: HttpStatus.CREATED,
     description: 'El usuario ha sido creado exitosamente',
     type: CreateUserResponseDto
   })
@@ -74,8 +73,7 @@ export class AuthController {
 
   @Get('profile')
   @Auth(RoleEnum.USER)
-  @ApiResponse({
-    status: HttpStatus.OK,
+  @ApiOkResponse({
     description: 'User profile',
     type: CreateUserResponseDto
   })
