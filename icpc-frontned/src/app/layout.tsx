@@ -21,11 +21,7 @@ export default function RootLayout({
   return (
     <html
       lang='en'
-      style={
-        {
-          minWidth: '442px'
-        }
-      }>
+      >
       <body className={classNames(montserrat.className, 'bg-white dark:bg-dark-secondary ')}>
         <NavbarComponent />
         {children}

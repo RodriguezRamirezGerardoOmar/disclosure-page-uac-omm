@@ -129,11 +129,11 @@ export default function TableComponent() {
       </form>
 
       {exercises.length > 0 ? (
-        <div className='mt-8 flow-root'>
+        <div className='mt-8'>
           <div className='-mx-4 -my-2 sm:-mx-6 lg:-mx-8 overflow-x-auto'> {/* Permitir desplazamiento horizontal */}
             <div
               className={`ring-1 ring-gray-300 sm:mx-0 sm:rounded-lg inline-block 
-              min-w-full align-middle h-[70vh] overflow-y-scroll scroll-smooth`}>
+              min-w-full align-middle scroll-smooth`}>
               <table className='min-w-full border-separate border-spacing-0'> {/* Asegurar que la tabla ocupe el ancho completo */}
                 <thead>
                   <tr>
@@ -180,7 +180,7 @@ export default function TableComponent() {
                           id !== Object.keys(exercise).length - 1 ? 'border-b border-gray-200' : '',
                           'whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 dark:text-dark-accent sm:pl-6 lg:pl-8'
                         )}>
-                        {exercise.title}
+                        <a href={`/exercises/${exercise.id}`} className='hover:text-dark-complementary'>{exercise.title}</a>
                       </td>
                       <td
                         className={classNames(
@@ -193,7 +193,7 @@ export default function TableComponent() {
                               alt=''
                               src='icons/estrellas.svg'
                               key={i}
-                              className='h-5 w-5'
+                              className='h-2.5 w-2.5 xl:h-5 xl:w-5'
                             />
                           ))}
                         </div>

@@ -45,7 +45,7 @@ const ExerciseHeaderComponent = ({ ...props }: Readonly<ExerciseHeaderComponentP
 
       <div className='mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8'>
         {/* Título y botones */}
-        <div className='mx-auto flex max-w-2xl items-center justify-between gap-x-8 lg:mx-0 lg:max-w-none'>
+        <div className='mx-auto flex flex-col lg:flex-row max-w-2xl items-center justify-between gap-x-8 lg:mx-0 lg:max-w-none'>
           <div className='flex items-center gap-x-6'>
             <h1>
               <div className='text-sm leading-6 text-gray-500'>

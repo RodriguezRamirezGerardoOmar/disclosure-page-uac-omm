@@ -39,7 +39,7 @@ async function NewsCardComponent({ isTicketPage = false, ...props  }: Readonly<N
   })
   //const image = await getCover(news.imageId.id)
   return (
-    <BasicPanelComponent backgroundColor='bg-white dark:bg-dark-primary lg:w-11/12'>
+    <BasicPanelComponent backgroundColor='bg-white dark:bg-dark-primary w-full md:w-11/12'>
       {!isTicketPage && (
         <div className='flex justify-end w-full px-16'>
           <ReportButtonComponent
@@ -55,19 +55,19 @@ async function NewsCardComponent({ isTicketPage = false, ...props  }: Readonly<N
         {news.title}
       </TextComponent>
       <img
-        className='object-cover w-full lg:w-1/3 m-auto rounded-md'
+        className='object-cover w-2/3 lg:w-1/3 m-auto rounded-md'
         alt=''
         src={process.env.NEXT_PUBLIC_API_URL + 'api/v1/image/' + news.imageId.id}
       />
       <TextComponent
         sizeFont='s14'
         className='text-gray-500 font-medium my-4'>
-        {news.author ?? 'Anónimo'}
+        {news.created_by ?? 'Anónimo'}
       </TextComponent>
       <TextComponent
         sizeFont='s14'
         className='text-gray-500 font-medium my-4'>
-        {news.createdAt ?? ''}
+        {news.created_at ? `${news.created_at.split('Z')[0].toString().split('T')[0]}` : ''}
       </TextComponent>
       <MarkdownBodyComponent body={body.compiledSource} />
     </BasicPanelComponent>

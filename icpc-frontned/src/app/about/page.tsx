@@ -6,11 +6,11 @@ import About from '@/app/about/acercade.mdx'
 export default function Page() {
   return (
     <main className='flex min-h-screen flex-col w-full items-center py-24'>
-      <div className='w-4/5'>
+      <div className='w-4/5 dark:text-dark-accent'>
         <TextComponent
           sizeFont='s28'
           tag={enumTextTags.h1}
-          className=''>
+          className='dark:text-dark-accent'>
           Acerca de nosotros
         </TextComponent>
         <About />
