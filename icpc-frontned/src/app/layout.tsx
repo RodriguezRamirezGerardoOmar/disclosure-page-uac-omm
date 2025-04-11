@@ -4,8 +4,7 @@ import './globals.css'
 import NavbarComponent from './components/NavbarComponent'
 import classNames from 'classnames'
 import FooterComponent from './components/ui/FooterComponent'
-import { Toaster } from 'sonner';
-
+import { Toaster } from 'sonner'
 
 const montserrat = Montserrat({ subsets: ['latin'] })
 
@@ -20,8 +19,14 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang='en'>
-      <body className={classNames(montserrat.className, 'bg-white dark:bg-dark-secondary')}>
+    <html
+      lang='en'
+      style={
+        {
+          minWidth: '442px'
+        }
+      }>
+      <body className={classNames(montserrat.className, 'bg-white dark:bg-dark-secondary ')}>
         <NavbarComponent />
         {children}
         <footer>

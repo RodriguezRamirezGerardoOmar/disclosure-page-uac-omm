@@ -74,25 +74,25 @@ function Page() {
         role: user!.role,
         editorId: user!.id,
         password: null,
-        passwordVerify: null,
-      });
+        passwordVerify: null
+      })
       if ('id' in result) {
-        setCurrentUser(result); // Actualiza el estado local
-        useAuthStore.setState({ user: result }); // Actualiza el estado global del usuario
+        setCurrentUser(result) // Actualiza el estado local
+        useAuthStore.setState({ user: result }) // Actualiza el estado global del usuario
         toast.success('¡Información actualizada!', {
           duration: 5000,
-          style: { backgroundColor: 'green', color: '#ffffff' },
-        });
+          style: { backgroundColor: 'green', color: '#ffffff' }
+        })
       }
-      setUpdate(!update);
+      setUpdate(!update)
     } catch (error: any) {
-      console.error('Error al actualizar:', error); // Muestra el error en la consola
+      console.error('Error al actualizar:', error) // Muestra el error en la consola
       toast.error(error.message || 'Error al actualizar', {
         duration: 5000,
-        style: { backgroundColor: 'red', color: '#ffffff' },
-      });
+        style: { backgroundColor: 'red', color: '#ffffff' }
+      })
     }
-  };
+  }
 
   const handleChange = useCallback(
     async (data: string) => {
@@ -226,7 +226,6 @@ function Page() {
                   <div className='col-span-full flex items-center gap-x-8'>
                     <LogoComponent size={96} />
                   </div>
-
                   <div className='sm:col-span-3'>
                     <div className='mt-2'>
                       <TextFieldComponent
@@ -300,7 +299,7 @@ function Page() {
                 isAdmin={user?.role === 'admin'}
               />
             </div>
-            <div className='mx-10'>
+            <div className='mx-10 sm:padding-full'>
               <ProfileTableComponent
                 data={tableData}
                 itemType={mode}

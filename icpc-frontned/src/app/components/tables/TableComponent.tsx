@@ -68,7 +68,7 @@ export default function TableComponent() {
 
   return (
     <div className='px-4 sm:px-6 lg:px-8 '>
-      <form className='w-full grid grid-cols-3 gap-2'>
+      <form className='w-full grid grid-cols-1 sm:grid-cols-3 gap-4'>
         <Controller
           defaultValue={[]}
           control={methods.control}
@@ -130,11 +130,11 @@ export default function TableComponent() {
 
       {exercises.length > 0 ? (
         <div className='mt-8 flow-root'>
-          <div className='-mx-4 -my-2 sm:-mx-6 lg:-mx-8'>
+          <div className='-mx-4 -my-2 sm:-mx-6 lg:-mx-8 overflow-x-auto'> {/* Permitir desplazamiento horizontal */}
             <div
               className={`ring-1 ring-gray-300 sm:mx-0 sm:rounded-lg inline-block 
-            min-w-full align-middle  h-[70vh] overflow-y-scroll scroll-smooth`}>
-              <table className='min-w-full border-separate border-spacing-0'>
+              min-w-full align-middle h-[70vh] overflow-y-scroll scroll-smooth`}>
+              <table className='min-w-full border-separate border-spacing-0'> {/* Asegurar que la tabla ocupe el ancho completo */}
                 <thead>
                   <tr>
                     <th
@@ -152,8 +152,8 @@ export default function TableComponent() {
                     </th>
                     <th
                       scope='col'
-                      className='sticky top-0 hidden border-b border-gray-300 bg-white bg-opacity-75 px-3 py-3.5
-                      text-left text-sm font-semibold text-gray-500 backdrop-blur backdrop-filter lg:table-cell'>
+                      className='sticky top-0 border-b border-gray-300 bg-white bg-opacity-75 px-3 py-3.5 text-left text-sm
+                      font-semibold text-gray-500 backdrop-blur backdrop-filter'>
                       CATEGORIA
                     </th>
                     <th
@@ -166,7 +166,7 @@ export default function TableComponent() {
                       scope='col'
                       className='sticky top-0 border-b border-gray-300 bg-white bg-opacity-75 
                       py-3.5 pl-3 pr-4 backdrop-blur backdrop-filter sm:pr-6 lg:pr-8'>
-                      <span className='sr-only'>Edit</span>
+                      <span className='sr-only'>Acciones</span>
                     </th>
                   </tr>
                 </thead>
@@ -182,26 +182,26 @@ export default function TableComponent() {
                         )}>
                         {exercise.title}
                       </td>
-                        <td
+                      <td
                         className={classNames(
                           id !== Object.keys(exercise).length - 1 ? 'border-b border-gray-200' : '',
                           'whitespace-nowrap px-3 py-4 text-sm text-gray-500'
                         )}>
-                        <div className="flex gap-1 h-full items-center">
+                        <div className='flex gap-1 h-full items-center'>
                           {Array.from(Array(exercise.difficulty.level), (_, i) => (
-                          <img
-                            alt=''
-                            src='icons/estrellas.svg'
-                            key={i}
-                            className='h-5 w-5'
-                          />
+                            <img
+                              alt=''
+                              src='icons/estrellas.svg'
+                              key={i}
+                              className='h-5 w-5'
+                            />
                           ))}
                         </div>
-                        </td>
+                      </td>
                       <td
                         className={classNames(
                           id !== Object.keys(exercise).length - 1 ? 'border-b border-gray-200' : '',
-                          'whitespace-nowrap hidden px-3 py-4 text-sm text-gray-500 dark:text-dark-accent lg:table-cell'
+                          'whitespace-nowrap px-3 py-4 text-sm text-gray-500 dark:text-dark-accent'
                         )}>
                         {exercise.category.name}
                       </td>
@@ -211,11 +211,11 @@ export default function TableComponent() {
                           'whitespace-nowrap text-sm text-gray-500'
                         )}>
                         <TagListComponent
-                          tags={exercise.tags.slice(0, 3)} // Mostrar solo las primeras 4 etiquetas
+                          tags={exercise.tags.slice(0, 3)} // Mostrar solo las primeras 3 etiquetas
                           showIcon={false}
                         />
                         {exercise.tags.length > 3 && (
-                          <span className="ml-1 text-gray-400">...</span> // Mostrar puntos suspensivos si hay más etiquetas
+                          <span className='ml-1 text-gray-400'>...</span> // Mostrar puntos suspensivos si hay más etiquetas
                         )}
                       </td>
                       <td

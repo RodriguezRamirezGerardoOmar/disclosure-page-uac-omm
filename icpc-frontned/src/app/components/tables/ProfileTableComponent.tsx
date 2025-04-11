@@ -384,8 +384,8 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
           </div>
         </div>
       )}
-      <div className='max-h-screen overflow-y-auto'>
-        <table className='min-w-full table-fixed border-separate border-spacing-0'>
+      <div className='relative max-h-screen overflow-y-auto lg:px-16'>
+        <table className='w-full table-fixed border-separate border-spacing-0 z-10'>
           <thead>
             <tr>
               <th
