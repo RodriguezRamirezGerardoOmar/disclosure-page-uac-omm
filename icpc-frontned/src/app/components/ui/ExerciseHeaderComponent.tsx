@@ -6,16 +6,16 @@ import ReportButtonComponent from '../buttons/ReportButtonComponent'
 import LogoComponent from '../LogoComponent' // Importa el LogoComponent
 
 interface ExerciseHeaderComponentProps {
-    category: string,
-    title: string,
-    itemId: string
+  category: string
+  title: string
+  itemId: string
 }
 
 function classNames(...classes: string[]) {
-    return classes.filter(Boolean).join(' ')
-  }
+  return classes.filter(Boolean).join(' ')
+}
 
-const ExerciseHeaderComponent = ({...props}: Readonly<ExerciseHeaderComponentProps>) => {
+const ExerciseHeaderComponent = ({ ...props }: Readonly<ExerciseHeaderComponentProps>) => {
   const [isTicketPage, setIsTicketPage] = useState(false)
 
   useEffect(() => {
@@ -49,7 +49,7 @@ const ExerciseHeaderComponent = ({...props}: Readonly<ExerciseHeaderComponentPro
           <div className='flex items-center gap-x-6'>
             <h1>
               <div className='text-sm leading-6 text-gray-500'>
-              <span className='text-accent dark:text-dark-accent'>{props.category}</span>
+                <span className='text-accent dark:text-dark-accent'>{props.category}</span>
               </div>
               <div className='mt-1 text-2xl font-semibold leading-6 text-accent dark:text-dark-accent'>{props.title}</div>
             </h1>
@@ -71,53 +71,6 @@ const ExerciseHeaderComponent = ({...props}: Readonly<ExerciseHeaderComponentPro
                 />
               </div>
             )}
-
-            <Menu
-              as='div'
-              className='relative sm:hidden'>
-              <MenuButton className='-m-3 block p-3'>
-                <span className='sr-only'>More</span>
-                <EllipsisVerticalIcon
-                  className='h-5 w-5 text-gray-500'
-                  aria-hidden='true'
-                />
-              </MenuButton>
-
-              <Transition
-                as={Fragment}
-                enter='transition ease-out duration-100'
-                enterFrom='transform opacity-0 scale-95'
-                enterTo='transform opacity-100 scale-100'
-                leave='transition ease-in duration-75'
-                leaveFrom='transform opacity-100 scale-100'
-                leaveTo='transform opacity-0 scale-95'>
-                <MenuItems
-                  className='absolute right-0 z-10 mt-0.5 w-32 origin-top-right rounded-md 
-                    bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none'>
-                  <MenuItem>
-                    {({ focus }) => (
-                      <button
-                        type='button'
-                        className={classNames(
-                          focus ? 'bg-gray-50' : '',
-                          'block w-full px-3 py-1 text-left text-sm leading-6 text-gray-900'
-                        )}>
-                        Copy URL
-                      </button>
-                    )}
-                  </MenuItem>
-                  <MenuItem>
-                    {({ focus }) => (
-                      <a
-                        href='/note'
-                        className={classNames(focus ? 'bg-gray-50' : '', 'block px-3 py-1 text-sm leading-6 text-gray-900')}>
-                        Edit
-                      </a>
-                    )}
-                  </MenuItem>
-                </MenuItems>
-              </Transition>
-            </Menu>
           </div>
         </div>
       </div>

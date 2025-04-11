@@ -112,11 +112,7 @@ export default function TabComponent({
           />
         )
       } else if (tabName === 'Cuentas') {
-        setModalComponent(
-          <CreateUserComponent
-            onClose={handleModalClose}
-          />
-        )
+        setModalComponent(<CreateUserComponent onClose={handleModalClose} />)
       }
     } else {
       setShowCreateButton(false)
@@ -166,11 +162,7 @@ export default function TabComponent({
         />
       )
     } else if (activeTab === 'Cuentas') {
-      setModalComponent(
-        <CreateUserComponent
-          onClose={handleModalClose}
-        />
-      )
+      setModalComponent(<CreateUserComponent onClose={handleModalClose} />)
     }
     setShowModal(true)
   }
@@ -195,33 +187,35 @@ export default function TabComponent({
           Select a tab
         </label>
         <select
-          id="tabs"
-          name="tabs"
-          className="block w-full min-w-[200px] rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
+          id='tabs'
+          name='tabs'
+          className='block w-full min-w-[200px] rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 text-black lg:hidden'
           value={activeTab}
-          onChange={e => handleTabChange(e.target.value)}
-        >
+          onChange={e => handleTabChange(e.target.value)}>
           {isAdmin
             ? tabs.map(tab => (
-                <option key={tab.name} value={tab.name}>
+                <option
+                  key={tab.name}
+                  value={tab.name}>
                   {tab.name}
                 </option>
               ))
             : myTabs.map(tab => (
-                <option key={tab.name} value={tab.name}>
+                <option
+                  key={tab.name}
+                  value={tab.name}>
                   {tab.name}
                 </option>
               ))}
         </select>
-
-        {/* Botón "Crear" alineado a la derecha */}
-        
       </div>
 
       <div className='hidden lg:block lg:w-full'>
         <div className='border-b border-gray-200'>
           <div className='flex flex-row gap-8'>
-            <div className='flex flex-row space-x-2' aria-label='Tabs'>
+            <div
+              className='flex flex-row space-x-2'
+              aria-label='Tabs'>
               {myTabs.map(tab => (
                 <a
                   key={tab.name}
@@ -233,12 +227,11 @@ export default function TabComponent({
                     'group inline-flex items-center border-b-2 py-3.5 px-1 text-xs font-medium'
                   )}
                   onClick={e => {
-                    e.preventDefault();
-                    handleTabChange(tab.name);
-                    handleChange(tab.name);
+                    e.preventDefault()
+                    handleTabChange(tab.name)
+                    handleChange(tab.name)
                   }}
-                  aria-current={tab.name === activeTab ? 'page' : undefined}
-                >
+                  aria-current={tab.name === activeTab ? 'page' : undefined}>
                   <span>{tab.name}</span>
                 </a>
               ))}
@@ -294,23 +287,23 @@ export default function TabComponent({
             )}
             {showCreateButton && (
               <ButtonComponent
-                text="Crear"
-                buttonType="button"
+                text='Crear'
+                buttonType='button'
                 onClick={handleModalOpen}
-                className="ml-auto px-2 py-0 text-sm"
+                className='ml-auto px-2 py-0 text-sm'
               />
             )}
           </div>
         </div>
       </div>
       {showCreateButton && (
-          <ButtonComponent
-            text="Crear"
-            buttonType="button"
-            onClick={handleModalOpen}
-            className="ml-10 px-4 py-2 text-sm text-center flex justify-center items-center lg:hidden"
-          />
-        )}
+        <ButtonComponent
+          text='Crear'
+          buttonType='button'
+          onClick={handleModalOpen}
+          className='ml-10 px-4 py-2 text-sm text-center flex justify-center items-center lg:hidden'
+        />
+      )}
     </div>
   )
 }

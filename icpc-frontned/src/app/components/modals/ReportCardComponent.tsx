@@ -80,7 +80,7 @@ const ReportCardComponent = ({ itemType, itemId, onSubmit, onCancel, methods }: 
     <div
       className={`margin-auto md:mx-auto max-w-7xl md:px-4 w-full h-full lg:px-8 lg:w-2/3 lg:h-auto 
   min-h-screen place-items-center justify-between py-24`}>
-      <BasicPanelComponent backgroundColor='bg-white dark:bg-dark-primary w-2/3'>
+      <BasicPanelComponent backgroundColor='bg-white dark:bg-dark-primary w-full lg:w-2/3'>
         <div className='relative'>
           <div className='absolute top-0 right-0 flex gap-1 p-2'>
             <div

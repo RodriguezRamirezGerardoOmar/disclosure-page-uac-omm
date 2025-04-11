@@ -20,8 +20,8 @@ async function ExercisePage({ params }: Readonly<{ params: { exercise: string } 
   const solution = await getMarkdown(exerciseBody.solution)
 
   return (
-    <main className='grid min-h-screen grid-cols-1 place-items-center justify-between py-24'>
-      <div className='flex justify-end w-full px-4'>
+    <main className='grid min-h-screen grid-cols-1 place-items-center justify-between w-full py-24'>
+      <div className='flex justify-end w-full'>
         <ExerciseCardComponent
           exercise={exerciseBody}
           itemId={params.exercise}

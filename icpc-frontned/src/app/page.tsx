@@ -6,7 +6,7 @@ import { InfoCardComponent } from './components/cards/InfoCardComponent'
 import { DataCardComponent } from './components/cards/DataCardComponent'
 import { LastNewsComponent } from './components/ui/LastNewsComponent'
 import useUtilsStore from '@/store/useUtilsStore'
-export const dynamic = 'force-dynamic';
+export const dynamic = 'force-dynamic'
 export default async function Home() {
   const dailyQuote: Quote = await useUtilsStore.getState().getDailyQuote()
   const RandomFact: string = await useUtilsStore.getState().getRandomFact()
@@ -46,7 +46,7 @@ export default async function Home() {
 
   const dataRamdomCard = {
     title: 'Dato aleatorio',
-    //info: `“El objetivo del rigor no es destruir toda intuición, sino que debería usarse para destruir 
+    //info: `“El objetivo del rigor no es destruir toda intuición, sino que debería usarse para destruir
     //la mala intuición a la vez que clarificar y elevar la buena intuición.”`,
     info: `“${RandomFact}”`,
     //autor: 'TERENCE TAO',
@@ -104,7 +104,7 @@ ejercicios propuestos de diferentes niveles.`}
       </div>
 
       <div className='flex flex-col md:flex-row-reverse gap-4 h-full'>
-        <div className='flex flex-col gap-4 my-7 px-4 md:px-0 md:pr-4 w-1/3'>
+        <div className='flex flex-col gap-4 my-7 px-4 md:px-0 md:pr-4 w-full md:w-1/3'>
           <DataCardComponent
             title={dataCard.title}
             info={dataCard.info}

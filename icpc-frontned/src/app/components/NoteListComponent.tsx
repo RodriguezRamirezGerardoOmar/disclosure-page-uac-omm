@@ -18,7 +18,7 @@ Author: Gerardo Omar Rodriguez Ramirez
 
 const NoteListComponent = ({ ...props }: Readonly<NoteListProps>) => {
   return (
-    <div className='grid grid-rows-10 gap-4'>
+    <div className='flex flex-col gap-2'>
       {props.notes.map((note, index) => (
         <a key={index} href={`note/${note.id}`}>
           <NoteItemComponent note={note} index={index+1}/>

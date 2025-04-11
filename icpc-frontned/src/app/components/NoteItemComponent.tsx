@@ -21,14 +21,17 @@ Author: Gerardo Omar Rodriguez Ramirez
 const NoteItemComponent = ({ ...props }: Readonly<NoteItemProps>) => {
   return (
     <div className='bg-white dark:bg-dark-primary flex flex-col w-full rounded-md shadow-md p-2'>
-      <div className='flex flex-row w-full items-center justify-between gap-x-2'>
+      <div className='flex flex-col lg:flex-row w-full items-center lg:items-start justify-between gap-x-2'>
         <TextComponent
           sizeFont='s24'
           className='text-secondary dark:text-dark-complementary'>{`${props.index}.- ${props.note.title}`}</TextComponent>
         <TagListComponent
-          tags={props.note.tags}
+          tags={props.note.tags.slice(0, 3)} // Mostrar solo las primeras etiquetas
           showIcon={false}
         />
+        {props.note.tags.length > 3 && ( // Mostrar puntos suspensivos si hay más etiquetas N. debe ser igual que el de arriba
+          <span className='ml-1 text-gray-400'> ... </span> 
+        )}
       </div>
       <TextComponent className='p-1'>{props.note.commentId.body}</TextComponent>
     </div>

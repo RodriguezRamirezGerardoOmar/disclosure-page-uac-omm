@@ -21,7 +21,8 @@ function MarkdownBodyComponent({ body }: Readonly<MarkdownBodyComponentProps>) {
       prose-headings:dark:text-dark-accent
       [&_img]:m-auto
       prose-strong:dark:text-dark-accent
-      prose-blockquote:dark:text-dark-accent max-w-max`}
+      prose-blockquote:dark:text-dark-accent max-w-max
+      text-justify`}
     >
       <MDXRemote
         compiledSource={body}
