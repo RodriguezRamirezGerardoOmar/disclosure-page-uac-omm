@@ -421,6 +421,7 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
                         />
                       </div>
                     )}
+                    {item.level && <TextComponent>{item.level}</TextComponent>}
                   </td>
                   <td
                     className={`text-right whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium 

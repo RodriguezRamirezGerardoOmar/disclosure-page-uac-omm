@@ -197,6 +197,7 @@ export const AllTabs = {
 export interface IProfileTableItem {
   color?: string
   tagName?: string
+  level?: number
   index: number
   id: string
   title: string
