@@ -262,33 +262,54 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
     }
   }
   const dataValidate = () => {
-    const data = methods.getValues()
-    const missingFields = []
-
-    if (!data.name) missingFields.push('Nombre del ejercicio')
-    if (data.category.length === 0) missingFields.push('Categoría')
-    if (data.difficulty.length === 0) missingFields.push('Nivel de dificultad')
-    if (!data.input) missingFields.push('Entrada esperada')
-    if (!data.output) missingFields.push('Salida esperada')
-    if (!data.example_input) missingFields.push('Ejemplo de entrada')
-    if (!data.example_output) missingFields.push('Ejemplo de salida')
-    if (data.tags.length === 0) missingFields.push('Etiquetas')
-    if (!data.description) missingFields.push('Descripción del problema')
-
+    const data = methods.getValues();
+    const missingFields = [];
+    const invalidFields = [];
+  
+    // Validación de campos obligatorios
+    if (!data.name) missingFields.push('Nombre del ejercicio');
+    if (data.category.length === 0) missingFields.push('Categoría');
+    if (data.difficulty.length === 0) missingFields.push('Nivel de dificultad');
+    if (!data.input) missingFields.push('Entrada esperada');
+    if (!data.output) missingFields.push('Salida esperada');
+    if (!data.example_input) missingFields.push('Ejemplo de entrada');
+    if (!data.example_output) missingFields.push('Ejemplo de salida');
+    if (data.tags.length === 0) missingFields.push('Etiquetas');
+    if (!data.description) missingFields.push('Descripción del problema');
+  
+    // Validación de longitud de caracteres
+    if (data.input && data.input.length > 255) invalidFields.push('Entrada esperada');
+    if (data.output && data.output.length > 255) invalidFields.push('Salida esperada');
+    if (data.example_input && data.example_input.length > 255) invalidFields.push('Ejemplo de entrada');
+    if (data.example_output && data.example_output.length > 255) invalidFields.push('Ejemplo de salida');
+  
+    // Mostrar errores si hay campos faltantes o inválidos
     if (missingFields.length > 0) {
       toast.error(`Favor de llenar los datos de: ${missingFields.join(', ')}`, {
         duration: 5000,
         style: {
           textAlign: 'justify',
           backgroundColor: '#ff0000',
-          color: '#ffffff'
-        }
-      })
-      return
+          color: '#ffffff',
+        },
+      });
+      return;
     }
-    setShowConfirm(true)
-  }
-
+  
+    if (invalidFields.length > 0) {
+      toast.error(`Los siguientes campos no deben exceder 255 caracteres: ${invalidFields.join(', ')}`, {
+        duration: 5000,
+        style: {
+          textAlign: 'justify',
+          backgroundColor: '#ff0000',
+          color: '#ffffff',
+        },
+      });
+      return;
+    }
+  
+    setShowConfirm(true);
+  };
   return (
     <>
       {showConfirm && (

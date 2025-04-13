@@ -45,6 +45,7 @@ export class ExcercisesService {
   ) {}
 
   async create(createExcerciseDto: CreateExcerciseDto) {
+    
     const {
       name,
       category,
@@ -55,6 +56,18 @@ export class ExcercisesService {
       constraints,
       solution
     } = createExcerciseDto;
+    if (name.length > 255) {
+      throw new BadRequestException('El nombre del ejercicio no puede exceder 255 caracteres');
+    }
+    if (clue && clue.length > 255) {
+      throw new BadRequestException('La pista no puede exceder 255 caracteres');
+    }
+    if (constraints && constraints.length > 255) {
+      throw new BadRequestException('Las restricciones no pueden exceder 255 caracteres');
+    }
+    if (solution && solution.length > 255) {
+      throw new BadRequestException('La solución no puede exceder 255 caracteres');
+    }
     const newExcerciseName = await this.exerciseRepository.findOneBy({
       title: name
     });
@@ -341,6 +354,19 @@ export class ExcercisesService {
 
   async update(id: string, updateExcerciseDto: UpdateExcerciseDto) {
     const { memoryId, role, ...updateData } = updateExcerciseDto;
+    if (updateData.name.length > 255) {
+      throw new BadRequestException('El nombre del ejercicio no puede exceder 255 caracteres');
+    }
+    if (updateData.clue && updateData.clue.length > 255) {
+      throw new BadRequestException('La pista no puede exceder 255 caracteres');
+    }
+    if (updateData.constraints && updateData.constraints.length > 255) {
+      throw new BadRequestException('Las restricciones no pueden exceder 255 caracteres');
+    }
+    if (updateData.solution && updateData.solution.length > 255) {
+      throw new BadRequestException('La solución no puede exceder 255 caracteres');
+    }
+    
     const memory = memoryId
       ? await this.memoryRepository.findOneBy({ id: memoryId })
       : null;
@@ -369,6 +395,7 @@ export class ExcercisesService {
         memoryId: memory,
         isVisible: true
       });
+      
 
       const savedUpdatedExercise = await this.exerciseRepository.save(
         modifiedExerciseCopy
