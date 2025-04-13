@@ -173,7 +173,7 @@ function Page() {
         case AllTabs.DIFFICULTY:
           const difficulty: Difficulties[] = await getDifficulty()
           const mappedDifficulty = difficulty.map((difficulty, index) => {
-            return { index, title: difficulty.name, id: difficulty.id }
+            return { index, title: difficulty.name, id: difficulty.id, level: difficulty.level }
           })
           setTableData(mappedDifficulty)
           setMode(AllTabs.DIFFICULTY)
