@@ -32,24 +32,35 @@ export class TagsService {
   async create(createTagDto: CreateTagDto) {
     const trimmedName = createTagDto.name.trim();
     if (trimmedName.length === 0) {
-      throw new BadRequestException('El nombre de la etiqueta no puede estar vacío o contener solo espacios.');
+      throw new BadRequestException(
+        'El nombre de la etiqueta no puede estar vacío o contener solo espacios.'
+      );
     }
-  
+
+    if (trimmedName.length > 32) {
+      throw new BadRequestException(
+        'El nombre de la etiqueta no puede exceder los 32 caracteres.'
+      );
+    }
+
     const name = await this.tagRepository.findOneBy({
       name: trimmedName
     });
     if (name) {
       throw new BadRequestException('Ya existe una etiqueta con ese nombre.');
     }
-  
+
     const existingTag = await this.tagRepository.findOneBy({
       color: createTagDto.color
     });
     if (existingTag) {
       throw new BadRequestException('Ya existe una etiqueta con este color.');
     }
-  
-    const savedTag = await this.tagRepository.save({ ...createTagDto, name: trimmedName });
+
+    const savedTag = await this.tagRepository.save({
+      ...createTagDto,
+      name: trimmedName
+    });
     if (savedTag) {
       const ticketCommentBody = `La etiqueta ${savedTag.name} ha sido creada`;
       const comment = this.commentRepository.create({
@@ -86,25 +97,37 @@ export class TagsService {
   async update(id: string, updateTagDto: UpdateTagDto) {
     const trimmedName = updateTagDto.name.trim();
     if (trimmedName.length === 0) {
-      throw new BadRequestException('El nombre de la etiqueta no puede estar vacío o contener solo espacios.');
+      throw new BadRequestException(
+        'El nombre de la etiqueta no puede estar vacío o contener solo espacios.'
+      );
     }
-  
+
+    if (trimmedName.length > 32) {
+      throw new BadRequestException(
+        'El nombre de la etiqueta no puede exceder los 32 caracteres.'
+      );
+    }
+
     const existingTag = await this.tagRepository.findOneBy({
       name: trimmedName
     });
     if (existingTag !== null && existingTag.id !== id) {
       throw new BadRequestException('Ya existe una etiqueta con ese nombre.');
     }
-  
+
     const existingColorTag = await this.tagRepository.findOneBy({
       color: updateTagDto.color
     });
     if (existingColorTag && existingColorTag.id !== id) {
       throw new BadRequestException('Ya existe una etiqueta con este color');
     }
-  
+
     const tag = await this.tagRepository.findOneBy({ id });
-    const savedTag = await this.tagRepository.save({ ...tag, ...updateTagDto, name: trimmedName });
+    const savedTag = await this.tagRepository.save({
+      ...tag,
+      ...updateTagDto,
+      name: trimmedName
+    });
     if (savedTag) {
       const ticketCommentBody = `La etiqueta ${savedTag.name} ha sido actualizada`;
       const comment = this.commentRepository.create({
