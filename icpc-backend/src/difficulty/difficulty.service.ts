@@ -34,6 +34,12 @@ export class DifficultyService {
       );
     }
 
+    if (trimmedName.length > 32) {
+      throw new BadRequestException(
+        'El nombre de la dificultad no puede exceder los 32 caracteres.'
+      );
+    }
+
     if (createDifficultyDto.level < 0) {
       throw new BadRequestException(
         'El nivel de dificultad debe ser mayor a 0.'
@@ -42,10 +48,7 @@ export class DifficultyService {
 
     // Verificar si ya existe un registro con el mismo nombre o nivel de dificultad
     const existingDifficulty = await this.difficultyRepository.findOne({
-      where: [
-        { name: trimmedName },
-        { level: createDifficultyDto.level }
-      ]
+      where: [{ name: trimmedName }, { level: createDifficultyDto.level }]
     });
     if (existingDifficulty) {
       throw new BadRequestException(
@@ -93,6 +96,12 @@ export class DifficultyService {
     if (trimmedName.length === 0) {
       throw new BadRequestException(
         'El nombre de la dificultad no puede estar vacío o contener solo espacios.'
+      );
+    }
+
+    if (trimmedName.length > 32) {
+      throw new BadRequestException(
+        'El nombre de la dificultad no puede exceder los 32 caracteres.'
       );
     }
 
