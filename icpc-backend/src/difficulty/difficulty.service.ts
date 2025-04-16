@@ -46,6 +46,12 @@ export class DifficultyService {
       );
     }
 
+    if (createDifficultyDto.level > 10) {
+      throw new BadRequestException(
+        'El nivel de dificultad no puede ser mayor a 10.'
+      );
+    }
+
     // Verificar si ya existe un registro con el mismo nombre o nivel de dificultad
     const existingDifficulty = await this.difficultyRepository.findOne({
       where: [{ name: trimmedName }, { level: createDifficultyDto.level }]
@@ -108,6 +114,12 @@ export class DifficultyService {
     if (updateDifficultyDto.level < 0) {
       throw new BadRequestException(
         'El nivel de dificultad debe ser mayor a 0.'
+      );
+    }
+
+    if (updateDifficultyDto.level > 10) {
+      throw new BadRequestException(
+        'El nivel de dificultad no puede ser mayor a 10.'
       );
     }
 

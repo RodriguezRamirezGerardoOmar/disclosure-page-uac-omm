@@ -24,17 +24,21 @@ const CreateDifficultyComponent: React.FC<CreateDifficultyComponentProps> = ({ m
   const [currentDifficulty, setCurrentDifficulty] = useState<Difficulties>({} as Difficulties)
 
   useEffect(() => {
-    if (difficultyId) {
-      const loadDifficulty = async () => {
+    const loadDifficulty = async () => {
+      if (difficultyId) {
         const difficulty = await getDifficulty(difficultyId)
         if (difficulty) {
           methods.setValue('DifficultyName', difficulty.name)
           methods.setValue('Level', difficulty.level)
           setCurrentDifficulty(difficulty)
         }
+      } else {
+        methods.setValue('DifficultyName', '')
+        methods.setValue('Level', null)
+        setCurrentDifficulty({} as Difficulties)
       }
-      loadDifficulty()
     }
+    loadDifficulty()
   }, [difficultyId, getDifficulty, methods])
 
   const clearForm = () => {
@@ -44,8 +48,8 @@ const CreateDifficultyComponent: React.FC<CreateDifficultyComponentProps> = ({ m
         Level: currentDifficulty.level
       })
     } else {
-      methods.setValue('DifficultyName','')
-      methods.setValue('Level',null)
+      methods.setValue('DifficultyName', '')
+      methods.setValue('Level', null)
     }
   }
 
@@ -66,6 +70,8 @@ const CreateDifficultyComponent: React.FC<CreateDifficultyComponentProps> = ({ m
         }
       })
       onCreateDifficulty(data.DifficultyName)
+      methods.setValue('DifficultyName', '')
+      methods.setValue('Level', null)
       onClose()
     } else if ('message' in response) {
       toast.error(response.message, { duration: 5000, style: { backgroundColor: 'red', color: '#FFFFFF' } })
@@ -92,7 +98,10 @@ const CreateDifficultyComponent: React.FC<CreateDifficultyComponentProps> = ({ m
               className='p-2 hover:bg-gray-100 dark:hover:bg-red-700 transition-colors duration-200 rounded'
               title='Cerrar formulario'>
               <button
-                onClick={onClose}
+                onClick={() => {
+                  clearForm()
+                  onClose()
+                }}
                 className='text-inherit' // Color heredado del padre
               >
                 <XMarkIcon className='h-6 w-6' />
