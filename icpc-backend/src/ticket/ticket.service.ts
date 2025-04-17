@@ -352,10 +352,9 @@ export class TicketService {
             modified = await this.excerciseRepository.findOneBy({
               id: ticket.modifiedExerciseId.id
             });
-            original.isVisible = false;
             modified.isVisible = true;
-            this.excerciseRepository.save(original);
             res = await this.excerciseRepository.save(modified);
+            this.excerciseRepository.remove(original);
             break;
           case TicketType.NOTE:
             original = await this.notesRepository.findOneBy({
@@ -364,10 +363,9 @@ export class TicketService {
             modified = await this.notesRepository.findOneBy({
               id: ticket.modifiedNoteId.id
             });
-            original.isVisible = false;
             modified.isVisible = true;
-            this.notesRepository.save(original);
             res = await this.notesRepository.save(modified);
+            this.notesRepository.remove(original);
             break;
           case TicketType.NEWS:
             original = await this.newsRepository.findOneBy({
@@ -376,10 +374,9 @@ export class TicketService {
             modified = await this.newsRepository.findOneBy({
               id: ticket.modifiedNewsId.id
             });
-            original.isVisible = false;
             modified.isVisible = true;
-            this.newsRepository.save(original);
             res = await this.newsRepository.save(modified);
+            this.newsRepository.delete(original);
             break;
         }
         break;
