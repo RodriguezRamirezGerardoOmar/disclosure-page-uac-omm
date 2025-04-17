@@ -24,17 +24,22 @@ const CreateTimeLimitComponent: React.FC<CreateTimeLimitComponentProps> = ({ met
   const [currentTimeLimit, setCurrentTimeLimit] = useState<TimeLimit>({} as TimeLimit)
 
   useEffect(() => {
-    if (timeId) {
-      const loadTimeLimit = async () => {
+    const loadTimeLimit = async () => {
+      if (timeId) {
         const timeLimits = await getTimeLimit()
         const timeLimit = timeLimits.find(t => t.id === timeId)
         if (timeLimit) {
           methods.setValue('TimeLimit', timeLimit.timeLimit.toString())
           setCurrentTimeLimit(timeLimit)
         }
+      } else {
+        methods.reset({
+          TimeLimit: ''
+        })
+        setCurrentTimeLimit({} as TimeLimit)
       }
-      loadTimeLimit()
     }
+    loadTimeLimit()
   }, [timeId, getTimeLimit, methods])
 
   const clearForm = () => {
