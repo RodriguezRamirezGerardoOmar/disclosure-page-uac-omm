@@ -256,27 +256,16 @@ export class NotesService {
       throw new BadRequestException('La categoría no existe');
     }
 
-    const original = await this.noteRepository.findOneBy({ id });
-
     if (role === 'admin') {
-      existingNote.isVisible = false;
-      await this.noteRepository.save(existingNote);
+      // Actualizar directamente las propiedades del ítem original
+      existingNote.title = title || existingNote.title;
+      existingNote.body = updateData.body || existingNote.body;
+      existingNote.updated_by = user.name;
+      existingNote.category = noteCategory;
+      existingNote.tags = noteTags;
+      existingNote.commentId = noteDescription;
 
-      const modifiedNoteCopy = this.noteRepository.create({
-        ...updateData,
-        created_at: original.created_at,
-        created_by: original.created_by,
-        tags: noteTags,
-        category: noteCategory,
-        title: title,
-        updated_by: user.name,
-        isVisible: true,
-        commentId: noteDescription
-      });
-
-      const savedModifiedNote = await this.noteRepository.save(
-        modifiedNoteCopy
-      );
+      const savedModifiedNote = await this.noteRepository.save(existingNote);
 
       if (savedModifiedNote) {
         const commentBody = `${updateData.userAuthor} ha actualizado el apunte con el título ${existingNote.title}`;
@@ -289,7 +278,6 @@ export class NotesService {
           operation: TicketOperation.UPDATE,
           status: TicketStatus.ACCEPTED,
           originalNoteId: existingNote,
-          modifiedNoteId: savedModifiedNote,
           commentId: commentId
         });
         const savedTicket = await this.ticketRepository.save(ticket);
@@ -304,8 +292,8 @@ export class NotesService {
     } else {
       const modifiedNoteCopy = this.noteRepository.create({
         ...updateData,
-        created_at: original.created_at,
-        created_by: original.created_by,
+        created_at: existingNote.created_at,
+        created_by: existingNote.created_by,
         tags: noteTags,
         category: noteCategory,
         title: title,
