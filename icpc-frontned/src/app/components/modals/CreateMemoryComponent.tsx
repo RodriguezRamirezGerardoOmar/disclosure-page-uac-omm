@@ -33,8 +33,8 @@ const CreateMemoryComponent: React.FC<CreateMemoryComponentProps> = ({ methods, 
   const [selectedMemoryUnit, setSelectedMemoryUnit] = useState<string>(MemorySelect[0].id)
 
   useEffect(() => {
-    if (memoryId) {
-      const loadMemory = async () => {
+    const loadMemory = async () => {
+      if (memoryId) {
         const memory = await getMemory(memoryId)
         if (memory) {
           setCurrentMemory(memory)
@@ -53,9 +53,15 @@ const CreateMemoryComponent: React.FC<CreateMemoryComponentProps> = ({ methods, 
             MemoryName: val
           })
         }
+      } else {
+        methods.reset({
+          MemoryName: ''
+        })
+        setSelectedMemoryUnit(MemorySelect[0].id)
+        setCurrentMemory({} as MemoryLimit)
       }
-      loadMemory()
     }
+    loadMemory()
   }, [memoryId, getMemory, methods])
 
   const clearForm = () => {

@@ -112,26 +112,14 @@ export class NewsService {
       userName: updateData.userAuthor
     });
 
-    const original = await this.newsRepository.findOneBy({ id: id });
-
     if (role === 'admin') {
-      existingNews.isVisible = false;
-      await this.newsRepository.save(existingNews);
+      // Actualizar directamente las propiedades del ítem original
+      existingNews.title = updateData.title || existingNews.title;
+      existingNews.body = updateData.body || existingNews.body;
+      existingNews.updated_by = user.id;
+      existingNews.imageId = image;
 
-      // Actualizar la noticia existente
-      // Crear una copia de la noticia modificada
-      const modifiedNewsCopy = this.newsRepository.create({
-        ...updateData,
-        created_at: original.created_at,
-        created_by: original.created_by,
-        updated_by: user.id,
-        imageId: image,
-        id: undefined, // Evitar conflictos con el ID de la noticia original
-        isVisible: true // Marcar la copia como visible
-      });
-
-      // Guardar la noticia actualizada en la base de datos
-      const savedUpdatedNews = await this.newsRepository.save(modifiedNewsCopy);
+      const savedUpdatedNews = await this.newsRepository.save(existingNews);
 
       if (savedUpdatedNews) {
         const commentBody = `${updateData.userAuthor} ha actualizado la noticia con el título ${existingNews.title}`;
@@ -144,7 +132,6 @@ export class NewsService {
           operation: TicketOperation.UPDATE,
           status: TicketStatus.ACCEPTED,
           originalNewsId: existingNews,
-          modifiedNewsId: savedUpdatedNews,
           commentId: commentId
         });
         const savedTicket = await this.ticketRepository.save(ticket);
@@ -158,13 +145,14 @@ export class NewsService {
       // Crear una copia de la noticia modificada
       const modifiedNewsCopy = this.newsRepository.create({
         ...updateData,
-        created_at: original.created_at,
-        created_by: original.created_by,
+        created_at: existingNews.created_at,
+        created_by: existingNews.created_by,
         updated_by: user.id,
         imageId: image,
         isVisible: false
       });
       const savedUpdatedNews = await this.newsRepository.save(modifiedNewsCopy);
+
       if (savedUpdatedNews) {
         const commentBody = `${updateData.userAuthor} ha actualizado la noticia con el título ${existingNews.title}`;
         const comment = this.commentRepository.create({

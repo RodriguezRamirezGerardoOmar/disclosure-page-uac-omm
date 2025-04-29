@@ -32,7 +32,15 @@ export class TagsService {
   async create(createTagDto: CreateTagDto) {
     const trimmedName = createTagDto.name.trim();
     if (trimmedName.length === 0) {
-      throw new BadRequestException('El nombre de la etiqueta no puede estar vacío o contener solo espacios.');
+      throw new BadRequestException(
+        'El nombre de la etiqueta no puede estar vacío o contener solo espacios.'
+      );
+    }
+
+    if (trimmedName.length > 32) {
+      throw new BadRequestException(
+        'El nombre de la etiqueta no puede exceder los 32 caracteres.'
+      );
     }
     if (trimmedName.length > 255) {
       throw new BadRequestException('El nombre de la etiqueta no puede exceder los 255 caracteres.');
@@ -89,7 +97,15 @@ export class TagsService {
   async update(id: string, updateTagDto: UpdateTagDto) {
     const trimmedName = updateTagDto.name.trim();
     if (trimmedName.length === 0) {
-      throw new BadRequestException('El nombre de la etiqueta no puede estar vacío o contener solo espacios.');
+      throw new BadRequestException(
+        'El nombre de la etiqueta no puede estar vacío o contener solo espacios.'
+      );
+    }
+
+    if (trimmedName.length > 32) {
+      throw new BadRequestException(
+        'El nombre de la etiqueta no puede exceder los 32 caracteres.'
+      );
     }
     if (trimmedName.length > 255) {
       throw new BadRequestException('El nombre de la etiqueta no puede exceder los 255 caracteres.');
@@ -110,7 +126,11 @@ export class TagsService {
     }
 
     const tag = await this.tagRepository.findOneBy({ id });
-    const savedTag = await this.tagRepository.save({ ...tag, ...updateTagDto, name: trimmedName });
+    const savedTag = await this.tagRepository.save({
+      ...tag,
+      ...updateTagDto,
+      name: trimmedName
+    });
     if (savedTag) {
       const ticketCommentBody = `La etiqueta ${savedTag.name} ha sido actualizada`;
       const comment = this.commentRepository.create({

@@ -251,14 +251,13 @@ export class UsersService {
     if (!id) {
       return null;
     }
-  
+
     const user = await this.userRepository
       .createQueryBuilder('user')
       .leftJoinAndSelect('user.role', 'role')
       .where('user.id = :id', { id })
       .getOne();
-  
+
     return user || null;
   }
-  
 }

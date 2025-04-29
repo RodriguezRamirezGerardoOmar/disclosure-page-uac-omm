@@ -25,8 +25,8 @@ const CreateTagComponent: React.FC<CreateTagComponentProps> = ({ methods, onCrea
   const [currentTag, setCurrentTag] = useState({} as Tags)
 
   useEffect(() => {
-    if (tagId) {
-      const loadTag = async () => {
+    const loadTag = async () => {
+      if (tagId) {
         const tags = await getTags()
         const tag = tags.find(t => t.id === tagId)
         if (tag) {
@@ -34,9 +34,15 @@ const CreateTagComponent: React.FC<CreateTagComponentProps> = ({ methods, onCrea
           methods.setValue('color', `#${tag.color}`)
           setCurrentTag(tag)
         }
+      } else {
+        methods.reset({
+          name: '',
+          color: ''
+        })
+        setCurrentTag({} as Tags)
       }
-      loadTag()
     }
+    loadTag()
   }, [tagId, getTags, methods])
 
   const clearForm = () => {

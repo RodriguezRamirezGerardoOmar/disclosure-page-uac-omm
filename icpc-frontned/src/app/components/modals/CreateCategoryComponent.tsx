@@ -18,7 +18,6 @@ interface CreateCategoryComponentProps {
 const CreateCategoryComponent: React.FC<CreateCategoryComponentProps> = ({ onClose, categoryId }) => {
   const methods = useForm<FieldValues>()
   const createCategory = useUtilsStore(state => state.createCategory)
-  // Ensure updateCategory is defined in your useUtilsStore
   const updateCategory = useUtilsStore(state => state.updateCategory || (() => Promise.resolve({})))
   const getCategory = useUtilsStore(state => state.getCategory)
   const [currentCategory, setCurrentCategory] = useState<Categories>({} as Categories)

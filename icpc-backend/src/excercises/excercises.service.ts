@@ -45,7 +45,6 @@ export class ExcercisesService {
   ) {}
 
   async create(createExcerciseDto: CreateExcerciseDto) {
-    
     const {
       name,
       category,
@@ -57,16 +56,22 @@ export class ExcercisesService {
       solution
     } = createExcerciseDto;
     if (name.length > 255) {
-      throw new BadRequestException('El nombre del ejercicio no puede exceder 255 caracteres');
+      throw new BadRequestException(
+        'El nombre del ejercicio no puede exceder 255 caracteres'
+      );
     }
     if (clue && clue.length > 255) {
       throw new BadRequestException('La pista no puede exceder 255 caracteres');
     }
     if (constraints && constraints.length > 255) {
-      throw new BadRequestException('Las restricciones no pueden exceder 255 caracteres');
+      throw new BadRequestException(
+        'Las restricciones no pueden exceder 255 caracteres'
+      );
     }
     if (solution && solution.length > 255) {
-      throw new BadRequestException('La solución no puede exceder 255 caracteres');
+      throw new BadRequestException(
+        'La solución no puede exceder 255 caracteres'
+      );
     }
     const newExcerciseName = await this.exerciseRepository.findOneBy({
       title: name
@@ -355,18 +360,24 @@ export class ExcercisesService {
   async update(id: string, updateExcerciseDto: UpdateExcerciseDto) {
     const { memoryId, role, ...updateData } = updateExcerciseDto;
     if (updateData.name.length > 255) {
-      throw new BadRequestException('El nombre del ejercicio no puede exceder 255 caracteres');
+      throw new BadRequestException(
+        'El nombre del ejercicio no puede exceder 255 caracteres'
+      );
     }
     if (updateData.clue && updateData.clue.length > 255) {
       throw new BadRequestException('La pista no puede exceder 255 caracteres');
     }
     if (updateData.constraints && updateData.constraints.length > 255) {
-      throw new BadRequestException('Las restricciones no pueden exceder 255 caracteres');
+      throw new BadRequestException(
+        'Las restricciones no pueden exceder 255 caracteres'
+      );
     }
     if (updateData.solution && updateData.solution.length > 255) {
-      throw new BadRequestException('La solución no puede exceder 255 caracteres');
+      throw new BadRequestException(
+        'La solución no puede exceder 255 caracteres'
+      );
     }
-    
+
     const memory = memoryId
       ? await this.memoryRepository.findOneBy({ id: memoryId })
       : null;
@@ -380,25 +391,21 @@ export class ExcercisesService {
       userName: updateData.userAuthor
     });
 
-    const original = await this.exerciseRepository.findOneBy({ id });
-
     if (role === 'admin') {
-      existingExercise.isVisible = false;
-      await this.exerciseRepository.save(existingExercise);
-
-      const modifiedExerciseCopy = this.exerciseRepository.create({
-        ...updateData,
-        created_at: original.created_at,
-        created_by: original.created_by,
-        updated_by: user.id,
-        title: updateData.name,
-        memoryId: memory,
-        isVisible: true
-      });
-      
+      // Actualizar directamente las propiedades del ítem original
+      existingExercise.title = updateData.name || existingExercise.title;
+      existingExercise.description =
+        updateData.description || existingExercise.description;
+      existingExercise.clue = updateData.clue || existingExercise.clue;
+      existingExercise.constraints =
+        updateData.constraints || existingExercise.constraints;
+      existingExercise.solution =
+        updateData.solution || existingExercise.solution;
+      existingExercise.updated_by = user.id;
+      existingExercise.memoryId = memory || existingExercise.memoryId;
 
       const savedUpdatedExercise = await this.exerciseRepository.save(
-        modifiedExerciseCopy
+        existingExercise
       );
 
       if (savedUpdatedExercise) {
@@ -412,7 +419,6 @@ export class ExcercisesService {
           operation: TicketOperation.UPDATE,
           status: TicketStatus.ACCEPTED,
           originalExerciseId: existingExercise,
-          modifiedExerciseId: savedUpdatedExercise,
           commentId: commentId
         });
         const savedTicket = await this.ticketRepository.save(ticket);
@@ -425,8 +431,8 @@ export class ExcercisesService {
     } else {
       const modifiedExerciseCopy = this.exerciseRepository.create({
         ...updateData,
-        created_at: original.created_at,
-        created_by: original.created_by,
+        created_at: existingExercise.created_at,
+        created_by: existingExercise.created_by,
         title: updateData.name,
         updated_by: user.id,
         memoryId: memory,
