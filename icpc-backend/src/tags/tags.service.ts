@@ -37,13 +37,10 @@ export class TagsService {
       );
     }
 
-    if (trimmedName.length > 32) {
-      throw new BadRequestException(
-        'El nombre de la etiqueta no puede exceder los 32 caracteres.'
-      );
-    }
     if (trimmedName.length > 255) {
-      throw new BadRequestException('El nombre de la etiqueta no puede exceder los 255 caracteres.');
+      throw new BadRequestException(
+        'El nombre de la etiqueta no puede exceder los 255 caracteres.'
+      );
     }
 
     const name = await this.tagRepository.findOneBy({
@@ -60,7 +57,10 @@ export class TagsService {
       throw new BadRequestException('Ya existe una etiqueta con este color.');
     }
 
-    const savedTag = await this.tagRepository.save({ ...createTagDto, name: trimmedName });
+    const savedTag = await this.tagRepository.save({
+      ...createTagDto,
+      name: trimmedName
+    });
     if (savedTag) {
       const ticketCommentBody = `La etiqueta ${savedTag.name} ha sido creada`;
       const comment = this.commentRepository.create({
@@ -102,13 +102,10 @@ export class TagsService {
       );
     }
 
-    if (trimmedName.length > 32) {
-      throw new BadRequestException(
-        'El nombre de la etiqueta no puede exceder los 32 caracteres.'
-      );
-    }
     if (trimmedName.length > 255) {
-      throw new BadRequestException('El nombre de la etiqueta no puede exceder los 255 caracteres.');
+      throw new BadRequestException(
+        'El nombre de la etiqueta no puede exceder los 255 caracteres.'
+      );
     }
 
     const existingTag = await this.tagRepository.findOneBy({
