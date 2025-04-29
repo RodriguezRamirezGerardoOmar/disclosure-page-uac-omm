@@ -60,17 +60,19 @@ export class ExcercisesService {
         'El nombre del ejercicio no puede exceder 255 caracteres'
       );
     }
-    if (clue && clue.length > 255) {
-      throw new BadRequestException('La pista no puede exceder 255 caracteres');
+    if (clue && clue.length > 65535) {
+      throw new BadRequestException(
+        'La pista no puede exceder 65535 caracteres'
+      );
     }
     if (constraints && constraints.length > 255) {
       throw new BadRequestException(
         'Las restricciones no pueden exceder 255 caracteres'
       );
     }
-    if (solution && solution.length > 255) {
+    if (solution && solution.length > 65535) {
       throw new BadRequestException(
-        'La solución no puede exceder 255 caracteres'
+        'La solución no puede exceder 65535 caracteres'
       );
     }
     const newExcerciseName = await this.exerciseRepository.findOneBy({
@@ -364,17 +366,19 @@ export class ExcercisesService {
         'El nombre del ejercicio no puede exceder 255 caracteres'
       );
     }
-    if (updateData.clue && updateData.clue.length > 255) {
-      throw new BadRequestException('La pista no puede exceder 255 caracteres');
+    if (updateData.clue && updateData.clue.length > 65535) {
+      throw new BadRequestException(
+        'La pista no puede exceder 65535 caracteres'
+      );
     }
     if (updateData.constraints && updateData.constraints.length > 255) {
       throw new BadRequestException(
         'Las restricciones no pueden exceder 255 caracteres'
       );
     }
-    if (updateData.solution && updateData.solution.length > 255) {
+    if (updateData.solution && updateData.solution.length > 65535) {
       throw new BadRequestException(
-        'La solución no puede exceder 255 caracteres'
+        'La solución no puede exceder 65535 caracteres'
       );
     }
 
