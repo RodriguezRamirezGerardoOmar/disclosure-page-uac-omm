@@ -32,14 +32,19 @@ export class CategoriesService {
   async create(createCategoryDto: CreateCategoryDto) {
     const trimmedName = createCategoryDto.name.trim();
     if (trimmedName.length === 0) {
-      throw new BadRequestException(
-        'El nombre de la categoría no puede estar vacío o contener solo espacios.'
-      );
+        throw new BadRequestException(
+            'El nombre de la categoría no puede estar vacío o contener solo espacios.'
+        );
+    }
+    if (trimmedName.length > 255) {
+        throw new BadRequestException(
+            'El nombre de la categoría no puede exceder los 255 caracteres.'
+        );
     }
 
     const name = await this.findOneByName(trimmedName); // check if name exists
     if (name !== null) {
-      throw new BadRequestException('Esa categoría ya existe');
+        throw new BadRequestException('Esa categoría ya existe');
     }
 
     let comment = await this.commentRepository.findOneBy({
@@ -110,15 +115,20 @@ export class CategoriesService {
   async update(id: string, updateCategoryDto: UpdateCategoryDto) {
     const trimmedName = updateCategoryDto.name.trim();
     if (trimmedName.length === 0) {
-      throw new BadRequestException(
-        'El nombre de la categoría no puede estar vacío o contener solo espacios.'
-      );
+        throw new BadRequestException(
+            'El nombre de la categoría no puede estar vacío o contener solo espacios.'
+        );
+    }
+    if (trimmedName.length > 255) {
+        throw new BadRequestException(
+            'El nombre de la categoría no puede exceder los 255 caracteres.'
+        );
     }
 
     const category = await this.categoryRepository.findOneBy({ id });
     const existingCategory = await this.findOneByName(trimmedName);
     if (existingCategory !== null && existingCategory.id !== id) {
-      throw new BadRequestException('Esa categoría ya existe');
+        throw new BadRequestException('Esa categoría ya existe');
     }
 
     const savedCategory = await this.categoryRepository.save({

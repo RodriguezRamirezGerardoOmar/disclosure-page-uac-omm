@@ -37,9 +37,9 @@ export class TagsService {
       );
     }
 
-    if (trimmedName.length > 32) {
+    if (trimmedName.length > 255) {
       throw new BadRequestException(
-        'El nombre de la etiqueta no puede exceder los 32 caracteres.'
+        'El nombre de la etiqueta no puede exceder los 255 caracteres.'
       );
     }
 
@@ -102,9 +102,9 @@ export class TagsService {
       );
     }
 
-    if (trimmedName.length > 32) {
+    if (trimmedName.length > 255) {
       throw new BadRequestException(
-        'El nombre de la etiqueta no puede exceder los 32 caracteres.'
+        'El nombre de la etiqueta no puede exceder los 255 caracteres.'
       );
     }
 
