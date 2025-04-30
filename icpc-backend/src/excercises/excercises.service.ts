@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateExcerciseDto } from './dto/create-excercise.dto';
 import { UpdateExcerciseDto } from './dto/update-excercise.dto';
-import { Repository, Like } from 'typeorm';
+import { Repository, Like, In } from 'typeorm';
 import { Memory } from 'src/memory/entities/memory.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Excercise } from './entities/excercise.entity';
@@ -396,17 +396,44 @@ export class ExcercisesService {
     });
 
     if (role === 'admin') {
+      const newTime = await this.timeRepository.findOneBy({
+        id: updateData.time.id
+      });
+      const newCategory = await this.categoryRepository.findOneBy({
+        id: updateData.category.id
+      });
+      const newDifficulty = await this.difficultyRepository.findOneBy({
+        id: updateData.difficulty.id
+      });
+      const newTags = await this.tagRepository
+        .createQueryBuilder('tag')
+        .where({
+          id: In(updateData.tags.map(tag => tag.id))
+        })
+        .getMany();
       // Actualizar directamente las propiedades del ítem original
       existingExercise.title = updateData.name || existingExercise.title;
-      existingExercise.description =
-        updateData.description || existingExercise.description;
-      existingExercise.clue = updateData.clue || existingExercise.clue;
+      existingExercise.category = newCategory || existingExercise.category;
+      existingExercise.tags = newTags || existingExercise.tags;
+      existingExercise.difficulty =
+        newDifficulty || existingExercise.difficulty;
+      existingExercise.time = newTime || existingExercise.time;
+      existingExercise.memoryId = memory || existingExercise.memoryId;
+      existingExercise.example_input =
+        updateData.example_input || existingExercise.example_input;
+      existingExercise.example_output =
+        updateData.example_output || existingExercise.example_output;
       existingExercise.constraints =
         updateData.constraints || existingExercise.constraints;
+      existingExercise.clue = updateData.clue || existingExercise.clue;
+      existingExercise.author = updateData.author || existingExercise.author;
+      existingExercise.description =
+        updateData.description || existingExercise.description;
+      existingExercise.input = updateData.input || existingExercise.input;
+      existingExercise.output = updateData.output || existingExercise.output;
       existingExercise.solution =
         updateData.solution || existingExercise.solution;
       existingExercise.updated_by = user.id;
-      existingExercise.memoryId = memory || existingExercise.memoryId;
 
       const savedUpdatedExercise = await this.exerciseRepository.save(
         existingExercise
