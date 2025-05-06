@@ -27,7 +27,7 @@ async function ExercisePage({ params }: Readonly<{ params: { exercise: string } 
           itemId={params.exercise}
           description={description.compiledSource}
           solution={solution.compiledSource}
-          clue={exerciseBody.clue ? exerciseBody.clue : ''}
+          clue={exerciseBody.clue}
         />
       </div>
     </main>

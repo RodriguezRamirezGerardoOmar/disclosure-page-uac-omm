@@ -1,12 +1,6 @@
 'use client'
-import { Menu, Transition, Listbox } from '@headlessui/react'
-import {
-  EllipsisVerticalIcon,
-  UserCircleIcon,
-  ClockIcon,
-  CpuChipIcon
-} from '@heroicons/react/20/solid'
-import React, { Fragment } from 'react'
+import { UserCircleIcon, ClockIcon, CpuChipIcon } from '@heroicons/react/20/solid'
+import React from 'react'
 import { enumTextTags, Exercise } from '@/constants/types'
 import TagListComponent from '../tags/TagListComponent'
 import { TextComponent } from '../text/TextComponent'
@@ -30,7 +24,8 @@ const ExerciseCardComponent = ({ ...props }: Readonly<ExerciseCardComponentProps
         itemId={props.itemId!}
       />
 
-      <div className='mx-auto w-full px-4 py-8 sm:px-6 lg:px-8'> {/* Asegurar que ocupe todo el ancho */}
+      <div className='mx-auto w-full px-4 py-8 sm:px-6 lg:px-8'>
+        {' '}
         {/* Contenido principal */}
         <div className='mx-auto grid w-full max-w-full grid-cols-1 grid-rows-1 items-start gap-x-8 gap-y-8 lg:grid-cols-3'>
           {/* Resumen del ejercicio */}
