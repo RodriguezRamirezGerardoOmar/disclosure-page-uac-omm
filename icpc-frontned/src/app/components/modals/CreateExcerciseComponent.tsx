@@ -459,23 +459,19 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
                 )}
                 name='memoryId'
               />
-              <TextFieldComponent
+              <TextAreaComponent
                 labelText='Entrada esperada'
                 register={methods.register}
                 fieldName='input'
                 id='input'
                 necessary={true}
-                type='text'
-                auto='off'
               />
-              <TextFieldComponent
+              <TextAreaComponent
                 labelText='Salida esperada'
                 register={methods.register}
                 fieldName='output'
                 id='output'
                 necessary={true}
-                type='text'
-                auto='off'
               />
               <TextAreaComponent
                 labelText='Restricciones'
