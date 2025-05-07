@@ -19,6 +19,7 @@ import {
 import { User } from 'src/users/entities/user.entity';
 import { Comment } from 'src/comment/entities/comment.entity';
 import { TicketService } from 'src/ticket/ticket.service';
+import { MailerService } from 'src/mailer/mailer.service';
 
 @Injectable()
 export class ExcercisesService {
@@ -41,7 +42,8 @@ export class ExcercisesService {
     private readonly userRepository: Repository<User>,
     @InjectRepository(Comment)
     private readonly commentRepository: Repository<Comment>,
-    private readonly ticketsService: TicketService
+    private readonly ticketsService: TicketService,
+    private readonly mailerService: MailerService
   ) {}
 
   async create(createExcerciseDto: CreateExcerciseDto) {
@@ -152,6 +154,12 @@ export class ExcercisesService {
       commentId: commentId
     });
     const savedTicket = await this.ticketRepository.save(ticket);
+    this.mailerService.sendMail(
+      'al057564@uacam.mx',
+      'create',
+      savedExcercise.title,
+      'ejercicio'
+    );
     if (savedExcercise && savedTicket) {
       return savedExcercise;
     } else {
@@ -247,6 +255,7 @@ export class ExcercisesService {
         .leftJoinAndSelect('excercise.category', 'category')
         .leftJoinAndSelect('excercise.tags', 'tags')
         .leftJoinAndSelect('excercise.difficulty', 'difficulty')
+        .orderBy('excercise.title', 'ASC')
         .getMany();
     } else if (!body.category && body.tags.length === 0 && !body.difficulty) {
       return this.exerciseRepository
@@ -255,6 +264,7 @@ export class ExcercisesService {
         .leftJoinAndSelect('excercise.category', 'category')
         .leftJoinAndSelect('excercise.tags', 'tags')
         .leftJoinAndSelect('excercise.difficulty', 'difficulty')
+        .orderBy('excercise.title', 'ASC')
         .getMany();
     } else if (body.category && body.tags.length > 0 && body.difficulty) {
       const category = await this.categoryRepository.findOneBy({
@@ -281,6 +291,7 @@ export class ExcercisesService {
         .leftJoinAndSelect('excercise.category', 'category')
         .leftJoinAndSelect('excercise.tags', 'tags')
         .leftJoinAndSelect('excercise.difficulty', 'difficulty')
+        .orderBy('excercise.title', 'ASC')
         .getMany();
       const sent = [];
       const names = tags.map(tag => tag.name);
@@ -298,6 +309,7 @@ export class ExcercisesService {
         .where('tag.name IN (:...tags)', {
           tags: body.tags.map(tag => tag.name)
         })
+        .orderBy('excercise.title', 'ASC')
         .getMany();
       const difficulty = await this.difficultyRepository.findOneBy({
         name: body.difficulty
@@ -311,6 +323,7 @@ export class ExcercisesService {
         .leftJoinAndSelect('excercise.category', 'category')
         .leftJoinAndSelect('excercise.tags', 'tags')
         .leftJoinAndSelect('excercise.difficulty', 'difficulty')
+        .orderBy('excercise.title', 'ASC')
         .getMany();
       const sent = [];
       const names = tags.map(tag => tag.name);
@@ -341,6 +354,7 @@ export class ExcercisesService {
         .leftJoinAndSelect('excercise.category', 'category')
         .leftJoinAndSelect('excercise.tags', 'tags')
         .leftJoinAndSelect('excercise.difficulty', 'difficulty')
+        .orderBy('excercise.title', 'ASC')
         .getMany();
     } else {
       const difficulty = await this.difficultyRepository.findOneBy({
@@ -355,6 +369,7 @@ export class ExcercisesService {
         .leftJoinAndSelect('excercise.category', 'category')
         .leftJoinAndSelect('excercise.tags', 'tags')
         .leftJoinAndSelect('excercise.difficulty', 'difficulty')
+        .orderBy('excercise.title', 'ASC')
         .getMany();
     }
   }
@@ -386,7 +401,9 @@ export class ExcercisesService {
       ? await this.memoryRepository.findOneBy({ id: memoryId })
       : null;
 
-    const existingExercise = await this.exerciseRepository.findOneBy({ id });
+    const existingExercise = await this.exerciseRepository.findOneBy({
+      id: id
+    });
     if (!existingExercise) {
       throw new BadRequestException('El ejercicio no existe');
     }
@@ -490,6 +507,12 @@ export class ExcercisesService {
         });
         const savedTicket = await this.ticketRepository.save(ticket);
         if (savedTicket) {
+          this.mailerService.sendMail(
+            'al057564@uacam.mx',
+            'update',
+            savedUpdatedExercise.title,
+            'ejercicio'
+          );
           return savedUpdatedExercise;
         } else {
           throw new BadRequestException('Error al actualizar el ejercicio');
@@ -499,6 +522,7 @@ export class ExcercisesService {
   }
   async remove(id: string, user: string) {
     const excercise = await this.exerciseRepository.findOneBy({ id });
+    const title = excercise.title;
     const userId = await this.userRepository
       .createQueryBuilder('user')
       .where('user.id = :userId', { userId: user })
@@ -538,6 +562,12 @@ export class ExcercisesService {
       });
       const savedTicket = await this.ticketRepository.save(ticket);
       if (savedTicket) {
+        this.mailerService.sendMail(
+          'al057564@uacam.mx',
+          'delete',
+          title,
+          'ejercicio'
+        );
         return savedTicket;
       } else {
         throw new BadRequestException('Error al eliminar el ejercicio');
