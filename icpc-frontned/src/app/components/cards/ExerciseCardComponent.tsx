@@ -90,7 +90,8 @@ const ExerciseCardComponent = ({ ...props }: Readonly<ExerciseCardComponentProps
                 <dd className='inline text-accent dark:text-dark-accent'>
                   <TextComponent
                     sizeFont='s12'
-                    tag={enumTextTags.p}>
+                    tag={enumTextTags.p}
+                    className='whitespace-pre-wrap'>
                     {props.exercise.input}
                   </TextComponent>
                 </dd>
@@ -100,7 +101,8 @@ const ExerciseCardComponent = ({ ...props }: Readonly<ExerciseCardComponentProps
                 <dd className='inline text-accent dark:text-dark-accent'>
                   <TextComponent
                     sizeFont='s12'
-                    tag={enumTextTags.p}>
+                    tag={enumTextTags.p}
+                    className='whitespace-pre-wrap'>
                     {props.exercise.output}
                   </TextComponent>
                 </dd>
@@ -110,7 +112,8 @@ const ExerciseCardComponent = ({ ...props }: Readonly<ExerciseCardComponentProps
                 <dd className='inline text-accent dark:text-dark-accent'>
                   <TextComponent
                     sizeFont='s12'
-                    tag={enumTextTags.p}>
+                    tag={enumTextTags.p}
+                    className='whitespace-pre-wrap'>
                     {props.exercise.example_input}
                   </TextComponent>
                 </dd>
@@ -120,7 +123,8 @@ const ExerciseCardComponent = ({ ...props }: Readonly<ExerciseCardComponentProps
                 <dd className='inline text-accent dark:text-dark-accent'>
                   <TextComponent
                     sizeFont='s12'
-                    tag={enumTextTags.p}>
+                    tag={enumTextTags.p}
+                    className='whitespace-pre-wrap'>
                     {props.exercise.example_output}
                   </TextComponent>
                 </dd>
