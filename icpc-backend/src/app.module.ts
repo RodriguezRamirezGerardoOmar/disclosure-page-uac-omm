@@ -19,6 +19,7 @@ import { TicketModule } from './ticket/ticket.module';
 import { ReportModule } from './report/report.module';
 import { LoggerService } from './services/logger.service';
 import { FactsModule } from './facts/facts.module';
+import { MailerModule } from './mailer/mailer.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { FactsModule } from './facts/facts.module';
         autoLoadEntities: true
       })
     }),
+    MailerModule,
     AuthModule,
     UsersModule,
     RolesModule,
