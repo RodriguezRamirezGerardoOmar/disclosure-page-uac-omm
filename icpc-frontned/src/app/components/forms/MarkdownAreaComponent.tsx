@@ -6,6 +6,7 @@ import { commands } from "@uiw/react-md-editor";
 import { getCodeString } from "rehype-rewrite";
 import katex from "katex";
 import "katex/dist/katex.css";
+import { ICommand, TextState } from "@uiw/react-md-editor";
 
 // Dynamic import of the MarkdownEditor component
 const MarkdownEditor = dynamic(() => import("@uiw/react-md-editor").then(mod => mod.default), { ssr: false });
@@ -27,6 +28,60 @@ Date: 21 - 03 - 2024
 Author: Gerardo Omar Rodriguez Ramirez
 */
 
+const customToolbar: ICommand = {
+  name: 'insertDollarBlock',
+  keyCommand: 'insertDollarBlock',
+  buttonProps: { 
+    'aria-label': 'Wrap with dollar signs',
+    style: {
+      width: '20px',
+      height: '20px',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: '0'
+    }
+  },
+  icon: (
+    <svg 
+      xmlns="http://www.w3.org/2000/svg" 
+      width="12" 
+      height="12" 
+      viewBox="0 0 24 24" 
+      strokeWidth="1.8" 
+      stroke="currentColor" 
+      fill="none"
+    >
+      <path 
+        strokeLinecap="round" 
+        strokeLinejoin="round" 
+        d="M4.745 3A23.933 23.933 0 0 0 3 12c0 3.183.62 6.22 1.745 9M19.5 3c.967 2.78 1.5 5.817 1.5 9s-.533 6.22-1.5 9M8.25 8.885l1.444-.89a.75.75 0 0 1 1.105.402l2.402 7.206a.75.75 0 0 0 1.104.401l1.445-.889m-8.25.75.213.09a1.687 1.687 0 0 0 2.062-.617l4.45-6.676a1.688 1.688 0 0 1 2.062-.618l.213.09"
+      />
+    </svg>
+  ),
+  execute: (state: TextState, api: { setSelectionRange: (selection: { start: number; end: number }) => void, replaceSelection: (text: string) => void }) => {
+    if (!state || !api) return;
+
+    const selectedText = state.selectedText;
+    
+    if (selectedText) {
+      const wrappedText = `$${selectedText}$`;
+      api.replaceSelection(wrappedText);
+      api.setSelectionRange({
+        start: state.selection.start,
+        end: state.selection.start + wrappedText.length
+      });
+    } else {
+      const insertText = '$$';
+      api.replaceSelection(insertText);
+      api.setSelectionRange({
+        start: state.selection.start + 1,
+        end: state.selection.start + 1
+      });
+    }
+  },
+};
+
 export default function MarkdownAreaComponent({ value, onChange, labelText, className }: Readonly<MarkdownAreaComponentProps>) {
   const style = cn(className, "w-full");
 
@@ -39,7 +94,7 @@ export default function MarkdownAreaComponent({ value, onChange, labelText, clas
         value={value}
         height="320px"
         onChange={onChange}
-        commands={[...commands.getCommands()]}
+        commands={[...commands.getCommands(), customToolbar]} // Add custom toolbar here
         previewOptions={{
           components: {
             code: ({ children = [], className, ...props }) => {
