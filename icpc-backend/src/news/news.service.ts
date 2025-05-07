@@ -13,6 +13,7 @@ import {
 } from 'src/ticket/entities/ticket.entity';
 import { Comment } from 'src/comment/entities/comment.entity';
 import { User } from 'src/users/entities/user.entity';
+import { MailerService } from 'src/mailer/mailer.service';
 
 @Injectable()
 export class NewsService {
@@ -26,7 +27,8 @@ export class NewsService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     @InjectRepository(Image)
-    private readonly imageRepository: Repository<Image>
+    private readonly imageRepository: Repository<Image>,
+    private readonly mailerService: MailerService
   ) {}
   async create(createNewsDto: CreateNewsDto) {
     const news = await this.newsRepository.findOneBy({
@@ -65,6 +67,12 @@ export class NewsService {
       });
       const savedTicket = await this.ticketRepository.save(ticket);
       if (savedNews && savedTicket) {
+        this.mailerService.sendMail(
+          'al057564@uacam.mx',
+          'create',
+          savedNews.title,
+          'noticia'
+        );
         return savedNews;
       } else {
         throw new BadRequestException('Error al crear la noticia');
@@ -169,6 +177,12 @@ export class NewsService {
         });
         const savedTicket = await this.ticketRepository.save(ticket);
         if (savedTicket) {
+          this.mailerService.sendMail(
+            'al057564@uacam.mx',
+            'update',
+            savedUpdatedNews.title,
+            'noticia'
+          );
           return savedUpdatedNews;
         } else {
           throw new BadRequestException('Error al actualizar la noticia');
@@ -218,6 +232,12 @@ export class NewsService {
       });
       const savedTicket = await this.ticketRepository.save(ticket);
       if (savedTicket) {
+        this.mailerService.sendMail(
+          'al057564@uacam.mx',
+          'delete',
+          news.title,
+          'noticia'
+        );
         return savedTicket;
       }
     }
