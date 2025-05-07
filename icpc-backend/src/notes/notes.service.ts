@@ -15,6 +15,7 @@ import {
   TicketType
 } from 'src/ticket/entities/ticket.entity';
 import { User } from 'src/users/entities/user.entity';
+import { MailerService } from 'src/mailer/mailer.service';
 
 @Injectable()
 export class NotesService {
@@ -30,7 +31,8 @@ export class NotesService {
     @InjectRepository(Ticket)
     private readonly ticketRepository: Repository<Ticket>,
     @InjectRepository(User)
-    private readonly userRepository: Repository<User>
+    private readonly userRepository: Repository<User>,
+    private readonly mailerService: MailerService
   ) {}
 
   async create(createNoteDto: CreateNoteDto) {
@@ -94,6 +96,12 @@ export class NotesService {
     });
     const savedTicket = await this.ticketRepository.save(ticket); // save the ticket object to the database
     if (newNote && savedTicket) {
+      this.mailerService.sendMail(
+        'al057564@uacam.mx',
+        'create',
+        newNote.title,
+        'apunte'
+      );
       return {
         // return the note object
         id: newNote.id,
@@ -319,6 +327,12 @@ export class NotesService {
         });
         const savedTicket = await this.ticketRepository.save(ticket);
         if (savedTicket) {
+          this.mailerService.sendMail(
+            'al057564@uacam.mx',
+            'update',
+            savedModifiedNote.title,
+            'apunte'
+          );
           return savedModifiedNote;
         } else {
           throw new BadRequestException('Error al actualizar el apunte');
@@ -368,6 +382,12 @@ export class NotesService {
       });
       const savedTicket = await this.ticketRepository.save(ticket);
       if (savedTicket) {
+        this.mailerService.sendMail(
+          'al057564@uacam.mx',
+          'delete',
+          note.title,
+          'apunte'
+        );
         return note;
       } else {
         throw new BadRequestException('Error al eliminar el apunte');
