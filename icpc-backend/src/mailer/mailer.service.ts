@@ -18,10 +18,10 @@ export class MailerService {
             to: address,
             from: '"Sistema de divulgación para competencias académicas" <helplessnerd.1d0lat0r@gmail.com>',
             subject: 'Notificación',
-            text: `Un alumno ha enviado un reporte al .${
+            text: `Un alumno ha enviado un reporte al ${
               itemType ? itemType : 'objeto'
             } de nombre ${title}.`,
-            html: `<p>Un alumno ha enviado un reporte al .${
+            html: `<p>Un alumno ha enviado un reporte al ${
               itemType ? itemType : 'objeto'
             } de nombre ${title}.</p>`
           });
@@ -41,8 +41,10 @@ export class MailerService {
                 ? 'un nuevo ' + itemType
                 : 'una nueva noticia'
             } de nombre ${title}.`,
-            html: `<p>Un alumno ha enviado un reporte al .${
-              itemType ? itemType : 'objeto'
+            html: `<p>Un entrenador ha creado  ${
+              itemType === 'noticia'
+                ? 'un nuevo ' + itemType
+                : 'una nueva noticia'
             } de nombre ${title}.</p>`
           });
           console.log('Email sent successfully');
@@ -59,8 +61,26 @@ export class MailerService {
             text: `Un entrenador ha modificado  ${
               itemType === 'noticia' ? 'un ' + itemType : 'una noticia'
             } de nombre ${title}.`,
-            html: `<p>Un alumno ha enviado un reporte al .${
-              itemType ? itemType : 'objeto'
+            html: `<p>Un entrenador ha modificado  ${
+              itemType === 'noticia' ? 'un ' + itemType : 'una noticia'
+            } de nombre ${title}.</p>`
+          });
+          console.log('Email sent successfully');
+        } catch (error) {
+          console.log(error);
+        }
+        break;
+      case 'delete':
+        try {
+          await this.mailerService.sendMail({
+            to: address,
+            from: '"Sistema de divulgación para competencias académicas" <helplessnerd.1d0lat0r@gmail.com>',
+            subject: 'Notificación',
+            text: `Un entrenador ha eliminado  ${
+              itemType === 'noticia' ? 'un ' + itemType : 'una noticia'
+            } de nombre ${title}.`,
+            html: `<p>Un entrenador ha eliminado  ${
+              itemType === 'noticia' ? 'un ' + itemType : 'una noticia'
             } de nombre ${title}.</p>`
           });
           console.log('Email sent successfully');

@@ -1,13 +1,13 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateReportDto } from './dto/create-report.dto';
 import { UpdateReportDto } from './dto/update-report.dto';
-//TODO move import path of itemType
 import { Report, ItemType } from 'src/report/entities/report.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { News } from 'src/news/entities/news.entity';
 import { Note } from 'src/notes/entities/note.entity';
 import { Excercise } from 'src/excercises/entities/excercise.entity';
+import { MailerService } from 'src/mailer/mailer.service';
 
 @Injectable()
 export class ReportService {
@@ -19,7 +19,8 @@ export class ReportService {
     @InjectRepository(Note)
     private readonly noteRepository: Repository<Note>,
     @InjectRepository(Excercise)
-    private readonly excerciseRepository: Repository<Excercise>
+    private readonly excerciseRepository: Repository<Excercise>,
+    private readonly mailerService: MailerService
   ) {}
 
   async create(createReportDto: CreateReportDto) {
@@ -73,10 +74,16 @@ export class ReportService {
       report.summary = createReportDto.summary;
       report.report = createReportDto.report;
       const savedReport = await this.reportRepository.save(report);
+      this.mailerService.sendMail(
+        'al057564@uacam.mx',
+        'report',
+        createReportDto.summary,
+        'reporte'
+      );
       return {
         id: savedReport.id,
         summary: savedReport.summary,
-        report: savedReport.report,
+        report: savedReport.report
       };
     } else {
       throw new BadRequestException('Item not found');
