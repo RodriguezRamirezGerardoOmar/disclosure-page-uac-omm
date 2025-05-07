@@ -37,7 +37,7 @@ const ExerciseMarkdownComponent: React.FC<ExerciseMarkdownComponentProps> = ({ d
               className='font-bold'>
               Restricciones del problema:
             </TextComponent>
-            <TextComponent>{constraints}</TextComponent>
+            <TextComponent className={'whitespace-pre-wrap'}>{constraints}</TextComponent>
           </div>
         )}
         <br />
