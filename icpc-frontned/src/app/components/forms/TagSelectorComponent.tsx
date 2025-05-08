@@ -9,6 +9,7 @@ interface TagSelectorProps {
   selectedTags: Tags[]
   id: string
   onChange: (val: Tags[]) => void
+  label: string
 }
 
 /*
@@ -79,7 +80,7 @@ const colourStyles: StylesConfig<Tags, true> = {
       backgroundColor: color.alpha(0.1).css()
     }
   },
-  multiValueLabel: (styles) => ({
+  multiValueLabel: styles => ({
     ...styles,
     color: 'black'
   }),
@@ -104,7 +105,7 @@ Date: 22 - 03 - 2024
 Author: Gerardo Omar Rodriguez Ramirez
 */
 
-const TagSelectorComponent = ({ options, selectedTags, id, onChange }: Readonly<TagSelectorProps>) => {
+const TagSelectorComponent = ({ options, selectedTags, id, onChange, label }: Readonly<TagSelectorProps>) => {
   const labelClassname = 'place-self-start dark:text-dark-accent'
 
   const handleChange = (selectedOptions: MultiValue<Tags>) => {
@@ -119,7 +120,7 @@ const TagSelectorComponent = ({ options, selectedTags, id, onChange }: Readonly<
       <TextComponent
         className={labelClassname}
         tag={enumTextTags.p}>
-        Etiquetas
+        {label}
       </TextComponent>
       <Select
         instanceId={id}

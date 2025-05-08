@@ -236,7 +236,7 @@ const CreateNewsComponent = (props: CreateNewsComponentProps) => {
             </TextComponent>
 
             <TextFieldComponent
-              labelText='Título'
+              labelText='Título*'
               fieldName='title'
               id='title'
               register={methods.register}
@@ -269,7 +269,7 @@ const CreateNewsComponent = (props: CreateNewsComponentProps) => {
                 <MarkdownAreaComponent
                   value={field.value}
                   onChange={newValue => field.onChange(newValue)}
-                  labelText='Cuerpo de la noticia'
+                  labelText='Cuerpo de la noticia*'
                   className='p-2'
                 />
               )}

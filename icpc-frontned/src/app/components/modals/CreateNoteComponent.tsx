@@ -249,7 +249,7 @@ const CreateNoteComponent = (props: CreateNotesComponentProps) => {
               {props.id ? 'Editar apunte' : 'Crear apunte'}
             </TextComponent>
             <TextFieldComponent
-              labelText='Título del apunte'
+              labelText='Título del apunte*'
               register={methods.register}
               fieldName='title'
               auto='off'
@@ -263,7 +263,7 @@ const CreateNoteComponent = (props: CreateNotesComponentProps) => {
               rules={{ required: true }}
               render={({ field }) => (
                 <InputSelectorCreateComponent
-                  label='Categoría'
+                  label='Categoría*'
                   id='category'
                   ref={selectRef}
                   onChange={val => {
@@ -289,12 +289,13 @@ const CreateNoteComponent = (props: CreateNotesComponentProps) => {
                   options={tags}
                   selectedTags={field.value}
                   onChange={val => field.onChange(val)}
+                  label='Etiquetas*'
                 />
               )}
               rules={{ required: true }}
             />
             <TextAreaComponent
-              labelText='Descripción'
+              labelText='Descripción*'
               register={methods.register}
               fieldName='description'
               id='description'
@@ -309,7 +310,7 @@ const CreateNoteComponent = (props: CreateNotesComponentProps) => {
                 <MarkdownAreaComponent
                   value={field.value}
                   onChange={newValue => field.onChange(newValue)}
-                  labelText='Contenido'
+                  labelText='Contenido*'
                   className='p-2'
                 />
               )}

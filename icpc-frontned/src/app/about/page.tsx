@@ -6,7 +6,7 @@ import About from '@/app/about/acercade.mdx'
 export default function Page() {
   return (
     <main className='flex min-h-screen flex-col w-full items-center py-24'>
-      <div className='w-4/5 dark:text-dark-accent'>
+      <div className='w-4/5 dark:text-dark-accent text-justify'>
         <TextComponent
           sizeFont='s28'
           tag={enumTextTags.h1}

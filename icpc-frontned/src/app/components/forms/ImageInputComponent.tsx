@@ -83,7 +83,7 @@ const ImageInputComponent = forwardRef(({ cover, ...props }: IImageInputProps, r
       <TextComponent
         className='mt-2 block font-semibold text-gray-900 dark:text-dark-accent'
         sizeFont='s12'>
-        {selectedFile ? 'Imagen seleccionada' : 'Sube una imagen de portada'}
+        {selectedFile ? 'Imagen seleccionada' : 'Sube una imagen de portada*'}
       </TextComponent>
       <input
         {...props.register(props.fieldName)}
