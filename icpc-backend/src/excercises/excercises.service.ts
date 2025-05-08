@@ -413,9 +413,9 @@ export class ExcercisesService {
     });
 
     if (role === 'admin') {
-      const newTime = await this.timeRepository.findOneBy({
-        id: updateData.time.id
-      });
+      const newTime = updateData.time
+        ? await this.timeRepository.findOneBy({ id: updateData.time.id })
+        : null;
       const newCategory = await this.categoryRepository.findOneBy({
         id: updateData.category.id
       });
@@ -434,22 +434,20 @@ export class ExcercisesService {
       existingExercise.tags = newTags || existingExercise.tags;
       existingExercise.difficulty =
         newDifficulty || existingExercise.difficulty;
-      existingExercise.time = newTime || existingExercise.time;
-      existingExercise.memoryId = memory || existingExercise.memoryId;
+      existingExercise.time = updateData.time ? newTime : null;
+      existingExercise.memoryId = memoryId ? memory : null;
       existingExercise.example_input =
-        updateData.example_input || existingExercise.example_input;
+        updateData.example_input || null;
       existingExercise.example_output =
-        updateData.example_output || existingExercise.example_output;
-      existingExercise.constraints =
-        updateData.constraints || existingExercise.constraints;
-      existingExercise.clue = updateData.clue || existingExercise.clue;
-      existingExercise.author = updateData.author || existingExercise.author;
+        updateData.example_output || null;
+      existingExercise.constraints = updateData.constraints !== undefined ? updateData.constraints : existingExercise.constraints;
+      existingExercise.clue = updateData.clue !== undefined ? updateData.clue : existingExercise.clue;
+      existingExercise.author = updateData.author !== undefined ? updateData.author : existingExercise.author;
+      existingExercise.solution = updateData.solution !== undefined ? updateData.solution : existingExercise.solution;
       existingExercise.description =
-        updateData.description || existingExercise.description;
-      existingExercise.input = updateData.input || existingExercise.input;
-      existingExercise.output = updateData.output || existingExercise.output;
-      existingExercise.solution =
-        updateData.solution || existingExercise.solution;
+        updateData.description || null;
+      existingExercise.input = updateData.input || null;
+      existingExercise.output = updateData.output || null;
       existingExercise.updated_by = user.id;
 
       const savedUpdatedExercise = await this.exerciseRepository.save(

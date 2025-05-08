@@ -34,13 +34,13 @@ export class MailerService {
             subject: 'Notificación',
             text: `Un entrenador ha creado  ${
               itemType === 'noticia'
-                ? 'un nuevo ' + itemType
-                : 'una nueva noticia'
+                ? 'una nueva noticia'
+                : 'un nuevo ' + itemType
             } de nombre "${title}".`,
             html: `<p>Un entrenador ha creado  ${
               itemType === 'noticia'
-                ? 'un nuevo ' + itemType
-                : 'una nueva noticia'
+                ? 'una nueva noticia'
+                : 'un nuevo ' + itemType
             } de nombre "${title}".</p>`
           });
           console.log('Email sent successfully');
@@ -55,10 +55,10 @@ export class MailerService {
             from: '"Sistema de divulgación para competencias académicas" <helplessnerd.1d0lat0r@gmail.com>',
             subject: 'Notificación',
             text: `Un entrenador ha modificado  ${
-              itemType === 'noticia' ? 'un ' + itemType : 'una noticia'
+              itemType === 'noticia' ? 'una noticia' : 'un ' + itemType
             } de nombre "${title}".`,
             html: `<p>Un entrenador ha modificado  ${
-              itemType === 'noticia' ? 'un ' + itemType : 'una noticia'
+              itemType === 'noticia' ? 'una noticia' : 'un ' + itemType
             } de nombre "${title}".</p>`
           });
           console.log('Email sent successfully');
@@ -73,10 +73,10 @@ export class MailerService {
             from: '"Sistema de divulgación para competencias académicas" <helplessnerd.1d0lat0r@gmail.com>',
             subject: 'Notificación',
             text: `Un entrenador ha eliminado  ${
-              itemType === 'noticia' ? 'un ' + itemType : 'una noticia'
+              itemType === 'noticia' ? 'una noticia' : 'un ' + itemType
             } de nombre "${title}".`,
             html: `<p>Un entrenador ha eliminado  ${
-              itemType === 'noticia' ? 'un ' + itemType : 'una noticia'
+              itemType === 'noticia' ? 'una noticia' : 'un ' + itemType
             } de nombre "${title}".</p>`
           });
           console.log('Email sent successfully');
