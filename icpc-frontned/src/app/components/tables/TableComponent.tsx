@@ -102,6 +102,7 @@ export default function TableComponent() {
                 field.onChange(val)
                 setSelectedTags(val)
               }}
+              label='Etiquetas'
             />
           )}
           rules={{ required: true }}
