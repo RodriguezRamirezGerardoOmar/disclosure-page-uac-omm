@@ -230,7 +230,10 @@ export class NotesService {
   async update(id: string, updateNoteDto: UpdateNoteDto) {
     const { title, tags, role, categoryId, description, ...updateData } =
       updateNoteDto;
-
+    const noteByTitle = await this.noteRepository.findOneBy({ title });
+    if (noteByTitle && noteByTitle.id !== id) {
+      throw new BadRequestException('El título ya existe'); // throw error if title exists
+    }
     // Verificar si la nota existe
     const existingNote = await this.noteRepository.findOneBy({ id });
     if (!existingNote) {

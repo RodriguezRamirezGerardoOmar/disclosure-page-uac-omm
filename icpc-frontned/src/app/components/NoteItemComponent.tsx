@@ -25,13 +25,15 @@ const NoteItemComponent = ({ ...props }: Readonly<NoteItemProps>) => {
         <TextComponent
           sizeFont='s24'
           className='text-secondary dark:text-dark-complementary'>{`${props.index}.- ${props.note.title}`}</TextComponent>
-        <TagListComponent
-          tags={props.note.tags.slice(0, 3)} // Mostrar solo las primeras etiquetas
-          showIcon={false}
-        />
-        {props.note.tags.length > 3 && ( // Mostrar puntos suspensivos si hay más etiquetas N. debe ser igual que el de arriba
-          <span className='ml-1 text-gray-400'> ... </span> 
-        )}
+        <div className='flex flex-row'>
+          <TagListComponent
+            tags={props.note.tags.slice(0, 3)} // Mostrar solo las primeras etiquetas
+            showIcon={false}
+          />
+          {props.note.tags.length > 3 && ( // Mostrar puntos suspensivos si hay más etiquetas N. debe ser igual que el de arriba
+            <span className='ml-1 text-gray-400'> ... </span>
+          )}
+        </div>
       </div>
       <TextComponent className='p-1'>{props.note.commentId.body}</TextComponent>
     </div>
