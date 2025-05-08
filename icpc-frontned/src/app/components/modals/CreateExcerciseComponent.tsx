@@ -363,7 +363,7 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
           <div className='grid grid-cols-1 items-start lg:grid-cols-2 lg:gap-16'>
             <div className='w-full flex flex-col gap-2'>
               <TextFieldComponent
-                labelText='Nombre del ejercicio'
+                labelText='Nombre del ejercicio*'
                 register={methods.register}
                 fieldName='name'
                 id='name'
@@ -377,7 +377,7 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
                 rules={{ required: true }}
                 render={({ field }) => (
                   <InputSelectorCreateComponent
-                    label='Categoría'
+                    label='Categoría*'
                     id='category'
                     ref={selectRef}
                     onChange={val => {
@@ -403,6 +403,7 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
                     options={tags}
                     selectedTags={field.value}
                     onChange={val => field.onChange(val)}
+                    label='Etiquetas*'
                   />
                 )}
                 rules={{ required: true }}
@@ -413,7 +414,7 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
                 rules={{ required: true }}
                 render={({ field }) => (
                   <InputSelectorComponent
-                    label='Nivel de dificultad'
+                    label='Nivel de dificultad*'
                     id='difficulty'
                     onChange={val => field.onChange(val)}
                     options={difficulty.map(item => {
@@ -460,14 +461,14 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
                 name='memoryId'
               />
               <TextAreaComponent
-                labelText='Entrada esperada'
+                labelText='Entrada esperada*'
                 register={methods.register}
                 fieldName='input'
                 id='input'
                 necessary={true}
               />
               <TextAreaComponent
-                labelText='Salida esperada'
+                labelText='Salida esperada*'
                 register={methods.register}
                 fieldName='output'
                 id='output'
@@ -510,20 +511,20 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
                   <MarkdownAreaComponent
                     value={field.value}
                     onChange={newValue => field.onChange(newValue)}
-                    labelText='Descripción del problema'
+                    labelText='Descripción del problema*'
                     className='p-2'
                   />
                 )}
               />
               <TextAreaComponent
-                labelText='Ejemplo de entrada'
+                labelText='Ejemplo de entrada*'
                 register={methods.register}
                 fieldName='example_input'
                 id='example_input'
                 necessary={true}
               />
               <TextAreaComponent
-                labelText='Ejemplo de salida'
+                labelText='Ejemplo de salida*'
                 register={methods.register}
                 fieldName='example_output'
                 id='example_output'
