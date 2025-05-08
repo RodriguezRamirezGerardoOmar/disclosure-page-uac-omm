@@ -436,16 +436,23 @@ export class ExcercisesService {
         newDifficulty || existingExercise.difficulty;
       existingExercise.time = updateData.time ? newTime : null;
       existingExercise.memoryId = memoryId ? memory : null;
-      existingExercise.example_input =
-        updateData.example_input || null;
-      existingExercise.example_output =
-        updateData.example_output || null;
-      existingExercise.constraints = updateData.constraints !== undefined ? updateData.constraints : existingExercise.constraints;
-      existingExercise.clue = updateData.clue !== undefined ? updateData.clue : existingExercise.clue;
-      existingExercise.author = updateData.author !== undefined ? updateData.author : existingExercise.author;
-      existingExercise.solution = updateData.solution !== undefined ? updateData.solution : existingExercise.solution;
-      existingExercise.description =
-        updateData.description || null;
+      existingExercise.example_input = updateData.example_input || null;
+      existingExercise.example_output = updateData.example_output || null;
+      existingExercise.constraints =
+        updateData.constraints !== undefined
+          ? updateData.constraints
+          : existingExercise.constraints;
+      existingExercise.clue =
+        updateData.clue !== undefined ? updateData.clue : existingExercise.clue;
+      existingExercise.author =
+        updateData.author !== undefined
+          ? updateData.author
+          : existingExercise.author;
+      existingExercise.solution =
+        updateData.solution !== undefined
+          ? updateData.solution
+          : existingExercise.solution;
+      existingExercise.description = updateData.description || null;
       existingExercise.input = updateData.input || null;
       existingExercise.output = updateData.output || null;
       existingExercise.updated_by = user.id;
