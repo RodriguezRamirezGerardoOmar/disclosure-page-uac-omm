@@ -35,7 +35,7 @@ const FooterComponent = () => {
             className='h-5 w-5'
           />
         </Link>
-        <Link href='#'>
+        <Link href='https://github.com/IYair/disclosure-page-uac'>
           <img
             src='/icons/github.svg'
             alt='github'
@@ -50,34 +50,42 @@ const FooterComponent = () => {
             className='dark:text-dark-accent'>
             Ayuda
           </TextComponent>
-          <Link href='#'>
+          <a
+            href='https://docs.google.com/document/d/1-aLK5OST6Cspt5T3QcoaWOvk18ReNOFkL9ll7dWVWlc/edit?usp=sharing'
+            target='_blank'>
             <TextComponent
               tag={enumTextTags.p}
               className='hover:text-secondary dark:text-dark-accent underline hover:dark:text-dark-complementary'>
-              Guías
-            </TextComponent>
-          </Link>
-          <Link href='#'>
-            <TextComponent
-              tag={enumTextTags.p}
-              className='hover:text-secondary dark:text-dark-accent underline hover:dark:text-dark-complementary'>
-              Manual de usuario
-            </TextComponent>
-          </Link>
-          <a href='https://docs.google.com/document/d/1Vfu5OLYlcCr0F3ME8G9lROPt1UpBiGCdAMaQGelLA3Y/edit?usp=sharing' target='_blank'>
-            <TextComponent
-              tag={enumTextTags.p}
-              className='hover:text-secondary dark:text-dark-accent underline hover:dark:text-dark-complementary'>
-              Manual de entrenador
+              Guía de usuario
             </TextComponent>
           </a>
-          <Link href='/dev'>
+          <a
+            href='https://docs.google.com/document/d/1Vfu5OLYlcCr0F3ME8G9lROPt1UpBiGCdAMaQGelLA3Y/edit?usp=sharing'
+            target='_blank'>
+            <TextComponent
+              tag={enumTextTags.p}
+              className='hover:text-secondary dark:text-dark-accent underline hover:dark:text-dark-complementary'>
+              Guía de entrenador
+            </TextComponent>
+          </a>
+          <a
+            href='https://docs.google.com/document/d/1J0NTvy99DgoFfp2tCWQRubL1emRJGJzVcIvkBxUTw5s/edit?usp=sharing'
+            target='_blank'>
+            <TextComponent
+              tag={enumTextTags.p}
+              className='hover:text-secondary dark:text-dark-accent underline hover:dark:text-dark-complementary'>
+              Guía de administrador
+            </TextComponent>
+          </a>
+          <a
+            href='https://docs.google.com/document/d/1J0NTvy99DgoFfp2tCWQRubL1emRJGJzVcIvkBxUTw5s/edit?tab=t.0#heading=h.lp2ddy70jda2'
+            target='_blank'>
             <TextComponent
               tag={enumTextTags.p}
               className='hover:text-secondary dark:text-dark-accent underline hover:dark:text-dark-complementary'>
               Manual de programador
             </TextComponent>
-          </Link>
+          </a>
         </div>
         <div className='flex flex-col gap-2'>
           <TextComponent
@@ -115,7 +123,7 @@ const FooterComponent = () => {
           </Link>
         </div>
       </div>
-      <TextComponent tag={enumTextTags.p}>© 2024. Todos los derechos reservados</TextComponent>
+      <TextComponent tag={enumTextTags.p}>© 2023 - 2026. Todos los derechos reservados</TextComponent>
     </div>
   )
 }

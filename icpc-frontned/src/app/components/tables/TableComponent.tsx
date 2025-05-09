@@ -131,11 +131,15 @@ export default function TableComponent() {
 
       {exercises.length > 0 ? (
         <div className='mt-8'>
-          <div className='-mx-4 -my-2 sm:-mx-6 lg:-mx-8 overflow-x-auto'> {/* Permitir desplazamiento horizontal */}
+          <div className='-mx-4 -my-2 sm:-mx-6 lg:-mx-8 overflow-x-auto'>
+            {' '}
+            {/* Permitir desplazamiento horizontal */}
             <div
               className={`ring-1 ring-gray-300 sm:mx-0 sm:rounded-lg inline-block 
               min-w-full align-middle scroll-smooth`}>
-              <table className='min-w-full border-separate border-spacing-0'> {/* Asegurar que la tabla ocupe el ancho completo */}
+              <table className='min-w-full border-separate border-spacing-0'>
+                {' '}
+                {/* Asegurar que la tabla ocupe el ancho completo */}
                 <thead>
                   <tr>
                     <th
@@ -181,7 +185,11 @@ export default function TableComponent() {
                           id !== Object.keys(exercise).length - 1 ? 'border-b border-gray-200' : '',
                           'whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 dark:text-dark-accent sm:pl-6 lg:pl-8'
                         )}>
-                        <a href={`/exercises/${exercise.id}`} className='hover:text-dark-complementary'>{exercise.title}</a>
+                        <a
+                          href={`/exercises/${exercise.id}`}
+                          className='hover:text-dark-complementary'>
+                          {exercise.title}
+                        </a>
                       </td>
                       <td
                         className={classNames(
@@ -211,13 +219,15 @@ export default function TableComponent() {
                           id !== Object.keys(exercise).length - 1 ? 'border-b border-gray-200' : '',
                           'whitespace-nowrap text-sm text-gray-500'
                         )}>
-                        <TagListComponent
-                          tags={exercise.tags.slice(0, 3)} // Mostrar solo las primeras 3 etiquetas
-                          showIcon={false}
-                        />
-                        {exercise.tags.length > 3 && (
-                          <span className='ml-1 text-gray-400'>...</span> // Mostrar puntos suspensivos si hay más etiquetas
-                        )}
+                        <div className='flex flex-row'>
+                          <TagListComponent
+                            tags={exercise.tags.slice(0, 3)} // Mostrar solo las primeras 3 etiquetas
+                            showIcon={false}
+                          />
+                          {exercise.tags.length > 3 && (
+                            <span className='ml-1 text-gray-400'>...</span> // Mostrar puntos suspensivos si hay más etiquetas
+                          )}
+                        </div>
                       </td>
                       <td
                         className={classNames(
