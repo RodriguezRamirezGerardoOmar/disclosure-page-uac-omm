@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import CreateExerciseComponent from '../modals/CreateExcerciseComponent'
 import CreateNoteComponent from '../modals/CreateNoteComponent'
 import CreateNewsComponent from '../modals/CreateNewsComponent'
@@ -19,7 +19,8 @@ export default function TabComponent({
   myTabs,
   adminTabs,
   isAdmin,
-  handleChange
+  handleChange,
+  updateTable
 }: Readonly<{
   readonly myTabs: ReadonlyArray<{
     href: string | undefined
@@ -33,6 +34,7 @@ export default function TabComponent({
   }>
   handleChange: (tabName: string) => void
   isAdmin: boolean
+  updateTable: () => void
 }>) {
   const tabs = myTabs.concat(adminTabs)
   const accountTab = tabs.find(tab => tab.name === 'Cuentas')
@@ -54,6 +56,10 @@ export default function TabComponent({
   const onCreateMemory = (memoryName: string) => {
     // Implementa la lógica para manejar la creación de un límite de memoria
   }
+
+  useEffect(() => {
+    updateTable()
+  }, [showModal])
 
   const handleTabChange = (tabName: string) => {
     setActiveTab(tabName)

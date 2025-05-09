@@ -297,6 +297,7 @@ function Page() {
                 adminTabs={adminTabs}
                 handleChange={handleChange}
                 isAdmin={user?.role === 'admin'}
+                updateTable={() => setUpdate(!update)}
               />
             </div>
             <div className='mx-10 sm:padding-full'>
