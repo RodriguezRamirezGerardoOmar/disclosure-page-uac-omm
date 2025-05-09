@@ -77,15 +77,11 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
               name: exercise.title,
               category: { label: exercise.category.name, value: exercise.category.id },
               difficulty: { label: exercise.difficulty.name, value: exercise.difficulty.id },
-              input: exercise.input,
-              output: exercise.output,
               constraints: exercise.constraints,
               clue: exercise.clue,
               tags: exercise.tags,
               author: exercise.author,
               description: exercise.description,
-              example_input: exercise.example_input,
-              example_output: exercise.example_output,
               solution: exercise.solution
             })
             setSelectedCategory({ label: exercise.category.name, value: exercise.category.id })
@@ -137,17 +133,11 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
       name: String(formData.name),
       category: { name: formData.category.label, id: formData.category.value },
       difficulty: { name: formData.difficulty.label, id: formData.difficulty.value },
-      time: formData.time?.value ? { value: formData.time.label, id: formData.time.value } : null,
-      memoryId: formData.memoryId?.value ? String(formData.memoryId.value) : '',
-      input: String(formData.input),
-      output: String(formData.output),
       constraints: formData.constraints ? String(formData.constraints) : '',
       clue: formData.clue ? String(formData.clue) : '',
       tags: formData.tags,
       author: String(formData.author),
       description: String(formData.description),
-      example_input: String(formData.example_input),
-      example_output: String(formData.example_output),
       solution: formData.solution ? String(formData.solution) : '',
       isVisible: false,
       userAuthor: String(useAuthStore.getState().user?.userName),
@@ -191,15 +181,11 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
             name: exercise.title,
             category: { label: exercise.category.name, value: exercise.category.id },
             difficulty: { label: exercise.difficulty.name, value: exercise.difficulty.id },
-            input: exercise.input,
-            output: exercise.output,
             constraints: exercise.constraints,
             clue: exercise.clue,
             tags: exercise.tags,
             author: exercise.author,
             description: exercise.description,
-            example_input: exercise.example_input,
-            example_output: exercise.example_output,
             solution: exercise.solution
           })
           setSelectedCategory({ label: exercise.category.name, value: exercise.category.id })
@@ -223,24 +209,14 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
   const dataValidate = () => {
     const data = methods.getValues()
     const missingFields = []
-    const invalidFields = []
+    const invalidFields: string[] = []
 
     // Validación de campos obligatorios
     if (!data.name) missingFields.push('Nombre del ejercicio')
     if (data.category.length === 0) missingFields.push('Categoría')
     if (data.difficulty.length === 0) missingFields.push('Nivel de dificultad')
-    if (!data.input) missingFields.push('Entrada esperada')
-    if (!data.output) missingFields.push('Salida esperada')
-    if (!data.example_input) missingFields.push('Ejemplo de entrada')
-    if (!data.example_output) missingFields.push('Ejemplo de salida')
     if (data.tags.length === 0) missingFields.push('Etiquetas')
     if (!data.description) missingFields.push('Descripción del problema')
-
-    // Validación de longitud de caracteres
-    if (data.input && data.input.length > 255) invalidFields.push('Entrada esperada')
-    if (data.output && data.output.length > 255) invalidFields.push('Salida esperada')
-    if (data.example_input && data.example_input.length > 255) invalidFields.push('Ejemplo de entrada')
-    if (data.example_output && data.example_output.length > 255) invalidFields.push('Ejemplo de salida')
 
     // Mostrar errores si hay campos faltantes o inválidos
     if (missingFields.length > 0) {
@@ -385,20 +361,6 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
                 name='difficulty'
               />
               <TextAreaComponent
-                labelText='Entrada esperada*'
-                register={methods.register}
-                fieldName='input'
-                id='input'
-                necessary={true}
-              />
-              <TextAreaComponent
-                labelText='Salida esperada*'
-                register={methods.register}
-                fieldName='output'
-                id='output'
-                necessary={true}
-              />
-              <TextAreaComponent
                 labelText='Restricciones'
                 register={methods.register}
                 fieldName='constraints'
@@ -439,20 +401,6 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
                     className='p-2'
                   />
                 )}
-              />
-              <TextAreaComponent
-                labelText='Ejemplo de entrada*'
-                register={methods.register}
-                fieldName='example_input'
-                id='example_input'
-                necessary={true}
-              />
-              <TextAreaComponent
-                labelText='Ejemplo de salida*'
-                register={methods.register}
-                fieldName='example_output'
-                id='example_output'
-                necessary={true}
               />
               <Controller
                 name='solution'

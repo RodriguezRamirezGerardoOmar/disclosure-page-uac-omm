@@ -41,14 +41,8 @@ export class ExcercisesService {
   ) {}
 
   async create(createExcerciseDto: CreateExcerciseDto) {
-    const {
-      name,
-      category,
-      difficulty,
-      clue,
-      constraints,
-      solution
-    } = createExcerciseDto;
+    const { name, category, difficulty, clue, constraints, solution } =
+      createExcerciseDto;
     if (name.length > 255) {
       throw new BadRequestException(
         'El nombre del ejercicio no puede exceder 255 caracteres'
@@ -353,7 +347,7 @@ export class ExcercisesService {
   }
 
   async update(id: string, updateExcerciseDto: UpdateExcerciseDto) {
-    const {role, ...updateData } = updateExcerciseDto;
+    const { role, ...updateData } = updateExcerciseDto;
     if (updateData.name.length > 255) {
       throw new BadRequestException(
         'El nombre del ejercicio no puede exceder 255 caracteres'

@@ -22,14 +22,6 @@ export class CreateExcerciseDto {
 
   @ApiProperty()
   @IsString()
-  input: string;
-
-  @ApiProperty()
-  @IsString()
-  output: string;
-
-  @ApiProperty()
-  @IsString()
   constraints: string;
 
   @ApiProperty()
@@ -47,14 +39,6 @@ export class CreateExcerciseDto {
   @ApiProperty()
   @IsString()
   description: string;
-
-  @ApiProperty()
-  @IsString()
-  example_input: string;
-
-  @ApiProperty()
-  @IsString()
-  example_output: string;
 
   @ApiProperty()
   @IsString()

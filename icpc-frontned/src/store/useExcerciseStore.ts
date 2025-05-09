@@ -13,15 +13,11 @@ interface ICreateExcercise {
   name: string
   category: { name: string, id: string }
   difficulty: { name: string, id: string }
-  input: string
-  output: string
   constraints: string
   clue: string
   tags: Tags[]
   author: string
   description: string
-  example_input: string
-  example_output: string
   solution: string
   isVisible: boolean
   userAuthor: string
