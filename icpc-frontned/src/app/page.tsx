@@ -57,7 +57,7 @@ export default async function Home() {
     <main className='flex min-h-screen flex-col items-center mt-16 gap-8'>
       <section className='flex relative w-full h-[90vw] lg:h-[50vw] dark:invert items-stretch'>
         <Image
-          src='/images/Portada_Portal_lCPC.jpg'
+          src='/images/landing-omm.png'
           alt='Logo'
           fill
           priority
@@ -66,7 +66,7 @@ export default async function Home() {
         <div className='h-40 w-full bg-gradient-to-t from-white self-end'></div>
       </section>
       <CardWithHeaderComponent
-        title={'¡Bienvenido a la comunidad de desarrolladores de software!'}
+        title={'¡Bienvenido a la comunidad de la Olimpiada Mexicana de Matemáticas!'}
         comments={`Esta página ha nacido con el propósito de recoger de forma libre y gratuita 
 material de preparación para olimpiadas de matemáticas destinado a alumnos de enseñanza secundaria. 
 Encontrarás dicho material organizado por categorías con unidades teóricas, ejercicios resueltos y 
