@@ -21,16 +21,6 @@ export class CreateExcerciseDto {
   difficulty: { name: string; id: string };
 
   @ApiProperty()
-  @IsObject()
-  @IsOptional()
-  time: { value: number; id: string };
-
-  @ApiProperty()
-  @IsString()
-  @IsOptional()
-  memoryId: string;
-
-  @ApiProperty()
   @IsString()
   input: string;
 
