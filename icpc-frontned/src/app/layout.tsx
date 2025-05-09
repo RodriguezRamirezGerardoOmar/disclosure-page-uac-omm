@@ -9,8 +9,8 @@ import { Toaster } from 'sonner'
 const montserrat = Montserrat({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Sistema de divulgación de ICPC',
-  description: 'Plataforma para la divulgación de información y recursos del ICPC',
+  title: 'Sistema de divulgación de OMM',
+  description: 'Plataforma para la divulgación de información y recursos del OMM',
 }
 
 export default function RootLayout({
