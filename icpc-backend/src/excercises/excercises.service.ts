@@ -207,6 +207,8 @@ export class ExcercisesService {
         .leftJoinAndSelect('excercise.category', 'category')
         .leftJoinAndSelect('excercise.tags', 'tags')
         .leftJoinAndSelect('excercise.difficulty', 'difficulty')
+        .orderBy('difficulty.level', 'ASC') // Ordenar por nivel de dificultad
+        .addOrderBy('excercise.title', 'ASC') // Luego ordenar por título
         .getMany();
       const sent = [];
       const names = tags.map(tag => tag.name);
@@ -231,6 +233,8 @@ export class ExcercisesService {
         .leftJoinAndSelect('excercise.category', 'category')
         .leftJoinAndSelect('excercise.tags', 'tags')
         .leftJoinAndSelect('excercise.difficulty', 'difficulty')
+        .orderBy('difficulty.level', 'ASC') // Ordenar por nivel de dificultad
+        .addOrderBy('excercise.title', 'ASC') // Luego ordenar por título
         .getMany();
       const sent = [];
       const names = tags.map(tag => tag.name);
@@ -255,7 +259,8 @@ export class ExcercisesService {
         .leftJoinAndSelect('excercise.category', 'category')
         .leftJoinAndSelect('excercise.tags', 'tags')
         .leftJoinAndSelect('excercise.difficulty', 'difficulty')
-        .orderBy('excercise.title', 'ASC')
+        .orderBy('difficulty.level', 'ASC') // Ordenar por nivel de dificultad
+        .addOrderBy('excercise.title', 'ASC') // Luego ordenar por título
         .getMany();
     } else if (!body.category && body.tags.length === 0 && !body.difficulty) {
       return this.exerciseRepository
@@ -264,7 +269,8 @@ export class ExcercisesService {
         .leftJoinAndSelect('excercise.category', 'category')
         .leftJoinAndSelect('excercise.tags', 'tags')
         .leftJoinAndSelect('excercise.difficulty', 'difficulty')
-        .orderBy('excercise.title', 'ASC')
+        .orderBy('difficulty.level', 'ASC') // Ordenar por nivel de dificultad
+        .addOrderBy('excercise.title', 'ASC') // Luego ordenar por título
         .getMany();
     } else if (body.category && body.tags.length > 0 && body.difficulty) {
       const category = await this.categoryRepository.findOneBy({
@@ -291,7 +297,8 @@ export class ExcercisesService {
         .leftJoinAndSelect('excercise.category', 'category')
         .leftJoinAndSelect('excercise.tags', 'tags')
         .leftJoinAndSelect('excercise.difficulty', 'difficulty')
-        .orderBy('excercise.title', 'ASC')
+        .orderBy('difficulty.level', 'ASC') // Ordenar por nivel de dificultad
+        .addOrderBy('excercise.title', 'ASC') // Luego ordenar por título
         .getMany();
       const sent = [];
       const names = tags.map(tag => tag.name);
@@ -323,7 +330,8 @@ export class ExcercisesService {
         .leftJoinAndSelect('excercise.category', 'category')
         .leftJoinAndSelect('excercise.tags', 'tags')
         .leftJoinAndSelect('excercise.difficulty', 'difficulty')
-        .orderBy('excercise.title', 'ASC')
+        .orderBy('difficulty.level', 'ASC') // Ordenar por nivel de dificultad
+        .addOrderBy('excercise.title', 'ASC') // Luego ordenar por título
         .getMany();
       const sent = [];
       const names = tags.map(tag => tag.name);
@@ -354,7 +362,8 @@ export class ExcercisesService {
         .leftJoinAndSelect('excercise.category', 'category')
         .leftJoinAndSelect('excercise.tags', 'tags')
         .leftJoinAndSelect('excercise.difficulty', 'difficulty')
-        .orderBy('excercise.title', 'ASC')
+        .orderBy('difficulty.level', 'ASC') // Ordenar por nivel de dificultad
+        .addOrderBy('excercise.title', 'ASC') // Luego ordenar por título
         .getMany();
     } else {
       const difficulty = await this.difficultyRepository.findOneBy({
@@ -369,7 +378,8 @@ export class ExcercisesService {
         .leftJoinAndSelect('excercise.category', 'category')
         .leftJoinAndSelect('excercise.tags', 'tags')
         .leftJoinAndSelect('excercise.difficulty', 'difficulty')
-        .orderBy('excercise.title', 'ASC')
+        .orderBy('difficulty.level', 'ASC') // Ordenar por nivel de dificultad
+        .addOrderBy('excercise.title', 'ASC') // Luego ordenar por título
         .getMany();
     }
   }
