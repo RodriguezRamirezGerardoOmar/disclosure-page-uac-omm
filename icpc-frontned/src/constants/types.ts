@@ -45,3 +45,187 @@ type typeReactNode = ReactNode
 export interface IReactNode {
   children?: typeReactNode
 }
+
+export type TResponseBasicError = {
+  Code: number
+  ResponseMessage: string
+  StatusCode: number
+  Success: boolean
+}
+
+export type TResponseError = {
+  ErrorCode: number
+  ErrorMessage: string
+  PropertyName: string
+  AttemptedValue?: { [key: string]: string } | string | number | boolean
+}
+
+export interface IApiResponse<E = {}> {
+  data: any
+  rows?: number // totalCurrentPageRecords
+  totalRows?: number // totalRecords
+  currentPage?: number // currentPageNumber
+  totalPageRecords?: number // totalCurrentPageRecords
+  totalAvailablePages?: number
+  error: boolean
+  statusCode: number | undefined
+  message: string
+  errors: E | TResponseError | any
+}
+
+export interface Option {
+  label: string
+  value: string
+}
+
+export interface Tags {
+  id: string
+  name: string
+  color: string
+}
+
+export interface Categories {
+  id: string
+  name: string
+}
+
+export interface Difficulties {
+  id: string
+  level: number
+  name: string
+}
+
+export interface TimeLimit {
+  id: string
+  timeLimit: number
+}
+
+export interface MemoryLimit {
+  id: string
+  memoryLimit: number
+}
+
+export enum TicketType {
+  EXERCISE = 'exercise',
+  NOTE = 'note',
+  NEWS = 'news',
+  UTILS = 'utils',
+  USER = 'user'
+}
+
+export enum TicketStatus {
+  PENDING = 'pending',
+  ACCEPTED = 'accepted',
+  REJECTED = 'rejected'
+}
+
+export enum TicketOperation {
+  CREATE = 'create',
+  UPDATE = 'update',
+  DELETE = 'delete'
+}
+
+export interface News {
+  index: number
+  id: string
+  title: string
+  body: string
+  created_by: string
+  created_at: string
+  imageId: {
+    id: string
+  }
+}
+
+export interface Note {
+  id: string
+  title: string
+  body: string
+  isVisible: boolean
+  tags: Tags[]
+  category: Categories
+  commentId: {
+    id: string
+    body: string
+  }
+}
+
+export interface DBImage {
+  id: string
+  assetName: string
+  data: Buffer
+}
+
+export interface Exercise {
+  id: string
+  title: string
+  description: string
+  category: Categories
+  difficulty: Difficulties
+  time: TimeLimit
+  memoryId: MemoryLimit
+  input: string
+  output: string
+  example_input: string
+  example_output: string
+  constraints: string
+  clue: string
+  tags: Tags[]
+  solution: string
+  author: string
+}
+
+export interface Quote {
+  phrase: string
+  author : string
+}
+
+export const AllTabs = {
+  EXERCISES: 'Ejercicios',
+  NOTES: 'Apuntes',
+  NEWS: 'Noticias',
+  REPORTS: 'Reportes',
+  CHANGES: 'Cambios',
+  CATEGORIES: 'Categoría',
+  TAGS: 'Etiqueta',
+  TIME: 'Tiempo',
+  MEMORY: 'Memoria',
+  DIFFICULTY: 'Dificultad',
+  ACCOUNT: 'Cuentas'
+}
+
+export interface IProfileTableItem {
+  color?: string
+  tagName?: string
+  level?: number
+  index: number
+  id: string
+  title: string
+}
+
+  export interface Ticket {
+    id: string,
+    itemType: TicketType,
+    commentId: {
+      id: string,
+      body: string
+    },
+    operation: TicketOperation,
+    originalExerciseId: Exercise,
+    modifiedExerciseId: Exercise,
+    originalNoteId: Note,
+    modifiedNoteId: Note,
+    originalNewsId: News,
+    modifiedNewsId: News,
+    status: TicketStatus
+  }
+
+  export interface Report {
+    id: string,
+    summary: string,
+    report: string,
+    itemType: TicketType,
+    note: Note,
+    excercise: Exercise,
+    news: News
+  }

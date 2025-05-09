@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Req,
   UseGuards
 } from '@nestjs/common';
 import { UsersService } from './users.service';
@@ -22,26 +23,32 @@ import {
 import { AuthGuard } from '../auth/guard/auth.guard';
 import { Auth } from '../common/decorators/auth.decorator';
 import { RoleEnum } from '../common/enums/role.enum';
+import { LoggerService } from 'src/services/logger.service';
 
-@Controller('users')
-@Auth(RoleEnum.ADMIN)
-@ApiTags('User')
+@Controller('users') // This is the path that will be used for all the endpoints in this controller.
+@Auth(RoleEnum.ADMIN) // This is the role that will be used for all the endpoints in this controller.
+@ApiTags('User') // This is the name of the tag for all the endpoints in this controller.
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly loggerService: LoggerService
+  ) {}
 
   @ApiBearerAuth()
-  @Post('user')
+  @Post('') // Endpoint for a post request to create a user, at "/users/user"
   @UseGuards(AuthGuard)
   @ApiCreatedResponse({
     description: 'The user has been successfully created.'
   })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+  async create(@Body() createUserDto: CreateUserDto, @Req() req: any) {
+    const newUser = await this.usersService.create(createUserDto);
+    this.loggerService.logChange('users', 'create', req.user.name, newUser.id);
+    return newUser;
   }
 
-  @Get('users')
+  @Get('')
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
   @ApiResponse({
@@ -53,7 +60,7 @@ export class UsersController {
     return await this.usersService.findAll();
   }
 
-  @Get('user/:id')
+  @Get(':id')
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
   @ApiResponse({
@@ -65,19 +72,26 @@ export class UsersController {
     return this.usersService.findOne(id);
   }
 
-  @Patch('user/:id')
+  @Patch(':id')
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
+  @Auth(RoleEnum.USER) // Permitir acceso a usuarios y administradores
   @ApiResponse({
     description: 'The user has been successfully updated.'
   })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
-  update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(id, updateUserDto);
+  async update(
+    @Param('id') id: string,
+    @Body() updateUserDto: UpdateUserDto,
+    @Req() req: any
+  ) {
+    const modifiedUser = await this.usersService.update(id, updateUserDto);
+    this.loggerService.logChange('users', 'update', req.user.name, id);
+    return modifiedUser;
   }
 
-  @Delete('user/:id')
+  @Delete(':id/:user')
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
   @ApiResponse({
@@ -85,7 +99,13 @@ export class UsersController {
   })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(id);
+  async remove(
+    @Param('id') id: string,
+    @Param('user') user: string,
+    @Req() req: any
+  ) {
+    const deletedUser = await this.usersService.remove(id, user);
+    this.loggerService.logChange('users', 'delete', req.user.name, id);
+    return deletedUser;
   }
 }

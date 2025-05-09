@@ -1,16 +1,14 @@
 import React from 'react'
-import { NewsCardComponent } from '@/app/components/cards/NewsCardComponent'
-const data = require('@/app/news/noticia.json')
+import NewsCardComponent from '@/app/components/cards/NewsCardComponent'
 
-export default function Page({ params }: { params: { id: string } }) {
-  {
-    if (data.id.toString() === params.id) {
-      return (
-        <main className='grid min-h-screen grid-cols-1 place-items-center justify-between py-24'>
-          <NewsCardComponent data={data} />
-        </main>
-      )
-    }
+export default async function Page({ params }: Readonly<{ params: { id: string } }>) {
+  if (params.id !== undefined && params.id !== '') {
+    return (
+      <main className='grid min-h-screen grid-cols-1 place-items-center justify-between py-24'>
+        <NewsCardComponent id={params.id} />
+      </main>
+    )
+  } else {
     return (
       <main className='grid min-h-screen grid-cols-1 place-items-center justify-between py-24'>
         <h1>404</h1>

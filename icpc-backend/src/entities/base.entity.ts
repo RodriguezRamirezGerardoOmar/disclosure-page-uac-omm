@@ -10,23 +10,21 @@ export class BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @CreateDateColumn()
-  createdAt: Date;
+  @CreateDateColumn({ type: 'timestamp', name: 'created_at' })
+  created_at: Date;
 
-  @Column({
-    default: null
-  })
-  createdBy: string;
+  @Column({ name: 'created_by', default: null, nullable: true })
+  created_by: string;
 
-  @UpdateDateColumn()
-  updatedAt: Date;
+  @UpdateDateColumn({ type: 'timestamp', name: 'updated_at' })
+  updated_at: Date;
 
-  @Column({ default: null })
-  updatedBy: string;
+  @Column({ name: 'updated_by', default: null, nullable: true })
+  updated_by: string;
 
-  @DeleteDateColumn()
-  deletedAt: Date;
+  @DeleteDateColumn({ type: 'timestamp', name: 'deleted_at' })
+  deleted_at: Date;
 
-  @Column({ default: null })
-  deletedBy: string;
+  @Column({ name: 'deleted_by', default: null, nullable: true })
+  deleted_by: string;
 }

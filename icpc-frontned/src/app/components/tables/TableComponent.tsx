@@ -1,137 +1,260 @@
-
+'use client'
 import TagListComponent from '../tags/TagListComponent'
 import { PaginationComponent } from '../paginations/PaginationComponent'
-const exercises = [
-  { id: 1, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example','ejemplo'] },
-  { id: 2, name: 'Lindsay Walton', dificult: 2, categorie: 'Algebra', tag: ['example','ejemplo'] },
-  { id: 3, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example','ejemplo'] },
-  { id: 4, name: 'Lindsay Walton', dificult: 3, categorie: 'Algebra', tag: ['example','ejemplo'] },
-  { id: 5, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example','ejemplo'] },
-  { id: 6, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example','ejemplo'] },
-  { id: 7, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example','ejemplo'] },
-  { id: 8, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example','ejemplo'] },
-  { id: 9, name: 'Lindsay Walton', dificult: 5, categorie: 'Algebra', tag: ['example','ejemplo'] },
-  { id: 10, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example','ejemplo'] },
-  { id: 11, name: 'Lindsay Walton', dificult: 2, categorie: 'Algebra', tag: ['example','ejemplo'] },
-  { id: 12, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example','ejemplo'] },
-  { id: 13, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example','ejemplo'] },
-  { id: 14, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example','ejemplo'] },
-  { id: 16, name: 'Lindsay Walton', dificult: 3, categorie: 'Algebra', tag: ['example','ejemplo'] },
-  { id: 17, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example','ejemplo'] },
-  { id: 18, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example','ejemplo'] },
-  { id: 19, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example','ejemplo'] },
-  { id: 20, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example','ejemplo'] },
-  { id: 21, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example','ejemplo'] },
-  { id: 22, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example','ejemplo'] },
-  { id: 23, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example','ejemplo'] },
-  { id: 24, name: 'Lindsay Walton', dificult: 1, categorie: 'Algebra', tag: ['example','ejemplo'] }
-]
+import InputSelectorComponent from '../dropdowns/InputSelectorComponent'
+import TagSelectorComponent from '../forms/TagSelectorComponent'
+import { Exercise, Tags, enumTextTags } from '@/constants/types'
+import { Controller, FieldValues, useForm } from 'react-hook-form'
+import { useEffect, useState } from 'react'
+import useUtilsStore from '@/store/useUtilsStore'
+import useExcerciseStore from '@/store/useExcerciseStore'
+import { TextComponent } from '../text/TextComponent'
+
+/*
+Input: a list of strings that define CSS classes
+Output: a single string of Tailwind CSS
+Return value: a string with the CSS classes
+Function: joins multiple strings into a single string
+Variables: classes
+Date: 21 - 03 - 2024
+Author: Gerardo Omar Rodriguez Ramirez
+*/
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
 }
 
+/*
+Input: a list of exercises with id, name, dificult, category and tags
+Output: a table of exercises to see the items and enter to their pages
+Return value: a table component with the exercises
+Function: creates a table of exercises as a component
+Variables: exercises, id, name, dificult, categorie, tag
+Date: 11 - 04 - 2024
+Author: Gerardo Omar Rodriguez Ramirez
+*/
+
 export default function TableComponent() {
+  const tags = useUtilsStore().tags
+  const getTags = useUtilsStore.getState().getTags
+  const categories = useUtilsStore().categories
+  const getCategories = useUtilsStore.getState().getCategories
+  const difficulties = useUtilsStore().difficulty
+  const getDifficulties = useUtilsStore.getState().getDifficulties
+  const methods = useForm<FieldValues>()
+  const [tagOptions, setTagOptions] = useState<Tags[]>(tags)
+  const [category, setCategory] = useState('')
+  const [categoryOptions, setCategoryOptions] = useState(categories)
+  const [selectedTags, setSelectedTags] = useState<Tags[]>([])
+  const [difficultyOptions, setDifficultyOptions] = useState(difficulties)
+  const [difficulty, setDifficulty] = useState('')
+  const [exercises, setExercises] = useState<Exercise[]>([])
+  const getExcerciseList = useExcerciseStore.getState().getExerciseList
+
+  useEffect(() => {
+    getCategories().then(response => {
+      setCategoryOptions(response)
+    })
+    getDifficulties().then(response => {
+      setDifficultyOptions(response)
+    })
+    getTags().then(response => {
+      setTagOptions(response)
+    })
+    getExcerciseList(selectedTags, category, difficulty).then(response => {
+      setExercises(response)
+    })
+  }, [getCategories, getDifficulties, selectedTags, category, difficulty, getExcerciseList, getTags])
+
   return (
     <div className='px-4 sm:px-6 lg:px-8 '>
-      <div className='mt-8 flow-root'>
-        <div className='-mx-4 -my-2 sm:-mx-6 lg:-mx-8'>
-          <div
-            className={`ring-1 ring-gray-300 sm:mx-0 sm:rounded-lg inline-block 
-          min-w-full align-middle  h-[70vh] overflow-y-scroll scroll-smooth`}>
-            <table className='min-w-full border-separate border-spacing-0'>
-              <thead>
-                <tr>
-                  <th
-                    scope='col'
-                    className='sticky top-0 z-10 border-b border-gray-300 bg-white bg-opacity-75 py-3.5 pl-4 pr-3 
-                    text-left text-sm font-semibold text-gray-500 backdrop-blur 
-                    backdrop-filter sm:pl-6 lg:pl-8'>
-                    NOMBRE
-                  </th>
-                  <th
-                    scope='col'
-                    className='sticky top-0 z-10 border-b border-gray-300 bg-white bg-opacity-75 px-3 py-3.5 text-left text-sm
-                    font-semibold text-gray-500 backdrop-blur backdrop-filter'>
-                    DIFICULTAD
-                  </th>
-                  <th
-                    scope='col'
-                    className='sticky top-0 z-10 hidden border-b border-gray-300 bg-white bg-opacity-75 px-3 py-3.5
-                    text-left text-sm font-semibold text-gray-500 backdrop-blur backdrop-filter lg:table-cell'>
-                    CATEGORIA
-                  </th>
-                  <th
-                    scope='col'
-                    className='sticky top-0 z-10 border-b border-gray-300 bg-white bg-opacity-75 px-3 
-                    py-3.5 text-left text-sm font-semibold text-gray-500 backdrop-blur backdrop-filter'>
-                    ETIQUETAS
-                  </th>
-                  <th
-                    scope='col'
-                    className='sticky top-0 z-10 border-b border-gray-300 bg-white bg-opacity-75 
-                    py-3.5 pl-3 pr-4 backdrop-blur backdrop-filter sm:pr-6 lg:pr-8'>
-                    <span className='sr-only'>Edit</span>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {exercises.map((exercise, id) => (
-                  <tr
-                    key={exercise.id}
-                    className='cursor-pointer hover:bg-slate-200'>
-                    <td
-                      className={classNames(
-                        id !== Object.keys(exercise).length - 1 ? 'border-b border-gray-200' : '',
-                        'whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8'
-                      )}>
-                      {exercise.name}
-                    </td>
-                    <td
-                      className={classNames(
-                        id !== Object.keys(exercise).length - 1 ? 'border-b border-gray-200' : '',
-                        'whitespace-nowrap flex gap-1 px-3 py-4 text-sm text-gray-500'
-                      )}>
-                        { 
-                        //itera sobre el numero de dificultad y pinta tantas estrellas como sea el numero
-                        Array.from(Array(exercise.dificult), (_, i) => (
-                          <img src='icons/estrellas.svg' key={i}  className='h-5 w-5' />
-                        ))
-                      }
-                    </td>
-                    <td
-                      className={classNames(
-                        id !== Object.keys(exercise).length - 1 ? 'border-b border-gray-200' : '',
-                        'whitespace-nowrap hidden px-3 py-4 text-sm text-gray-500 lg:table-cell'
-                      )}>
-                      {exercise.categorie}
-                    </td>
-                    <td
-                      className={classNames(
-                        id !== Object.keys(exercise).length - 1 ? 'border-b border-gray-200' : '',
-                        'whitespace-nowrap text-sm text-gray-500'
-                      )}>
-                        <TagListComponent tags={exercise.tag.map(tag => ({id: 1, name: tag, color: '#66bb00'}))} showIcon={false} />
-                    </td>
-                    <td
-                      className={classNames(
-                        id !== Object.keys(exercise).length - 1 ? 'border-b border-gray-200' : '',
-                        'relative whitespace-nowrap py-4 pr-4 pl-3 text-right text-sm font-medium sm:pr-8 lg:pr-8'
-                      )}>
-                      <a
-                        href='#'
-                        className='text-indigo-600 hover:text-indigo-900'>
-                        Edit<span className='sr-only'>, {exercise.name}</span>
-                      </a>
-                    </td>
+      <form className='w-full grid grid-cols-1 sm:grid-cols-3 gap-4'>
+        <Controller
+          defaultValue={[]}
+          control={methods.control}
+          render={({ field }) => (
+            <InputSelectorComponent
+              label='Categoría'
+              id='category'
+              onChange={val => {
+                field.onChange(val)
+                setCategory((val === null ? '' : val.label) as string)
+              }}
+              options={categoryOptions.map(item => {
+                return { label: item.name, value: item.id }
+              })}
+              selectedOption={field.value}
+              clearable={true}
+            />
+          )}
+          name='category'
+        />
+        <Controller
+          name='tags'
+          defaultValue={[] as Tags[]}
+          control={methods.control}
+          render={({ field }) => (
+            <TagSelectorComponent
+              id='tagSelector2'
+              options={tagOptions}
+              selectedTags={field.value}
+              onChange={val => {
+                field.onChange(val)
+                setSelectedTags(val)
+              }}
+              label='Etiquetas'
+            />
+          )}
+          rules={{ required: true }}
+        />
+        <Controller
+          defaultValue={[]}
+          control={methods.control}
+          render={({ field }) => (
+            <InputSelectorComponent
+              label='Dificultad'
+              id='difficulty'
+              onChange={val => {
+                field.onChange(val)
+                setDifficulty((val === null ? '' : val.label) as string)
+              }}
+              options={difficultyOptions.map(item => {
+                return { label: item.name, value: item.id }
+              })}
+              selectedOption={field.value}
+              clearable={true}
+            />
+          )}
+          name='difficulty'
+        />
+      </form>
+
+      {exercises.length > 0 ? (
+        <div className='mt-8'>
+          <div className='-mx-4 -my-2 sm:-mx-6 lg:-mx-8 overflow-x-auto'>
+            {' '}
+            {/* Permitir desplazamiento horizontal */}
+            <div
+              className={`ring-1 ring-gray-300 sm:mx-0 sm:rounded-lg inline-block 
+              min-w-full align-middle scroll-smooth`}>
+              <table className='min-w-full border-separate border-spacing-0'>
+                {' '}
+                {/* Asegurar que la tabla ocupe el ancho completo */}
+                <thead>
+                  <tr>
+                    <th
+                      scope='col'
+                      className='sticky top-0 border-b border-gray-300 bg-white bg-opacity-75 py-3.5 pl-4 pr-3 
+                      text-left text-sm font-semibold text-gray-500 backdrop-blur 
+                      backdrop-filter sm:pl-6 lg:pl-8'>
+                      NOMBRE
+                    </th>
+                    <th
+                      scope='col'
+                      className='sticky top-0 border-b border-gray-300 bg-white bg-opacity-75 px-3 py-3.5 text-left text-sm
+                      font-semibold text-gray-500 backdrop-blur backdrop-filter'>
+                      DIFICULTAD
+                    </th>
+                    <th
+                      scope='col'
+                      className='sticky top-0 border-b border-gray-300 bg-white bg-opacity-75 px-3 py-3.5 text-left text-sm
+                      font-semibold text-gray-500 backdrop-blur backdrop-filter'>
+                      CATEGORIA
+                    </th>
+                    <th
+                      scope='col'
+                      className='sticky top-0 border-b border-gray-300 bg-white bg-opacity-75 px-3 
+                      py-3.5 text-left text-sm font-semibold text-gray-500 backdrop-blur backdrop-filter'>
+                      ETIQUETAS
+                    </th>
+                    <th
+                      scope='col'
+                      className='sticky top-0 border-b border-gray-300 bg-white bg-opacity-75 
+                      py-3.5 pl-3 pr-4 backdrop-blur backdrop-filter sm:pr-6 lg:pr-8'>
+                      <span className='sr-only'>Acciones</span>
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {exercises.map((exercise, id) => (
+                    <tr
+                      key={exercise.id}
+                      className='cursor-pointer hover:bg-slate-200'>
+                      <td
+                        className={classNames(
+                          id !== Object.keys(exercise).length - 1 ? 'border-b border-gray-200' : '',
+                          'whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 dark:text-dark-accent sm:pl-6 lg:pl-8'
+                        )}>
+                        <a
+                          href={`/exercises/${exercise.id}`}
+                          className='hover:text-dark-complementary'>
+                          {exercise.title}
+                        </a>
+                      </td>
+                      <td
+                        className={classNames(
+                          id !== Object.keys(exercise).length - 1 ? 'border-b border-gray-200' : '',
+                          'whitespace-nowrap px-3 py-4 text-sm text-gray-500'
+                        )}>
+                        <div className='flex gap-1 h-full items-center'>
+                          {Array.from(Array(exercise.difficulty.level), (_, i) => (
+                            <img
+                              alt=''
+                              src='icons/estrellas.svg'
+                              key={i}
+                              className='h-2.5 w-2.5 xl:h-5 xl:w-5'
+                            />
+                          ))}
+                        </div>
+                      </td>
+                      <td
+                        className={classNames(
+                          id !== Object.keys(exercise).length - 1 ? 'border-b border-gray-200' : '',
+                          'whitespace-nowrap px-3 py-4 text-sm text-gray-500 dark:text-dark-accent'
+                        )}>
+                        {exercise.category.name}
+                      </td>
+                      <td
+                        className={classNames(
+                          id !== Object.keys(exercise).length - 1 ? 'border-b border-gray-200' : '',
+                          'whitespace-nowrap text-sm text-gray-500'
+                        )}>
+                        <div className='flex flex-row'>
+                          <TagListComponent
+                            tags={exercise.tags.slice(0, 3)} // Mostrar solo las primeras 3 etiquetas
+                            showIcon={false}
+                          />
+                          {exercise.tags.length > 3 && (
+                            <span className='ml-1 text-gray-400'>...</span> // Mostrar puntos suspensivos si hay más etiquetas
+                          )}
+                        </div>
+                      </td>
+                      <td
+                        className={classNames(
+                          id !== Object.keys(exercise).length - 1 ? 'border-b border-gray-200' : '',
+                          'relative whitespace-nowrap py-4 pr-4 pl-3 text-right text-sm font-medium sm:pr-8 lg:pr-8'
+                        )}>
+                        <a
+                          href={`/exercises/${exercise.id}`}
+                          className='text-indigo-600 hover:text-indigo-900'>
+                          Leer<span className='sr-only'>, {exercise.title}</span>
+                        </a>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
-          <PaginationComponent />
         </div>
-      </div>
+      ) : (
+        <TextComponent
+          className='text-center w-full mt-8'
+          tag={enumTextTags.h1}
+          sizeFont='s20'>
+          No hay ejercicios
+        </TextComponent>
+      )}
     </div>
   )
 }

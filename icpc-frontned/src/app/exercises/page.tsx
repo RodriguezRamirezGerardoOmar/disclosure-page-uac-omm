@@ -9,18 +9,18 @@ export default function Home() {
         <TextComponent
           sizeFont='s28'
           tag={enumTextTags.h1}
-          className='text-accent'>
+          className='text-dark-primary dark:text-dark-accent'>
           Ejercicios
         </TextComponent>
         <TextComponent
           sizeFont='s14'
           tag={enumTextTags.p}
-          className='text-dark-primary dark:text-dark-secondary'>
+          className='text-dark-primary dark:text-dark-accent mt-5'>
           Aquí encontrarás ejercicios de diferentes temas de programación
         </TextComponent>
       </div>
 
-      <div className='px-10'>
+      <div className='px-10 mt-5'>
         <TableComponent />
       </div>
     </div>

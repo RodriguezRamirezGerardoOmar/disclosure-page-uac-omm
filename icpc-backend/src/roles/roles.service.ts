@@ -36,8 +36,11 @@ export class RolesService {
     };
   }
 
-  update(id: number, updateRoleDto: UpdateRoleDto) {
-    return `This action updates a #${id} role`;
+  async update(id: number, updateRoleDto: UpdateRoleDto) {
+    const role = await this.roleRepository.findOne({
+      where: { id: String(id) }
+    });
+    return await this.roleRepository.save({ ...role, ...updateRoleDto });
   }
 
   remove(id: number) {

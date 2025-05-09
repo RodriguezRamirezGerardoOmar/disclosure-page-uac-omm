@@ -1,5 +1,5 @@
 'use client'
-import { FieldValues, SubmitHandler, useForm } from 'react-hook-form'
+import { useForm, SubmitHandler } from 'react-hook-form'
 import CheckboxComponent from '../components/forms/CheckboxComponent'
 import TextFieldComponent from '../components/forms/TextFieldComponent'
 import { BasicPanelComponent } from '../components/panels/BasicPanelComponent'
@@ -7,17 +7,46 @@ import LogoComponent from '../components/LogoComponent'
 import { enumTextTags } from '@/constants/types'
 import SubmitComponent from '../components/forms/SubmitComponent'
 import { TextComponent } from '../components/text/TextComponent'
+import useStore from '@/store/useStore'
+import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
 
 export default function Home() {
-  const onSubmit: SubmitHandler<FieldValues> = () => {
+  const login = useStore(state => state.login)
+  const router = useRouter()
+  const methods = useForm()
+
+  const onSubmit: SubmitHandler<{ username: string; password: string }> = async data => {
+    try {
+      const { username, password } = data
+      // Determinar si el input es email o username
+      const credentials = username.includes('@') ? { email: username, password } : { username: username, password }
+
+      await login(credentials) // Envía el objeto correcto al store
+      router.push('/')
+      toast.success('Inicio de sesión exitoso', {
+        duration: 5000,
+        style: {
+          backgroundColor: 'green',
+          color: '#ffffff'
+        }
+      })
+    } catch (error) {
+      toast.error('Error al iniciar sesión, verifica tus credenciales', {
+        duration: 5000,
+        style: {
+          backgroundColor: '#ff0000',
+          color: '#ffffff'
+        }
+      })
+    }
   }
 
-  const methods = useForm<FieldValues>()
   return (
     <main
-      className={`margin-auto md:mx-auto max-w-7xl md:px-4 w-full h-full lg:px-8 lg:w-2/3 lg:h-auto 
-      min-h-screen place-items-center justify-between py-24`}>
-      <BasicPanelComponent backgroundColor='bg-gray-300 dark:bg-dark-primary'>
+      className={`margin-auto flex h-full min-h-screen w-full max-w-3xl place-items-center justify-between md:mx-auto
+      md:px-4 lg:h-auto lg:w-2/3 lg:px-8`}>
+      <BasicPanelComponent backgroundColor='bg-gray-300 dark:bg-dark-primary w-full shadow-lg xs:mx-2 sm:mx-4'>
         <div className='grid grid-cols-1 place-items-center justify-between'>
           <LogoComponent size={150} />
           <TextComponent
@@ -28,14 +57,14 @@ export default function Home() {
           </TextComponent>
         </div>
         <form
-          onSubmit={methods.handleSubmit(onSubmit)}
+          onSubmit={methods.handleSubmit(onSubmit as any)}
           className='grid grid-cols-1 place-items-center justify-between'>
           <TextFieldComponent
             labelText='Correo electrónico / Nombre de usuario'
             register={methods.register}
             fieldName='username'
             auto='username'
-            type='username'
+            type='text'
             necessary={true}
             id='username'
           />
@@ -53,12 +82,16 @@ export default function Home() {
             register={methods.register}
             fieldName='rememberMe'
           />
-          <SubmitComponent text='Iniciar sesión' />
+          <SubmitComponent
+            text='Iniciar sesión'
+            action={function (): void {}}
+          />
+          {/* 
           <a href='/forgot'>
-            <TextComponent className='dark:text-dark-accent underline hover:text-dark-accent hover:dark:text-complementary'>
+          <TextComponent className='dark:text-dark-accent hover:text-dark-accent hover:dark:text-complementary underline'>
               Olvidé mi contraseña
             </TextComponent>
-          </a>
+          </a> */}
         </form>
       </BasicPanelComponent>
     </main>

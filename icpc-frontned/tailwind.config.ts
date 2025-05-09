@@ -20,6 +20,10 @@ const config: Config = {
       sans: ['Montserrat', 'sans-serif']
     }
   },
-  plugins: []
+  plugins: [
+    require('@tailwindcss/forms'),
+    require('@tailwindcss/typography')
+  ]
+
 }
 export default config
