@@ -23,19 +23,7 @@ export class Excercise extends BaseEntity {
   description: string;
 
   @Column({ nullable: false })
-  input: string;
-
-  @Column({ nullable: false })
-  output: string;
-
-  @Column({ nullable: false })
   constraints: string;
-
-  @Column({ nullable: false })
-  example_input: string;
-
-  @Column({ nullable: false })
-  example_output: string;
 
   @Column({ nullable: false })
   author: string;

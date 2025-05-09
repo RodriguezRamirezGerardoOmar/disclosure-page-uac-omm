@@ -405,8 +405,6 @@ export class ExcercisesService {
       existingExercise.tags = newTags || existingExercise.tags;
       existingExercise.difficulty =
         newDifficulty || existingExercise.difficulty;
-      existingExercise.example_input = updateData.example_input || null;
-      existingExercise.example_output = updateData.example_output || null;
       existingExercise.constraints =
         updateData.constraints !== undefined
           ? updateData.constraints
@@ -422,8 +420,6 @@ export class ExcercisesService {
           ? updateData.solution
           : existingExercise.solution;
       existingExercise.description = updateData.description || null;
-      existingExercise.input = updateData.input || null;
-      existingExercise.output = updateData.output || null;
       existingExercise.updated_by = user.id;
 
       const savedUpdatedExercise = await this.exerciseRepository.save(
