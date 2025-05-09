@@ -139,8 +139,6 @@ export class ExcercisesService {
       .where('excercise.id = :id', { id })
       .leftJoinAndSelect('excercise.category', 'category')
       .leftJoinAndSelect('excercise.difficulty', 'difficulty')
-      .leftJoinAndSelect('excercise.time', 'time')
-      .leftJoinAndSelect('excercise.memoryId', 'memory')
       .leftJoinAndSelect('excercise.tags', 'tags')
       .getOne();
   }

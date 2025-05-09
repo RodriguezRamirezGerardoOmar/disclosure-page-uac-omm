@@ -152,10 +152,6 @@ export interface Exercise {
   description: string
   category: Categories
   difficulty: Difficulties
-  input: string
-  output: string
-  example_input: string
-  example_output: string
   constraints: string
   clue: string
   tags: Tags[]
