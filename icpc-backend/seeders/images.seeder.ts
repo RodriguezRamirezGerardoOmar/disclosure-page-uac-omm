@@ -8,13 +8,15 @@ export const seedImages = async (dataSource: DataSource) => {
     {
       assetName: 'noticia3',
       hash: 'adcb2c2da21d7ffa9cc9de3f781a0f7d',
-      mimeType: 'image/jpeg',	
-      size: 155408,
-    },
+      mimeType: 'image/jpg',
+      size: 155414
+    }
   ];
 
   for (const imageData of images) {
-    const existingImage = await imageRepository.findOne({ where: { hash: imageData.hash } });
+    const existingImage = await imageRepository.findOne({
+      where: { hash: imageData.hash }
+    });
     if (!existingImage) {
       const image = imageRepository.create(imageData);
       await imageRepository.save(image);
