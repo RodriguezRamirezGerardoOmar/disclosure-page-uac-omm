@@ -20,8 +20,8 @@ export const AppDataSourceForSeed = new DataSource({
   host: 'localhost',
   port: 3306,
   username: 'root',
-  password: 'root',
-  database: 'icpc-backend',
+  password: 'm4Ntequilla',
+  database: 'omm-backend',
   synchronize: true,
   logging: false, // Desactiva el logging
   entities: [
