@@ -12,8 +12,6 @@ import useStore from '@/store/useStore'
 import { toast } from 'sonner'
 import CreateCategoryComponent from '../modals/CreateCategoryComponent'
 import CreateDifficultyComponent from '../modals/CreateDifficultyComponent'
-import CreateMemoryComponent from '../modals/CreateMemoryComponent'
-import CreateTimeLimitComponent from '../modals/CreateTimeComponent'
 import CreateTagComponent from '../modals/CreateTagComponent'
 import CreateExcerciseComponent from '../modals/CreateExcerciseComponent'
 import CreateNoteComponent from '../modals/CreateNoteComponent'
@@ -42,8 +40,6 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
   const methods = useForm()
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false)
   const [isDifficultyModalOpen, setIsDifficultyModalOpen] = useState(false)
-  const [isMemoryModalOpen, setIsMemoryModalOpen] = useState(false)
-  const [isTimeModalOpen, setIsTimeModalOpen] = useState(false)
   const [isTagModalOpen, setIsTagModalOpen] = useState(false)
   const [isExerciseModalOpen, setIsExerciseModalOpen] = useState(false)
   const [isNoteModalOpen, setIsNoteModalOpen] = useState(false)
@@ -66,8 +62,6 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
   const deleteNews = useNewsStore(state => state.deleteNews)
   const deleteCategory = useUtilsStore(state => state.deleteCategory)
   const deleteTag = useUtilsStore(state => state.deleteTag)
-  const deleteTimeLimit = useUtilsStore(state => state.deleteTimeLimit)
-  const deleteMemoryLimit = useUtilsStore(state => state.deleteMemoryLimit)
   const deleteDifficulty = useUtilsStore(state => state.deleteDifficulty)
   const deleteUser = useStore(state => state.deleteUser)
   const hasPendingTicket = useUtilsStore(state => state.hasPendingTicket)
@@ -119,14 +113,6 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
           case AllTabs.DIFFICULTY:
             setActiveDifficultyId(id)
             setIsDifficultyModalOpen(true)
-            break
-          case AllTabs.MEMORY:
-            setActiveMemoryId(id)
-            setIsMemoryModalOpen(true)
-            break
-          case AllTabs.TIME:
-            setActiveTimeId(id)
-            setIsTimeModalOpen(true)
             break
           case AllTabs.TAGS:
             setActiveTagId(id)
@@ -184,12 +170,6 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
         break
       case AllTabs.TAGS:
         response = await deleteTag(deleteId!)
-        break
-      case AllTabs.TIME:
-        response = await deleteTimeLimit(deleteId!)
-        break
-      case AllTabs.MEMORY:
-        response = await deleteMemoryLimit(deleteId!)
         break
       case AllTabs.DIFFICULTY:
         response = await deleteDifficulty(deleteId!)
@@ -297,28 +277,6 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
           difficultyId={activeDifficultyId}
           methods={methods}
           onCreateDifficulty={(difficultyName: string) => {}}
-        />
-      )}
-      {isMemoryModalOpen && (
-        <CreateMemoryComponent
-          onClose={() => {
-            setIsMemoryModalOpen(false)
-            props.setUpdate(!props.update)
-          }}
-          memoryId={activeMemoryId}
-          methods={methods}
-          onCreateMemory={(memoryName: string) => {}}
-        />
-      )}
-      {isTimeModalOpen && (
-        <CreateTimeLimitComponent
-          onClose={() => {
-            setIsTimeModalOpen(false)
-            props.setUpdate(!props.update)
-          }}
-          timeId={activeTimeId}
-          methods={methods}
-          onCreateTimeLimit={(time: number) => {}}
         />
       )}
       {isTagModalOpen && (
