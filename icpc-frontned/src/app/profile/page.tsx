@@ -216,7 +216,10 @@ function Page() {
             <div className='grid max-w-7xl grid-cols-1 gap-x-8 gap-y-10 px-4 py-16 sm:px-6 md:grid-cols-3 lg:px-8'>
               <div>
                 <h2 className='text-base font-semibold leading-7 dark:text-white'>Información personal</h2>
-                <p className='mt-1 text-sm leading-6 text-gray-400'>Usa tu correo institucional.</p>
+                <p className='mt-1 text-sm leading-6 text-gray-400'>
+                  En esta página puedes ver y cambiar los datos de tu cuenta.
+                  Más abajo encontrarás la tabla desde la cual puedes crear nuevos ejercicios, apuntes o noticias.
+                </p>
               </div>
 
               <form
