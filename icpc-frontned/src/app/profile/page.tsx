@@ -214,7 +214,7 @@ function Page() {
                         register={methods.register}
                         necessary={false}
                         type='text'
-                        placeholder={currentUser.name}
+                        placeholder={currentUser ? currentUser.name : 'Nombre'}
                       />
                     </div>
                   </div>
@@ -228,7 +228,7 @@ function Page() {
                         register={methods.register}
                         necessary={false}
                         type='text'
-                        placeholder={currentUser.lastName}
+                        placeholder={currentUser ? currentUser.lastName : 'Apellidos'}
                       />
                     </div>
                   </div>
@@ -242,7 +242,7 @@ function Page() {
                         register={methods.register}
                         necessary={false}
                         type='email'
-                        placeholder={currentUser.email}
+                        placeholder={currentUser ? currentUser.email : 'Correo Electrónico'}
                       />
                     </div>
                   </div>
@@ -256,7 +256,7 @@ function Page() {
                         register={methods.register}
                         necessary={false}
                         type='text'
-                        placeholder={currentUser.userName}
+                        placeholder={currentUser ? currentUser.userName : 'Nombre de usuario'}
                       />
                     </div>
                   </div>
