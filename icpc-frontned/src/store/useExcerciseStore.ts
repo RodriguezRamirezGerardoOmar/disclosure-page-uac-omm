@@ -37,6 +37,7 @@ interface Actions {
   search: (query: string) => Promise<Exercise[]>
   deleteExercise: (id: string) => Promise<IApiResponse | TResponseBasicError>
   getCount: () => Promise<number>
+  log: (id: string) => Promise<IApiResponse | TResponseBasicError>
 }
 
 const useExcerciseStore = create<Actions & ExcerciseState>()(
@@ -123,6 +124,15 @@ const useExcerciseStore = create<Actions & ExcerciseState>()(
                 Authorization: `Bearer ${useAuthStore.getState().token}`
               }
             })
+            return response.data
+          } catch (error: any) {
+            return error.response.data
+          }
+        },
+
+        log: async (id: string) => {
+          try {
+            const response = await api.post(`/api/v1/excercises/log/${id}`)
             return response.data
           } catch (error: any) {
             return error.response.data

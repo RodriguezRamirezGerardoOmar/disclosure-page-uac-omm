@@ -102,6 +102,27 @@ export class ExcercisesController {
     return await this.exercisesService.search(query);
   }
 
+  @Post('/log/:id')
+  @ApiCreatedResponse({
+    description: 'La lectura se ha registrado exitosamente.'
+  })
+  @ApiBadRequestResponse({ description: 'Bad request' })
+  @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
+  async logRead(@Param('id') id: string) {
+    const item = await this.findOne(id);
+    try {
+      this.loggerService.logRead(
+        'exercises',
+        item.id,
+        `${item.category.name} ${item.category.id}`,
+        item.tags.map(tag => `${tag.name} ${tag.id}`).join(', ')
+      );
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+
   @Patch(':id')
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
