@@ -41,6 +41,11 @@ interface AuthState {
   isLogged: boolean
 }
 
+interface CaptchaResponse {
+  message: string
+  success: boolean
+}
+
 interface Actions {
   login: (credentials: { username?: string; email?: string; password: string }) => Promise<void> // Cambiar firma  logout: () => void
   setError: (error: string | null) => void
@@ -51,6 +56,7 @@ interface Actions {
   updateUser: (id: string, user: IUpdateUser) => Promise<IUser | TResponseBasicError>
   getUser: (id: string) => Promise<IUser>
   logout: () => void
+  captcha: (token: string) => Promise<any>
 }
 
 const api = axios.create({
@@ -146,6 +152,17 @@ const useAuthStore = create<AuthState & Actions>()(
             }
           })
           return response.data
+        },
+
+        captcha: async (token: string): Promise<CaptchaResponse> => {
+          try {
+            const response = await api.post('/api/v1/auth/captcha', {
+              token
+            })
+            return response.data
+          } catch (error: any) {
+            return error.response.data
+          }
         }
       }),
       {
