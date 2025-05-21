@@ -11,8 +11,6 @@ import { User } from '../../users/entities/user.entity';
 import { Category } from 'src/categories/entities/category.entity';
 import { Tag } from 'src/tags/entities/tag.entity';
 import { Difficulty } from 'src/difficulty/entities/difficulty.entity';
-import { Time } from 'src/time/entities/time.entity';
-import { Memory } from 'src/memory/entities/memory.entity';
 import { Ticket } from 'src/ticket/entities/ticket.entity';
 import { Report } from 'src/report/entities/report.entity';
 
@@ -25,19 +23,7 @@ export class Excercise extends BaseEntity {
   description: string;
 
   @Column({ nullable: false })
-  input: string;
-
-  @Column({ nullable: false })
-  output: string;
-
-  @Column({ nullable: false })
   constraints: string;
-
-  @Column({ nullable: false })
-  example_input: string;
-
-  @Column({ nullable: false })
-  example_output: string;
 
   @Column({ nullable: false })
   author: string;
@@ -61,14 +47,6 @@ export class Excercise extends BaseEntity {
   @ManyToOne(() => Difficulty, difficulty => difficulty.excercises)
   @JoinTable()
   difficulty: Difficulty;
-
-  @ManyToOne(() => Memory, memory => memory.excercises)
-  @JoinTable()
-  memoryId: Memory;
-
-  @ManyToOne(() => Time, time => time.excercises)
-  @JoinTable()
-  time: Time;
 
   @ManyToMany(() => Tag, tag => tag.excercises)
   @JoinTable()

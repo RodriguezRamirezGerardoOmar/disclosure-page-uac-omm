@@ -13,8 +13,6 @@ import {
   Note,
   Tags,
   AllTabs,
-  TimeLimit,
-  MemoryLimit,
   Difficulties,
   IProfileTableItem,
   Report,
@@ -38,8 +36,6 @@ const adminTabs = [
   { name: 'Cambios', href: '#', icon: ArchiveBoxIcon, current: false },
   { name: 'Categoría', href: '#', icon: ListBulletIcon, current: false },
   { name: 'Etiqueta', href: '#', icon: BookmarkIcon, current: false },
-  { name: 'Tiempo', href: '#', icon: NewspaperIcon, current: false },
-  { name: 'Memoria', href: '#', icon: ArchiveBoxIcon, current: false },
   { name: 'Dificultad', href: '#', icon: ArchiveBoxIcon, current: false },
   { name: 'Cuentas', href: '#', icon: ArchiveBoxIcon, current: false }
 ]
@@ -59,8 +55,6 @@ function Page() {
   const getNotes = useNoteStore.getState().getList
   const getCategories = useUtilsStore.getState().getCategories
   const getTags = useUtilsStore.getState().getTags
-  const getTime = useUtilsStore.getState().getTimeLimit
-  const getMemory = useUtilsStore.getState().getMemoryLimit
   const getDifficulty = useUtilsStore.getState().getDifficulties
   const getUsers = useAuthStore.getState().getUsers
   const getOpenReports = useUtilsStore.getState().getOpenReports
@@ -154,22 +148,6 @@ function Page() {
           setTableData(mappedTags)
           setMode(AllTabs.TAGS)
           break
-        case AllTabs.TIME:
-          const time: TimeLimit[] = await getTime()
-          const mappedTime = time.map((time, index) => {
-            return { index, title: `${time.timeLimit.toString()} seg.`, id: time.id }
-          })
-          setTableData(mappedTime)
-          setMode(AllTabs.TIME)
-          break
-        case AllTabs.MEMORY:
-          const memory: MemoryLimit[] = await getMemory()
-          const mappedMemory = memory.map((memory, index) => {
-            return { index, title: `${memory.memoryLimit.toString()} KB.`, id: memory.id }
-          })
-          setTableData(mappedMemory)
-          setMode(AllTabs.MEMORY)
-          break
         case AllTabs.DIFFICULTY:
           const difficulty: Difficulties[] = await getDifficulty()
           const mappedDifficulty = difficulty.map((difficulty, index) => {
@@ -192,11 +170,9 @@ function Page() {
       getCategories,
       getDifficulty,
       getExercises,
-      getMemory,
       getNews,
       getNotes,
       getTags,
-      getTime,
       getUsers,
       getOpenReports,
       getPendingTickets
@@ -238,7 +214,7 @@ function Page() {
                         register={methods.register}
                         necessary={false}
                         type='text'
-                        placeholder={currentUser.name}
+                        placeholder={currentUser ? currentUser.name : 'Nombre'}
                       />
                     </div>
                   </div>
@@ -252,7 +228,7 @@ function Page() {
                         register={methods.register}
                         necessary={false}
                         type='text'
-                        placeholder={currentUser.lastName}
+                        placeholder={currentUser ? currentUser.lastName : 'Apellidos'}
                       />
                     </div>
                   </div>
@@ -266,7 +242,7 @@ function Page() {
                         register={methods.register}
                         necessary={false}
                         type='email'
-                        placeholder={currentUser.email}
+                        placeholder={currentUser ? currentUser.email : 'Correo Electrónico'}
                       />
                     </div>
                   </div>
@@ -280,7 +256,7 @@ function Page() {
                         register={methods.register}
                         necessary={false}
                         type='text'
-                        placeholder={currentUser.userName}
+                        placeholder={currentUser ? currentUser.userName : 'Nombre de usuario'}
                       />
                     </div>
                   </div>

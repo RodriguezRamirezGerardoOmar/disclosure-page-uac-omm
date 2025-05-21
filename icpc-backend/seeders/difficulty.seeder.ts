@@ -5,9 +5,9 @@ export const seedDifficulty = async (dataSource: DataSource) => {
   const difficultyRepository = dataSource.getRepository(Difficulty);
 
   const difficulties = [
-    { level: 0, name: 'Sencilla' },
-    { level: 1, name: 'Intermedia' },
-    { level: 2, name: 'Difícil' },
+    { level: 1, name: 'Nivel Uno' },
+    { level: 2, name: 'Nivel Dos' },
+    { level: 3, name: 'Nivel Tres' }
   ];
 
   for (const diff of difficulties) {

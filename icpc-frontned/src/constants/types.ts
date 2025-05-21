@@ -95,16 +95,6 @@ export interface Difficulties {
   name: string
 }
 
-export interface TimeLimit {
-  id: string
-  timeLimit: number
-}
-
-export interface MemoryLimit {
-  id: string
-  memoryLimit: number
-}
-
 export enum TicketType {
   EXERCISE = 'exercise',
   NOTE = 'note',
@@ -162,12 +152,6 @@ export interface Exercise {
   description: string
   category: Categories
   difficulty: Difficulties
-  time: TimeLimit
-  memoryId: MemoryLimit
-  input: string
-  output: string
-  example_input: string
-  example_output: string
   constraints: string
   clue: string
   tags: Tags[]
@@ -188,8 +172,6 @@ export const AllTabs = {
   CHANGES: 'Cambios',
   CATEGORIES: 'Categoría',
   TAGS: 'Etiqueta',
-  TIME: 'Tiempo',
-  MEMORY: 'Memoria',
   DIFFICULTY: 'Dificultad',
   ACCOUNT: 'Cuentas'
 }

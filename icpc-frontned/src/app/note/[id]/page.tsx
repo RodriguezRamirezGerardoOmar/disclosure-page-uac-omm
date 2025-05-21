@@ -6,6 +6,7 @@ import remarkMath from 'remark-math'
 import rehypeKatex from 'rehype-katex'
 import useNoteStore from '@/store/useNoteStore'
 import { Note } from '@/constants/types'
+import HeartbeatComponent from '@/app/components/logging/HeartbeatComponent'
 
 export default async function Page({ params }: Readonly<{ params: { id: string } }>) {
   const getNote = useNoteStore.getState().getNote
@@ -19,6 +20,7 @@ export default async function Page({ params }: Readonly<{ params: { id: string }
     })
     return (
       <main className='grid min-h-screen grid-cols-1 place-items-center justify-between py-24'>
+        <HeartbeatComponent itemId={note.id} itemType='note' />
         <NoteCardComponent
           title={note.title}
           description={note.commentId.body}

@@ -4,7 +4,7 @@ import { Controller, FieldValues, SubmitHandler, useForm } from 'react-hook-form
 import { BasicPanelComponent } from '../panels/BasicPanelComponent'
 import LogoComponent from '../LogoComponent'
 import { TextComponent } from '../text/TextComponent'
-import { Categories, enumTextTags, Tags, Difficulties, TimeLimit, MemoryLimit, Option } from '@/constants/types'
+import { Categories, enumTextTags, Tags, Difficulties, Option } from '@/constants/types'
 import TextFieldComponent from '../forms/TextFieldComponent'
 import TagSelectorComponent from '../forms/TagSelectorComponent'
 import MarkdownAreaComponent from '../forms/MarkdownAreaComponent'
@@ -44,25 +44,17 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
   const categoriesList = useUtilsStore(state => state.categories)
   const getDifficulties = useUtilsStore(state => state.getDifficulties)
   const difficultiesList = useUtilsStore(state => state.difficulty)
-  const getTimeLimit = useUtilsStore(state => state.getTimeLimit)
-  const timeLimitList = useUtilsStore(state => state.timeLimit)
-  const getMemoryLimit = useUtilsStore(state => state.getMemoryLimit)
-  const memoryLimitList = useUtilsStore(state => state.memoryLimit)
-  const createTimeLimit = useUtilsStore(state => state.createTimeLimit)
   const createCategory = useUtilsStore(state => state.createCategory)
 
   const selectRef = useRef<{ clear: () => void }>(null)
   const [selectedTags, setSelectedTags] = useState<Tags[]>([])
   const [selectedCategory, setSelectedCategory] = useState<Option | null>(null)
-  const [selectedMemory, setSelectedMemory] = useState<Option | null>(null)
   const getExercise = useExcerciseStore(state => state.getExercise)
   const [showConfirm, setShowConfirm] = React.useState(false)
 
   let [tags, setTags] = useState<Tags[]>(tagList)
   let [categories, setCategories] = useState<Categories[]>(categoriesList)
   let [difficulty, setDifficulty] = useState<Difficulties[]>(difficultiesList)
-  let [timeLimits, setTimeLimits] = useState<TimeLimit[]>(timeLimitList)
-  let [memoryLimits, setMemoryLimits] = useState<MemoryLimit[]>(memoryLimitList)
   let [update, setUpdate] = useState<boolean>(false)
 
   useEffect(() => {
@@ -77,12 +69,6 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
         getDifficulties().then(response => {
           setDifficulty(response)
         })
-        getTimeLimit().then(response => {
-          setTimeLimits(response)
-        })
-        getMemoryLimit().then(response => {
-          setMemoryLimits(response)
-        })
 
         if (props.id) {
           const exercise = await getExercise(props.id)
@@ -91,25 +77,15 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
               name: exercise.title,
               category: { label: exercise.category.name, value: exercise.category.id },
               difficulty: { label: exercise.difficulty.name, value: exercise.difficulty.id },
-              time: exercise.time ? { label: exercise.time.timeLimit.toString(), value: exercise.time.id } : null,
-              memoryId:
-                exercise.memoryId !== null ? { label: exercise.memoryId.memoryLimit.toString(), value: exercise.memoryId.id } : null,
-              input: exercise.input,
-              output: exercise.output,
               constraints: exercise.constraints,
               clue: exercise.clue,
               tags: exercise.tags,
               author: exercise.author,
               description: exercise.description,
-              example_input: exercise.example_input,
-              example_output: exercise.example_output,
               solution: exercise.solution
             })
             setSelectedCategory({ label: exercise.category.name, value: exercise.category.id })
             setSelectedTags(exercise.tags)
-            setSelectedMemory(
-              exercise.memoryId !== null ? { label: exercise.memoryId.memoryLimit.toString(), value: exercise.memoryId.id } : null
-            )
           } else {
             toast.error('No se encontró el ejercicio con el ID proporcionado.', {
               duration: 5000,
@@ -132,7 +108,7 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
     }
 
     fetchExercise()
-  }, [props.id, methods, getExercise, getCategories, getDifficulties, getTags, getTimeLimit, getMemoryLimit, update])
+  }, [props.id, methods, getExercise, getCategories, getDifficulties, getTags, update])
 
   const onSubmit: SubmitHandler<FieldValues> = async formData => {
     const processResponse = async (response: any) => {
@@ -157,17 +133,11 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
       name: String(formData.name),
       category: { name: formData.category.label, id: formData.category.value },
       difficulty: { name: formData.difficulty.label, id: formData.difficulty.value },
-      time: formData.time?.value ? { value: formData.time.label, id: formData.time.value } : null,
-      memoryId: formData.memoryId?.value ? String(formData.memoryId.value) : '',
-      input: String(formData.input),
-      output: String(formData.output),
       constraints: formData.constraints ? String(formData.constraints) : '',
       clue: formData.clue ? String(formData.clue) : '',
       tags: formData.tags,
       author: String(formData.author),
       description: String(formData.description),
-      example_input: String(formData.example_input),
-      example_output: String(formData.example_output),
       solution: formData.solution ? String(formData.solution) : '',
       isVisible: false,
       userAuthor: String(useAuthStore.getState().user?.userName),
@@ -200,23 +170,6 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
     setUpdate(!update)
   }
 
-  const handleCreateTimeLimit = async (newValue: Option) => {
-    const timeLimit = parseInt(newValue.label)
-    const response = await createTimeLimit(timeLimit)
-    if ('statusCode' in response && response.statusCode === 201) {
-      setTimeLimits([...timeLimits, { id: response.data.id, timeLimit: timeLimit }])
-    } else if ('message' in response) {
-      toast.error(response.message, {
-        duration: 5000,
-        style: {
-          backgroundColor: '#ff0000',
-          color: '#ffffff'
-        }
-      })
-    }
-    setUpdate(!update)
-  }
-
   // ...existing code...
 
   const clearForm = () => {
@@ -228,22 +181,15 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
             name: exercise.title,
             category: { label: exercise.category.name, value: exercise.category.id },
             difficulty: { label: exercise.difficulty.name, value: exercise.difficulty.id },
-            time: { label: exercise.time.timeLimit.toString(), value: exercise.time.id },
-            memoryId: { label: exercise.memoryId.memoryLimit.toString(), value: exercise.memoryId.id },
-            input: exercise.input,
-            output: exercise.output,
             constraints: exercise.constraints,
             clue: exercise.clue,
             tags: exercise.tags,
             author: exercise.author,
             description: exercise.description,
-            example_input: exercise.example_input,
-            example_output: exercise.example_output,
             solution: exercise.solution
           })
           setSelectedCategory({ label: exercise.category.name, value: exercise.category.id })
           setSelectedTags(exercise.tags)
-          setSelectedMemory({ label: exercise.memoryId.memoryLimit.toString(), value: exercise.memoryId.id })
         } else {
           toast.error('No se pudo recargar la nota.', {
             duration: 5000,
@@ -258,30 +204,19 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
     } else {
       methods.reset()
       setSelectedCategory(null)
-      setSelectedMemory(null)
     }
   }
   const dataValidate = () => {
     const data = methods.getValues()
     const missingFields = []
-    const invalidFields = []
+    const invalidFields: string[] = []
 
     // Validación de campos obligatorios
     if (!data.name) missingFields.push('Nombre del ejercicio')
     if (data.category.length === 0) missingFields.push('Categoría')
     if (data.difficulty.length === 0) missingFields.push('Nivel de dificultad')
-    if (!data.input) missingFields.push('Entrada esperada')
-    if (!data.output) missingFields.push('Salida esperada')
-    if (!data.example_input) missingFields.push('Ejemplo de entrada')
-    if (!data.example_output) missingFields.push('Ejemplo de salida')
     if (data.tags.length === 0) missingFields.push('Etiquetas')
     if (!data.description) missingFields.push('Descripción del problema')
-
-    // Validación de longitud de caracteres
-    if (data.input && data.input.length > 255) invalidFields.push('Entrada esperada')
-    if (data.output && data.output.length > 255) invalidFields.push('Salida esperada')
-    if (data.example_input && data.example_input.length > 255) invalidFields.push('Ejemplo de entrada')
-    if (data.example_output && data.example_output.length > 255) invalidFields.push('Ejemplo de salida')
 
     // Mostrar errores si hay campos faltantes o inválidos
     if (missingFields.length > 0) {
@@ -425,55 +360,6 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
                 )}
                 name='difficulty'
               />
-              <Controller
-                defaultValue={[]}
-                control={methods.control}
-                render={({ field }) => (
-                  <InputSelectorComponent
-                    label='Límite de tiempo'
-                    id='time'
-                    onChange={val => field.onChange(val)}
-                    options={timeLimits.map(item => {
-                      return { label: item.timeLimit.toString(), value: item.id }
-                    })}
-                    selectedOption={field.value}
-                  />
-                )}
-                name='time'
-              />
-              <Controller
-                defaultValue={[]}
-                control={methods.control}
-                render={({ field }) => (
-                  <InputSelectorComponent
-                    label='Límite de memoria'
-                    id='memoryId'
-                    onChange={val => {
-                      field.onChange(val)
-                    }}
-                    options={memoryLimits.map(item => {
-                      const label: number = item.memoryLimit
-                      return { label: label.toString(), value: item.id }
-                    })}
-                    selectedOption={field.value}
-                  />
-                )}
-                name='memoryId'
-              />
-              <TextAreaComponent
-                labelText='Entrada esperada*'
-                register={methods.register}
-                fieldName='input'
-                id='input'
-                necessary={true}
-              />
-              <TextAreaComponent
-                labelText='Salida esperada*'
-                register={methods.register}
-                fieldName='output'
-                id='output'
-                necessary={true}
-              />
               <TextAreaComponent
                 labelText='Restricciones'
                 register={methods.register}
@@ -515,20 +401,6 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
                     className='p-2'
                   />
                 )}
-              />
-              <TextAreaComponent
-                labelText='Ejemplo de entrada*'
-                register={methods.register}
-                fieldName='example_input'
-                id='example_input'
-                necessary={true}
-              />
-              <TextAreaComponent
-                labelText='Ejemplo de salida*'
-                register={methods.register}
-                fieldName='example_output'
-                id='example_output'
-                necessary={true}
               />
               <Controller
                 name='solution'

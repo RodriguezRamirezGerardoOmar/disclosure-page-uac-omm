@@ -2,12 +2,10 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateExcerciseDto } from './dto/create-excercise.dto';
 import { UpdateExcerciseDto } from './dto/update-excercise.dto';
 import { Repository, Like, In } from 'typeorm';
-import { Memory } from 'src/memory/entities/memory.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Excercise } from './entities/excercise.entity';
 import { Category } from 'src/categories/entities/category.entity';
 import { Difficulty } from 'src/difficulty/entities/difficulty.entity';
-import { Time } from 'src/time/entities/time.entity';
 import { Tag } from 'src/tags/entities/tag.entity';
 import { GetExerciseListDto } from './dto/get-exercise-list.dto';
 import {
@@ -30,10 +28,6 @@ export class ExcercisesService {
     private readonly categoryRepository: Repository<Category>,
     @InjectRepository(Difficulty)
     private readonly difficultyRepository: Repository<Difficulty>,
-    @InjectRepository(Time)
-    private readonly timeRepository: Repository<Time>,
-    @InjectRepository(Memory)
-    private readonly memoryRepository: Repository<Memory>,
     @InjectRepository(Tag)
     private readonly tagRepository: Repository<Tag>,
     @InjectRepository(Ticket)
@@ -47,16 +41,8 @@ export class ExcercisesService {
   ) {}
 
   async create(createExcerciseDto: CreateExcerciseDto) {
-    const {
-      name,
-      category,
-      difficulty,
-      time,
-      memoryId,
-      clue,
-      constraints,
-      solution
-    } = createExcerciseDto;
+    const { name, category, difficulty, clue, constraints, solution } =
+      createExcerciseDto;
     if (name.length > 255) {
       throw new BadRequestException(
         'El nombre del ejercicio no puede exceder 255 caracteres'
@@ -98,33 +84,9 @@ export class ExcercisesService {
     if (newExcerciseDifficulty === null) {
       throw new BadRequestException('El nivel de dificultad elegido no existe');
     }
-
-    let newExcerciseTime = null;
-    if (time) {
-      newExcerciseTime = await this.timeRepository.findOneBy({
-        timeLimit: time.value,
-        id: time.id
-      });
-      if (newExcerciseTime === null) {
-        throw new BadRequestException('El límite de tiempo elegido no existe');
-      }
-    }
-
-    let newExcerciseMemory = null;
-    if (memoryId !== '') {
-      newExcerciseMemory = await this.memoryRepository.findOneBy({
-        id: memoryId
-      });
-      if (newExcerciseMemory === null) {
-        throw new BadRequestException('El límite de memoria elegido no existe');
-      }
-    }
-
     const newExcercise = this.exerciseRepository.create({
       ...createExcerciseDto,
       title: name,
-      memoryId: newExcerciseMemory || undefined,
-      time: newExcerciseTime || undefined,
       clue: clue,
       constraints: constraints,
       solution: solution
@@ -177,8 +139,6 @@ export class ExcercisesService {
       .where('excercise.id = :id', { id })
       .leftJoinAndSelect('excercise.category', 'category')
       .leftJoinAndSelect('excercise.difficulty', 'difficulty')
-      .leftJoinAndSelect('excercise.time', 'time')
-      .leftJoinAndSelect('excercise.memoryId', 'memory')
       .leftJoinAndSelect('excercise.tags', 'tags')
       .getOne();
   }
@@ -385,7 +345,7 @@ export class ExcercisesService {
   }
 
   async update(id: string, updateExcerciseDto: UpdateExcerciseDto) {
-    const { memoryId, role, ...updateData } = updateExcerciseDto;
+    const { role, ...updateData } = updateExcerciseDto;
     if (updateData.name.length > 255) {
       throw new BadRequestException(
         'El nombre del ejercicio no puede exceder 255 caracteres'
@@ -407,10 +367,6 @@ export class ExcercisesService {
       );
     }
 
-    const memory = memoryId
-      ? await this.memoryRepository.findOneBy({ id: memoryId })
-      : null;
-
     const existingExercise = await this.exerciseRepository.findOneBy({
       id: id
     });
@@ -423,9 +379,6 @@ export class ExcercisesService {
     });
 
     if (role === 'admin') {
-      const newTime = updateData.time
-        ? await this.timeRepository.findOneBy({ id: updateData.time.id })
-        : null;
       const newCategory = await this.categoryRepository.findOneBy({
         id: updateData.category.id
       });
@@ -444,10 +397,6 @@ export class ExcercisesService {
       existingExercise.tags = newTags || existingExercise.tags;
       existingExercise.difficulty =
         newDifficulty || existingExercise.difficulty;
-      existingExercise.time = updateData.time ? newTime : null;
-      existingExercise.memoryId = memoryId ? memory : null;
-      existingExercise.example_input = updateData.example_input || null;
-      existingExercise.example_output = updateData.example_output || null;
       existingExercise.constraints =
         updateData.constraints !== undefined
           ? updateData.constraints
@@ -463,8 +412,6 @@ export class ExcercisesService {
           ? updateData.solution
           : existingExercise.solution;
       existingExercise.description = updateData.description || null;
-      existingExercise.input = updateData.input || null;
-      existingExercise.output = updateData.output || null;
       existingExercise.updated_by = user.id;
 
       const savedUpdatedExercise = await this.exerciseRepository.save(
@@ -498,7 +445,6 @@ export class ExcercisesService {
         created_by: existingExercise.created_by,
         title: updateData.name,
         updated_by: user.id,
-        memoryId: memory,
         isVisible: false
       });
 

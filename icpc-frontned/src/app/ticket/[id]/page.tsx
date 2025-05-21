@@ -1,30 +1,30 @@
-import React from 'react';
-import ExerciseCardComponent from '@/app/components/cards/ExerciseCardComponent';
-import NewsCardComponent from '@/app/components/cards/NewsCardComponent';
-import NoteCardComponent from '@/app/components/cards/NoteCardComponent';
-import useUtilsStore from '@/store/useUtilsStore';
-import { Ticket, TicketType, TicketOperation, enumTextTags } from '@/constants/types';
-import { serialize } from 'next-mdx-remote/serialize';
-import remarkMath from 'remark-math';
-import rehypeKatex from 'rehype-katex';
-import { TextComponent } from '@/app/components/text/TextComponent';
-import { TicketActions } from '@/app/ticket/TicketActions';
+import React from 'react'
+import ExerciseCardComponent from '@/app/components/cards/ExerciseCardComponent'
+import NewsCardComponent from '@/app/components/cards/NewsCardComponent'
+import NoteCardComponent from '@/app/components/cards/NoteCardComponent'
+import useUtilsStore from '@/store/useUtilsStore'
+import { Ticket, TicketType, TicketOperation, enumTextTags } from '@/constants/types'
+import { serialize } from 'next-mdx-remote/serialize'
+import remarkMath from 'remark-math'
+import rehypeKatex from 'rehype-katex'
+import { TextComponent } from '@/app/components/text/TextComponent'
+import { TicketActions } from '@/app/ticket/TicketActions'
 
 const TicketPage = async ({ params }: Readonly<{ params: { id: string } }>) => {
-  const ticket: Ticket = await useUtilsStore.getState().getTicket(params.id);
+  const ticket: Ticket = await useUtilsStore.getState().getTicket(params.id)
 
   async function serializeNote(mdx: string) {
     return await serialize(mdx, {
       mdxOptions: {
         remarkPlugins: [remarkMath],
-        rehypePlugins: [rehypeKatex as any],
-      },
-    });
+        rehypePlugins: [rehypeKatex as any]
+      }
+    })
   }
 
-  if (!ticket) return <div>Cargando...</div>;
+  if (!ticket) return <div>Cargando...</div>
 
-  let pageContent = <></>;
+  let pageContent = <></>
   if (ticket.operation === TicketOperation.UPDATE) {
     switch (ticket.itemType) {
       case TicketType.EXERCISE:
@@ -33,14 +33,13 @@ const TicketPage = async ({ params }: Readonly<{ params: { id: string } }>) => {
         const modifiedDescription = await serializeNote(ticket.modifiedExerciseId.description)
         const modifiedSolution = await serializeNote(ticket.modifiedExerciseId.solution)
         pageContent = (
-          <div className="grid place-items-center grid-cols-1 gap-16">
+          <div className='grid place-items-center grid-cols-1 gap-16'>
             <div>
-              <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 text-accent dark:text-dark-accent">
+              <div className='mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 text-accent dark:text-dark-accent'>
                 <TextComponent
                   tag={enumTextTags.h1}
-                  sizeFont="s36"
-                  className="font-bold text-gray-800 dark:text-dark-accent"
-                >
+                  sizeFont='s36'
+                  className='font-bold text-gray-800 dark:text-dark-accent'>
                   Ejercicio original
                 </TextComponent>
               </div>
@@ -52,12 +51,11 @@ const TicketPage = async ({ params }: Readonly<{ params: { id: string } }>) => {
               />
             </div>
             <div>
-              <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 text-accent dark:text-dark-accent">
+              <div className='mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 text-accent dark:text-dark-accent'>
                 <TextComponent
                   tag={enumTextTags.h1}
-                  sizeFont="s36"
-                  className="font-bold text-gray-800 dark:text-dark-accent"
-                >
+                  sizeFont='s36'
+                  className='font-bold text-gray-800 dark:text-dark-accent'>
                   Ejercicio modificado
                 </TextComponent>
               </div>
@@ -145,15 +143,14 @@ const TicketPage = async ({ params }: Readonly<{ params: { id: string } }>) => {
   } else {
     switch (ticket.itemType) {
       case TicketType.EXERCISE:
-        const description = await serializeNote(ticket.originalExerciseId.description);
-        const solution = await serializeNote(ticket.originalExerciseId.solution);
+        const description = await serializeNote(ticket.originalExerciseId.description)
+        const solution = await serializeNote(ticket.originalExerciseId.solution)
         pageContent = (
           <>
             <TextComponent
               tag={enumTextTags.h1}
-              sizeFont="s24"
-              className="text-accent dark:text-dark-accent m-4"
-            >
+              sizeFont='s24'
+              className='text-accent dark:text-dark-accent m-4'>
               {ticket.commentId.body}
             </TextComponent>
             <ExerciseCardComponent
@@ -207,11 +204,11 @@ const TicketPage = async ({ params }: Readonly<{ params: { id: string } }>) => {
   }
 
   return (
-    <main className="grid min-h-screen grid-cols-1 place-items-center justify-between py-24">
+    <main className='grid min-h-screen grid-cols-1 place-items-center justify-between py-24'>
       {pageContent}
       <TicketActions ticketId={ticket.id} />
     </main>
-  );
-};
+  )
+}
 
-export default TicketPage;
+export default TicketPage

@@ -34,7 +34,7 @@ const colourStyles: StylesConfig<Option> = {
         backgroundColor: 'white'
       }
     }
-  },
+  }
 }
 
 /*
@@ -71,7 +71,7 @@ const InputSelectorComponent = forwardRef(
     }))
 
     return (
-      <div className="w-full min-h-max">
+      <div className='w-full min-h-max'>
         <TextComponent
           className={labelClassName}
           tag={enumTextTags.p}>
@@ -85,12 +85,12 @@ const InputSelectorComponent = forwardRef(
           isSearchable={true}
           isMulti={false}
           onChange={onChange} // Simplificado
-          getOptionLabel={(option) => option.label}
-          getOptionValue={(option) => option.value}
+          getOptionLabel={option => option.label}
+          getOptionValue={option => option.value}
           styles={colourStyles}
           isClearable={clearable}
           ref={inputRef}
-          classNamePrefix="react-select" // Añadido para estilizado personalizado
+          classNamePrefix='react-select' // Añadido para estilizado personalizado
         />
       </div>
     )

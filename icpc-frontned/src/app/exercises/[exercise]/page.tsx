@@ -4,6 +4,7 @@ import useExcerciseStore from '@/store/useExcerciseStore'
 import { serialize } from 'next-mdx-remote/serialize'
 import rehypeKatex from 'rehype-katex'
 import remarkMath from 'remark-math'
+import HeartbeatComponent from '@/app/components/logging/HeartbeatComponent'
 
 async function getMarkdown(body: string) {
   return await serialize(body, {
@@ -21,6 +22,7 @@ async function ExercisePage({ params }: Readonly<{ params: { exercise: string } 
 
   return (
     <main className='grid min-h-screen grid-cols-1 place-items-center justify-between w-full py-24'>
+      <HeartbeatComponent itemId={params.exercise} itemType='exercise' />
       <div className='flex justify-end w-full'>
         <ExerciseCardComponent
           exercise={exerciseBody}

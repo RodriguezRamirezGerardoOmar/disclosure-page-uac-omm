@@ -5,12 +5,13 @@ import NavbarComponent from './components/NavbarComponent'
 import classNames from 'classnames'
 import FooterComponent from './components/ui/FooterComponent'
 import { Toaster } from 'sonner'
+import CaptchaWrapperComponent from './components/captcha/CaptchaWrapperComponent'
 
 const montserrat = Montserrat({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Sistema de divulgación de ICPC',
-  description: 'Plataforma para la divulgación de información y recursos del ICPC',
+  title: 'Sistema de divulgación de OMM',
+  description: 'Plataforma para la divulgación de información y recursos del OMM'
 }
 
 export default function RootLayout({
@@ -19,12 +20,10 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html
-      lang='en'
-      >
+    <html lang='en'>
       <body className={classNames(montserrat.className, 'bg-white dark:bg-dark-secondary ')}>
         <NavbarComponent />
-        {children}
+        <CaptchaWrapperComponent>{children}</CaptchaWrapperComponent>
         <footer>
           <FooterComponent />
         </footer>

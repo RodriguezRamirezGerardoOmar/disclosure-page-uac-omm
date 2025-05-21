@@ -6,8 +6,6 @@ import { Excercise } from './entities/excercise.entity';
 import { Category } from 'src/categories/entities/category.entity';
 import { Tag } from 'src/tags/entities/tag.entity';
 import { Difficulty } from 'src/difficulty/entities/difficulty.entity';
-import { Time } from 'src/time/entities/time.entity';
-import { Memory } from 'src/memory/entities/memory.entity';
 import { Ticket } from 'src/ticket/entities/ticket.entity';
 import { User } from 'src/users/entities/user.entity';
 import { Comment } from 'src/comment/entities/comment.entity';
@@ -25,8 +23,6 @@ import { MailerService } from 'src/mailer/mailer.service';
       Category,
       Tag,
       Difficulty,
-      Time,
-      Memory,
       Ticket,
       User,
       Comment,

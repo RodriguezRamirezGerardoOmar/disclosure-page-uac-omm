@@ -5,8 +5,6 @@ import CreateNewsComponent from '../modals/CreateNewsComponent'
 import { ButtonComponent } from '../buttons/ButtonComponent'
 import CreateCategoryComponent from '../modals/CreateCategoryComponent'
 import CreateDifficultyComponent from '../modals/CreateDifficultyComponent'
-import CreateTimeLimitComponent from '../modals/CreateTimeComponent'
-import CreateMemoryComponent from '../modals/CreateMemoryComponent'
 import CreateTagComponent from '../modals/CreateTagComponent'
 import CreateUserComponent from '../modals/CreateUserComponent'
 import { useForm, FieldValues } from 'react-hook-form'
@@ -93,22 +91,6 @@ export default function TabComponent({
             onClose={handleModalClose}
           />
         )
-      } else if (tabName === 'Tiempo') {
-        setModalComponent(
-          <CreateTimeLimitComponent
-            methods={methods}
-            onCreateTimeLimit={onCreateTimeLimit}
-            onClose={handleModalClose}
-          />
-        )
-      } else if (tabName === 'Memoria') {
-        setModalComponent(
-          <CreateMemoryComponent
-            methods={methods}
-            onCreateMemory={onCreateMemory}
-            onClose={handleModalClose}
-          />
-        )
       } else if (tabName === 'Dificultad') {
         setModalComponent(
           <CreateDifficultyComponent
@@ -140,22 +122,6 @@ export default function TabComponent({
         <CreateTagComponent
           methods={methods}
           onCreateTag={onCreateTag}
-          onClose={handleModalClose}
-        />
-      )
-    } else if (activeTab === 'Tiempo') {
-      setModalComponent(
-        <CreateTimeLimitComponent
-          methods={methods}
-          onCreateTimeLimit={onCreateTimeLimit}
-          onClose={handleModalClose}
-        />
-      )
-    } else if (activeTab === 'Memoria') {
-      setModalComponent(
-        <CreateMemoryComponent
-          methods={methods}
-          onCreateMemory={onCreateMemory}
           onClose={handleModalClose}
         />
       )
