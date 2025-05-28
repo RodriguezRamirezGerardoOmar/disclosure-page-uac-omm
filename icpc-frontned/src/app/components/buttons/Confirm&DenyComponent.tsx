@@ -5,6 +5,16 @@ interface ConfirmDenyProps {
   onCancel: () => void;
 }
 
+/*
+Input: onConfirm (callback for confirm action), onCancel (callback for cancel action)
+Output: Modal with two buttons: 'Aceptar' (confirm) and 'Cancelar' (deny)
+Return value: React component rendering a confirmation modal
+Function: Displays a modal dialog to confirm or cancel an action, calling the appropriate callback
+Variables: onConfirm, onCancel
+Date: 28 - 05 - 2025
+Author: Alan Julian Itzamna Mier Cupul
+*/
+
 const ConfirmDenyComponent: React.FC<ConfirmDenyProps> = ({ onConfirm, onCancel }) => {
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">

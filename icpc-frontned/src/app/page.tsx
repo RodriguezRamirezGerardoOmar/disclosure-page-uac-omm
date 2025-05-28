@@ -6,6 +6,17 @@ import { InfoCardComponent } from './components/cards/InfoCardComponent'
 import { DataCardComponent } from './components/cards/DataCardComponent'
 import { LastNewsComponent } from './components/ui/LastNewsComponent'
 import useUtilsStore from '@/store/useUtilsStore'
+
+/*
+Input: none (static landing page, no props or parameters)
+Output: a landing page displaying a welcome message, info cards, daily quote, random fact, and latest news
+Return value: a page component used as the main entry point for the site, showing navigation, highlights, and news
+Function: fetches daily quote and random fact, renders a hero section, welcome card, info cards, data cards, and latest news
+Variables: dailyQuote, RandomFact, items, dataCard, dataRamdomCard
+Date: 28 - 05 - 2025
+Author: Alan Julian Itzamna Mier Cupul
+*/
+
 export const dynamic = 'force-dynamic'
 export default async function Home() {
   const dailyQuote: Quote = await useUtilsStore.getState().getDailyQuote()
@@ -46,10 +57,7 @@ export default async function Home() {
 
   const dataRamdomCard = {
     title: 'Dato aleatorio',
-    //info: `“El objetivo del rigor no es destruir toda intuición, sino que debería usarse para destruir
-    //la mala intuición a la vez que clarificar y elevar la buena intuición.”`,
     info: `“${RandomFact}”`,
-    //autor: 'TERENCE TAO',
     image: 'images/dumie-data.png'
   }
 

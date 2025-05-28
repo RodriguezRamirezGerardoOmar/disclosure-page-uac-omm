@@ -13,6 +13,16 @@ interface DisplayReportComponentProps {
   onClose: () => void
 }
 
+/*
+Input: the id of the report to display and the onClose callback
+Output: a card with the report's title, body, styles, and a button to resolve the report
+Return value: a card component used to display a report's details and allow closing it
+Function: fetches and displays a report by id, showing its details and providing a button to mark it as resolved
+Variables: id, onClose, getReport, closeReport, report, reportBody
+Date: 28 - 05 - 2025
+Author: Alan Julian Itzamna Mier Cupul
+*/
+
 const DisplayReportComponent = ({ id, onClose }: Readonly<DisplayReportComponentProps>) => {
   const getReport = useUtilsStore(state => state.getReport)
   const closeReport = useUtilsStore(state => state.closeReport)
@@ -23,6 +33,7 @@ const DisplayReportComponent = ({ id, onClose }: Readonly<DisplayReportComponent
     const fetchReport = async () => {
       try {
         const response = await getReport(id)
+        // Condition: If the response has an 'id' property, set the report and its body
         if ('id' in response) {
           setReport(response)
           setReportBody(response.report)
@@ -35,6 +46,7 @@ const DisplayReportComponent = ({ id, onClose }: Readonly<DisplayReportComponent
   }, [id, getReport, setReport, setReportBody])
 
   const getUrl = (id: string | undefined) => {
+    // Condition: Returns a different URL based on the report's itemType
     if (report?.itemType === 'exercise') {
       return `/exercises/${id}`
     } else if (report?.itemType === 'news') {
@@ -49,6 +61,7 @@ const DisplayReportComponent = ({ id, onClose }: Readonly<DisplayReportComponent
   const close = async () => {
     try {
       const response = await closeReport(id)
+      // Condition: If the response has an 'id' property, show a success toast and call onClose
       if ('id' in response) {
         toast.success('Reporte cerrado exitosamente.', {
           duration: 5000,

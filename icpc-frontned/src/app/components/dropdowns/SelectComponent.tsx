@@ -62,7 +62,7 @@ export function SelectComponent({ ...props }: Readonly<ISelectProps>) {
         id={props.id}
       />
       <Listbox
-        value={props.selected || ''} // Si selected es undefined, usa una cadena vacía
+        value={props.selected || ''} 
         onChange={(newSelected) => {
           props.onChange(newSelected);
           if (reference.current) {
@@ -121,7 +121,7 @@ export function SelectComponent({ ...props }: Readonly<ISelectProps>) {
                             </span>
                           </div>
 
-                          {selected ? ( // Si la opción está seleccionada, muestra un ícono de check
+                          {selected ? ( 
                             <span
                               className={classNames(
                                 active ? 'text-white' : 'text-indigo-600',

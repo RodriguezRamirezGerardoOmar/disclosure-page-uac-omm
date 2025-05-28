@@ -8,6 +8,16 @@ import useExcerciseStore from '@/store/useExcerciseStore';
 import useNewsStore from '@/store/useNewsStore';
 import useNoteStore from '@/store/useNoteStore';
 
+/*
+Input: none (search bar is self-contained, but uses internal state and store search functions)
+Output: a search bar with autocomplete options for exercises, news, and notes, and navigation on selection
+Return value: a component used to search and navigate to exercises, news, or notes by title
+Function: fetches search results from stores as the user types, displays them as options, and navigates to the selected item's page
+Variables: options, inputValue, isClient, router, exerciseSearch, newsSearch, notesSearch, handleInputChange, handleChange
+Date: 28 - 05 - 2025
+Author: Alan Julian Itzamna Mier Cupul
+*/
+
 const SearchBarComponent = () => {
   const [options, setOptions] = useState<{ value: string; label: string; type: string; url: string }[]>([]);
   const [inputValue, setInputValue] = useState('');
@@ -22,6 +32,7 @@ const SearchBarComponent = () => {
   }, []);
 
   useEffect(() => {
+    // Effect: Fetches search options from stores when inputValue changes
     const fetchOptions = async () => {
       if (inputValue.trim() === '') return;
 
@@ -71,6 +82,7 @@ const SearchBarComponent = () => {
   };
 
   if (!isClient) {
+    // Condition: Only render the search bar on the client side
     return null;
   }
 

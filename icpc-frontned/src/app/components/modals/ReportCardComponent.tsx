@@ -19,10 +19,21 @@ interface IReportCardProps {
   onCancel: () => void
 }
 
+/*
+Input: methods (react-hook-form methods), itemType (type of item being reported), itemId (id of the item), onSubmit (callback after successful report), onCancel (callback to close the modal)
+Output: a modal form to create and submit a report, with fields for description and content, plus validation and feedback
+Return value: a modal component used to report an error or issue for a specific item
+Function: handles form state and submission, sends report data to the backend, shows success/error toasts, and allows resetting or closing the form
+Variables: methods, itemType, itemId, onSubmit, onCancel, createReport, handleSubmit, clearForm
+Date: 28 - 05 - 2025
+Author: Alan Julian Itzamna Mier Cupul
+*/
+
 const ReportCardComponent = ({ itemType, itemId, onSubmit, onCancel, methods }: Readonly<IReportCardProps>) => {
   const { createReport } = useUtilsStore()
 
   const handleSubmit = async (data: FieldValues) => {
+    // Condition: If required fields are missing, show error toast and do not submit
     if (!data.description || !data.content) {
       toast.error('Favor de rellenar el reporte', {
         duration: 5000,
@@ -33,7 +44,6 @@ const ReportCardComponent = ({ itemType, itemId, onSubmit, onCancel, methods }: 
       })
       return
     }
-
     try {
       const response = await createReport({
         summary: data.description,
@@ -41,6 +51,7 @@ const ReportCardComponent = ({ itemType, itemId, onSubmit, onCancel, methods }: 
         itemType,
         itemId: itemId
       })
+      // Condition: If report is created, show success toast, call onSubmit and onCancel; otherwise, show error toast
       if ('id' in response) {
         toast.success('Reporte Enviado', {
           duration: 5000,

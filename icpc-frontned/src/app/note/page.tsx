@@ -10,6 +10,16 @@ import InputSelectorComponent from '../components/dropdowns/InputSelectorCompone
 import TagSelectorComponent from '../components/forms/TagSelectorComponent'
 import { TextComponent } from '../components/text/TextComponent'
 
+/*
+Input: none (static page, no props or parameters)
+Output: a page displaying a list of notes with filtering by category and tags
+Return value: a page component used to show and filter notes
+Function: fetches categories and notes, manages filter state, renders a form for filtering and a list of notes
+Variables: categories, tags, methods, options, category, selectedTags, data, getList, getCategories
+Date: 28 - 05 - 2025
+Author: Alan Julian Itzamna Mier Cupul
+*/
+
 export default function Home() {
   const categories = useUtilsStore.getState().categories
   const tags = useUtilsStore.getState().tags

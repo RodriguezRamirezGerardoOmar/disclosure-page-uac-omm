@@ -2,6 +2,16 @@ import { enumTextTags } from '@/constants/types'
 import { TextComponent } from '../components/text/TextComponent'
 import TableComponent from '../components/tables/TableComponent'
 
+/*
+Input: none (static page, no props or parameters)
+Output: a page displaying a title, description, and a table of exercises
+Return value: a page component used to show a list of programming exercises
+Function: renders a title, a description, and a table component for exercises
+Variables: none (uses static content and imported components)
+Date: 28 - 05 - 2025
+Author: Alan Julian Itzamna Mier Cupul
+*/
+
 export default function Home() {
   return (
     <div className='mt-16'>

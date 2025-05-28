@@ -26,6 +26,16 @@ import LogoComponent from '../components/LogoComponent'
 import SubmitComponent from '../components/forms/SubmitComponent'
 import { toast } from 'sonner'
 
+/*
+Input: none (static profile page, no props or parameters)
+Output: a page displaying user profile information, editable form, tab navigation, and a table of items based on the selected tab
+Return value: a page component used to manage and display user profile data and related items (exercises, notes, news, reports, etc.)
+Function: fetches and updates user profile data, manages tab state, fetches and displays data for the selected tab, and provides forms for editing user info
+Variables: methods, user, getProfile, tableData, mode, update, currentUser, all data fetching functions, handleSubmitUserInfo, handleChange
+Date: 28 - 05 - 2025
+Author: Alan Julian Itzamna Mier Cupul
+*/
+
 const myTabs = [
   { name: 'Ejercicios', href: '#', icon: ListBulletIcon, current: true },
   { name: 'Apuntes', href: '#', icon: BookmarkIcon, current: false },
@@ -71,8 +81,8 @@ function Page() {
         passwordVerify: null
       })
       if ('id' in result) {
-        setCurrentUser(result) // Actualiza el estado local
-        useAuthStore.setState({ user: result }) // Actualiza el estado global del usuario
+        setCurrentUser(result) 
+        useAuthStore.setState({ user: result }) 
         toast.success('¡Información actualizada!', {
           duration: 5000,
           style: { backgroundColor: 'green', color: '#ffffff' }
@@ -80,7 +90,7 @@ function Page() {
       }
       setUpdate(!update)
     } catch (error: any) {
-      console.error('Error al actualizar:', error) // Muestra el error en la consola
+      console.error('Error al actualizar:', error) 
       toast.error(error.message || 'Error al actualizar', {
         duration: 5000,
         style: { backgroundColor: 'red', color: '#ffffff' }

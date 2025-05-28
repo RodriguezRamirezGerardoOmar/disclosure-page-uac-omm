@@ -7,8 +7,8 @@ interface IButtonComponentProps {
   text: string;
   buttonType?: 'button' | 'submit' | 'button_outline';
   icon?: boolean;
-  onClick: () => void; // Cambiado de "onclick" a "onClick"
-  className?: string; // Añadido className
+  onClick: () => void; 
+  className?: string; 
 }
 
 /*

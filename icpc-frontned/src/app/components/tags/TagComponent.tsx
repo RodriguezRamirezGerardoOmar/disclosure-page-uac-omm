@@ -22,14 +22,12 @@ Author: Gerardo Omar Rodriguez Ramirez
 const determineTextColor = (backgroundColor: string): string => {
   const luminance = getLuminance(backgroundColor);
   
-  // Si el color es rojo puro o similar, forzar blanco
-  const forceWhiteFor = ['#FF0000', '#E60026', '#C21807']; // Puedes agregar más tonalidades
+  const forceWhiteFor = ['#FF0000', '#E60026', '#C21807']; 
 
   if (forceWhiteFor.includes(backgroundColor.toUpperCase())) {
     return '#FFFFFF';
   }
 
-  // Condición personalizada basada en luminancia (puedes ajustar el umbral)
   return luminance > 0.5 ? '#000000' : '#FFFFFF';
 };
 

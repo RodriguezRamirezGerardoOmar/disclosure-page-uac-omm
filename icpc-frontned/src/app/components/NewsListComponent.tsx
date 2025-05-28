@@ -56,7 +56,7 @@ const NewsListComponent = ({ ...props }: Readonly<INewsListComponentProps>) => {
           ))
         ) : (
           <TextComponent
-            className='text-center w-full' // Agregado w-full para ocupar todo el ancho
+            className='text-center w-full'
             tag={enumTextTags.h1}
             sizeFont='s20'>
             No hay noticias

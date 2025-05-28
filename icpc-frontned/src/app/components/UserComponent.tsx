@@ -37,13 +37,11 @@ export default function UserComponent({ options, verified }: Readonly<IUserProps
     return classes.filter(Boolean).join(' ')
   }
 
-  // al oprimir el botón de cerrar sesión, se debe ejecutar el hook useStore para eliminar el token de la sesión
   const logout = useStore(state => state.logout)
 
   const handleLogout = async () => {
     await logout()
-    if (window.location.pathname === '/profile') {  //Detecta si estas en la pagina de Perfil
-      //window.location.href = '/' // Redirige a la página principal
+    if (window.location.pathname === '/profile') {  
       router.push('/')
     }
   }
