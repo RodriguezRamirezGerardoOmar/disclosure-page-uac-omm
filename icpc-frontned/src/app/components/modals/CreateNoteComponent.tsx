@@ -23,6 +23,16 @@ interface CreateNotesComponentProps {
   onClose: () => void
 }
 
+/*
+Input: id (optional, id of the note to edit), onClose (callback to close the modal)
+Output: a modal form to create or edit a note, with fields for title, description, content, category, tags, and validation/feedback
+Return value: a modal component used to create a new note or edit an existing one
+Function: fetches note data if editing, handles form state and submission, manages category/tag creation, shows success/error toasts, and allows resetting or closing the form
+Variables: id, onClose, methods, getTags, tagList, getCategories, categoriesList, createNote, updateNote, createCategory, selectRef, tags, categories, selectedTags, selectedCategory, update, getNotesArticle, showConfirm, handleCreateCategory, onSubmit, clearForm, dataValidate
+Date: 28 - 05 - 2025
+Author: Alan Julian Itzamna Mier Cupul
+*/
+
 const CreateNoteComponent = (props: CreateNotesComponentProps) => {
   const methods = useForm<FieldValues>()
   const getTags = useUtilsStore(state => state.getTags)
@@ -51,7 +61,7 @@ const CreateNoteComponent = (props: CreateNotesComponentProps) => {
         getCategories().then(response => {
           setCategories(response)
         })
-
+        // Condition: If editing, fetch note and set form values; otherwise, just load tags and categories
         if (props.id) {
           const note = await getNotesArticle(props.id)
           if (note) {
@@ -89,6 +99,7 @@ const CreateNoteComponent = (props: CreateNotesComponentProps) => {
   }, [props.id, methods, getTags, getCategories, getNotesArticle])
 
   const handleCreateCategory = async (newValue: Option) => {
+    // Condition: If category creation is successful, add to list; otherwise, show error toast
     const category = newValue.label
     const response = await createCategory({ name: category, commentId: category })
     if ('statusCode' in response && response.statusCode === 201) {
@@ -114,6 +125,7 @@ const CreateNoteComponent = (props: CreateNotesComponentProps) => {
           color: '#ffffff'
         }
       }
+      // Condition: If response has 'id', show success toast and close; if 'message', show error toast
       if ('id' in response) {
         toast.success(props.id ? 'Nota Actualizada' : 'Nota creada con éxito.', toastOptions)
         props.onClose()
@@ -123,7 +135,7 @@ const CreateNoteComponent = (props: CreateNotesComponentProps) => {
         toast.error('Unexpected response format', toastOptions)
       }
     }
-
+    // Condition: If editing, update note; otherwise, create note
     const noteData = {
       title: String(formData.title),
       description: String(formData.description),
@@ -134,7 +146,6 @@ const CreateNoteComponent = (props: CreateNotesComponentProps) => {
       userAuthor: String(useAuthStore.getState().user?.userName),
       role: String(useAuthStore.getState().user?.role)
     }
-
     if (props.id) {
       const response = await updateNote(noteData, props.id)
       await processResponse(response)
@@ -145,6 +156,7 @@ const CreateNoteComponent = (props: CreateNotesComponentProps) => {
   }
 
   const clearForm = () => {
+    // Condition: If editing, reload note and reset form; otherwise, reset form and selected category
     if (props.id) {
       const fetchNote = async () => {
         const note = await getNotesArticle(props.id!)
@@ -178,13 +190,12 @@ const CreateNoteComponent = (props: CreateNotesComponentProps) => {
   const dataValidate = () => {
     const data = methods.getValues()
     const missingFields = []
-
+    // Condition: Check for missing required fields and show error toast if any are missing
     if (!data.title) missingFields.push('Título del apunte')
     if (data.category.length === 0) missingFields.push('Categoría')
     if (data.tags.length === 0) missingFields.push('Etiquetas')
     if (!data.description) missingFields.push('Descripción')
     if (!data.content) missingFields.push('Contenido')
-
     if (missingFields.length > 0) {
       toast.error(`Favor de llenar los datos de: ${missingFields.join(', ')}`, {
         duration: 5000,

@@ -45,7 +45,6 @@ Author:
 
 export default function BurgerComponent({ options, verified }: Readonly<IDropdownProps>) {
 
-// al oprimir el botón de cerrar sesión, se debe ejecutar el hook useStore para eliminar el token de la sesión
 const logout = useStore(state => state.logout);
 
   return (

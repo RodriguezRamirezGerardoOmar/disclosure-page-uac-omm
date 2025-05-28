@@ -17,6 +17,16 @@ interface CreateDifficultyComponentProps {
   onClose: () => void
 }
 
+/*
+Input: methods (react-hook-form methods), onCreateDifficulty (callback after creating a difficulty), difficultyId (optional, id of the difficulty to edit), onClose (callback to close the modal)
+Output: a modal form to create or edit a difficulty, with fields, validation, and feedback
+Return value: a modal component used to create a new difficulty or edit an existing one
+Function: fetches difficulty data if editing, handles form state and submission, shows success/error toasts, and allows resetting or closing the form
+Variables: methods, onCreateDifficulty, difficultyId, onClose, createDifficulty, updateDifficulty, getDifficulty, currentDifficulty, clearForm, onSubmit
+Date: 28 - 05 - 2025
+Author: Alan Julian Itzamna Mier Cupul
+*/
+
 const CreateDifficultyComponent: React.FC<CreateDifficultyComponentProps> = ({ methods, onCreateDifficulty, difficultyId, onClose }) => {
   const createDifficulty = useUtilsStore(state => state.createDifficulty)
   const updateDifficulty = useUtilsStore(state => state.updateDifficulty)
@@ -25,6 +35,7 @@ const CreateDifficultyComponent: React.FC<CreateDifficultyComponentProps> = ({ m
 
   useEffect(() => {
     const loadDifficulty = async () => {
+      // Condition: If editing, fetch and set difficulty data; otherwise, reset form fields
       if (difficultyId) {
         const difficulty = await getDifficulty(difficultyId)
         if (difficulty) {
@@ -42,6 +53,7 @@ const CreateDifficultyComponent: React.FC<CreateDifficultyComponentProps> = ({ m
   }, [difficultyId, getDifficulty, methods])
 
   const clearForm = () => {
+    // Condition: If editing, reset to current difficulty values; otherwise, clear form fields
     if (difficultyId) {
       methods.reset({
         DifficultyName: currentDifficulty.name,
@@ -55,12 +67,14 @@ const CreateDifficultyComponent: React.FC<CreateDifficultyComponentProps> = ({ m
 
   const onSubmit: SubmitHandler<FieldValues> = async data => {
     let response
+    // Condition: If editing, update difficulty; otherwise, create new difficulty
     if (difficultyId) {
       response = await updateDifficulty(difficultyId, { level: Number(data.Level), name: String(data.DifficultyName) })
     } else {
       response = await createDifficulty({ level: Number(data.Level), name: String(data.DifficultyName) })
     }
 
+    // Condition: If response has 'id', show success toast, reset form, and close; if 'message', show error toast
     if ('id' in response) {
       toast.success(`La dificultad se ha ${difficultyId ? 'editado' : 'creado'} con éxito.`, {
         duration: 5000,
@@ -89,7 +103,7 @@ const CreateDifficultyComponent: React.FC<CreateDifficultyComponentProps> = ({ m
               <button
                 type='button'
                 onClick={clearForm}
-                className='text-inherit' // Color heredado del padre
+                className='text-inherit' 
               >
                 <ArrowUturnLeftIcon className='h-6 w-6' />
               </button>
@@ -102,7 +116,7 @@ const CreateDifficultyComponent: React.FC<CreateDifficultyComponentProps> = ({ m
                   clearForm()
                   onClose()
                 }}
-                className='text-inherit' // Color heredado del padre
+                className='text-inherit' 
               >
                 <XMarkIcon className='h-6 w-6' />
               </button>

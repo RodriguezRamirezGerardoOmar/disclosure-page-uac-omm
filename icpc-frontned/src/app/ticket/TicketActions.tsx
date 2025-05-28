@@ -5,6 +5,16 @@ import { ButtonComponent } from '@/app/components/buttons/ButtonComponent';
 import useUtilsStore from '@/store/useUtilsStore';
 import { toast } from 'sonner';
 
+/*
+Input: ticketId (string, the id of the ticket to approve or reject)
+Output: a set of action buttons to approve or reject a ticket, with feedback to the user
+Return value: a component used to perform actions on a ticket (approve or reject)
+Function: provides buttons to approve or reject a ticket, handles API calls, shows success/error toasts, and redirects to the profile page on success
+Variables: ticketId, approveTicket, rejectTicket, acceptTicket, denyTicket
+Date: 28 - 05 - 2025
+Author: Alan Julian Itzamna Mier Cupul
+*/
+
 interface TicketActionsProps {
   ticketId: string;
 }
@@ -22,6 +32,7 @@ export const TicketActions: React.FC<TicketActionsProps> = ({ ticketId }) => {
             color: '#ffffff'
           }
         }
+        // Condition: If ticket is approved, show success toast and redirect; otherwise, show error toast
         if ('created_at' in response) {
           toast.success('Ticket aprobado con éxito.', toastOptions);
           window.location.href = '/profile'
@@ -47,6 +58,7 @@ export const TicketActions: React.FC<TicketActionsProps> = ({ ticketId }) => {
             color: '#ffffff'
           }
         }
+        // Condition: If ticket is rejected, show success toast and redirect; otherwise, show error toast
         if ('id' in response) {
           toast.success('Ticket rechazado con éxito.', toastOptions);
           window.location.href = '/profile'

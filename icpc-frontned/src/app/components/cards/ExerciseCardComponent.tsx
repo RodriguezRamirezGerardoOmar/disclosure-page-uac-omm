@@ -15,6 +15,16 @@ interface ExerciseCardComponentProps {
   clue?: string
 }
 
+/*
+Input: the exercise object, description, optional solution, itemId, and clue to display in the card; styles for the card
+Output: a card with the exercise title, details, tags, author, description, clue, constraints, and solution
+Return value: a card component used in the landing page or exercise section to display exercise information
+Function: creates a card with a header, exercise details, tags, author, and markdown-rendered content for the exercise
+Variables: exercise, description, solution, itemId, clue, props
+Date: 28 - 05 - 2025
+Author: Alan Julian Itzamna Mier Cupul
+*/
+
 const ExerciseCardComponent = ({ ...props }: Readonly<ExerciseCardComponentProps>) => {
   return (
     <main className='w-full'>
@@ -26,7 +36,7 @@ const ExerciseCardComponent = ({ ...props }: Readonly<ExerciseCardComponentProps
 
       <div className='mx-auto w-full px-4 py-8 sm:px-6 lg:px-8 place-items-center'>
         {' '}
-        {/* Contenido principal */}
+        {/* Principal Content */}
         <div className='rounded-lg bg-gray-50 shadow-sm ring-1 ring-gray-900/5 w-full max-w-7xl' >
           <dl className='flex flex-wrap p-4'>
             <div className='flex-auto pl-4'>

@@ -13,6 +13,15 @@ interface ExerciseMarkdownComponentProps {
   clue?: string
 }
 
+/*
+Input: description (problem description), constraints (problem constraints), solution (optional solution to the problem), clue (optional clue for the problem)
+Output: Section with markdown-rendered problem description, constraints, clue, and solution, each in a styled card or collapsible card
+Return value: Component that displays the exercise's description, constraints, clue, and solution in a formatted layout
+Function: Shows the markdown content for an exercise, including description, constraints, clue, and solution, using styled and collapsible cards
+Variables: description, constraints, solution, clue
+Date: 28 - 05 - 2025
+Author: Alan Julian Itzamna Mier Cupul
+*/
 const ExerciseMarkdownComponent: React.FC<ExerciseMarkdownComponentProps> = ({ description, constraints, solution, clue }) => {
   return (
     <div className='mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 text-accent dark:text-dark-accent'>

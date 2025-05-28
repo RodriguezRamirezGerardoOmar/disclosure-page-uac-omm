@@ -10,6 +10,16 @@ import rehypeKatex from 'rehype-katex'
 import { TextComponent } from '@/app/components/text/TextComponent'
 import { TicketActions } from '@/app/ticket/TicketActions'
 
+/*
+Input: params (object with id from the route)
+Output: a page displaying the original and modified content for a ticket (exercise, news, or note), or a single item if not an update
+Return value: a page component used to show ticket details, including item comparison and ticket actions
+Function: fetches ticket data by id, serializes markdown for notes/exercises, renders the appropriate card(s) for the ticket type and operation, and displays ticket actions
+Variables: params, ticket, serializeNote, pageContent
+Date: 28 - 05 - 2025
+Author: Alan Julian Itzamna Mier Cupul
+*/
+
 const TicketPage = async ({ params }: Readonly<{ params: { id: string } }>) => {
   const ticket: Ticket = await useUtilsStore.getState().getTicket(params.id)
 
@@ -47,7 +57,7 @@ const TicketPage = async ({ params }: Readonly<{ params: { id: string } }>) => {
                 exercise={ticket.originalExerciseId}
                 description={originalDescription.compiledSource}
                 solution={originalSolution.compiledSource}
-                clue={ticket.originalExerciseId.clue ? ticket.originalExerciseId.clue : ''} // Mostrar pista
+                clue={ticket.originalExerciseId.clue ? ticket.originalExerciseId.clue : ''} 
               />
             </div>
             <div>
@@ -63,7 +73,7 @@ const TicketPage = async ({ params }: Readonly<{ params: { id: string } }>) => {
                 exercise={ticket.modifiedExerciseId}
                 description={modifiedDescription.compiledSource}
                 solution={modifiedSolution.compiledSource}
-                clue={ticket.modifiedExerciseId.clue ? ticket.modifiedExerciseId.clue : ''} // Mostrar pista
+                clue={ticket.modifiedExerciseId.clue ? ticket.modifiedExerciseId.clue : ''} 
               />
             </div>
           </div>
@@ -157,7 +167,7 @@ const TicketPage = async ({ params }: Readonly<{ params: { id: string } }>) => {
               exercise={ticket.originalExerciseId}
               description={description.compiledSource}
               solution={solution.compiledSource}
-              clue={ticket.originalExerciseId.clue ? ticket.originalExerciseId.clue : ''} // Mostrar pista
+              clue={ticket.originalExerciseId.clue ? ticket.originalExerciseId.clue : ''} 
             />
           </>
         )

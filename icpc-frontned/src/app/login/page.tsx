@@ -12,6 +12,16 @@ import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3'
 
+/*
+Input: none (static login page, no props or parameters)
+Output: a page displaying a login form with username/email, password, remember me checkbox, and submit button
+Return value: a page component used to authenticate users and start a session
+Function: renders a logo, a title, and a form for users to enter their credentials, handles CAPTCHA verification, login logic, and feedback
+Variables: login, captcha, router, methods, executeRecaptcha, onSubmit
+Date: 28 - 05 - 2025
+Author: Alan Julian Itzamna Mier Cupul
+*/
+
 export default function Home() {
   const login = useStore(state => state.login)
   const captcha = useStore(state => state.captcha)
@@ -34,10 +44,9 @@ export default function Home() {
         const captchaVerified = await captcha(recaptchaToken)
         if (captchaVerified.success) {
           const { username, password } = data
-          // Determinar si el input es email o username
           const credentials = username.includes('@') ? { email: username, password } : { username: username, password }
 
-          await login(credentials) // Envía el objeto correcto al store
+          await login(credentials) 
           router.push('/')
           toast.success('Inicio de sesión exitoso', {
             duration: 5000,
@@ -103,12 +112,6 @@ export default function Home() {
             text='Iniciar sesión'
             action={function (): void {}}
           />
-          {/* 
-          <a href='/forgot'>
-          <TextComponent className='dark:text-dark-accent hover:text-dark-accent hover:dark:text-complementary underline'>
-              Olvidé mi contraseña
-            </TextComponent>
-          </a> */}
         </form>
       </BasicPanelComponent>
     </main>

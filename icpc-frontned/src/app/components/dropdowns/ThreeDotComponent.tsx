@@ -17,6 +17,16 @@ interface IThreeDotComponentProps {
   options: Option[]
 }
 
+/*
+Input: id (item identifier), itemType (type of item), options (array of menu options with actions, styles, and optional href)
+Output: a three-dot dropdown menu with clickable options for the given item
+Return value: a component used to display a contextual menu for actions on an item
+Function: renders a three-dot menu button that toggles a dropdown with options, each option triggers its action and closes the menu
+Variables: id, itemType, options, open, setOpen, openReportModal, setOpenReportModal
+Date: 28 - 05 - 2025
+Author: Alan Julian Itzamna Mier Cupul
+*/
+
 const ThreeDotComponent = (props: Readonly<IThreeDotComponentProps>) => {
   const [open, setOpen] = useState(false)
   const [openReportModal, setOpenReportModal] = useState(false)
@@ -41,6 +51,7 @@ const ThreeDotComponent = (props: Readonly<IThreeDotComponentProps>) => {
           leaveFrom='transform opacity-100 scale-100'
           leaveTo='transform opacity-0 scale-95'
           show={open}>
+          {/* Condition: If open is true, the dropdown menu with options is displayed */}
           <MenuItems
             onMouseLeave={() => setOpen(false)}
             className={`absolute right-0 mt-2 w-56 origin-top-right rounded-md bg-white 

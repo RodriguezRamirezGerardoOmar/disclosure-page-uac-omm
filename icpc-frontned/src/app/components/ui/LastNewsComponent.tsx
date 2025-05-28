@@ -1,4 +1,4 @@
-'use client' // Agrega esto al inicio
+'use client' 
 import { enumTextTags } from '@/constants/types'
 import { TextComponent } from '../text/TextComponent'
 import Link from 'next/link'
@@ -7,6 +7,15 @@ import useNewsStore from '@/store/useNewsStore'
 import { useEffect, useState } from 'react'
 import { News } from '@/constants/types'
 
+/*
+Input: none
+Output: Section displaying the latest news items, with a link to view more news
+Return value: Component that shows a list of the most recent news or a message if there are none
+Function: Fetches and displays the three most recent news items, with a link to the news page
+Variables: lastNews, setLastNews
+Date: 28 - 05 - 2025
+Author: Alan Julian Itzamna Mier Cupul
+*/
 export const LastNewsComponent = () => {
   const [lastNews, setLastNews] = useState<News[]>([])
   

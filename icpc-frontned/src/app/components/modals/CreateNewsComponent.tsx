@@ -21,6 +21,16 @@ interface CreateNewsComponentProps {
   onClose: () => void
 }
 
+/*
+Input: id (optional, id of the news to edit), onClose (callback to close the modal)
+Output: a modal form to create or edit a news article, with fields for title, image, and content, plus validation and feedback
+Return value: a modal component used to create a new news article or edit an existing one
+Function: fetches news data if editing, handles form state and submission, manages image upload, shows success/error toasts, and allows resetting or closing the form
+Variables: id, onClose, methods, createNews, getNewsArticle, createImage, updateImage, updateNews, imageInputRef, coverImage, showConfirm, onSubmit, dataValidate, clearForm
+Date: 28 - 05 - 2025
+Author: Alan Julian Itzamna Mier Cupul
+*/
+
 const CreateNewsComponent = (props: CreateNewsComponentProps) => {
   const methods = useForm<FieldValues>()
   const createNews = useNewsStore(state => state.createNews)
@@ -38,6 +48,7 @@ const CreateNewsComponent = (props: CreateNewsComponentProps) => {
     if (props.id) {
       const fetchNews = async () => {
         const news = await getNewsArticle(props.id!)
+        // Condition: If news is found, reset form and set cover image; otherwise, show error toast
         if (news) {
           methods.reset({
             title: news.title,
@@ -61,6 +72,7 @@ const CreateNewsComponent = (props: CreateNewsComponentProps) => {
 
   const onSubmit: SubmitHandler<FieldValues> = async formData => {
     const processResponse = async (uploadedImage: any) => {
+      // Condition: If image upload returns data, process news creation/update; otherwise, show error toast
       if ('data' in uploadedImage) {
         const imageId = uploadedImage.data?.imageId?.id || uploadedImage.data?.id
         if (!imageId) {
@@ -73,7 +85,7 @@ const CreateNewsComponent = (props: CreateNewsComponentProps) => {
           })
           return
         }
-
+        // Condition: If editing, update news; otherwise, create news
         const response = props.id
           ? await updateNews(
               {
@@ -92,6 +104,7 @@ const CreateNewsComponent = (props: CreateNewsComponentProps) => {
               userAuthor: String(useAuthStore.getState().user?.userName),
               role: String(useAuthStore.getState().user?.role)
             })
+        // Condition: If response has 'id', show success toast and close; if 'message', show error toast
         if (response) {
           const toastOptions = {
             duration: 5000,
@@ -125,6 +138,7 @@ const CreateNewsComponent = (props: CreateNewsComponentProps) => {
         })
       }
     }
+    // Condition: If file is a string, use existing image; otherwise, upload new image
     if (typeof formData.file === 'string') {
       processResponse({ data: { id: (await getNewsArticle(props.id!)).imageId.id } })
     } else {
@@ -136,11 +150,10 @@ const CreateNewsComponent = (props: CreateNewsComponentProps) => {
   const dataValidate = () => {
     const data = methods.getValues()
     const missingFields = []
-
+    // Condition: Check for missing required fields and show error toast if any are missing
     if (!data.title) missingFields.push('Título')
     if (!data.content) missingFields.push('Cuerpo de la noticia')
     if (!data.file) missingFields.push('Archivo de imagen')
-
     if (missingFields.length > 0) {
       toast.error(`Favor de llenar los datos de: ${missingFields.join(', ')}`, {
         duration: 5000,
@@ -155,6 +168,7 @@ const CreateNewsComponent = (props: CreateNewsComponentProps) => {
   }
 
   const clearForm = () => {
+    // Condition: If editing, reload news and reset form; otherwise, reset form and image
     if (props.id) {
       const fetchNews = async () => {
         const news = await getNewsArticle(props.id!)
