@@ -81,7 +81,7 @@ export function SelectComponent({ ...props }: Readonly<ISelectProps>) {
                   sm:text-sm sm:leading-6 overflow-hidden`}
               >
                 <span className="block truncate">
-                  {props.selected || 'Elija una opción'} {/* Muestra el valor seleccionado o un texto por defecto */}
+                  {props.selected || 'Elija una opción'} 
                 </span>
                 <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
                   <ChevronUpDownIcon
@@ -117,7 +117,7 @@ export function SelectComponent({ ...props }: Readonly<ISelectProps>) {
                         <>
                           <div className="flex items-center">
                             <span className={classNames(selected ? 'font-semibold' : 'font-normal', 'ml-3 block truncate')}>
-                              {option.name} {/* Muestra el nombre de la opción */}
+                              {option.name} 
                             </span>
                           </div>
 

@@ -36,7 +36,7 @@ const ExerciseCardComponent = ({ ...props }: Readonly<ExerciseCardComponentProps
 
       <div className='mx-auto w-full px-4 py-8 sm:px-6 lg:px-8 place-items-center'>
         {' '}
-        {/* Contenido principal */}
+        {/* Principal Content */}
         <div className='rounded-lg bg-gray-50 shadow-sm ring-1 ring-gray-900/5 w-full max-w-7xl' >
           <dl className='flex flex-wrap p-4'>
             <div className='flex-auto pl-4'>

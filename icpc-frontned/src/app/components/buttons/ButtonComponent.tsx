@@ -34,8 +34,8 @@ export const ButtonComponent = ({ buttonType = 'button', onClick, className, ...
   return (
     <button
       type='button'
-      className={`${styles[buttonType as keyof typeof styles] || ''} ${className || ''}`} // Aplicar className
-      onClick={onClick} // Usar "onClick"
+      className={`${styles[buttonType as keyof typeof styles] || ''} ${className || ''}`}
+      onClick={onClick} 
     >
       <TextComponent
         tag={enumTextTags.span}

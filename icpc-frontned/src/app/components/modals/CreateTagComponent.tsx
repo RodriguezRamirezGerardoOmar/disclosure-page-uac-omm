@@ -102,7 +102,7 @@ const CreateTagComponent: React.FC<CreateTagComponentProps> = ({ methods, onCrea
               <button
                 type='button'
                 onClick={clearForm}
-                className='text-inherit' // Color heredado del padre
+                className='text-inherit'
               >
                 <ArrowUturnLeftIcon className='h-6 w-6' />
               </button>
@@ -112,7 +112,7 @@ const CreateTagComponent: React.FC<CreateTagComponentProps> = ({ methods, onCrea
               title='Cerrar formulario'>
               <button
                 onClick={onClose}
-                className='text-inherit' // Color heredado del padre
+                className='text-inherit' 
               >
                 <XMarkIcon className='h-6 w-6' />
               </button>

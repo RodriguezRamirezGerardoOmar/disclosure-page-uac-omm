@@ -121,8 +121,6 @@ ejercicios propuestos de diferentes niveles.`}
           <DataCardComponent
             title={dataRamdomCard.title}
             info={dataRamdomCard.info}
-            //autor={dataRamdomCard.autor}
-            //image={dataRamdomCard.image}
           />
         </div>
         <div className='px-4 md:px-0 md:pl-4 h-full w-full'>

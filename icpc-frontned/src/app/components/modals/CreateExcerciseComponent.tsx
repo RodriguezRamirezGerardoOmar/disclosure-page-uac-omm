@@ -170,8 +170,6 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
     setUpdate(!update)
   }
 
-  // ...existing code...
-
   const clearForm = () => {
     if (props.id) {
       const fetchExercise = async () => {
@@ -211,14 +209,12 @@ const CreateExcerciseComponent = (props: CreateExerciseComponentProps) => {
     const missingFields = []
     const invalidFields: string[] = []
 
-    // Validación de campos obligatorios
     if (!data.name) missingFields.push('Nombre del ejercicio')
     if (data.category.length === 0) missingFields.push('Categoría')
     if (data.difficulty.length === 0) missingFields.push('Nivel de dificultad')
     if (data.tags.length === 0) missingFields.push('Etiquetas')
     if (!data.description) missingFields.push('Descripción del problema')
 
-    // Mostrar errores si hay campos faltantes o inválidos
     if (missingFields.length > 0) {
       toast.error(`Favor de llenar los datos de: ${missingFields.join(', ')}`, {
         duration: 5000,

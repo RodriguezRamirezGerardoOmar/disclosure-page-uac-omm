@@ -57,7 +57,7 @@ const TicketPage = async ({ params }: Readonly<{ params: { id: string } }>) => {
                 exercise={ticket.originalExerciseId}
                 description={originalDescription.compiledSource}
                 solution={originalSolution.compiledSource}
-                clue={ticket.originalExerciseId.clue ? ticket.originalExerciseId.clue : ''} // Mostrar pista
+                clue={ticket.originalExerciseId.clue ? ticket.originalExerciseId.clue : ''} 
               />
             </div>
             <div>
@@ -73,7 +73,7 @@ const TicketPage = async ({ params }: Readonly<{ params: { id: string } }>) => {
                 exercise={ticket.modifiedExerciseId}
                 description={modifiedDescription.compiledSource}
                 solution={modifiedSolution.compiledSource}
-                clue={ticket.modifiedExerciseId.clue ? ticket.modifiedExerciseId.clue : ''} // Mostrar pista
+                clue={ticket.modifiedExerciseId.clue ? ticket.modifiedExerciseId.clue : ''} 
               />
             </div>
           </div>
@@ -167,7 +167,7 @@ const TicketPage = async ({ params }: Readonly<{ params: { id: string } }>) => {
               exercise={ticket.originalExerciseId}
               description={description.compiledSource}
               solution={solution.compiledSource}
-              clue={ticket.originalExerciseId.clue ? ticket.originalExerciseId.clue : ''} // Mostrar pista
+              clue={ticket.originalExerciseId.clue ? ticket.originalExerciseId.clue : ''} 
             />
           </>
         )

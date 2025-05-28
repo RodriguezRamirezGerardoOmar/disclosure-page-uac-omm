@@ -8,7 +8,6 @@ import katex from 'katex'
 import 'katex/dist/katex.css'
 import { ICommand, TextState } from '@uiw/react-md-editor'
 
-// Dynamic import of the MarkdownEditor component
 const MarkdownEditor = dynamic(() => import('@uiw/react-md-editor').then(mod => mod.default), { ssr: false })
 
 interface MarkdownAreaComponentProps {
@@ -105,18 +104,16 @@ export default function MarkdownAreaComponent({ value, onChange, labelText, clas
         value={value}
         height='320px'
         onChange={onChange}
-        commands={[...commands.getCommands(), customToolbar]} // Add custom toolbar here
+        commands={[...commands.getCommands(), customToolbar]} 
         previewOptions={{
           components: {
             code: ({ children = [], className, ...props }) => {
-              // Ensure `code` is always a string
               const code = props.node && props.node.children ? getCodeString(props.node.children) : children || ''
 
-              // Handle block math with `KaTeX` syntax, e.g., ```KaTeX
               if (typeof className === 'string' && /^language-katex/.test(className.toLowerCase())) {
                 const html = katex.renderToString(code.toString(), {
                   throwOnError: false,
-                  displayMode: true // Ensure it's rendered as block math
+                  displayMode: true 
                 })
                 return (
                   <code
@@ -126,11 +123,10 @@ export default function MarkdownAreaComponent({ value, onChange, labelText, clas
                 )
               }
 
-              // Handle inline KaTeX with $$...$$
               if (typeof children === 'string' && /^\$\$(.*)\$\$/.test(children)) {
                 const html = katex.renderToString(children.replace(/^\$\$(.*)\$\$/, '$1'), {
                   throwOnError: false,
-                  displayMode: true // Renders it as block math
+                  displayMode: true 
                 })
                 return (
                   <code
