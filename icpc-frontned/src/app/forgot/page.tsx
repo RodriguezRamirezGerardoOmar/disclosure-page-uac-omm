@@ -7,6 +7,16 @@ import LogoComponent from '../components/LogoComponent'
 import { enumTextTags } from '@/constants/types'
 import { TextComponent } from '../components/text/TextComponent'
 
+/*
+Input: none (static page, no props or parameters)
+Output: a page displaying a password recovery form with email input and submit button
+Return value: a page component used to request a password reset by entering an email address
+Function: renders a logo, a title, and a form for users to enter their email to receive a password reset link
+Variables: methods (react-hook-form methods)
+Date: 28 - 05 - 2025
+Author: Alan Julian Itzamna Mier Cupul
+*/
+
 const onSubmit: SubmitHandler<FieldValues> = () => {}
 
 export default function Home() {

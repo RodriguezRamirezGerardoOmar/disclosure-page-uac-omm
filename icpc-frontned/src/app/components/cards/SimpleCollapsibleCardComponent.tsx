@@ -8,6 +8,16 @@ interface SimpleCollapsibleCardComponentProps {
   body: string;
 }
 
+/*
+Input: the title and body to display in the card, styles for the card
+Output: a card with a title, body, and style
+Return value: a card component used in the landing page to display collapsible information
+Function: creates a collapsible card with a header and body
+Variables: title, body, isOpen, setIsOpen, toggleCard
+Date: 28 - 05 - 2025
+Author: Alan Julian Itzamna Mier Cupul
+*/
+
 const SimpleCollapsibleCardComponent: React.FC<SimpleCollapsibleCardComponentProps> = ({ title, body }) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -25,6 +35,7 @@ const SimpleCollapsibleCardComponent: React.FC<SimpleCollapsibleCardComponentPro
       </div>
       {isOpen && (
         <div className="mt-4 p-4 rounded-lg text-accent dark:text-dark-accent">
+          {/* Condition: If isOpen is true, the card body is displayed with the TextComponent */}
           <TextComponent>{body}</TextComponent>
         </div>
       )}

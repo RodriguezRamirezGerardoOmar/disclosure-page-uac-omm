@@ -6,6 +6,16 @@ import rehypeKatex from 'rehype-katex'
 import remarkMath from 'remark-math'
 import HeartbeatComponent from '@/app/components/logging/HeartbeatComponent'
 
+/*
+Input: params (object with exercise id from the route)
+Output: a page displaying the exercise card with description, solution, and heartbeat logging
+Return value: a page component used to show a single exercise with all its details and activity logging
+Function: fetches exercise data by id, serializes markdown for description and solution, renders the exercise card, and logs user activity
+Variables: params, exerciseBody, description, solution
+Date: 28 - 05 - 2025
+Author: Alan Julian Itzamna Mier Cupul
+*/
+
 async function getMarkdown(body: string) {
   return await serialize(body, {
     mdxOptions: {

@@ -8,6 +8,16 @@ import useNoteStore from '@/store/useNoteStore'
 import { Note } from '@/constants/types'
 import HeartbeatComponent from '@/app/components/logging/HeartbeatComponent'
 
+/*
+Input: params (object with id from the route)
+Output: a page displaying a note card if id is valid, or a 404 message if not
+Return value: a page component used to show a single note with all its details or a 404 error
+Function: checks if the id param is valid, fetches note data, serializes markdown, renders the note card and heartbeat logger if valid, otherwise renders a 404 message
+Variables: params, getNote, note, mdx
+Date: 28 - 05 - 2025
+Author: Alan Julian Itzamna Mier Cupul
+*/
+
 export default async function Page({ params }: Readonly<{ params: { id: string } }>) {
   const getNote = useNoteStore.getState().getNote
   if (params.id) {

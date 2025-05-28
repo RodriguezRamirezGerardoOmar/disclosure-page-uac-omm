@@ -3,6 +3,16 @@ import { SubmitHandler, useForm } from 'react-hook-form'
 import PasswordCardComponent from '../components/cards/PasswordCardComponent'
 import TextFieldComponent from '../components/forms/TextFieldComponent'
 
+/*
+Input: none (static recovery page, no props or parameters)
+Output: a page displaying a form to create and confirm a new password
+Return value: a page component used to reset a user's password
+Function: renders a password card with two input fields for new password and confirmation, and handles form submission
+Variables: methods (react-hook-form methods)
+Date: 28 - 05 - 2025
+Author: Alan Julian Itzamna Mier Cupul
+*/
+
 const onSubmit: SubmitHandler<FormData> = () => {}
 
 export default function Home() {

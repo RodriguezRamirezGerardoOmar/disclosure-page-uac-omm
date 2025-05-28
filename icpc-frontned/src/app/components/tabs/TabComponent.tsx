@@ -9,6 +9,16 @@ import CreateTagComponent from '../modals/CreateTagComponent'
 import CreateUserComponent from '../modals/CreateUserComponent'
 import { useForm, FieldValues } from 'react-hook-form'
 
+/*
+Input: myTabs (array of user tabs), adminTabs (array of admin tabs), isAdmin (boolean for admin view), handleChange (callback for tab change), updateTable (callback to refresh table)
+Output: a tab navigation bar with create button and modals for creating new items based on the active tab
+Return value: a component used to display and manage navigation tabs and creation modals for different item types
+Function: renders navigation tabs, manages active tab state, shows/hides create button and modals, and handles tab switching and modal logic
+Variables: myTabs, adminTabs, isAdmin, handleChange, updateTable, tabs, accountTab, filteredAdminTabs, showModal, showCreateButton, modalComponent, activeTab, methods, and all handler functions
+Date: 28 - 05 - 2025
+Author: Alan Julian Itzamna Mier Cupul
+*/
+
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
 }
@@ -42,24 +52,34 @@ export default function TabComponent({
   const [modalComponent, setModalComponent] = useState<JSX.Element | null>(null)
   const [activeTab, setActiveTab] = useState(tabs.find(tab => tab.current)?.name)
   const methods = useForm<FieldValues>()
-  const onCreateDifficulty = (DifficultyName: string) => {
-    // Implementa la lógica para manejar la creación de una dificultad
-  }
-  const onCreateTag = (tagName: string) => {
-    // Implementa la lógica para manejar la creación de una etiqueta
-  }
-  const onCreateTimeLimit = (time: number) => {
-    // Implementa la lógica para manejar la creación de un límite de tiempo
-  }
-  const onCreateMemory = (memoryName: string) => {
-    // Implementa la lógica para manejar la creación de un límite de memoria
-  }
+// Handles the creation of a difficulty level
+const onCreateDifficulty = (DifficultyName: string) => {
+  // Implement the logic to handle the creation of a difficulty
+}
+
+// Handles the creation of a tag
+const onCreateTag = (tagName: string) => {
+  // Implement the logic to handle the creation of a tag
+}
+
+// Handles the creation of a time limit
+const onCreateTimeLimit = (time: number) => {
+  // Implement the logic to handle the creation of a time limit
+}
+
+// Handles the creation of a memory limit
+const onCreateMemory = (memoryName: string) => {
+  // Implement the logic to handle the creation of a memory limit
+}
+
 
   useEffect(() => {
+    // Effect: Refreshes the table whenever the modal open state changes
     updateTable()
   }, [showModal])
 
   const handleTabChange = (tabName: string) => {
+    // Condition: Sets the active tab, updates parent, and manages create button/modal visibility based on tab
     setActiveTab(tabName)
     handleChange(tabName)
 
@@ -109,6 +129,7 @@ export default function TabComponent({
   }
 
   const handleModalOpen = () => {
+    // Condition: Opens the modal for the current active tab
     if (activeTab === 'Apuntes') {
       setModalComponent(<CreateNoteComponent onClose={handleModalClose} />)
     } else if (activeTab === 'Noticias') {
@@ -140,6 +161,7 @@ export default function TabComponent({
   }
 
   const handleModalClose = () => {
+    // Condition: Closes the modal and resets modal component
     setShowModal(false)
     setModalComponent(null)
   }

@@ -15,6 +15,15 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
 }
 
+/*
+Input: category (category of the exercise), title (title of the exercise), itemId (ID of the exercise)
+Output: Header with exercise information and a button that opens a modal to report an error for the specified exercise
+Return value: Header component that displays a report modal when the report button is clicked
+Function: Allows the user to report an error about a specific exercise by showing a form in a modal
+Variables: category, title, itemId, isTicketPage, setIsTicketPage, props
+Date: 28 - 05 - 2025
+Author: Alan Julian Itzamna Mier Cupul
+*/
 const ExerciseHeaderComponent = ({ ...props }: Readonly<ExerciseHeaderComponentProps>) => {
   const [isTicketPage, setIsTicketPage] = useState(false)
 
@@ -26,7 +35,7 @@ const ExerciseHeaderComponent = ({ ...props }: Readonly<ExerciseHeaderComponentP
 
   return (
     <header className='relative isolate'>
-      {/* Fondo y encabezado */}
+      {/* Background and header */}
       <div
         className='absolute inset-0 -z-10 overflow-hidden'
         aria-hidden='true'>
@@ -35,7 +44,6 @@ const ExerciseHeaderComponent = ({ ...props }: Readonly<ExerciseHeaderComponentP
             className='aspect-[1154/678] w-[72.125rem] bg-gradient-to-br from-[#FF80B5] to-[#9089FC]'
             style={{
               clipPath:
-                // eslint-disable-next-line max-len
                 'polygon(100% 38.5%, 82.6% 100%, 60.2% 37.7%, 52.4% 32.1%, 47.5% 41.8%, 45.2% 65.6%, 27.5% 23.4%, 0.1% 35.3%, 17.9% 0%, 27.7% 23.4%, 76.2% 2.5%, 74.2% 56%, 100% 38.5%)'
             }}
           />
@@ -44,7 +52,7 @@ const ExerciseHeaderComponent = ({ ...props }: Readonly<ExerciseHeaderComponentP
       </div>
 
       <div className='mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8'>
-        {/* Título y botones */}
+        {/* Title and buttons */}
         <div className='mx-auto flex flex-col lg:flex-row max-w-2xl items-center justify-between gap-x-8 lg:mx-0 lg:max-w-none'>
           <div className='flex items-center gap-x-6'>
             <h1>

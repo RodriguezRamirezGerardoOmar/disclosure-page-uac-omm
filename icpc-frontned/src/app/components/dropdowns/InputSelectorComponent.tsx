@@ -55,7 +55,7 @@ const InputSelectorComponent = forwardRef(
       selectedOption,
       id,
       label,
-      clearable = true, // Cambiado a true por defecto
+      clearable = true, 
       onChange
     }: Readonly<InputSelectorProps>,
     ref
@@ -84,13 +84,13 @@ const InputSelectorComponent = forwardRef(
           value={selectedOption}
           isSearchable={true}
           isMulti={false}
-          onChange={onChange} // Simplificado
+          onChange={onChange} 
           getOptionLabel={option => option.label}
           getOptionValue={option => option.value}
           styles={colourStyles}
           isClearable={clearable}
           ref={inputRef}
-          classNamePrefix='react-select' // Añadido para estilizado personalizado
+          classNamePrefix='react-select' 
         />
       </div>
     )

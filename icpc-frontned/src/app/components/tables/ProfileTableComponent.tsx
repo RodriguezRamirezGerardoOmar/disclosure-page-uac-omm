@@ -36,6 +36,16 @@ interface IProfileTableComponentProps {
   onClose: () => void
 }
 
+/*
+Input: data (array of items to display in the table), itemType (type of items), update (boolean to trigger updates), setUpdate (function to update state), onClose (callback to close modals)
+Output: a table displaying items with actions (view, edit, delete), and modals for creating/editing/deleting items
+Return value: a component used to manage and display a list of items with contextual actions and modals
+Function: renders a table of items, provides contextual menu actions, manages modal state for CRUD operations, and handles feedback and confirmation dialogs
+Variables: data, itemType, update, setUpdate, onClose, methods, all modal state variables, confirmDelete, deleteId, deleteItemType, active*Id, delete* functions, hasPendingTicket, selectedReportId, options, setCurrentOptions, and all handler functions
+Date: 28 - 05 - 2025
+Author: Alan Julian Itzamna Mier Cupul
+*/
+
 const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => {
   const methods = useForm()
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false)
@@ -78,7 +88,6 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
 
   const handleEdit = async (id: string, itemType: string) => {
     try {
-      // Realiza la solicitud para verificar si hay un ticket pendiente solo para noticias, ejercicios o notas
       if (itemType === 'Noticias' || itemType === 'Ejercicios' || itemType === 'Apuntes') {
         const response = await hasPendingTicket(id, itemType)
 
@@ -104,7 +113,6 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
             break
         }
       } else {
-        // Si no hay ticket pendiente, abre el modal correspondiente
         switch (itemType) {
           case AllTabs.CATEGORIES:
             setActiveCategoryId(id)
@@ -213,34 +221,51 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
     }
   ]
 
-  const setCurrentOptions = (id: string, itemType: string) => {
-    switch (itemType) {
-      case AllTabs.REPORTS:
-        return [options[3]] // "Ver" para reportes (corroborar cambios)
-      case AllTabs.CHANGES:
-        return [options[0]] // "Ver" para cambios
-      case AllTabs.EXERCISES:
-        return [
-          { ...options[0], href: 'exercises' }, // "Ver" para redirigir al ítem
-          options[1], // "Editar"
-          options[2] // "Eliminar"
-        ]
-      case AllTabs.NOTES:
-        return [
-          { ...options[0], href: 'note' }, // "Ver" para redirigir al ítem
-          options[1], // "Editar"
-          options[2] // "Eliminar"
-        ]
-      case AllTabs.NEWS:
-        return [
-          { ...options[0], href: 'news' }, // "Ver" para redirigir al ítem
-          options[1], // "Editar"
-          options[2] // "Eliminar"
-        ]
-      default:
-        return [options[1], options[2]] // "Editar", "Eliminar" para otros ítems
-    }
+const setCurrentOptions = (id: string, itemType: string) => {
+  switch (itemType) {
+    case AllTabs.REPORTS:
+      // "View" for reports (verify changes)
+      return [options[3]]
+
+    case AllTabs.CHANGES:
+      // "View" for changes
+      return [options[0]]
+
+    case AllTabs.EXERCISES:
+      return [
+        // "View" to redirect to the item
+        { ...options[0], href: 'exercises' },
+        // "Edit"
+        options[1],
+        // "Delete"
+        options[2]
+      ]
+
+    case AllTabs.NOTES:
+      return [
+        // "View" to redirect to the item
+        { ...options[0], href: 'note' },
+        // "Edit"
+        options[1],
+        // "Delete"
+        options[2]
+      ]
+
+    case AllTabs.NEWS:
+      return [
+        // "View" to redirect to the item
+        { ...options[0], href: 'news' },
+        // "Edit"
+        options[1],
+        // "Delete"
+        options[2]
+      ]
+
+    default:
+      // "Edit", "Delete" for other items
+      return [options[1], options[2]]
   }
+}
 
   return (
     <div>
@@ -362,6 +387,7 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
           </thead>
           <tbody>
             {props.data.length !== 0 ? (
+              // Condition: If there are items, map and render each row; otherwise, show empty message
               props.data.map(item => (
                 <tr
                   key={item.index}
@@ -393,6 +419,7 @@ const ProfileTableComponent = (props: Readonly<IProfileTableComponentProps>) => 
                 </tr>
               ))
             ) : (
+              // Condition: If no items, show empty message row
               <tr>
                 <td
                   className='whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 

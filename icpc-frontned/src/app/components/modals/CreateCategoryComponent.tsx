@@ -15,6 +15,16 @@ interface CreateCategoryComponentProps {
   categoryId?: string
 }
 
+/*
+Input: onClose (callback to close the modal), categoryId (optional, id of the category to edit)
+Output: a modal form to create or edit a category, with fields, validation, and feedback
+Return value: a modal component used to create a new category or edit an existing one
+Function: fetches category data if editing, handles form state and submission, shows success/error toasts, and allows resetting or closing the form
+Variables: onClose, categoryId, methods, createCategory, updateCategory, getCategory, currentCategory, clearForm, onSubmit
+Date: 28 - 05 - 2025
+Author: Alan Julian Itzamna Mier Cupul
+*/
+
 const CreateCategoryComponent: React.FC<CreateCategoryComponentProps> = ({ onClose, categoryId }) => {
   const methods = useForm<FieldValues>()
   const createCategory = useUtilsStore(state => state.createCategory)
@@ -26,6 +36,7 @@ const CreateCategoryComponent: React.FC<CreateCategoryComponentProps> = ({ onClo
     if (categoryId) {
       const loadCategory = async () => {
         const category = await getCategory(categoryId)
+        // Condition: If a category is found, set the form value and currentCategory
         if (category) {
           methods.setValue('categoryName', category.name)
           setCurrentCategory(category)
@@ -36,6 +47,7 @@ const CreateCategoryComponent: React.FC<CreateCategoryComponentProps> = ({ onClo
   }, [categoryId, getCategory, methods])
 
   const clearForm = () => {
+    // Condition: If editing, reset to current category name; otherwise, reset form
     if (categoryId) {
       methods.reset({
         categoryName: currentCategory.name
@@ -47,12 +59,14 @@ const CreateCategoryComponent: React.FC<CreateCategoryComponentProps> = ({ onClo
 
   const onSubmit: SubmitHandler<FieldValues> = async data => {
     let response
+    // Condition: If editing, update category; otherwise, create new category
     if (categoryId) {
       response = await updateCategory(categoryId, { name: String(data.categoryName) })
     } else {
       response = await createCategory({ name: String(data.categoryName), commentId: String(data.categoryName) })
     }
 
+    // Condition: If response has 'id', show success toast and close; if 'message', show error toast
     if ('id' in response) {
       toast.success(`La categoría se ha ${categoryId ? 'editado' : 'creado'} con éxito.`, {
         duration: 5000,
@@ -78,7 +92,7 @@ const CreateCategoryComponent: React.FC<CreateCategoryComponentProps> = ({ onClo
               <button
                 type='button'
                 onClick={clearForm}
-                className='text-inherit' // Color heredado del padre
+                className='text-inherit' 
               >
                 <ArrowUturnLeftIcon className='h-6 w-6' />
               </button>
@@ -88,7 +102,7 @@ const CreateCategoryComponent: React.FC<CreateCategoryComponentProps> = ({ onClo
               title='Cerrar formulario'>
               <button
                 onClick={onClose}
-                className='text-inherit' // Color heredado del padre
+                className='text-inherit' 
               >
                 <XMarkIcon className='h-6 w-6' />
               </button>

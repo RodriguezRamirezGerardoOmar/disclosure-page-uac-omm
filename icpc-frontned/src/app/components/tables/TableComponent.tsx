@@ -133,13 +133,11 @@ export default function TableComponent() {
         <div className='mt-8'>
           <div className='-mx-4 -my-2 sm:-mx-6 lg:-mx-8 overflow-x-auto'>
             {' '}
-            {/* Permitir desplazamiento horizontal */}
             <div
               className={`ring-1 ring-gray-300 sm:mx-0 sm:rounded-lg inline-block 
               min-w-full align-middle scroll-smooth`}>
               <table className='min-w-full border-separate border-spacing-0'>
                 {' '}
-                {/* Asegurar que la tabla ocupe el ancho completo */}
                 <thead>
                   <tr>
                     <th
@@ -221,11 +219,11 @@ export default function TableComponent() {
                         )}>
                         <div className='flex flex-row'>
                           <TagListComponent
-                            tags={exercise.tags.slice(0, 3)} // Mostrar solo las primeras 3 etiquetas
+                            tags={exercise.tags.slice(0, 3)}
                             showIcon={false}
                           />
                           {exercise.tags.length > 3 && (
-                            <span className='ml-1 text-gray-400'>...</span> // Mostrar puntos suspensivos si hay más etiquetas
+                            <span className='ml-1 text-gray-400'>...</span> 
                           )}
                         </div>
                       </td>

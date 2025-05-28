@@ -37,7 +37,6 @@ async function NewsCardComponent({ isTicketPage = false, ...props  }: Readonly<N
       rehypePlugins: [rehypeKatex as any]
     }
   })
-  //const image = await getCover(news.imageId.id)
   return (
     <BasicPanelComponent backgroundColor='bg-white dark:bg-dark-primary w-full md:w-11/12'>
       {!isTicketPage && (
