@@ -1,3 +1,9 @@
+/*
+Mailer module: configures the integration of the mailer service for sending emails, and sets up TypeORM for user, role, comment, and ticket entities. Uses Gmail as the email transport provider.
+Date: 02 - 06 - 2025
+Author: Alan Julian Itzamna Mier Cupul
+*/
+
 import { Module } from '@nestjs/common';
 import { MailerModule as NestMailerModule } from '@nestjs-modules/mailer';
 import { MailerService } from './mailer.service';

@@ -1,3 +1,9 @@
+/*
+Tags module: configures the integration of the Tag entity and related services for managing tags, comments, tickets, notes, and exercises. Exposes the tags service and uses TypeORM for persistence.
+Date: 02 - 06 - 2025
+Author: Alan Julian Itzamna Mier Cupul
+*/
+
 import { Module } from '@nestjs/common';
 import { TagsService } from './tags.service';
 import { TagsController } from './tags.controller';

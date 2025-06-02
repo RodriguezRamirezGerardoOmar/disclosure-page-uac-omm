@@ -1,3 +1,23 @@
+/*
+Input:
+  - create: file (Express.Multer.File)
+  - findAll: none
+  - findOne: id (string)
+  - update: id (string), updateImageDto (fields to update)
+  - remove: id (string)
+Output:
+  - create: Created or existing image
+  - findAll: List of images
+  - findOne: File path of the image
+  - update: Updated image
+  - remove: Deleted image
+Return value: Service for CRUD operations on images, with file storage and database persistence
+Function: Handles business logic for uploading, retrieving, updating, and deleting images, storing files and metadata
+Variables: imageRepository
+Date: 02 - 06 - 2025
+Author: Alan Julian Itzamna Mier Cupul
+*/
+
 import { Injectable } from '@nestjs/common';
 import { UpdateImageDto } from './dto/update-image.dto';
 import { InjectRepository } from '@nestjs/typeorm';

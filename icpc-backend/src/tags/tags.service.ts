@@ -29,6 +29,26 @@ export class TagsService {
     private readonly noteRepository: Repository<Note>
   ) {}
 
+  /*
+  Input:
+    - create: createTagDto (tag data)
+    - findAll: none
+    - findOne: id (string)
+    - update: id (string), updateTagDto (fields to update)
+    - remove: id (string)
+  Output:
+    - create: Created tag object or error
+    - findAll: List of all tags
+    - findOne: Found tag or null
+    - update: Updated tag or error
+    - remove: Deleted tag or error
+  Return value: Service providing business logic and data access for tags, including creation, retrieval, update, and deletion
+  Function: Handles all CRUD operations for tags, manages the Tag entity, and integrates with related entities (comments, tickets, exercises, notes) for persistence and business logic
+  Variables: tagRepository, commentRepository, ticketRepository, excerciseRepository, noteRepository
+  Date: 02 - 06 - 2025
+  Author: Alan Julian Itzamna Mier Cupul
+  */
+
   async create(createTagDto: CreateTagDto) {
     const trimmedName = createTagDto.name.trim();
     if (trimmedName.length === 0) {

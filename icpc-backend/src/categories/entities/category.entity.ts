@@ -1,3 +1,13 @@
+/*
+Input: name (string), excercises (array of Excercise), notes (array of Note), comment (Comment)
+Output: Category entity with relations to exercises, notes, and comment
+Return value: Category entity for database persistence
+Function: Represents the structure and relationships of the category entity in the system
+Variables: name, excercises, notes, comment
+Date: 02 - 06 - 2025
+Author: Alan Julian Itzamna Mier Cupul
+*/
+
 import { Excercise } from 'src/excercises/entities/excercise.entity';
 import { BaseEntity } from '../../entities/base.entity';
 import { Column, Entity, JoinTable, ManyToOne, OneToMany } from 'typeorm';

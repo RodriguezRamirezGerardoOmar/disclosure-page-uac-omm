@@ -1,3 +1,23 @@
+/*
+Input:
+  - create: createDifficultyDto (difficulty data)
+  - findAll: none
+  - findOne: id (string)
+  - update: id (string), updateDifficultyDto (fields to update)
+  - remove: id (string)
+Output:
+  - create: Created difficulty or error
+  - findAll: List of difficulties
+  - findOne: Found difficulty
+  - update: Updated difficulty or error
+  - remove: Deleted difficulty or error
+Return value: Service for CRUD operations on difficulty levels, with validations and change logging via tickets and comments
+Function: Handles business logic for creating, retrieving, updating, and deleting difficulty levels, ensuring integrity and traceability
+Variables: difficultyRepository, commentRepository, ticketRepository, excerciseRepository
+Date: 02 - 06 - 2025
+Author: Alan Julian Itzamna Mier Cupul
+*/
+
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateDifficultyDto } from './dto/create-difficulty.dto';
 import { UpdateDifficultyDto } from './dto/update-difficulty.dto';

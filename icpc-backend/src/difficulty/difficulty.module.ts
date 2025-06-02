@@ -1,3 +1,9 @@
+/*
+Difficulty module: configures the integration of entities and services for managing difficulty levels, comments, tickets, and exercises. Exposes the difficulty service and uses TypeORM for persistence.
+Date: 02 - 06 - 2025
+Author: Alan Julian Itzamna Mier Cupul
+*/
+
 import { Module } from '@nestjs/common';
 import { DifficultyService } from './difficulty.service';
 import { DifficultyController } from './difficulty.controller';

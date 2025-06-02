@@ -1,3 +1,31 @@
+/*
+Input:
+  - create: createExcerciseDto (exercise data)
+  - findAll: none
+  - findOne: id (string)
+  - findOneByName: name (string)
+  - getList: body (GetExerciseListDto)
+  - update: id (string), updateExcerciseDto (fields to update)
+  - remove: id (string), user (string)
+  - search: query (string)
+  - getCount: none
+Output:
+  - create: Created exercise or error
+  - findAll: List of exercises
+  - findOne: Found exercise
+  - findOneByName: Found exercise or null
+  - getList: Filtered list of exercises
+  - update: Updated exercise or error
+  - remove: Deleted exercise or error
+  - search: List of exercises matching the query
+  - getCount: Number of visible exercises
+Return value: Service for CRUD operations, search, and filtering on exercises, with validations and change logging via tickets and comments
+Function: Handles business logic for creating, retrieving, updating, deleting, searching, and filtering exercises, ensuring integrity and traceability
+Variables: exerciseRepository, categoryRepository, difficultyRepository, tagRepository, ticketRepository, userRepository, commentRepository, ticketsService, mailerService
+Date: 02 - 06 - 2025
+Author: Alan Julian Itzamna Mier Cupul
+*/
+
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateExcerciseDto } from './dto/create-excercise.dto';
 import { UpdateExcerciseDto } from './dto/update-excercise.dto';

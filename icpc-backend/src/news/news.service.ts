@@ -1,3 +1,29 @@
+/*
+Input:
+  - create: createNewsDto (news data)
+  - findAll: none
+  - findOne: id (string)
+  - update: id (string), updateNewsDto (fields to update)
+  - remove: id (string), user (string)
+  - search: query (string)
+  - getCount: none
+  - swapImage: newsId (string), imageId (string)
+Output:
+  - create: Created news item or error
+  - findAll: List of news items
+  - findOne: Found news item
+  - update: Updated news item or error
+  - remove: Deleted news item or error
+  - search: List of news items matching the query
+  - getCount: Number of visible news items
+  - swapImage: Updated news item with new image
+Return value: Service for CRUD operations, search, and image management on news items, with validations and change logging via tickets and comments
+Function: Handles business logic for creating, retrieving, updating, deleting, searching, and managing images for news items, ensuring integrity and traceability
+Variables: newsRepository, ticketRepository, commentRepository, userRepository, imageRepository, mailerService
+Date: 02 - 06 - 2025
+Author: Alan Julian Itzamna Mier Cupul
+*/
+
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateNewsDto } from './dto/create-news.dto';
 import { UpdateNewsDto } from './dto/update-news.dto';

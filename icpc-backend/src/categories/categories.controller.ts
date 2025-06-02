@@ -1,3 +1,51 @@
+/*
+Input:
+  - create: createCategoryDto (category data), req (authenticated user)
+  - findAll: none
+  - findOne: id (string)
+  - update: id (string), updateCategoryDto (fields to update), req (authenticated user)
+  - remove: id (string), req (authenticated user)
+Output:
+  - create: Created category
+  - findAll: List of categories
+  - findOne: Found category
+  - update: Updated category
+  - remove: Deleted category
+Return value: Categories controller with endpoints to create, retrieve, update, and delete categories
+Function: Handles CRUD operations for categories, with change logging and authentication protection
+Variables: categoriesService, loggerService
+Date: 02 - 06 - 2025
+Author: Alan Julian Itzamna Mier Cupul
+
+Endpoints:
+- POST /categories
+  Description: Creates a new category
+  Permission: USER (authentication required)
+  Input: createCategoryDto
+  Output: Created category
+
+- GET /categories
+  Description: Retrieves all categories
+  Permission: Public
+  Output: List of categories
+
+- GET /categories/:id
+  Description: Retrieves a category by id
+  Permission: Public
+  Output: Found category
+
+- PATCH /categories/:id
+  Description: Updates an existing category
+  Permission: USER (authentication required)
+  Input: updateCategoryDto
+  Output: Updated category
+
+- DELETE /categories/:id
+  Description: Deletes an existing category
+  Permission: USER (authentication required)
+  Output: Deleted category
+*/
+
 import {
   Controller,
   Get,

@@ -17,6 +17,38 @@ import {
 import { User } from 'src/users/entities/user.entity';
 import { MailerService } from 'src/mailer/mailer.service';
 
+/*
+Input:
+  - create: createNoteDto (note data)
+  - findAll: none
+  - findAllInCategory: categoryId (string)
+  - findNoteList: noteListDto (GetNoteListDto)
+  - findOne: id (string)
+  - findOneByTitle: title (string)
+  - update: id (string), updateNoteDto (fields to update)
+  - remove: id (string), user (string)
+  - search: query (string)
+  - getCount: none
+Output:
+  - create: Created note object or error
+  - findAll: List of all notes
+  - findAllInCategory: List of notes in the category
+  - findNoteList: Filtered list of notes
+  - findOne: Found note
+  - findOneByTitle: Found note or null
+  - update: Updated note or error
+  - remove: Deleted note or error
+  - search: List of notes matching the query
+  - getCount: Number of notes
+Return value: Service providing business logic and data access for notes, including creation, retrieval, update, deletion, filtering, and search
+Function: Handles all CRUD operations, filtering, and search for notes, manages related entities (category, comment, tag, ticket, user), and integrates with mailer for notifications
+Variables: noteRepository, categoryRepository, commentRepository, tagRepository, ticketRepository, userRepository, mailerService
+Date: 02 - 06 - 2025
+Author: Alan Julian Itzamna Mier Cupul
+
+Description:
+  The NotesService encapsulates all business logic and data access for notes. It manages note creation, retrieval, updating, deletion, filtering by category/tags, and searching by title. It also handles related entities such as categories, comments, tags, tickets, and users, and integrates with the mailer service for notifications. The service ensures data integrity, validation, and proper handling of user roles and permissions for note operations.
+*/
 @Injectable()
 export class NotesService {
   constructor(

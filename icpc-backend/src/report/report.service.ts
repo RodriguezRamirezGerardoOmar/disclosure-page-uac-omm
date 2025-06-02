@@ -9,6 +9,32 @@ import { Note } from 'src/notes/entities/note.entity';
 import { Excercise } from 'src/excercises/entities/excercise.entity';
 import { MailerService } from 'src/mailer/mailer.service';
 
+/*
+Input:
+  - create: createReportDto (report data)
+  - findAll: none
+  - list: none
+  - findOne: id (string)
+  - update: id (string), updateReportDto (fields to update)
+  - remove: id (string)
+  - close: id (string)
+Output:
+  - create: Created report object or error
+  - findAll: List of all reports
+  - list: List of open reports
+  - findOne: Found report
+  - update: Updated report or error
+  - remove: Deleted report or error
+  - close: Closed report
+Return value: Service providing business logic and data access for reports, including creation, retrieval, update, deletion, listing, and closing
+Function: Handles all CRUD operations, listing, and closing for reports, manages related entities (news, note, exercise), and integrates with mailer for notifications
+Variables: reportRepository, newsRepository, noteRepository, excerciseRepository, mailerService
+Date: 02 - 06 - 2025
+Author: Alan Julian Itzamna Mier Cupul
+
+Description:
+  The ReportService encapsulates all business logic and data access for reports. It manages report creation, retrieval, updating, deletion, listing open reports, and closing reports. It also handles related entities such as news, notes, and exercises, and integrates with the mailer service for notifications. The service ensures data integrity, validation, and proper handling of report operations.
+*/
 @Injectable()
 export class ReportService {
   constructor(

@@ -26,6 +26,54 @@ import {
 import { AuthGuard } from 'src/auth/guard/auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 
+/*
+Input:
+  - uploadFile: file (Express.Multer.File)
+  - findAll: none
+  - findOne: id (string), res (response object)
+  - update: id (string), updateImageDto (fields to update)
+  - remove: id (string)
+Output:
+  - uploadFile: Uploaded image metadata
+  - findAll: List of images
+  - findOne: Sends the image file as a response
+  - update: Updated image
+  - remove: Deleted image
+Return value: Image controller with endpoints to upload, retrieve, update, and delete images
+Function: Handles CRUD operations and file upload for images, with authentication protection for sensitive actions
+Variables: imageService
+Date: 02 - 06 - 2025
+Author: Alan Julian Itzamna Mier Cupul
+
+Endpoints:
+- POST /image/upload
+  Description: Uploads a new image
+  Permission: USER (authentication required)
+  Input: file (multipart/form-data)
+  Output: Uploaded image metadata
+
+- GET /image
+  Description: Retrieves all images
+  Permission: Public
+  Output: List of images
+
+- GET /image/:id
+  Description: Retrieves an image by id (sends file)
+  Permission: Public
+  Output: Image file
+
+- PATCH /image/:id
+  Description: Updates an existing image
+  Permission: USER (authentication required)
+  Input: updateImageDto
+  Output: Updated image
+
+- DELETE /image/:id
+  Description: Deletes an existing image
+  Permission: USER (authentication required)
+  Output: Deleted image
+*/
+
 @Controller('image')
 @ApiTags('Image')
 export class ImageController {

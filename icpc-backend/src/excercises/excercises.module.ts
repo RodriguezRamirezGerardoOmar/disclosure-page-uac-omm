@@ -1,3 +1,9 @@
+/*
+Excercises module: configures the integration of entities and services for managing exercises, categories, tags, difficulties, tickets, users, comments, notes, news, images, and roles. Exposes the exercises service and uses TypeORM for persistence.
+Date: 02 - 06 - 2025
+Author: Alan Julian Itzamna Mier Cupul
+*/
+
 import { Module, forwardRef } from '@nestjs/common';
 import { ExcercisesService } from './excercises.service';
 import { ExcercisesController } from './excercises.controller';

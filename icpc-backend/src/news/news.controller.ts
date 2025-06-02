@@ -38,6 +38,76 @@ export class NewsController {
     private readonly loggerService: LoggerService // Inyecta el LoggerService
   ) {}
 
+  /*
+  Input:
+    - create: createNewsDto (news data), req (authenticated user)
+    - findAll: none
+    - getCount: none
+    - findOne: id (string)
+    - search: query (string)
+    - swapImage: id (string), file (Express.Multer.File)
+    - update: id (string), updateNewsDto (fields to update), req (authenticated user)
+    - remove: id (string), user (string), req (authenticated user)
+  Output:
+    - create: Created news item
+    - findAll: List of news items
+    - getCount: Number of news items
+    - findOne: Found news item
+    - search: List of news items matching the query
+    - swapImage: Updated news item with new image
+    - update: Updated news item
+    - remove: Deleted news item
+  Return value: News controller with endpoints to create, retrieve, update, delete, search, and swap images for news items
+  Function: Handles CRUD operations, search, and image management for news items, with authentication protection and change logging
+  Variables: imageService, newsService, loggerService
+  Date: 02 - 06 - 2025
+  Author: Alan Julian Itzamna Mier Cupul
+  
+  Endpoints:
+  - POST /news
+    Description: Creates a new news item
+    Permission: USER (authentication required)
+    Input: createNewsDto
+    Output: Created news item
+  
+  - GET /news
+    Description: Retrieves all news items
+    Permission: Public
+    Output: List of news items
+  
+  - GET /news/count
+    Description: Retrieves the total number of news items
+    Permission: Public
+    Output: Number of news items
+  
+  - GET /news/:id
+    Description: Retrieves a news item by id
+    Permission: Public
+    Output: Found news item
+  
+  - POST /news/search/:query
+    Description: Searches news items by query
+    Permission: Public
+    Output: List of news items matching the query
+  
+  - PATCH /news/image/:id
+    Description: Swaps the image of a news item
+    Permission: USER (authentication required)
+    Input: file (multipart/form-data)
+    Output: Updated news item with new image
+  
+  - PATCH /news/:id
+    Description: Updates an existing news item
+    Permission: USER (authentication required)
+    Input: updateNewsDto
+    Output: Updated news item
+  
+  - DELETE /news/:id/:user
+    Description: Deletes an existing news item
+    Permission: USER (authentication required)
+    Output: Deleted news item
+  */
+
   @Post()
   @ApiBearerAuth()
   @UseGuards(AuthGuard)

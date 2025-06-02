@@ -1,3 +1,21 @@
+/*
+Input:
+  - create: createCommentDto (comment content)
+  - findAll: none
+  - findOne: id (string)
+  - findOneByBody: body (string)
+Output:
+  - create: Created comment or message if it already exists
+  - findAll: List of comments
+  - findOne: Found comment
+  - findOneByBody: Found comment or null
+Return value: Service for CRUD operations on comments
+Function: Handles business logic for creating, retrieving, and searching comments, avoiding duplicates
+Variables: commentRepository
+Date: 02 - 06 - 2025
+Author: Alan Julian Itzamna Mier Cupul
+*/
+
 import { Injectable } from '@nestjs/common';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';

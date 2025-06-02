@@ -1,3 +1,9 @@
+/*
+Categories module: configures the integration of entities and services for managing categories, exercises, comments, tickets, and notes. Exposes the categories service and uses TypeORM for persistence.
+Date: 02 - 06 - 2025
+Author: Alan Julian Itzamna Mier Cupul
+*/
+
 import { Module } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import { CategoriesController } from './categories.controller';

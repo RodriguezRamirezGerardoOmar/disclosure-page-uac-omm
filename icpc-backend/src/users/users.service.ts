@@ -1,3 +1,33 @@
+/*
+Input:
+  - create: createUserDto (user data)
+  - findAll: none
+  - findOneByEmail: email (string)
+  - findOne: id (string)
+  - getMails: adminsOnly (boolean)
+  - update: id (string), updateUserDto (fields to update)
+  - remove: id (string), userId (string)
+  - findOneByUsername: username (string)
+  - findOneById: id (string)
+Output:
+  - create: Created user object or error
+  - findAll: List of all users
+  - findOneByEmail: Found user or null
+  - findOne: Found user with details
+  - getMails: List of user emails
+  - update: Updated user or error
+  - remove: Deleted user or error
+  - findOneByUsername: Found user or null
+  - findOneById: Found user or null
+Return value: Service providing business logic and data access for users, including creation, retrieval, update, deletion, and email retrieval
+Function: Handles all CRUD operations for users, manages the User entity, and integrates with related entities (roles, comments, tickets) for persistence and business logic
+Variables: userRepository, roleRepository, commentRepository, ticketRepository
+Date: 02 - 06 - 2025
+Author: Alan Julian Itzamna Mier Cupul
+
+Description:
+  The UsersService encapsulates all business logic and data access for users. It manages user creation, retrieval, updating, deletion, and email retrieval, and interacts with related entities such as roles, comments, and tickets. The service ensures data integrity, validation, and proper handling of user operations, including password hashing, role assignment, and logging changes for auditing purposes.
+*/
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';

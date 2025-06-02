@@ -1,3 +1,14 @@
+/*
+Input:
+  - sendMail: admins (boolean), cause ('report' | 'create' | 'update' | 'delete'), title (string), itemType ('noticia' | 'ejercicio' | 'apunte' | 'reporte')
+Output: Sends email notifications to users
+Return value: Promise<void>
+Function: Handles the logic for sending email notifications to users or admins based on the action performed (report, create, update, delete) and the item type
+Variables: mailerService, usersService
+Date: 02 - 06 - 2025
+Author: Alan Julian Itzamna Mier Cupul
+*/
+
 import { Injectable } from '@nestjs/common';
 import { MailerService as NestMailerService } from '@nestjs-modules/mailer';
 import { UsersService } from 'src/users/users.service';
@@ -22,7 +33,7 @@ export class MailerService {
           for (const address of addresses) {
             await this.mailerService.sendMail({
               to: address,
-              from: '"Sistema de divulgación para competencias académicas" <helplessnerd.1d0lat0r@gmail.com>',
+              from: '"Sistema de divulgación para competencias académicas" <sistema.divulgacion.omm.uacam@gmail.com>',
               subject: 'Notificación',
               text: `Un alumno ha enviado un reporte de nombre "${title}".`,
               html: `<p>Un alumno ha enviado un reporte de nombre "${title}".</p>`
@@ -38,7 +49,7 @@ export class MailerService {
           for (const address of addresses) {
             await this.mailerService.sendMail({
               to: address,
-              from: '"Sistema de divulgación para competencias académicas" <helplessnerd.1d0lat0r@gmail.com>',
+              from: '"Sistema de divulgación para competencias académicas" <sistema.divulgacion.omm.uacam@gmail.com>',
               subject: 'Notificación',
               text: `Un entrenador ha creado  ${
                 itemType === 'noticia'
@@ -62,7 +73,7 @@ export class MailerService {
           for (const address of addresses) {
             await this.mailerService.sendMail({
               to: address,
-              from: '"Sistema de divulgación para competencias académicas" <helplessnerd.1d0lat0r@gmail.com>',
+              from: '"Sistema de divulgación para competencias académicas" <sistema.divulgacion.omm.uacam@gmail.com>',
               subject: 'Notificación',
               text: `Un entrenador ha modificado  ${
                 itemType === 'noticia' ? 'una noticia' : 'un ' + itemType
@@ -82,7 +93,7 @@ export class MailerService {
           for (const address of addresses) {
             await this.mailerService.sendMail({
               to: address,
-              from: '"Sistema de divulgación para competencias académicas" <helplessnerd.1d0lat0r@gmail.com>',
+              from: '"Sistema de divulgación para competencias académicas" <sistema.divulgacion.omm.uacam@gmail.com>',
               subject: 'Notificación',
               text: `Un entrenador ha eliminado  ${
                 itemType === 'noticia' ? 'una noticia' : 'un ' + itemType

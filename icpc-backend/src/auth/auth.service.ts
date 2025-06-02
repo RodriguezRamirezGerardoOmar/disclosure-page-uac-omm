@@ -1,3 +1,19 @@
+/*
+Input:
+  - login: username (optional, string), email (optional, string, email format), password (string)
+  - register: name (string), lastName (string), userName (string), email (string), password (string), passwordVerify (string), isAdmin (boolean)
+  - profile: id (string)
+Output:
+  - login: Object with authenticated user data (userName, email, role, name, lastName) and JWT token
+  - register: Object with created user data
+  - profile: Object with user profile data
+Return value: Service methods for authentication, registration, and user profile retrieval
+Function: Manages user authentication, registration, and profile, validating credentials and generating JWT tokens
+Variables: usersService, jwtService, user, token, payload
+Date: 02 - 06 - 2025
+Author: Alan Julian Itzamna Mier Cupul
+*/
+
 import {
   BadRequestException,
   Injectable,

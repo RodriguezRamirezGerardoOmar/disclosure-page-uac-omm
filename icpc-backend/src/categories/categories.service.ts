@@ -1,3 +1,25 @@
+/*
+Input:
+  - create: createCategoryDto (category data)
+  - findAll: none
+  - findOne: id (string)
+  - findOneByName: name (string)
+  - update: id (string), updateCategoryDto (fields to update)
+  - remove: id (string)
+Output:
+  - create: Created category or error
+  - findAll: List of categories
+  - findOne: Found category
+  - findOneByName: Found category or null
+  - update: Updated category or error
+  - remove: Deleted category or error
+Return value: Service for CRUD operations on categories, with validations and change logging via tickets and comments
+Function: Handles business logic for creating, retrieving, updating, and deleting categories, ensuring integrity and traceability
+Variables: categoryRepository, commentRepository, ticketRepository, notesRepository, excerciseRepository
+Date: 02 - 06 - 2025
+Author: Alan Julian Itzamna Mier Cupul
+*/
+
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';

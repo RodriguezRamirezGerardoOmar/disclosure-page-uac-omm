@@ -1,3 +1,9 @@
+/*
+Comments module: configures the integration of entities and services for managing comments and their relation to categories. Exposes the comment service and uses TypeORM for persistence.
+Date: 02 - 06 - 2025
+Author: Alan Julian Itzamna Mier Cupul
+*/
+
 import { Module } from '@nestjs/common';
 import { CommentService } from './comment.service';
 import { CommentController } from './comment.controller';
