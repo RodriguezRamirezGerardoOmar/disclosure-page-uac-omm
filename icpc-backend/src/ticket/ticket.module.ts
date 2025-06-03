@@ -10,6 +10,12 @@ import { Comment } from 'src/comment/entities/comment.entity';
 import { Image } from 'src/image/entities/image.entity';
 import { LoggerService } from 'src/services/logger.service';
 
+/*
+Ticket module: configures the integration of the Ticket entity and related services for managing tickets, exercises, notes, news, comments, and images. Exposes the ticket service and uses TypeORM for persistence.
+Date: 02 - 06 - 2025
+Author: Alan Julian Itzamna Mier Cupul
+*/
+
 @Module({
   imports: [
     TypeOrmModule.forFeature([Ticket, Excercise, Note, News, Comment, Image])

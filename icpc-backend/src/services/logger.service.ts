@@ -2,6 +2,19 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { Injectable } from '@nestjs/common';
 
+/*
+Input:
+  - logChange: module (string), action (string), userName (string), itemId (string)
+  - logRead: module (string), itemId (string), category (string), tags (string)
+Output:
+  - Writes log entries to a file for change and read actions
+Return value: Service for logging changes and reads to persistent log files
+Function: Handles logging of CRUD and read operations for auditing and tracking purposes, writing entries to log files by month and year
+Variables: logFilePath
+Date: 02 - 06 - 2025
+Author: Alan Julian Itzamna Mier Cupul
+*/
+
 @Injectable()
 export class LoggerService {
   private logFilePath = path.join(process.cwd(), 'src/services/changes.log'); // Ruta actualizada

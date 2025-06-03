@@ -15,6 +15,37 @@ import { News } from 'src/news/entities/news.entity';
 import { Comment } from 'src/comment/entities/comment.entity';
 import { Image } from 'src/image/entities/image.entity';
 
+/*
+Input:
+  - create: createTicketDto (ticket data)
+  - findAll: none
+  - findPending: none
+  - findOne: id (string)
+  - update: id (string), updateTicketDto (fields to update)
+  - remove: id (string)
+  - approve: id (string)
+  - reject: id (string)
+  - hasPendingTicket: itemId (string), itemType (TicketType)
+Output:
+  - create: Created ticket object or existing ticket
+  - findAll: List of all tickets
+  - findPending: List of pending tickets
+  - findOne: Found ticket with related entities
+  - update: Updated ticket
+  - remove: Deleted ticket
+  - approve: Approved ticket and updated related entities
+  - reject: Rejected ticket and updated related entities
+  - hasPendingTicket: Boolean indicating if a pending ticket exists
+Return value: Service providing business logic and data access for tickets, including creation, retrieval, update, deletion, approval, rejection, and status checks
+Function: Handles all CRUD operations, approval, rejection, and status checks for tickets, manages the Ticket entity, and integrates with related entities (exercises, notes, news, comments, images) for persistence and business logic
+Variables: ticketRepository, excerciseRepository, notesRepository, newsRepository, commentRepository, imageRepository
+Date: 02 - 06 - 2025
+Author: Alan Julian Itzamna Mier Cupul
+
+Description:
+  The TicketService encapsulates all business logic and data access for tickets. It manages ticket creation, retrieval, updating, deletion, approval, rejection, and status checks, and interacts with related entities such as exercises, notes, news, comments, and images. The service ensures data integrity, validation, and proper handling of ticket operations, including updating related records and logging changes for auditing purposes.
+*/
+
 @Injectable()
 export class TicketService {
   constructor(
@@ -41,11 +72,13 @@ export class TicketService {
     let comment = await this.commentRepository.findOneBy({
       body: createTicketDto.description
     });
+    // If the comment does not exist, create and save it
     if (comment === null) {
       comment = this.commentRepository.create();
       comment.body = createTicketDto.description;
       comment = await this.commentRepository.save(comment);
     }
+    // Select logic based on ticket type
     switch (ticketType) {
       case 'exercise':
         originalId = createTicketDto.originalExerciseId;
@@ -81,6 +114,7 @@ export class TicketService {
         });
         break;
     }
+    // If the ticket does not exist, create and save a new one
     if (ticket === null) {
       let res = this.ticketRepository.create();
       res.commentId = comment;
@@ -105,6 +139,7 @@ export class TicketService {
       res = await this.ticketRepository.save(res);
       return res;
     }
+    // If the ticket already exists, return it
     return ticket;
   }
 

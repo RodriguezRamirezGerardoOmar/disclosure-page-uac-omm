@@ -22,6 +22,54 @@ import {
 import { AuthGuard } from 'src/auth/guard/auth.guard';
 import { LoggerService } from 'src/services/logger.service';
 
+/*
+Input:
+  - create: createDifficultyDto (difficulty data), req (authenticated user)
+  - findAll: none
+  - findOne: id (string)
+  - update: id (string), updateDifficultyDto (fields to update), req (authenticated user)
+  - remove: id (string), req (authenticated user)
+Output:
+  - create: Created difficulty
+  - findAll: List of difficulties
+  - findOne: Found difficulty
+  - update: Updated difficulty
+  - remove: Deleted difficulty
+Return value: Difficulty controller with endpoints to create, retrieve, update, and delete difficulty levels
+Function: Handles CRUD operations for difficulty levels, with change logging and authentication protection
+Variables: difficultyService, loggerService
+Date: 02 - 06 - 2025
+Author: Alan Julian Itzamna Mier Cupul
+
+Endpoints:
+- POST /difficulty
+  Description: Creates a new difficulty level
+  Permission: USER (authentication required)
+  Input: createDifficultyDto
+  Output: Created difficulty
+
+- GET /difficulty
+  Description: Retrieves all difficulty levels
+  Permission: Public
+  Output: List of difficulties
+
+- GET /difficulty/:id
+  Description: Retrieves a difficulty level by id
+  Permission: Public
+  Output: Found difficulty
+
+- PATCH /difficulty/:id
+  Description: Updates an existing difficulty level
+  Permission: USER (authentication required)
+  Input: updateDifficultyDto
+  Output: Updated difficulty
+
+- DELETE /difficulty/:id
+  Description: Deletes an existing difficulty level
+  Permission: USER (authentication required)
+  Output: Deleted difficulty
+*/
+
 @ApiTags('Difficulty')
 @Controller('difficulty')
 export class DifficultyController {

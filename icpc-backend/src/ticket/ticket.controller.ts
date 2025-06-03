@@ -26,6 +26,81 @@ enum ItemType {
   USER = 'Usuarios'
 }
 
+/*
+Input:
+  - create: createTicketDto (ticket data)
+  - findAll: none
+  - findPending: none
+  - hasPendingTicket: itemId (string), itemType (string)
+  - findOne: id (string)
+  - approve: id (string), req (authenticated admin user)
+  - reject: id (string), req (authenticated admin user)
+  - update: id (string), updateTicketDto (fields to update)
+  - remove: id (string)
+Output:
+  - create: Created ticket
+  - findAll: List of tickets
+  - findPending: List of pending tickets
+  - hasPendingTicket: Boolean indicating if a pending ticket exists
+  - findOne: Found ticket
+  - approve: Approved ticket
+  - reject: Rejected ticket
+  - update: Updated ticket
+  - remove: Deleted ticket
+Return value: Ticket controller with endpoints to create, retrieve, update, delete, approve, reject, and check pending tickets
+Function: Handles CRUD operations, approval, rejection, and status checks for tickets, with admin authentication protection and change logging
+Variables: ticketService, loggerService
+Date: 02 - 06 - 2025
+Author: Alan Julian Itzamna Mier Cupul
+
+Endpoints:
+- POST /ticket
+  Description: Creates a new ticket
+  Permission: Public
+  Input: createTicketDto
+  Output: Created ticket
+
+- GET /ticket
+  Description: Retrieves all tickets
+  Permission: Public
+  Output: List of tickets
+
+- GET /ticket/pending
+  Description: Retrieves all pending tickets
+  Permission: Public
+  Output: List of pending tickets
+
+- GET /ticket/hasPending/:itemId/:itemType
+  Description: Checks if a pending ticket exists for a given item
+  Permission: Public
+  Output: Boolean indicating if a pending ticket exists
+
+- GET /ticket/:id
+  Description: Retrieves a ticket by id
+  Permission: Public
+  Output: Found ticket
+
+- POST /ticket/approve/:id
+  Description: Approves a ticket by id
+  Permission: ADMIN (authentication required)
+  Output: Approved ticket
+
+- POST /ticket/reject/:id
+  Description: Rejects a ticket by id
+  Permission: ADMIN (authentication required)
+  Output: Rejected ticket
+
+- PATCH /ticket/:id
+  Description: Updates a ticket by id
+  Permission: ADMIN (authentication required)
+  Input: updateTicketDto
+  Output: Updated ticket
+
+- DELETE /ticket/:id
+  Description: Deletes a ticket by id
+  Permission: ADMIN (authentication required)
+  Output: Deleted ticket
+*/
 @Controller('ticket')
 @ApiTags('Ticket')
 export class TicketController {

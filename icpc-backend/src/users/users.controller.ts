@@ -25,6 +25,53 @@ import { Auth } from '../common/decorators/auth.decorator';
 import { RoleEnum } from '../common/enums/role.enum';
 import { LoggerService } from 'src/services/logger.service';
 
+/*
+Input:
+  - create: createUserDto (user data), req (authenticated admin user)
+  - findAll: none
+  - findOne: id (string)
+  - update: id (string), updateUserDto (fields to update), req (authenticated user)
+  - remove: id (string), user (string), req (authenticated admin user)
+Output:
+  - create: Created user
+  - findAll: List of users
+  - findOne: Found user
+  - update: Updated user
+  - remove: Deleted user
+Return value: Users controller with endpoints to create, retrieve, update, and delete users
+Function: Handles CRUD operations for users, with authentication and role-based protection, and change logging
+Variables: usersService, loggerService
+Date: 02 - 06 - 2025
+Author: Alan Julian Itzamna Mier Cupul
+
+Endpoints:
+- POST /users
+  Description: Creates a new user
+  Permission: ADMIN (authentication required)
+  Input: createUserDto
+  Output: Created user
+
+- GET /users
+  Description: Retrieves all users
+  Permission: ADMIN (authentication required)
+  Output: List of users
+
+- GET /users/:id
+  Description: Retrieves a user by id
+  Permission: ADMIN (authentication required)
+  Output: Found user
+
+- PATCH /users/:id
+  Description: Updates a user by id
+  Permission: USER or ADMIN (authentication required)
+  Input: updateUserDto
+  Output: Updated user
+
+- DELETE /users/:id/:user
+  Description: Deletes a user by id
+  Permission: ADMIN (authentication required)
+  Output: Deleted user
+*/
 @Controller('users') // This is the path that will be used for all the endpoints in this controller.
 @Auth(RoleEnum.ADMIN) // This is the role that will be used for all the endpoints in this controller.
 @ApiTags('User') // This is the name of the tag for all the endpoints in this controller.

@@ -17,6 +17,38 @@ import {
 import { User } from 'src/users/entities/user.entity';
 import { MailerService } from 'src/mailer/mailer.service';
 
+/*
+Input:
+  - create: createNoteDto (note data)
+  - findAll: none
+  - findAllInCategory: categoryId (string)
+  - findNoteList: noteListDto (GetNoteListDto)
+  - findOne: id (string)
+  - findOneByTitle: title (string)
+  - update: id (string), updateNoteDto (fields to update)
+  - remove: id (string), user (string)
+  - search: query (string)
+  - getCount: none
+Output:
+  - create: Created note object or error
+  - findAll: List of all notes
+  - findAllInCategory: List of notes in the category
+  - findNoteList: Filtered list of notes
+  - findOne: Found note
+  - findOneByTitle: Found note or null
+  - update: Updated note or error
+  - remove: Deleted note or error
+  - search: List of notes matching the query
+  - getCount: Number of notes
+Return value: Service providing business logic and data access for notes, including creation, retrieval, update, deletion, filtering, and search
+Function: Handles all CRUD operations, filtering, and search for notes, manages related entities (category, comment, tag, ticket, user), and integrates with mailer for notifications
+Variables: noteRepository, categoryRepository, commentRepository, tagRepository, ticketRepository, userRepository, mailerService
+Date: 02 - 06 - 2025
+Author: Alan Julian Itzamna Mier Cupul
+
+Description:
+  The NotesService encapsulates all business logic and data access for notes. It manages note creation, retrieval, updating, deletion, filtering by category/tags, and searching by title. It also handles related entities such as categories, comments, tags, tickets, and users, and integrates with the mailer service for notifications. The service ensures data integrity, validation, and proper handling of user roles and permissions for note operations.
+*/
 @Injectable()
 export class NotesService {
   constructor(
@@ -38,7 +70,7 @@ export class NotesService {
   async create(createNoteDto: CreateNoteDto) {
     const MAX_DESCRIPTION_LENGTH = 255;
 
-    // Validar la longitud de la descripción
+    // If the description exists and exceeds the max length, throw an exception
     if (
       createNoteDto.description &&
       createNoteDto.description.length > MAX_DESCRIPTION_LENGTH
@@ -46,44 +78,43 @@ export class NotesService {
       throw new BadRequestException('La descripción excede el límite');
     }
 
-    const title = await this.findOneByTitle(createNoteDto.title); // check if title exists
+    // If a note with the same title exists, throw an exception
+    const title = await this.findOneByTitle(createNoteDto.title); 
     const description = await this.commentRepository.findOneBy({
-      body: createNoteDto.description // check if comment exists
+      body: createNoteDto.description 
     });
     if (title !== null) {
-      throw new BadRequestException('Un apunte con ese título ya existe'); // throw error if title exists
+      throw new BadRequestException('Un apunte con ese título ya existe'); 
     }
-    const article = this.noteRepository.create(createNoteDto); // create note object
+    const article = this.noteRepository.create(createNoteDto);
     const noteCategory = await this.categoryRepository.findOneBy({
       id: createNoteDto.categoryId.id,
       name: createNoteDto.categoryId.name
-      // find the note's category in the 'category' table by the note's category id
     });
     if (noteCategory) {
-      article.category = noteCategory; // assign the note's category to the note object
+      article.category = noteCategory;
     }
     if (description !== null) {
-      // if comment already exists
-      article.commentId = description; // assign the comment to the note object
+      article.commentId = description; 
     } else {
-      // if comment doesn't exist
+      // If the comment does not exist, create and save it
       const comment = this.commentRepository.create({
         body: createNoteDto.description
-      }); // pass the 'body' property as a string
-      const newComment = await this.commentRepository.save(comment); // save the comment object to the database if it doesn't exist
-      article.commentId = newComment; // assign the comment to the note object
+      }); 
+      const newComment = await this.commentRepository.save(comment); 
+      article.commentId = newComment;
     }
     const user = await this.userRepository.findOneBy({
       userName: createNoteDto.userAuthor
     });
-    article.created_by = user.name; // assign the user's name to the note object
-    article.isVisible = createNoteDto.role === 'admin'; // if the author is an admin, the note is visible
-    const newNote = await this.noteRepository.save(article); // save the note object to the database
+    article.created_by = user.name; 
+    article.isVisible = createNoteDto.role === 'admin'; 
+    const newNote = await this.noteRepository.save(article); 
     const commentBody = `${user.userName} ha creado un nuevo apunte con el título ${article.title}`;
     const ticketComment = this.commentRepository.create({
       body: commentBody
     });
-    const commentId = await this.commentRepository.save(ticketComment); // save the comment object to the database
+    const commentId = await this.commentRepository.save(ticketComment); 
     const ticket = this.ticketRepository.create({
       itemType: TicketType.NOTE,
       operation: TicketOperation.CREATE,
@@ -94,11 +125,11 @@ export class NotesService {
       originalNoteId: newNote,
       commentId: commentId
     });
-    const savedTicket = await this.ticketRepository.save(ticket); // save the ticket object to the database
+    const savedTicket = await this.ticketRepository.save(ticket); 
     if (newNote && savedTicket) {
+      // If both the note and ticket are saved, send mail and return the note
       this.mailerService.sendMail(true, 'create', newNote.title, 'apunte');
       return {
-        // return the note object
         id: newNote.id,
         categoryId: newNote.category,
         title: newNote.title,
@@ -108,7 +139,8 @@ export class NotesService {
         isVisible: newNote.isVisible
       };
     } else {
-      throw new BadRequestException('Error al crear el apunte'); // throw error if note creation fails
+      // If the note or ticket was not saved, throw an exception
+      throw new BadRequestException('Error al crear el apunte'); 
     }
   }
 
@@ -123,6 +155,7 @@ export class NotesService {
       .where('category.id = :categoryId', { categoryId })
       .getMany();
     if (notes.length === 0) {
+      // If no notes are found in the category, return null
       return null;
     }
     return notes;
@@ -151,6 +184,7 @@ export class NotesService {
       const names = tags.map(tag => tag.name);
       for (const note of res) {
         for (const tag of note.tags) {
+          // If the tag name matches, add the note to the result
           if (names.includes(tag.name)) {
             sent.push(note);
           }
@@ -175,6 +209,7 @@ export class NotesService {
       const names = tags.map(tag => tag.name);
       for (const note of res) {
         for (const tag of note.tags) {
+          // If the tag name matches, add the note to the result
           if (names.includes(tag.name)) {
             sent.push(note);
           }
@@ -216,10 +251,11 @@ export class NotesService {
   }
 
   async findOneByTitle(title: string) {
+    // If title is not provided, return null
     if (!title) {
-      return null; // return null if title is not provided
+      return null; 
     }
-    return await this.noteRepository.findOneBy({ title }); // find the note in the 'note' table by the title
+    return await this.noteRepository.findOneBy({ title }); 
   }
 
   async update(id: string, updateNoteDto: UpdateNoteDto) {
@@ -227,14 +263,12 @@ export class NotesService {
       updateNoteDto;
     const noteByTitle = await this.noteRepository.findOneBy({ title });
     if (noteByTitle && noteByTitle.id !== id) {
-      throw new BadRequestException('El título ya existe'); // throw error if title exists
+      throw new BadRequestException('El título ya existe'); 
     }
-    // Verificar si la nota existe
     const existingNote = await this.noteRepository.findOneBy({ id });
     if (!existingNote) {
       throw new BadRequestException('La nota no existe');
     }
-    // Verificar si los tags existen
     const noteTags = await this.tagRepository
       .createQueryBuilder('tag')
       .where('tag.id IN (:...tagIds)', { tagIds: tags.map(tag => tag.id) })
@@ -263,7 +297,7 @@ export class NotesService {
     }
 
     if (role === 'admin') {
-      // Actualizar directamente las propiedades del ítem original
+      // If the user is admin, update the original note directly
       existingNote.title = title || existingNote.title;
       existingNote.body = updateData.body || existingNote.body;
       existingNote.updated_by = user.name;
@@ -274,6 +308,7 @@ export class NotesService {
       const savedModifiedNote = await this.noteRepository.save(existingNote);
 
       if (savedModifiedNote) {
+        // If the note is saved, create a comment and ticket
         const commentBody = `${updateData.userAuthor} ha actualizado el apunte con el título ${existingNote.title}`;
         const comment = this.commentRepository.create({
           body: commentBody
@@ -288,14 +323,18 @@ export class NotesService {
         });
         const savedTicket = await this.ticketRepository.save(ticket);
         if (savedTicket) {
+          // If the ticket is saved, return the updated note
           return savedModifiedNote;
         } else {
+          // If the ticket is not saved, throw an exception
           throw new BadRequestException('Error al actualizar el apunte');
         }
       } else {
+        // If the note is not saved, throw an exception
         throw new BadRequestException('Error al actualizar el apunte');
       }
     } else {
+      // If the user is not admin, create a copy of the note for review
       const modifiedNoteCopy = this.noteRepository.create({
         ...updateData,
         created_at: existingNote.created_at,
@@ -310,6 +349,7 @@ export class NotesService {
         modifiedNoteCopy
       );
       if (savedModifiedNote) {
+        // If the note is saved, create a comment and ticket, and send mail
         const commentBody = `${updateData.userAuthor} ha actualizado el apunte con el título ${existingNote.title}`;
         const comment = this.commentRepository.create({
           body: commentBody
@@ -325,6 +365,7 @@ export class NotesService {
         });
         const savedTicket = await this.ticketRepository.save(ticket);
         if (savedTicket) {
+          // If the ticket is saved, send mail and return the updated note
           this.mailerService.sendMail(
             true,
             'update',
@@ -333,6 +374,7 @@ export class NotesService {
           );
           return savedModifiedNote;
         } else {
+          // If the ticket is not saved, throw an exception
           throw new BadRequestException('Error al actualizar el apunte');
         }
       }
