@@ -25,18 +25,9 @@ import {
   ApiUnauthorizedResponse
 } from '@nestjs/swagger';
 import { AuthGuard } from 'src/auth/guard/auth.guard';
-import { LoggerService } from '../services/logger.service'; // Importa el LoggerService
+import { LoggerService } from '../services/logger.service'; 
 import { ImageService } from 'src/image/image.service';
 import { FileInterceptor } from '@nestjs/platform-express';
-
-@Controller('news')
-@ApiTags('News')
-export class NewsController {
-  constructor(
-    private readonly imageService: ImageService,
-    private readonly newsService: NewsService,
-    private readonly loggerService: LoggerService // Inyecta el LoggerService
-  ) {}
 
   /*
   Input:
@@ -108,6 +99,15 @@ export class NewsController {
     Output: Deleted news item
   */
 
+@Controller('news')
+@ApiTags('News')
+export class NewsController {
+  constructor(
+    private readonly imageService: ImageService,
+    private readonly newsService: NewsService,
+    private readonly loggerService: LoggerService 
+  ) {}
+
   @Post()
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
@@ -122,9 +122,9 @@ export class NewsController {
     this.loggerService.logChange(
       'news',
       'create',
-      req.user.name, // Nombre del usuario que hizo la operación
-      createdNews.id // ID de la noticia creada
-    ); // Log de la operación
+      req.user.name, 
+      createdNews.id 
+    );
     return createdNews;
   }
 
@@ -209,9 +209,9 @@ export class NewsController {
     this.loggerService.logChange(
       'news',
       'update',
-      req.user.name, // Nombre del usuario que hizo la operación
-      id // ID de la noticia actualizada
-    ); // Log de la operación
+      req.user.name, 
+      id 
+    );
     return updatedNews;
   }
 
@@ -233,9 +233,9 @@ export class NewsController {
     this.loggerService.logChange(
       'news',
       'delete',
-      req.user.name, // Nombre del usuario que hizo la operación
-      id // ID de la noticia eliminada
-    ); // Log de la operación
+      req.user.name, 
+      id
+    ); 
     return deletedNews;
   }
 }

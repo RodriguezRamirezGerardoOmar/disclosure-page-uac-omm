@@ -55,13 +55,13 @@ export class ReportService {
     const report = this.reportRepository.create();
     let item;
 
-    // Validar longitud de summary
     if (createReportDto.summary.length > 128) {
       throw new BadRequestException('Summary must not exceed 128 characters');
     }
 
     switch (itemType) {
       case 'news':
+        // If the item type is 'news', fetch the news item and set report properties
         item = await this.newsRepository
           .createQueryBuilder('news')
           .where('news.id = :id', { id: itemId })
@@ -72,6 +72,7 @@ export class ReportService {
         report.isOpen = true;
         break;
       case 'note':
+        // If the item type is 'note', fetch the note and set report properties
         item = await this.noteRepository
           .createQueryBuilder('note')
           .where('note.id = :id', { id: itemId })
@@ -82,6 +83,7 @@ export class ReportService {
         report.isOpen = true;
         break;
       case 'exercise':
+        // If the item type is 'exercise', fetch the exercise and set report properties
         item = await this.excerciseRepository
           .createQueryBuilder('excercise')
           .where('excercise.id = :id', { id: itemId })
@@ -92,10 +94,12 @@ export class ReportService {
         report.isOpen = true;
         break;
       default:
+        // If the item type is invalid, throw an exception
         throw new BadRequestException('Invalid item type');
     }
 
     if (item !== null) {
+      // If the item exists, add the report to the item and save
       item.reports.push(report);
       report.summary = createReportDto.summary;
       report.report = createReportDto.report;
@@ -112,6 +116,7 @@ export class ReportService {
         report: savedReport.report
       };
     } else {
+      // If the item does not exist, throw an exception
       throw new BadRequestException('Item not found');
     }
   }

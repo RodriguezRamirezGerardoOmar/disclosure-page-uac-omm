@@ -1,3 +1,9 @@
+import { Excercise } from 'src/excercises/entities/excercise.entity';
+import { BaseEntity } from '../../entities/base.entity';
+import { Column, Entity, JoinTable, ManyToOne, OneToMany } from 'typeorm';
+import { Comment } from 'src/comment/entities/comment.entity';
+import { Note } from 'src/notes/entities/note.entity';
+
 /*
 Input: name (string), excercises (array of Excercise), notes (array of Note), comment (Comment)
 Output: Category entity with relations to exercises, notes, and comment
@@ -7,12 +13,6 @@ Variables: name, excercises, notes, comment
 Date: 02 - 06 - 2025
 Author: Alan Julian Itzamna Mier Cupul
 */
-
-import { Excercise } from 'src/excercises/entities/excercise.entity';
-import { BaseEntity } from '../../entities/base.entity';
-import { Column, Entity, JoinTable, ManyToOne, OneToMany } from 'typeorm';
-import { Comment } from 'src/comment/entities/comment.entity';
-import { Note } from 'src/notes/entities/note.entity';
 
 @Entity()
 export class Category extends BaseEntity {

@@ -1,3 +1,31 @@
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Get,
+  Post,
+  Req,
+  UseGuards
+} from '@nestjs/common';
+import {
+  ApiBadRequestResponse,
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiInternalServerErrorResponse,
+  ApiResponse,
+  ApiTags,
+  ApiUnauthorizedResponse,
+  ApiOkResponse
+} from '@nestjs/swagger';
+import { AuthService } from './auth.service';
+import { RegisterDto } from './dto/register.dto';
+import { LoginDto, LoginResponseDto } from './dto/login.dto';
+import { RoleEnum } from '../common/enums/role.enum';
+import { CreateUserResponseDto } from '../users/dto/create-user.dto';
+import { Auth } from 'src/common/decorators/auth.decorator';
+import { AuthGuard } from './guard/auth.guard';
+import { HttpService } from '@nestjs/axios';
+
 /*
 Input:
   - login: loginDto (username/email and password)
@@ -39,34 +67,6 @@ Endpoints:
   Permission: USER
   Output: User data
 */
-
-import {
-  BadRequestException,
-  Body,
-  Controller,
-  Get,
-  Post,
-  Req,
-  UseGuards
-} from '@nestjs/common';
-import {
-  ApiBadRequestResponse,
-  ApiBearerAuth,
-  ApiCreatedResponse,
-  ApiInternalServerErrorResponse,
-  ApiResponse,
-  ApiTags,
-  ApiUnauthorizedResponse,
-  ApiOkResponse
-} from '@nestjs/swagger';
-import { AuthService } from './auth.service';
-import { RegisterDto } from './dto/register.dto';
-import { LoginDto, LoginResponseDto } from './dto/login.dto';
-import { RoleEnum } from '../common/enums/role.enum';
-import { CreateUserResponseDto } from '../users/dto/create-user.dto';
-import { Auth } from 'src/common/decorators/auth.decorator';
-import { AuthGuard } from './guard/auth.guard';
-import { HttpService } from '@nestjs/axios';
 
 interface CaptchaResponse {
   message: string;

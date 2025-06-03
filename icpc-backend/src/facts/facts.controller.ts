@@ -1,3 +1,17 @@
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete
+} from '@nestjs/common';
+import { FactsService } from './facts.service';
+import { CreateFactDto } from './dto/create-fact.dto';
+import { UpdateFactDto } from './dto/update-fact.dto';
+import { ApiBearerAuth } from '@nestjs/swagger';
+
 /*
 Input:
   - create: createFactDto (fact data)
@@ -45,20 +59,6 @@ Endpoints:
   Permission: USER (authentication required)
   Output: Deleted fact
 */
-
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete
-} from '@nestjs/common';
-import { FactsService } from './facts.service';
-import { CreateFactDto } from './dto/create-fact.dto';
-import { UpdateFactDto } from './dto/update-fact.dto';
-import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('facts')
 export class FactsController {

@@ -15,14 +15,6 @@ import { ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from 'src/auth/guard/auth.guard';
 import { LoggerService } from 'src/services/logger.service';
 
-@Controller('report')
-@ApiTags('Report')
-export class ReportController {
-  constructor(
-    private readonly reportService: ReportService,
-    private readonly loggerService: LoggerService
-  ) {}
-
   /*
   Input:
     - create: createReportDto (report data)
@@ -85,6 +77,14 @@ export class ReportController {
     Permission: USER (authentication required)
     Output: Deleted report
   */
+
+@Controller('report')
+@ApiTags('Report')
+export class ReportController {
+  constructor(
+    private readonly reportService: ReportService,
+    private readonly loggerService: LoggerService
+  ) {}
 
   @Post()
   create(@Body() createReportDto: CreateReportDto) {

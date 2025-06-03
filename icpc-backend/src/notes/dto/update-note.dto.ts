@@ -1,3 +1,6 @@
+/*
+Inherity from CreateNoteDto to allow partial updates
+*/
 import { PartialType } from '@nestjs/swagger';
 import { CreateNoteDto } from './create-note.dto';
 

@@ -1,3 +1,10 @@
+import { Injectable } from '@nestjs/common';
+import { CreateCommentDto } from './dto/create-comment.dto';
+import { UpdateCommentDto } from './dto/update-comment.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Comment } from './entities/comment.entity';
+
 /*
 Input:
   - create: createCommentDto (comment content)
@@ -16,13 +23,6 @@ Date: 02 - 06 - 2025
 Author: Alan Julian Itzamna Mier Cupul
 */
 
-import { Injectable } from '@nestjs/common';
-import { CreateCommentDto } from './dto/create-comment.dto';
-import { UpdateCommentDto } from './dto/update-comment.dto';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Comment } from './entities/comment.entity';
-
 @Injectable()
 export class CommentService {
   constructor(
@@ -31,16 +31,16 @@ export class CommentService {
   ) {}
 
   async create(createCommentDto: CreateCommentDto) {
-    const body = await this.findOneByBody(createCommentDto.body); // check if body exists
+    const body = await this.findOneByBody(createCommentDto.body);
+    // If a comment with the same body already exists, return a message
     if (body !== null) {
       return {
         message: 'Comment already exists'
       };
     }
-    const comment = this.commentRepository.create(createCommentDto); // create comment object
-    const newComment = await this.commentRepository.save(comment); // save the comment object to the database
+    const comment = this.commentRepository.create(createCommentDto); 
+    const newComment = await this.commentRepository.save(comment);
     return {
-      // return the comment object
       id: newComment.id,
       body: newComment.body
     };

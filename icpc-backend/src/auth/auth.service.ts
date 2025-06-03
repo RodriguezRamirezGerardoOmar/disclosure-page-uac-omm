@@ -1,3 +1,14 @@
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException
+} from '@nestjs/common';
+import { UsersService } from '../users/users.service';
+import { RegisterDto } from './dto/register.dto';
+import * as bcrypt from 'bcrypt';
+import { LoginDto } from './dto/login.dto';
+import { JwtService } from '@nestjs/jwt';
+
 /*
 Input:
   - login: username (optional, string), email (optional, string, email format), password (string)
@@ -14,17 +25,6 @@ Date: 02 - 06 - 2025
 Author: Alan Julian Itzamna Mier Cupul
 */
 
-import {
-  BadRequestException,
-  Injectable,
-  UnauthorizedException
-} from '@nestjs/common';
-import { UsersService } from '../users/users.service';
-import { RegisterDto } from './dto/register.dto';
-import * as bcrypt from 'bcrypt';
-import { LoginDto } from './dto/login.dto';
-import { JwtService } from '@nestjs/jwt';
-
 @Injectable()
 export class AuthService {
   constructor(
@@ -35,30 +35,34 @@ export class AuthService {
   async login({ username, email, password }: LoginDto) {
     let user = await this.usersService.findOneByEmail(email);
 
+    // If user is not found by email, check if the username is an email or a username
     if (user === null) {
-      // Verificar si el username es un email
+      // Check if the username input is in email format
       const isUsernameEmail = username && /\S+@\S+\.\S+/.test(username);
 
       if (isUsernameEmail) {
-        // Buscar por email usando el valor de username
+        // If username is an email, search user by email
         user = await this.usersService.findOneByEmail(username);
       } else {
-        // Buscar por username normalmente
+        // If username is not an email, search user by username
         user = await this.usersService.findOneByUsername(username);
       }
 
+      // If user is still not found, throw an exception
       if (user === null) {
         throw new BadRequestException('Usuario o correo inválido');
       }
     }
 
+    // Compare the provided password with the stored hashed password
     const isPasswordMatch = await bcrypt.compare(password, user.password);
     if (!isPasswordMatch) {
+      // If password does not match, throw an exception
       throw new UnauthorizedException('Credenciales inválidas');
     }
 
     const payload = {
-      id: user.id, // 👈 Nuevo
+      id: user.id,
       username: user.userName,
       email: user.email,
       role: user.role.role,
@@ -81,13 +85,16 @@ export class AuthService {
   }
 
   async register(registerDto: RegisterDto) {
+    // Call the usersService to create a new user with the provided registration data
     return await this.usersService.create(registerDto);
   }
   async profile({ id }: { id: string }) {
     const user = await this.usersService.findOneById(id);
+    // If the user is not found, throw an exception
     if (!user) {
       throw new BadRequestException('Usuario no encontrado');
     }
+    // If the user is found, return the profile data
     return {
       id: user.id,
       name: user.name,

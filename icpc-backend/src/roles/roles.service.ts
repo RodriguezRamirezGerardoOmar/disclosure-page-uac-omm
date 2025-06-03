@@ -47,9 +47,11 @@ export class RolesService {
 
   async findOne(id: string) {
     const role = await this.roleRepository.findOne({ where: { id } });
+    // If the role is not found, return null
     if (!role) {
       return null;
     }
+    // If the role is found, return its id and role name
     return {
       id: role.id,
       role: role.role

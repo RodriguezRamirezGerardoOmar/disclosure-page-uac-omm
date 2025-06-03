@@ -1,9 +1,3 @@
-/*
-Authentication module: manages configuration and relationships for login, registration, and user roles. Imports UsersModule, RolesService, and JWT for user security and persistence.
-Date: 02 - 06 - 2025
-Author: Alan Julian Itzamna Mier Cupul
-*/
-
 import { Module } from '@nestjs/common';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
@@ -15,6 +9,12 @@ import { Role } from 'src/roles/entities/role.entity';
 import { User } from 'src/users/entities/user.entity';
 import { RolesService } from 'src/roles/roles.service';
 import { HttpModule } from '@nestjs/axios';
+
+/*
+Authentication module: manages configuration and relationships for login, registration, and user roles. Imports UsersModule, RolesService, and JWT for user security and persistence.
+Date: 02 - 06 - 2025
+Author: Alan Julian Itzamna Mier Cupul
+*/
 
 @Module({
   controllers: [AuthController],

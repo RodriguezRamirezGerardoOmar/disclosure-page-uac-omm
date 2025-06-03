@@ -1,3 +1,30 @@
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  UseGuards,
+  Req
+} from '@nestjs/common';
+import { NotesService } from './notes.service';
+import { CommentService } from 'src/comment/comment.service';
+import { CreateNoteDto } from './dto/create-note.dto';
+import { UpdateNoteDto } from './dto/update-note.dto';
+import {
+  ApiBadRequestResponse,
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiInternalServerErrorResponse,
+  ApiTags,
+  ApiUnauthorizedResponse
+} from '@nestjs/swagger';
+import { AuthGuard } from '../auth/guard/auth.guard';
+import { GetNoteListDto } from './dto/get-note-list.dto';
+import { LoggerService } from '../services/logger.service';
+
 
 /*
 Input:
@@ -83,41 +110,13 @@ Endpoints:
   Output: Deleted note
 */
 
-
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Patch,
-  Post,
-  UseGuards,
-  Req
-} from '@nestjs/common';
-import { NotesService } from './notes.service';
-import { CommentService } from 'src/comment/comment.service';
-import { CreateNoteDto } from './dto/create-note.dto';
-import { UpdateNoteDto } from './dto/update-note.dto';
-import {
-  ApiBadRequestResponse,
-  ApiBearerAuth,
-  ApiCreatedResponse,
-  ApiInternalServerErrorResponse,
-  ApiTags,
-  ApiUnauthorizedResponse
-} from '@nestjs/swagger';
-import { AuthGuard } from '../auth/guard/auth.guard';
-import { GetNoteListDto } from './dto/get-note-list.dto';
-import { LoggerService } from '../services/logger.service'; // Importa el LoggerService
-
 @Controller()
 @ApiTags('Notes')
 export class NotesController {
   constructor(
     private readonly notesService: NotesService,
     private readonly commentService: CommentService,
-    private readonly loggerService: LoggerService // Inyecta el LoggerService
+    private readonly loggerService: LoggerService
   ) {}
 
   @Post('notes')
@@ -133,9 +132,9 @@ export class NotesController {
     this.loggerService.logChange(
       'notes',
       'create',
-      req.user.name, // Nombre del usuario que hizo la operación
-      createdNote.id // ID del apunte creado
-    ); // Log de la operación
+      req.user.name,
+      createdNote.id 
+    ); 
     return createdNote;
   }
 
@@ -231,9 +230,9 @@ export class NotesController {
     this.loggerService.logChange(
       'notes',
       'update',
-      req.user.name, // Nombre del usuario que hizo la operación
-      id // ID del apunte actualizado
-    ); // Log de la operación
+      req.user.name,
+      id
+    ); 
     return updatedNote;
   }
 
@@ -254,9 +253,9 @@ export class NotesController {
     this.loggerService.logChange(
       'notes',
       'delete',
-      req.user.name, // Nombre del usuario que hizo la operación
-      id // ID del apunte eliminado
-    ); // Log de la operación
+      req.user.name, 
+      id 
+    ); 
     return deletedNote;
   }
 }

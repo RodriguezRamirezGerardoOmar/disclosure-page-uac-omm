@@ -1,3 +1,9 @@
+import { Injectable } from '@nestjs/common';
+import * as fs from 'fs';
+import * as path from 'path';
+import { CreateFactDto } from './dto/create-fact.dto';
+import { UpdateFactDto } from './dto/update-fact.dto';
+
 /*
 Input:
   - create: createFactDto (fact data)
@@ -17,12 +23,6 @@ Variables: facts (array of strings)
 Date: 02 - 06 - 2025
 Author: Alan Julian Itzamna Mier Cupul
 */
-
-import { Injectable } from '@nestjs/common';
-import * as fs from 'fs';
-import * as path from 'path';
-import { CreateFactDto } from './dto/create-fact.dto';
-import { UpdateFactDto } from './dto/update-fact.dto';
 
 @Injectable()
 export class FactsService {

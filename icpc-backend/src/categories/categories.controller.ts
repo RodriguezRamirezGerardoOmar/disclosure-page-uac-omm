@@ -1,3 +1,27 @@
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  Req
+} from '@nestjs/common';
+import { CategoriesService } from './categories.service';
+import { CreateCategoryDto } from './dto/create-category.dto';
+import { UpdateCategoryDto } from './dto/update-category.dto';
+import {
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiInternalServerErrorResponse,
+  ApiTags,
+  ApiUnauthorizedResponse
+} from '@nestjs/swagger';
+import { AuthGuard } from 'src/auth/guard/auth.guard';
+import { LoggerService } from 'src/services/logger.service';
+
 /*
 Input:
   - create: createCategoryDto (category data), req (authenticated user)
@@ -45,30 +69,6 @@ Endpoints:
   Permission: USER (authentication required)
   Output: Deleted category
 */
-
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  UseGuards,
-  Req
-} from '@nestjs/common';
-import { CategoriesService } from './categories.service';
-import { CreateCategoryDto } from './dto/create-category.dto';
-import { UpdateCategoryDto } from './dto/update-category.dto';
-import {
-  ApiBearerAuth,
-  ApiCreatedResponse,
-  ApiInternalServerErrorResponse,
-  ApiTags,
-  ApiUnauthorizedResponse
-} from '@nestjs/swagger';
-import { AuthGuard } from 'src/auth/guard/auth.guard';
-import { LoggerService } from 'src/services/logger.service';
 
 @Controller('categories')
 @ApiTags('Categories')

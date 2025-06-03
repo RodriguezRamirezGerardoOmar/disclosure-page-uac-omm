@@ -1,3 +1,7 @@
+import { Injectable } from '@nestjs/common';
+import { MailerService as NestMailerService } from '@nestjs-modules/mailer';
+import { UsersService } from 'src/users/users.service';
+
 /*
 Input:
   - sendMail: admins (boolean), cause ('report' | 'create' | 'update' | 'delete'), title (string), itemType ('noticia' | 'ejercicio' | 'apunte' | 'reporte')
@@ -8,10 +12,6 @@ Variables: mailerService, usersService
 Date: 02 - 06 - 2025
 Author: Alan Julian Itzamna Mier Cupul
 */
-
-import { Injectable } from '@nestjs/common';
-import { MailerService as NestMailerService } from '@nestjs-modules/mailer';
-import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class MailerService {
