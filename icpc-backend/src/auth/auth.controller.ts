@@ -26,6 +26,48 @@ import { Auth } from 'src/common/decorators/auth.decorator';
 import { AuthGuard } from './guard/auth.guard';
 import { HttpService } from '@nestjs/axios';
 
+/*
+Input:
+  - login: loginDto (username/email and password)
+  - captcha: token (string)
+  - register: registerDto (user data)
+  - profile: req (Request with authenticated user)
+Output:
+  - login: Object with authenticated user data and JWT token
+  - captcha: Object with message and verification status
+  - register: Object with created user data
+  - profile: Object with user profile data
+Return value: Authentication controller with endpoints for login, captcha, registration, and profile
+Function: Handles authentication, registration, captcha verification, and user profile retrieval routes
+Variables: authService, httpService
+Date: 02 - 06 - 2025
+Author: Alan Julian Itzamna Mier Cupul
+
+Endpoints:
+- POST /auth/login
+  Description: User login
+  Permission: Public
+  Input: loginDto (username/email, password)
+  Output: LoginResponseDto (user and token)
+
+- POST /auth/captcha
+  Description: Verifies Google captcha
+  Permission: Public
+  Input: token (string)
+  Output: CaptchaResponse (message, success)
+
+- POST /auth/register
+  Description: Registers a new user
+  Permission: ADMIN
+  Input: registerDto (user data)
+  Output: CreateUserResponseDto
+
+- GET /auth/profile
+  Description: Retrieves the authenticated user's profile
+  Permission: USER
+  Output: User data
+*/
+
 interface CaptchaResponse {
   message: string;
   success: boolean;

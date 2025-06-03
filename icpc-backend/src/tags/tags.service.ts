@@ -14,6 +14,26 @@ import {
 import { Excercise } from 'src/excercises/entities/excercise.entity';
 import { Note } from 'src/notes/entities/note.entity';
 
+  /*
+  Input:
+    - create: createTagDto (tag data)
+    - findAll: none
+    - findOne: id (string)
+    - update: id (string), updateTagDto (fields to update)
+    - remove: id (string)
+  Output:
+    - create: Created tag object or error
+    - findAll: List of all tags
+    - findOne: Found tag or null
+    - update: Updated tag or error
+    - remove: Deleted tag or error
+  Return value: Service providing business logic and data access for tags, including creation, retrieval, update, and deletion
+  Function: Handles all CRUD operations for tags, manages the Tag entity, and integrates with related entities (comments, tickets, exercises, notes) for persistence and business logic
+  Variables: tagRepository, commentRepository, ticketRepository, excerciseRepository, noteRepository
+  Date: 02 - 06 - 2025
+  Author: Alan Julian Itzamna Mier Cupul
+  */
+
 @Injectable()
 export class TagsService {
   constructor(
@@ -31,18 +51,21 @@ export class TagsService {
 
   async create(createTagDto: CreateTagDto) {
     const trimmedName = createTagDto.name.trim();
+    // If the trimmed name is empty, throw an exception
     if (trimmedName.length === 0) {
       throw new BadRequestException(
         'El nombre de la etiqueta no puede estar vacío o contener solo espacios.'
       );
     }
 
+    // If the trimmed name exceeds 255 characters, throw an exception
     if (trimmedName.length > 255) {
       throw new BadRequestException(
         'El nombre de la etiqueta no puede exceder los 255 caracteres.'
       );
     }
 
+    // If a tag with the same name exists, throw an exception
     const name = await this.tagRepository.findOneBy({
       name: trimmedName
     });
@@ -50,6 +73,7 @@ export class TagsService {
       throw new BadRequestException('Ya existe una etiqueta con ese nombre.');
     }
 
+    // If a tag with the same color exists, throw an exception
     const existingTag = await this.tagRepository.findOneBy({
       color: createTagDto.color
     });
@@ -62,6 +86,7 @@ export class TagsService {
       name: trimmedName
     });
     if (savedTag) {
+      // If the tag is saved, create a comment and ticket
       const ticketCommentBody = `La etiqueta ${savedTag.name} ha sido creada`;
       const comment = this.commentRepository.create({
         body: ticketCommentBody
@@ -76,9 +101,11 @@ export class TagsService {
       });
       await this.ticketRepository.save(ticket);
       if (savedComment && ticket) {
+        // If both the comment and ticket are saved, return the tag
         return savedTag;
       }
     } else {
+      // If the tag was not saved, throw an exception
       throw new BadRequestException('Error al crear la etiqueta');
     }
   }
@@ -96,18 +123,21 @@ export class TagsService {
 
   async update(id: string, updateTagDto: UpdateTagDto) {
     const trimmedName = updateTagDto.name.trim();
+    // If the trimmed name is empty, throw an exception
     if (trimmedName.length === 0) {
       throw new BadRequestException(
         'El nombre de la etiqueta no puede estar vacío o contener solo espacios.'
       );
     }
 
+    // If the trimmed name exceeds 255 characters, throw an exception
     if (trimmedName.length > 255) {
       throw new BadRequestException(
         'El nombre de la etiqueta no puede exceder los 255 caracteres.'
       );
     }
 
+    // If another tag with the same name exists, throw an exception
     const existingTag = await this.tagRepository.findOneBy({
       name: trimmedName
     });
@@ -115,6 +145,7 @@ export class TagsService {
       throw new BadRequestException('Ya existe una etiqueta con ese nombre.');
     }
 
+    // If another tag with the same color exists, throw an exception
     const existingColorTag = await this.tagRepository.findOneBy({
       color: updateTagDto.color
     });
@@ -129,6 +160,7 @@ export class TagsService {
       name: trimmedName
     });
     if (savedTag) {
+      // If the tag is saved, create a comment and ticket
       const ticketCommentBody = `La etiqueta ${savedTag.name} ha sido actualizada`;
       const comment = this.commentRepository.create({
         body: ticketCommentBody
@@ -143,9 +175,11 @@ export class TagsService {
       });
       const savedTicket = await this.ticketRepository.save(ticket);
       if (savedComment && savedTicket) {
+        // If both the comment and ticket are saved, return the tag
         return savedTag;
       }
     } else {
+      // If the tag was not saved, throw an exception
       throw new BadRequestException('Error al actualizar la etiqueta');
     }
   }
@@ -178,8 +212,11 @@ export class TagsService {
     const savedTicket = await this.ticketRepository.save(ticket);
     if (savedTicket) {
       if (tag.excercises.length > 0) {
+        // If the tag is associated with any exercises, update each exercise
         for (const exercise of tag.excercises) {
+          // Remove the tag from the exercise's tags
           exercise.tags = exercise.tags.filter(t => t.id !== id);
+          // If the exercise has no tags left, assign the pivot tag
           if (exercise.tags.length === 0) {
             exercise.tags.push(pivot);
           }
@@ -187,8 +224,11 @@ export class TagsService {
         }
       }
       if (tag.notes.length > 0) {
+        // If the tag is associated with any notes, update each note
         for (const note of tag.notes) {
+          // Remove the tag from the note's tags
           note.tags = note.tags.filter(t => t.id !== id);
+          // If the note has no tags left, assign the pivot tag
           if (note.tags.length === 0) {
             note.tags.push(pivot);
           }
@@ -197,6 +237,7 @@ export class TagsService {
       }
       return await this.tagRepository.remove(tag);
     } else {
+      // If the ticket was not saved, throw an exception
       throw new BadRequestException('Error al eliminar la etiqueta');
     }
   }

@@ -1,3 +1,9 @@
+/*
+News module: configures the integration of the news service and controller for managing news items, images, tickets, comments, and users in the system. Uses TypeORM for persistence and imports the mailer module for notifications.
+Date: 02 - 06 - 2025
+Author: Alan Julian Itzamna Mier Cupul
+*/
+
 import { Module } from '@nestjs/common';
 import { NewsService } from './news.service';
 import { NewsController } from './news.controller';

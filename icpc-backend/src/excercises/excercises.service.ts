@@ -19,6 +19,34 @@ import { Comment } from 'src/comment/entities/comment.entity';
 import { TicketService } from 'src/ticket/ticket.service';
 import { MailerService } from 'src/mailer/mailer.service';
 
+/*
+Input:
+  - create: createExcerciseDto (exercise data)
+  - findAll: none
+  - findOne: id (string)
+  - findOneByName: name (string)
+  - getList: body (GetExerciseListDto)
+  - update: id (string), updateExcerciseDto (fields to update)
+  - remove: id (string), user (string)
+  - search: query (string)
+  - getCount: none
+Output:
+  - create: Created exercise or error
+  - findAll: List of exercises
+  - findOne: Found exercise
+  - findOneByName: Found exercise or null
+  - getList: Filtered list of exercises
+  - update: Updated exercise or error
+  - remove: Deleted exercise or error
+  - search: List of exercises matching the query
+  - getCount: Number of visible exercises
+Return value: Service for CRUD operations, search, and filtering on exercises, with validations and change logging via tickets and comments
+Function: Handles business logic for creating, retrieving, updating, deleting, searching, and filtering exercises, ensuring integrity and traceability
+Variables: exerciseRepository, categoryRepository, difficultyRepository, tagRepository, ticketRepository, userRepository, commentRepository, ticketsService, mailerService
+Date: 02 - 06 - 2025
+Author: Alan Julian Itzamna Mier Cupul
+*/
+
 @Injectable()
 export class ExcercisesService {
   constructor(
@@ -43,26 +71,31 @@ export class ExcercisesService {
   async create(createExcerciseDto: CreateExcerciseDto) {
     const { name, category, difficulty, clue, constraints, solution } =
       createExcerciseDto;
+    // Check if the exercise name exceeds 255 characters
     if (name.length > 255) {
       throw new BadRequestException(
         'El nombre del ejercicio no puede exceder 255 caracteres'
       );
     }
+    // Check if the clue exceeds 65535 characters
     if (clue && clue.length > 65535) {
       throw new BadRequestException(
         'La pista no puede exceder 65535 caracteres'
       );
     }
+    // Check if the constraints exceed 255 characters
     if (constraints && constraints.length > 255) {
       throw new BadRequestException(
         'Las restricciones no pueden exceder 255 caracteres'
       );
     }
+    // Check if the solution exceeds 65535 characters
     if (solution && solution.length > 65535) {
       throw new BadRequestException(
         'La solución no puede exceder 65535 caracteres'
       );
     }
+    // Check if an exercise with the same name already exists
     const newExcerciseName = await this.exerciseRepository.findOneBy({
       title: name
     });
@@ -71,6 +104,7 @@ export class ExcercisesService {
         'Un ejercicio con el mismo nombre ya existe'
       );
     }
+    // Check if the category exists
     const newExcerciseCategory = await this.categoryRepository.findOneBy({
       name: category.name,
       id: category.id
@@ -78,6 +112,7 @@ export class ExcercisesService {
     if (newExcerciseCategory === null) {
       throw new BadRequestException('La categoría no existe');
     }
+    // Check if the difficulty exists
     const newExcerciseDifficulty = await this.difficultyRepository.findOneBy({
       name: difficulty.name
     });
@@ -123,8 +158,10 @@ export class ExcercisesService {
       'ejercicio'
     );
     if (savedExcercise && savedTicket) {
+      // If both the exercise and ticket are saved, return the exercise
       return savedExcercise;
     } else {
+      // If not, throw an exception
       throw new BadRequestException('Error al crear el ejercicio');
     }
   }
@@ -148,7 +185,9 @@ export class ExcercisesService {
   }
 
   async getList(body: GetExerciseListDto) {
+    // Multiple conditional branches to filter exercises based on category, tags, and difficulty
     if (body.category && body.tags.length > 0 && !body.difficulty) {
+      // If category and tags are provided, but not difficulty
       const category = await this.categoryRepository.findOneBy({
         name: body.category
       });
@@ -174,6 +213,7 @@ export class ExcercisesService {
       const names = tags.map(tag => tag.name);
       for (const excercise of res) {
         for (const tag of excercise.tags) {
+          // If the tag name matches and the exercise is not already sent, add it
           if (names.includes(tag.name) && !sent.includes(excercise)) {
             sent.push(excercise);
           }
@@ -181,6 +221,7 @@ export class ExcercisesService {
       }
       return sent;
     } else if (!body.category && body.tags.length > 0 && !body.difficulty) {
+      // If only tags are provided
       const tags = await this.tagRepository
         .createQueryBuilder('tag')
         .where('tag.name IN (:...tags)', {
@@ -200,6 +241,7 @@ export class ExcercisesService {
       const names = tags.map(tag => tag.name);
       for (const excercise of res) {
         for (const tag of excercise.tags) {
+          // If the tag name matches and the exercise is not already sent, add it
           if (names.includes(tag.name) && !sent.includes(excercise)) {
             sent.push(excercise);
           }
@@ -207,6 +249,7 @@ export class ExcercisesService {
       }
       return sent;
     } else if (body.category && body.tags.length === 0 && !body.difficulty) {
+      // If only category is provided
       const category = await this.categoryRepository.findOneBy({
         name: body.category
       });
@@ -223,6 +266,7 @@ export class ExcercisesService {
         .addOrderBy('excercise.title', 'ASC') // Luego ordenar por título
         .getMany();
     } else if (!body.category && body.tags.length === 0 && !body.difficulty) {
+      // If no filters are provided, return all visible exercises
       return this.exerciseRepository
         .createQueryBuilder('excercise')
         .where('isVisible = :isVisible', { isVisible: true })
@@ -233,6 +277,7 @@ export class ExcercisesService {
         .addOrderBy('excercise.title', 'ASC') // Luego ordenar por título
         .getMany();
     } else if (body.category && body.tags.length > 0 && body.difficulty) {
+      // If category, tags, and difficulty are provided
       const category = await this.categoryRepository.findOneBy({
         name: body.category
       });
@@ -264,6 +309,7 @@ export class ExcercisesService {
       const names = tags.map(tag => tag.name);
       for (const excercise of res) {
         for (const tag of excercise.tags) {
+          // If the tag name matches and the exercise is not already sent, add it
           if (names.includes(tag.name) && !sent.includes(excercise)) {
             sent.push(excercise);
           }
@@ -271,6 +317,7 @@ export class ExcercisesService {
       }
       return sent;
     } else if (!body.category && body.tags.length > 0 && body.difficulty) {
+      // If tags and difficulty are provided
       const tags = await this.tagRepository
         .createQueryBuilder('tag')
         .where('tag.name IN (:...tags)', {
@@ -297,6 +344,7 @@ export class ExcercisesService {
       const names = tags.map(tag => tag.name);
       for (const excercise of res) {
         for (const tag of excercise.tags) {
+          // If the tag name matches and the exercise is not already sent, add it
           if (names.includes(tag.name) && !sent.includes(excercise)) {
             sent.push(excercise);
           }
@@ -304,6 +352,7 @@ export class ExcercisesService {
       }
       return sent;
     } else if (body.category && body.tags.length === 0 && body.difficulty) {
+      // If category and difficulty are provided
       const category = await this.categoryRepository.findOneBy({
         name: body.category
       });
@@ -326,6 +375,7 @@ export class ExcercisesService {
         .addOrderBy('excercise.title', 'ASC') // Luego ordenar por título
         .getMany();
     } else {
+      // If only difficulty is provided
       const difficulty = await this.difficultyRepository.findOneBy({
         name: body.difficulty
       });
@@ -346,27 +396,32 @@ export class ExcercisesService {
 
   async update(id: string, updateExcerciseDto: UpdateExcerciseDto) {
     const { role, ...updateData } = updateExcerciseDto;
+    // Check if the exercise name exceeds 255 characters
     if (updateData.name.length > 255) {
       throw new BadRequestException(
         'El nombre del ejercicio no puede exceder 255 caracteres'
       );
     }
+    // Check if the clue exceeds 65535 characters
     if (updateData.clue && updateData.clue.length > 65535) {
       throw new BadRequestException(
         'La pista no puede exceder 65535 caracteres'
       );
     }
+    // Check if the constraints exceed 255 characters
     if (updateData.constraints && updateData.constraints.length > 255) {
       throw new BadRequestException(
         'Las restricciones no pueden exceder 255 caracteres'
       );
     }
+    // Check if the solution exceeds 65535 characters
     if (updateData.solution && updateData.solution.length > 65535) {
       throw new BadRequestException(
         'La solución no puede exceder 65535 caracteres'
       );
     }
 
+    // Check if the exercise exists
     const existingExercise = await this.exerciseRepository.findOneBy({
       id: id
     });
@@ -379,6 +434,7 @@ export class ExcercisesService {
     });
 
     if (role === 'admin') {
+      // If the user is admin, update the original exercise directly
       const newCategory = await this.categoryRepository.findOneBy({
         id: updateData.category.id
       });
@@ -419,6 +475,7 @@ export class ExcercisesService {
       );
 
       if (savedUpdatedExercise) {
+        // If the update is saved, create a comment and ticket
         const commentBody = `${updateData.userAuthor} ha actualizado el ejercicio con el nombre ${existingExercise.title}`;
         const comment = this.commentRepository.create({
           body: commentBody
@@ -439,6 +496,7 @@ export class ExcercisesService {
         }
       }
     } else {
+      // If the user is not admin, create a copy of the exercise for review
       const modifiedExerciseCopy = this.exerciseRepository.create({
         ...updateData,
         created_at: existingExercise.created_at,
@@ -453,6 +511,7 @@ export class ExcercisesService {
       );
 
       if (savedUpdatedExercise) {
+        // If the update is saved, create a comment and ticket, and send mail
         const commentBody = `${updateData.userAuthor} ha actualizado el ejercicio con el nombre ${existingExercise.title}`;
         const comment = this.commentRepository.create({
           body: commentBody
@@ -490,6 +549,7 @@ export class ExcercisesService {
       .leftJoinAndSelect('user.role', 'role')
       .getOne();
     if (userId.role.role === 'admin') {
+      // If the user is admin, delete the exercise and create an accepted ticket
       const commentBody = `${userId.userName} ha eliminado el ejercicio con el nombre ${excercise.title}`;
       const comment = this.commentRepository.create({
         body: commentBody
@@ -509,6 +569,7 @@ export class ExcercisesService {
         throw new BadRequestException('Error al eliminar el ejercicio');
       }
     } else {
+      // If the user is not admin, create a pending ticket and send mail
       const commentBody = `${userId.userName} ha eliminado el ejercicio con el nombre ${excercise.title}`;
       const comment = this.commentRepository.create({
         body: commentBody

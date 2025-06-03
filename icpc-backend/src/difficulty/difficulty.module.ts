@@ -8,6 +8,12 @@ import { Ticket } from 'src/ticket/entities/ticket.entity';
 import { Excercise } from 'src/excercises/entities/excercise.entity';
 import { LoggerService } from 'src/services/logger.service';
 
+/*
+Difficulty module: configures the integration of entities and services for managing difficulty levels, comments, tickets, and exercises. Exposes the difficulty service and uses TypeORM for persistence.
+Date: 02 - 06 - 2025
+Author: Alan Julian Itzamna Mier Cupul
+*/
+
 @Module({
   imports: [TypeOrmModule.forFeature([Difficulty, Comment, Ticket, Excercise])],
   controllers: [DifficultyController],

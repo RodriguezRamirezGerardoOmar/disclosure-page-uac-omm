@@ -24,6 +24,82 @@ import { AuthGuard } from 'src/auth/guard/auth.guard';
 import { GetExerciseListDto } from './dto/get-exercise-list.dto';
 import { LoggerService } from '../services/logger.service'; // Importa el LoggerService
 
+/*
+Input:
+  - create: createExcerciseDto (exercise data), req (authenticated user)
+  - findAll: none
+  - count: none
+  - findOne: id (string)
+  - getList: body (GetExerciseListDto)
+  - search: query (string)
+  - logRead: id (string)
+  - update: id (string), updateExcerciseDto (fields to update), req (authenticated user)
+  - remove: id (string), user (string), req (authenticated user)
+Output:
+  - create: Created exercise
+  - findAll: List of exercises
+  - count: Number of exercises
+  - findOne: Found exercise
+  - getList: Filtered list of exercises
+  - search: List of exercises matching the query
+  - logRead: Boolean indicating if the read was logged
+  - update: Updated exercise
+  - remove: Deleted exercise
+Return value: Exercises controller with endpoints to create, retrieve, update, delete, search, and log exercises
+Function: Handles CRUD operations, search, and logging for exercises, with authentication protection and change logging
+Variables: exercisesService, loggerService
+Date: 02 - 06 - 2025
+Author: Alan Julian Itzamna Mier Cupul
+
+Endpoints:
+- POST /excercises
+  Description: Creates a new exercise
+  Permission: USER (authentication required)
+  Input: createExcerciseDto
+  Output: Created exercise
+
+- GET /excercises
+  Description: Retrieves all exercises
+  Permission: Public
+  Output: List of exercises
+
+- GET /excercises/count
+  Description: Retrieves the total number of exercises
+  Permission: Public
+  Output: Number of exercises
+
+- GET /excercises/:id
+  Description: Retrieves an exercise by id
+  Permission: Public
+  Output: Found exercise
+
+- POST /excercises/list
+  Description: Retrieves a filtered list of exercises
+  Permission: Public
+  Input: GetExerciseListDto
+  Output: Filtered list of exercises
+
+- POST /excercises/search/:query
+  Description: Searches exercises by query
+  Permission: Public
+  Output: List of exercises matching the query
+
+- POST /excercises/log/:id
+  Description: Logs a read action for an exercise
+  Permission: Public
+  Output: Boolean indicating if the read was logged
+
+- PATCH /excercises/:id
+  Description: Updates an existing exercise
+  Permission: USER (authentication required)
+  Input: updateExcerciseDto
+  Output: Updated exercise
+
+- DELETE /excercises/:id/:user
+  Description: Deletes an existing exercise
+  Permission: USER (authentication required)
+  Output: Deleted exercise
+*/
 @Controller('excercises')
 @ApiTags('Exercises')
 export class ExcercisesController {
