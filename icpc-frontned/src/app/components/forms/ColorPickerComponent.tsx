@@ -11,7 +11,8 @@ interface IColorPickerProps {
 }
 
 /*
-Input: register (react-hook-form register function), fieldName (name of the form field), id (unique identifier for the input), className (optional custom styles)
+Input: register (react-hook-form register function), fieldName (name of the form field), 
+id (unique identifier for the input), className (optional custom styles)
 Output: a color picker input field integrated with react-hook-form
 Return value: a component used in forms to select a color value
 Function: renders a color input field, manages its state, and integrates with form validation and submission

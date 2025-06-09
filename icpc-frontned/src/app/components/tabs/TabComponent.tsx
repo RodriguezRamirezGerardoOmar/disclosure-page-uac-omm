@@ -10,11 +10,14 @@ import CreateUserComponent from '../modals/CreateUserComponent'
 import { useForm, FieldValues } from 'react-hook-form'
 
 /*
-Input: myTabs (array of user tabs), adminTabs (array of admin tabs), isAdmin (boolean for admin view), handleChange (callback for tab change), updateTable (callback to refresh table)
+Input: myTabs (array of user tabs), adminTabs (array of admin tabs), isAdmin (boolean for admin view),
+handleChange (callback for tab change), updateTable (callback to refresh table)
 Output: a tab navigation bar with create button and modals for creating new items based on the active tab
 Return value: a component used to display and manage navigation tabs and creation modals for different item types
-Function: renders navigation tabs, manages active tab state, shows/hides create button and modals, and handles tab switching and modal logic
-Variables: myTabs, adminTabs, isAdmin, handleChange, updateTable, tabs, accountTab, filteredAdminTabs, showModal, showCreateButton, modalComponent, activeTab, methods, and all handler functions
+Function: renders navigation tabs, manages active tab state, shows/hides create button and modals, 
+and handles tab switching and modal logic
+Variables: myTabs, adminTabs, isAdmin, handleChange, updateTable, tabs, accountTab, filteredAdminTabs, 
+showModal, showCreateButton, modalComponent, activeTab, methods, and all handler functions
 Date: 28 - 05 - 2025
 Author: Alan Julian Itzamna Mier Cupul
 */

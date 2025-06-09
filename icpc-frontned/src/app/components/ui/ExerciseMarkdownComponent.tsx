@@ -14,7 +14,8 @@ interface ExerciseMarkdownComponentProps {
 }
 
 /*
-Input: description (problem description), constraints (problem constraints), solution (optional solution to the problem), clue (optional clue for the problem)
+Input: description (problem description), constraints (problem constraints), solution (optional solution to the problem), clue 
+(optional clue for the problem)
 Output: Section with markdown-rendered problem description, constraints, clue, and solution, each in a styled card or collapsible card
 Return value: Component that displays the exercise's description, constraints, clue, and solution in a formatted layout
 Function: Shows the markdown content for an exercise, including description, constraints, clue, and solution, using styled and collapsible cards

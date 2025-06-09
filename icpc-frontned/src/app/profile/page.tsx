@@ -30,7 +30,8 @@ import { toast } from 'sonner'
 Input: none (static profile page, no props or parameters)
 Output: a page displaying user profile information, editable form, tab navigation, and a table of items based on the selected tab
 Return value: a page component used to manage and display user profile data and related items (exercises, notes, news, reports, etc.)
-Function: fetches and updates user profile data, manages tab state, fetches and displays data for the selected tab, and provides forms for editing user info
+Function: fetches and updates user profile data, manages tab state, fetches and displays data for the selected tab, and provides forms 
+for editing user info
 Variables: methods, user, getProfile, tableData, mode, update, currentUser, all data fetching functions, handleSubmitUserInfo, handleChange
 Date: 28 - 05 - 2025
 Author: Alan Julian Itzamna Mier Cupul

@@ -18,7 +18,8 @@ export const metadata: Metadata = {
 Input: children (ReactNode, the content of the page to render inside the layout)
 Output: the root layout for the application, including navbar, captcha provider, footer, and global styles
 Return value: a layout component used to wrap all pages with consistent UI elements and providers
-Function: sets up the global layout, applies font and background styles, renders the navbar, wraps children with CaptchaWrapperComponent, adds footer and toast notifications
+Function: sets up the global layout, applies font and background styles, renders the navbar, wraps children 
+with CaptchaWrapperComponent, adds footer and toast notifications
 Variables: children, montserrat, metadata
 Date: 28 - 05 - 2025
 Author: Alan Julian Itzamna Mier Cupul
