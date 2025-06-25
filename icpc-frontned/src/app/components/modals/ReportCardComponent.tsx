@@ -20,7 +20,8 @@ interface IReportCardProps {
 }
 
 /*
-Input: methods (react-hook-form methods), itemType (type of item being reported), itemId (id of the item), onSubmit (callback after successful report), onCancel (callback to close the modal)
+Input: methods (react-hook-form methods), itemType (type of item being reported), itemId (id of the item), 
+onSubmit (callback after successful report), onCancel (callback to close the modal)
 Output: a modal form to create and submit a report, with fields for description and content, plus validation and feedback
 Return value: a modal component used to report an error or issue for a specific item
 Function: handles form state and submission, sends report data to the backend, shows success/error toasts, and allows resetting or closing the form

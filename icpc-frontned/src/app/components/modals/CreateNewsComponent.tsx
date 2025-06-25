@@ -25,8 +25,10 @@ interface CreateNewsComponentProps {
 Input: id (optional, id of the news to edit), onClose (callback to close the modal)
 Output: a modal form to create or edit a news article, with fields for title, image, and content, plus validation and feedback
 Return value: a modal component used to create a new news article or edit an existing one
-Function: fetches news data if editing, handles form state and submission, manages image upload, shows success/error toasts, and allows resetting or closing the form
-Variables: id, onClose, methods, createNews, getNewsArticle, createImage, updateImage, updateNews, imageInputRef, coverImage, showConfirm, onSubmit, dataValidate, clearForm
+Function: fetches news data if editing, handles form state and submission, manages image upload, 
+shows success/error toasts, and allows resetting or closing the form
+Variables: id, onClose, methods, createNews, getNewsArticle, createImage, updateImage, updateNews, imageInputRef, 
+coverImage, showConfirm, onSubmit, dataValidate, clearForm
 Date: 28 - 05 - 2025
 Author: Alan Julian Itzamna Mier Cupul
 */
