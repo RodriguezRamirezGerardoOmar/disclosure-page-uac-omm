@@ -37,11 +37,14 @@ interface IProfileTableComponentProps {
 }
 
 /*
-Input: data (array of items to display in the table), itemType (type of items), update (boolean to trigger updates), setUpdate (function to update state), onClose (callback to close modals)
+Input: data (array of items to display in the table), itemType (type of items), update (boolean to trigger updates), 
+setUpdate (function to update state), onClose (callback to close modals)
 Output: a table displaying items with actions (view, edit, delete), and modals for creating/editing/deleting items
 Return value: a component used to manage and display a list of items with contextual actions and modals
-Function: renders a table of items, provides contextual menu actions, manages modal state for CRUD operations, and handles feedback and confirmation dialogs
-Variables: data, itemType, update, setUpdate, onClose, methods, all modal state variables, confirmDelete, deleteId, deleteItemType, active*Id, delete* functions, hasPendingTicket, selectedReportId, options, setCurrentOptions, and all handler functions
+Function: renders a table of items, provides contextual menu actions, manages modal state for CRUD operations, 
+and handles feedback and confirmation dialogs
+Variables: data, itemType, update, setUpdate, onClose, methods, all modal state variables, confirmDelete, deleteId, 
+deleteItemType, active*Id, delete* functions, hasPendingTicket, selectedReportId, options, setCurrentOptions, and all handler functions
 Date: 28 - 05 - 2025
 Author: Alan Julian Itzamna Mier Cupul
 */

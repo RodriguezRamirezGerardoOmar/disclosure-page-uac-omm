@@ -19,7 +19,8 @@ interface CreateTagComponentProps {
 }
 
 /*
-Input: methods (react-hook-form methods), onCreateTag (callback after creating a tag), tagId (optional, id of the tag to edit), onClose (callback to close the modal)
+Input: methods (react-hook-form methods), onCreateTag (callback after creating a tag), tagId 
+(optional, id of the tag to edit), onClose (callback to close the modal)
 Output: a modal form to create or edit a tag, with fields for name and color, plus validation and feedback
 Return value: a modal component used to create a new tag or edit an existing one
 Function: fetches tag data if editing, handles form state and submission, shows success/error toasts, and allows resetting or closing the form

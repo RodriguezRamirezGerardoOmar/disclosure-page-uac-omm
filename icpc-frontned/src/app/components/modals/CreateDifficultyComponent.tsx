@@ -18,11 +18,14 @@ interface CreateDifficultyComponentProps {
 }
 
 /*
-Input: methods (react-hook-form methods), onCreateDifficulty (callback after creating a difficulty), difficultyId (optional, id of the difficulty to edit), onClose (callback to close the modal)
+Input: methods (react-hook-form methods), onCreateDifficulty (callback after creating a difficulty), 
+difficultyId (optional, id of the difficulty to edit), onClose (callback to close the modal)
 Output: a modal form to create or edit a difficulty, with fields, validation, and feedback
 Return value: a modal component used to create a new difficulty or edit an existing one
-Function: fetches difficulty data if editing, handles form state and submission, shows success/error toasts, and allows resetting or closing the form
-Variables: methods, onCreateDifficulty, difficultyId, onClose, createDifficulty, updateDifficulty, getDifficulty, currentDifficulty, clearForm, onSubmit
+Function: fetches difficulty data if editing, handles form state and submission, 
+shows success/error toasts, and allows resetting or closing the form
+Variables: methods, onCreateDifficulty, difficultyId, onClose, createDifficulty, updateDifficulty, 
+getDifficulty, currentDifficulty, clearForm, onSubmit
 Date: 28 - 05 - 2025
 Author: Alan Julian Itzamna Mier Cupul
 */

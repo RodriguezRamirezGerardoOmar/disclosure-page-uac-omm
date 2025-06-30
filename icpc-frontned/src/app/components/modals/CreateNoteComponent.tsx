@@ -27,8 +27,11 @@ interface CreateNotesComponentProps {
 Input: id (optional, id of the note to edit), onClose (callback to close the modal)
 Output: a modal form to create or edit a note, with fields for title, description, content, category, tags, and validation/feedback
 Return value: a modal component used to create a new note or edit an existing one
-Function: fetches note data if editing, handles form state and submission, manages category/tag creation, shows success/error toasts, and allows resetting or closing the form
-Variables: id, onClose, methods, getTags, tagList, getCategories, categoriesList, createNote, updateNote, createCategory, selectRef, tags, categories, selectedTags, selectedCategory, update, getNotesArticle, showConfirm, handleCreateCategory, onSubmit, clearForm, dataValidate
+Function: fetches note data if editing, handles form state and submission, manages 
+category/tag creation, shows success/error toasts, and allows resetting or closing the form
+Variables: id, onClose, methods, getTags, tagList, getCategories, categoriesList, createNote, 
+updateNote, createCategory, selectRef, tags, categories, selectedTags, selectedCategory, update, 
+getNotesArticle, showConfirm, handleCreateCategory, onSubmit, clearForm, dataValidate
 Date: 28 - 05 - 2025
 Author: Alan Julian Itzamna Mier Cupul
 */

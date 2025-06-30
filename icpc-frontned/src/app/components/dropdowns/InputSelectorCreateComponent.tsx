@@ -15,7 +15,8 @@ interface InputSelectorCreateProps {
 }
 
 /*
-Input: options (array of selectable options), selectedOption (currently selected option), id (unique identifier), label (label for the selector), onChange (callback for selection change), handleCreate (callback for creating a new option)
+Input: options (array of selectable options), selectedOption (currently selected option), 
+id (unique identifier), label (label for the selector), onChange (callback for selection change), handleCreate (callback for creating a new option)
 Output: a dropdown selector with creatable options, styled and labeled
 Return value: a component used to select or create an option from a dropdown list
 Function: renders a creatable select dropdown, allows selecting or creating options, exposes a clear method to parent via ref
