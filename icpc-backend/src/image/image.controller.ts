@@ -25,6 +25,7 @@ import {
 } from '@nestjs/swagger';
 import { AuthGuard } from 'src/auth/guard/auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { Response } from 'express';
 
 /*
 Input:
@@ -81,6 +82,7 @@ export class ImageController {
 
   @Post('upload')
   @UseGuards(AuthGuard)
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Upload an image' })
   @ApiConsumes('multipart/form-data')
   @ApiBody({
@@ -120,9 +122,13 @@ export class ImageController {
   })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
-  async findOne(@Param('id') id: string, @Res() res) {
+  async findOne(@Param('id') id: string, @Res() res: Response) {
     const file = await this.imageService.findOne(id);
-    res.sendFile(file);
+    // Set the appropriate headers for the image
+    res.setHeader('Content-Type', file.mimeType);
+    res.setHeader('Content-Disposition', `inline; filename="${file.name}"`);
+    // Pipe the file stream to the response
+    file.data.pipe(res);
   }
 
   @Patch(':id')

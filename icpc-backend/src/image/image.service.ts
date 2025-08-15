@@ -6,6 +6,7 @@ import { Image } from './entities/image.entity';
 import { v4 as uuidv4 } from 'uuid';
 import * as fs from 'fs';
 import { createHash } from 'crypto';
+import google, { Auth, drive_v3 } from 'googleapis';
 
 /*
 Input:
@@ -33,6 +34,19 @@ export class ImageService {
     @InjectRepository(Image)
     private readonly imageRepository: Repository<Image>
   ) {}
+
+  async authorize() {
+    const keyData = fs.readFileSync(process.env.GOOGLE_DRIVE_CREDENTIALS);
+    const key = JSON.parse(keyData.toString());
+    const jwtClient = new Auth.JWT({
+      email: key.client_email,
+      key: key.private_key,
+      scopes: ['https://www.googleapis.com/auth/drive']
+    });
+    await jwtClient.authorize();
+    return jwtClient;
+  }
+
   async create(file: Express.Multer.File) {
     const uuid = uuidv4();
     const extension = file.originalname.split('.').pop();
@@ -49,12 +63,45 @@ export class ImageService {
     });
     if (!imageInDb) {
       // If the image does not exist, save the file and store metadata in the database
-      fs.writeFile(
+      /*fs.writeFile(
         process.cwd() + process.env.ASSETS_PATH + '/' + image.assetName,
         file.buffer,
         err => {
           if (err) {
             // If there is an error writing the file, throw the error
+            throw err;
+          }
+        }
+      );*/
+      const auth = await this.authorize();
+
+      const drive = new drive_v3.Drive({
+        auth: auth
+      });
+
+      const res = drive.files.create(
+        {
+          auth: auth,
+
+          requestBody: {
+            name: image.assetName,
+
+            parents: [process.env.ASSETS_PATH],
+
+            mimeType: file.mimetype
+          },
+
+          media: {
+            mimeType: file.mimetype,
+
+            body: file.buffer
+          },
+
+          fields: 'id'
+        },
+
+        function (err) {
+          if (err) {
             throw err;
           }
         }
@@ -72,18 +119,88 @@ export class ImageService {
 
   async findOne(id: string) {
     const image = await this.imageRepository.findOneBy({ id: id });
-    const file =
-      process.cwd() + process.env.ASSETS_PATH + '/' + image.assetName;
-    return file;
+    const auth = await this.authorize();
+    const drive = new drive_v3.Drive({
+      auth: auth
+    });
+
+    const res = await drive.files.list({
+      q: `'${process.env.ASSETS_PATH}' in parents and name='${image.assetName}'`,
+
+      fields: 'files(id, name)'
+    });
+
+    const file = await drive.files.get(
+      {
+        fileId: res.data.files[0].id,
+
+        alt: 'media'
+      },
+
+      {
+        responseType: 'stream'
+      }
+    );
+
+    return { mimeType: image.mimeType, name: image.assetName, data: file.data };
   }
 
   async update(id: string, updateImageDto: UpdateImageDto) {
     const image = await this.imageRepository.findOneBy({ id: id });
+    const auth = await this.authorize();
+
+    const drive = new drive_v3.Drive({
+      auth: auth
+    });
+
+    const res = await drive.files.list({
+      q: `'${process.env.ASSETS_PATH}' in parents and name='${image.assetName}'`,
+
+      fields: 'files(id)'
+    });
+
+    const driveId = res.data.files[0].id;
+
+    await drive.files.update({
+      fileId: driveId,
+
+      auth: auth,
+
+      requestBody: {
+        mimeType: updateImageDto.file.mimetype ?? image.mimeType
+      },
+
+      media: {
+        mimeType: updateImageDto.file?.mimetype ?? image.mimeType,
+
+        body: updateImageDto.file ? updateImageDto.file.buffer : null
+      }
+    });
     return await this.imageRepository.save({ ...image, ...updateImageDto });
   }
 
   async remove(id: string) {
     const image = await this.imageRepository.findOneBy({ id: id });
+
+    const auth = await this.authorize();
+
+    const drive = new drive_v3.Drive({
+      auth: auth
+    });
+
+    const res = await drive.files.list({
+      q: `'${process.env.ASSETS_PATH}' in parents and name='${image.assetName}'`,
+
+      fields: 'files(id)'
+    });
+
+    const driveId = res.data.files[0].id;
+
+    await drive.files.delete({
+      fileId: driveId,
+
+      auth: auth
+    });
     return await this.imageRepository.remove(image);
   }
 }
