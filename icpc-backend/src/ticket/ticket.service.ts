@@ -182,8 +182,6 @@ export class TicketService {
               .createQueryBuilder('excercise')
               .where('excercise.id = :id', { id: res.originalExerciseId.id })
               .leftJoinAndSelect('excercise.category', 'category')
-              .leftJoinAndSelect('excercise.time', 'time')
-              .leftJoinAndSelect('excercise.memoryId', 'memory')
               .leftJoinAndSelect('excercise.difficulty', 'difficulty')
               .leftJoinAndSelect('excercise.tags', 'tags')
               .getOne();
@@ -191,8 +189,6 @@ export class TicketService {
               .createQueryBuilder('excercise')
               .where('excercise.id = :id', { id: res.modifiedExerciseId.id })
               .leftJoinAndSelect('excercise.category', 'category')
-              .leftJoinAndSelect('excercise.time', 'time')
-              .leftJoinAndSelect('excercise.memoryId', 'memory')
               .leftJoinAndSelect('excercise.tags', 'tags')
               .leftJoinAndSelect('excercise.difficulty', 'difficulty')
               .getOne();
@@ -211,8 +207,6 @@ export class TicketService {
                 'originalExerciseId'
               )
               .leftJoinAndSelect('originalExerciseId.category', 'category')
-              .leftJoinAndSelect('originalExerciseId.time', 'time')
-              .leftJoinAndSelect('originalExerciseId.memoryId', 'memory')
               .leftJoinAndSelect('originalExerciseId.tags', 'tags')
               .leftJoinAndSelect('originalExerciseId.difficulty', 'difficulty')
               .getOne();

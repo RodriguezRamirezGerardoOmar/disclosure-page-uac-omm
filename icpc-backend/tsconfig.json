@@ -21,6 +21,6 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false
   },
-  "include": ["src/**/*.ts", "seeders/**/*.ts"],
+  "include": ["src/**/*.ts", "seeders/**/*.ts", "./data-source.ts"],
   "exclude": ["node_modules", "dist"]
 }

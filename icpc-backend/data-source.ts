@@ -8,12 +8,10 @@ import { Comment } from './src/comment/entities/comment.entity';
 import { Ticket } from './src/ticket/entities/ticket.entity';
 import { Tag } from './src/tags/entities/tag.entity';
 import { News } from './src/news/entities/news.entity';
-import { Memory } from './src/memory/entities/memory.entity';
 import { Report } from './src/report/entities/report.entity';
 import { Difficulty } from './src/difficulty/entities/difficulty.entity';
 import { Note } from './src/notes/entities/note.entity';
 import { Image } from './src/image/entities/image.entity';
-import { Time } from './src/time/entities/time.entity';
 
 export const AppDataSourceForSeed = new DataSource({
   type: 'mysql',
@@ -33,12 +31,10 @@ export const AppDataSourceForSeed = new DataSource({
     Ticket,
     Tag,
     News,
-    Memory,
     Report,
     Difficulty,
     Note,
-    Image,
-    Time,
+    Image
   ],
-  migrations: ['./src/migrations/*.ts'],
+  migrations: ['./src/migrations/*.ts']
 });
