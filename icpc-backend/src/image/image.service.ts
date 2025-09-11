@@ -1,5 +1,4 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { UpdateImageDto } from './dto/update-image.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Image } from './entities/image.entity';
@@ -69,8 +68,8 @@ export class ImageService {
     });
     if (!imageInDb) {
       // If the image does not exist, save the file and store metadata in the database
-      /*fs.writeFile(
-        process.cwd() + process.env.ASSETS_PATH + '/' + image.assetName,
+      fs.writeFile(
+        process.cwd() + '/publicAssets/' + image.assetName,
         file.buffer,
         err => {
           if (err) {
@@ -78,7 +77,7 @@ export class ImageService {
             throw err;
           }
         }
-      );*/
+      );
       const bucket = await this.getBucket();
       const res = await bucket.upload(
         `${process.cwd()}/publicAssets/${image.assetName}`,
