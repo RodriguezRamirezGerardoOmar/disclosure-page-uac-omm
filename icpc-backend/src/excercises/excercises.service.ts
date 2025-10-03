@@ -151,13 +151,15 @@ export class ExcercisesService {
       commentId: commentId
     });
     const savedTicket = await this.ticketRepository.save(ticket);
-    this.mailerService.sendMail(
-      true,
-      'create',
-      savedExcercise.title,
-      'ejercicio'
-    );
     if (savedExcercise && savedTicket) {
+      if (createExcerciseDto.role !== 'admin') {
+        this.mailerService.sendMail(
+          true,
+          'create',
+          savedExcercise.title,
+          'ejercicio'
+        );
+      }
       // If both the exercise and ticket are saved, return the exercise
       return savedExcercise;
     } else {
