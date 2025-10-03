@@ -79,12 +79,12 @@ export class NotesService {
     }
 
     // If a note with the same title exists, throw an exception
-    const title = await this.findOneByTitle(createNoteDto.title); 
+    const title = await this.findOneByTitle(createNoteDto.title);
     const description = await this.commentRepository.findOneBy({
-      body: createNoteDto.description 
+      body: createNoteDto.description
     });
     if (title !== null) {
-      throw new BadRequestException('Un apunte con ese título ya existe'); 
+      throw new BadRequestException('Un apunte con ese título ya existe');
     }
     const article = this.noteRepository.create(createNoteDto);
     const noteCategory = await this.categoryRepository.findOneBy({
@@ -95,26 +95,26 @@ export class NotesService {
       article.category = noteCategory;
     }
     if (description !== null) {
-      article.commentId = description; 
+      article.commentId = description;
     } else {
       // If the comment does not exist, create and save it
       const comment = this.commentRepository.create({
         body: createNoteDto.description
-      }); 
-      const newComment = await this.commentRepository.save(comment); 
+      });
+      const newComment = await this.commentRepository.save(comment);
       article.commentId = newComment;
     }
     const user = await this.userRepository.findOneBy({
       userName: createNoteDto.userAuthor
     });
-    article.created_by = user.name; 
-    article.isVisible = createNoteDto.role === 'admin'; 
-    const newNote = await this.noteRepository.save(article); 
+    article.created_by = user.name;
+    article.isVisible = createNoteDto.role === 'admin';
+    const newNote = await this.noteRepository.save(article);
     const commentBody = `${user.userName} ha creado un nuevo apunte con el título ${article.title}`;
     const ticketComment = this.commentRepository.create({
       body: commentBody
     });
-    const commentId = await this.commentRepository.save(ticketComment); 
+    const commentId = await this.commentRepository.save(ticketComment);
     const ticket = this.ticketRepository.create({
       itemType: TicketType.NOTE,
       operation: TicketOperation.CREATE,
@@ -125,10 +125,12 @@ export class NotesService {
       originalNoteId: newNote,
       commentId: commentId
     });
-    const savedTicket = await this.ticketRepository.save(ticket); 
+    const savedTicket = await this.ticketRepository.save(ticket);
     if (newNote && savedTicket) {
       // If both the note and ticket are saved, send mail and return the note
-      this.mailerService.sendMail(true, 'create', newNote.title, 'apunte');
+      if (createNoteDto.role !== 'admin') {
+        this.mailerService.sendMail(true, 'create', newNote.title, 'apunte');
+      }
       return {
         id: newNote.id,
         categoryId: newNote.category,
@@ -140,7 +142,7 @@ export class NotesService {
       };
     } else {
       // If the note or ticket was not saved, throw an exception
-      throw new BadRequestException('Error al crear el apunte'); 
+      throw new BadRequestException('Error al crear el apunte');
     }
   }
 
@@ -253,9 +255,9 @@ export class NotesService {
   async findOneByTitle(title: string) {
     // If title is not provided, return null
     if (!title) {
-      return null; 
+      return null;
     }
-    return await this.noteRepository.findOneBy({ title }); 
+    return await this.noteRepository.findOneBy({ title });
   }
 
   async update(id: string, updateNoteDto: UpdateNoteDto) {
@@ -263,7 +265,7 @@ export class NotesService {
       updateNoteDto;
     const noteByTitle = await this.noteRepository.findOneBy({ title });
     if (noteByTitle && noteByTitle.id !== id) {
-      throw new BadRequestException('El título ya existe'); 
+      throw new BadRequestException('El título ya existe');
     }
     const existingNote = await this.noteRepository.findOneBy({ id });
     if (!existingNote) {
