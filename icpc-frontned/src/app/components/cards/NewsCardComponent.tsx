@@ -8,6 +8,7 @@ import { serialize } from 'next-mdx-remote/serialize'
 import rehypeKatex from 'rehype-katex'
 import remarkMath from 'remark-math'
 import ReportButtonComponent from '../buttons/ReportButtonComponent'
+import { resolveMarkdownImages } from '@/utils/markdown'
 
 interface NewsCardComponentProps {
   id: string
@@ -31,7 +32,8 @@ async function getNewsArticle(id: string): Promise<News> {
 
 async function NewsCardComponent({ isTicketPage = false, ...props  }: Readonly<NewsCardComponentProps>) {
   const news = await getNewsArticle(props.id)
-  const body = await serialize(news.body, {
+  const normalizedBody = resolveMarkdownImages(news.body)
+  const body = await serialize(normalizedBody, {
     mdxOptions: {
       remarkPlugins: [remarkMath],
       rehypePlugins: [rehypeKatex as any]

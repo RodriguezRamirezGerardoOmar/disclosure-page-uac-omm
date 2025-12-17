@@ -7,6 +7,7 @@ import rehypeKatex from 'rehype-katex'
 import useNoteStore from '@/store/useNoteStore'
 import { Note } from '@/constants/types'
 import HeartbeatComponent from '@/app/components/logging/HeartbeatComponent'
+import { resolveMarkdownImages } from '@/utils/markdown'
 
 /*
 Input: params (object with id from the route)
@@ -23,7 +24,8 @@ export default async function Page({ params }: Readonly<{ params: { id: string }
   const getNote = useNoteStore.getState().getNote
   if (params.id) {
     const note: Note = await getNote(params.id)
-    const mdx = await serialize(note.body, {
+    const normalizedBody = resolveMarkdownImages(note.body)
+    const mdx = await serialize(normalizedBody, {
       mdxOptions: {
         remarkPlugins: [remarkMath],
         rehypePlugins: [rehypeKatex as any]

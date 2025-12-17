@@ -9,6 +9,7 @@ import remarkMath from 'remark-math'
 import rehypeKatex from 'rehype-katex'
 import { TextComponent } from '@/app/components/text/TextComponent'
 import { TicketActions } from '@/app/ticket/TicketActions'
+import { resolveMarkdownImages } from '@/utils/markdown'
 
 /*
 Input: params (object with id from the route)
@@ -25,7 +26,8 @@ const TicketPage = async ({ params }: Readonly<{ params: { id: string } }>) => {
   const ticket: Ticket = await useUtilsStore.getState().getTicket(params.id)
 
   async function serializeNote(mdx: string) {
-    return await serialize(mdx, {
+    const normalizedBody = resolveMarkdownImages(mdx)
+    return await serialize(normalizedBody, {
       mdxOptions: {
         remarkPlugins: [remarkMath],
         rehypePlugins: [rehypeKatex as any]
