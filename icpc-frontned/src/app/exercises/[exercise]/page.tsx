@@ -5,6 +5,7 @@ import { serialize } from 'next-mdx-remote/serialize'
 import rehypeKatex from 'rehype-katex'
 import remarkMath from 'remark-math'
 import HeartbeatComponent from '@/app/components/logging/HeartbeatComponent'
+import { resolveMarkdownImages } from '@/utils/markdown'
 
 /*
 Input: params (object with exercise id from the route)
@@ -17,7 +18,8 @@ Author: Alan Julian Itzamna Mier Cupul
 */
 
 async function getMarkdown(body: string) {
-  return await serialize(body, {
+  const normalizedBody = resolveMarkdownImages(body)
+  return await serialize(normalizedBody, {
     mdxOptions: {
       remarkPlugins: [remarkMath],
       rehypePlugins: [rehypeKatex as any]
